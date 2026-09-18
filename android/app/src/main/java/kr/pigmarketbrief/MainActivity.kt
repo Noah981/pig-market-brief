@@ -38,8 +38,8 @@ data class AppData(val updated:String="",val regions:List<RegionBrief> = emptyLi
 suspend fun loadData():AppData=withContext(Dispatchers.IO){
  try{
   val c=OkHttpClient()
-  fun get(name:String)=c.newCall(Request.Builder().url("$DATA_ROOT/$name").build()).execute().use{r->if(!r.isSuccessful) error("HTTP "+r.code); r.body!!.string()}
-  val b=JSONObject(get("briefing.json")); val k=JSONObject(get("kape-jeju.json")); val p=JSONObject(get("pig-price.json")); val h=JSONObject(get("pig-price-history.json"))
+  fun get(name:String)=c.newCall(Request.Builder().url("$DATA_ROOT/$name").build()).execute().use{r->if(!r.isSuccessful) error("$name HTTP "+r.code); r.body!!.string()}\n  fun optional(name:String)=try{get(name)}catch(e:Exception){null}
+  val b=JSONObject(get("briefing.json")); val k=JSONObject(optional("kape-jeju.json") ?: "{\\\"rows\\\":[]}") ; val p=JSONObject(optional("pig-price.json") ?: "{}"); val h=JSONObject(optional("pig-price-history.json") ?: "{\\\"rows\\\":[]}")
   val rs=mutableListOf<RegionBrief>(); val a=b.getJSONArray("regions")
   for(i in 0 until a.length()){ val x=a.getJSONObject(i); fun arr(n:String)=x.optJSONArray(n)?.let{z->List(z.length()){j->z.getString(j)}}?: emptyList()
    rs+=RegionBrief(x.getString("region"),x.optDouble("tempMin"),x.optDouble("tempMax"),x.optDouble("humidityMax"),x.optDouble("rainProbabilityMax"),arr("riskFactors"),arr("top3"))
