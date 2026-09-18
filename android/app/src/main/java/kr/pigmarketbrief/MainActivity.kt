@@ -65,7 +65,7 @@ fun comma(v:Int)=NumberFormat.getIntegerInstance(Locale.KOREA).format(v)
 data class PigPrice(val date:String="",val price:Int?=null,val previous:Int?=null,val change:Int?=null,val changePct:Double?=null,val monthAverage:Int?=null,val previousMonth:Int?=null,val lastYearMonth:Int?=null,val status:String="집계중",val updatedAt:String="")
 data class HistPoint(val date:String,val price:Int)
 data class RegionBrief(val name:String,val min:Double?,val max:Double?,val humidity:Double?,val rain:Double?,val risks:List<String>,val checks:List<String>)
-data class DiseaseAlert(val disease:String,val source:String,val level:EvidenceLevel,val summary:String,val url:String,val scope:String)
+data class DiseaseAlert(val disease:String,val source:String,val level:EvidenceLevel,val summary:String,val url:String,val scope:String,val countryCode:String?=null)
 data class GradePrice(val grade:String,val price:Int?)
 data class AppData(val pig:PigPrice=PigPrice(),val history:List<HistPoint> = emptyList(),val regions:List<RegionBrief> = emptyList(),val diseases:List<DiseaseAlert> = emptyList(),val grades:List<GradePrice> = emptyList(),val jeju:List<Triple<String,String,String>> = emptyList(),val stale:Boolean=false,val error:String?=null)
 data class FarmRecord(val at:String,val stage:String,val weight:Double?,val days:Int?,val fcr:Double?,val mortality:Double?,val intake:Double?,val symptom:String,val action:String,val result:String)
@@ -88,7 +88,7 @@ object DataRepository{
     fun number(name:String)=x.optDouble(name).takeUnless{it.isNaN()}
     rs+=RegionBrief(x.optString("region"),number("tempMin"),number("tempMax"),number("humidityMax"),number("rainProbabilityMax"),arr("riskFactors"),arr("top3"))
    }}
-   val ds=mutableListOf<DiseaseAlert>();JSONObject(diseaseRaw?:"{}").optJSONArray("items")?.let{a->for(i in 0 until a.length()){val x=a.getJSONObject(i);val raw=x.optString("evidenceLevel",x.optString("level"));val lv=when{raw.contains("공식")||raw=="OFFICIAL"->EvidenceLevel.OFFICIAL;raw.contains("관찰")->EvidenceLevel.FARM_OBSERVATION;else->EvidenceLevel.PUBLIC_UNCONFIRMED};ds+=DiseaseAlert(x.optString("disease"),x.optString("source"),lv,x.optString("summary"),x.optString("sourceUrl"),x.optString("scope","국내"))}}
+   val ds=mutableListOf<DiseaseAlert>();JSONObject(diseaseRaw?:"{}").optJSONArray("items")?.let{a->for(i in 0 until a.length()){val x=a.getJSONObject(i);val raw=x.optString("evidenceLevel",x.optString("level"));val lv=when{raw.contains("공식")||raw=="OFFICIAL"->EvidenceLevel.OFFICIAL;raw.contains("관찰")->EvidenceLevel.FARM_OBSERVATION;else->EvidenceLevel.PUBLIC_UNCONFIRMED};val code=x.optString("countryCode").takeIf{it.isNotBlank()};val strictScope=when(code){"KR"->"국내";null->"분류 확인 필요";else->"국외"};ds+=DiseaseAlert(x.optString("disease"),x.optString("source"),lv,x.optString("summary"),x.optString("sourceUrl"),strictScope,code)}}
    val gs=mutableListOf<GradePrice>();val go=JSONObject(gradeRaw?:"{}").optJSONObject("prices");go?.keys()?.forEachRemaining{k->gs+=GradePrice(k,go.optDouble(k).roundToInt().takeIf{it>0})}
    val js=mutableListOf<Triple<String,String,String>>();JSONObject(jejuRaw?:"{}").optJSONArray("rows")?.let{a->for(i in 0 until a.length()){val x=a.getJSONObject(i);js+=Triple(x.optString("gradeName"),x.optString("publicTotPrice","집계중"),x.optString("blackTotPrice","집계중"))}}
    ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE).edit().putInt("widget_price",pig.price?:0).putInt("widget_change",pig.change?:0).putString("widget_date",pig.date).putLong("last_success",System.currentTimeMillis()).apply()
@@ -102,7 +102,7 @@ class MainActivity:ComponentActivity(){
  override fun onCreate(savedInstanceState:Bundle?){
   super.onCreate(savedInstanceState)
   scheduleBackgroundSync(this)
-  setContent { TodayPigTheme { TodayPigApp() } }
+  setContent { DondonTheme { DondonApp() } }
  }
 }
 @Composable fun TodayPigTheme(content: @Composable () -> Unit){
@@ -183,8 +183,8 @@ fun monthAverages(rows:List<HistPoint>)=rows.groupBy{it.date.take(6)}.toSortedMa
 @Composable fun DecisionDetail(rank:Int,c:DecisionCard){var open by remember{mutableStateOf(rank==1)};Card(Modifier.fillMaxWidth().clickable{open=!open},shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=if(rank==1)Ink else Color.White)){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){EvidenceBadge(c.evidence);Text("우선순위 $rank · ${c.score}",fontSize=11.sp,color=if(rank==1)Mint else Forest,fontWeight=FontWeight.Black)};Text(c.title,fontSize=20.sp,fontWeight=FontWeight.Black,color=if(rank==1)Color.White else Ink);Text(c.why.joinToString(" · "),fontSize=12.sp,color=if(rank==1)Color.White.copy(.7f)else Color.Gray);if(open){HorizontalDivider(color=if(rank==1)Color.White.copy(.16f)else Color.LightGray);StepLine("1 관찰",c.observe.joinToString(" · "),rank==1);StepLine("2 측정",c.measure.joinToString(" · "),rank==1);StepLine("3 먼저 조정",c.firstAdjustment,rank==1);StepLine("4 지속 시 감별",c.differentials.joinToString(" · "),rank==1);StepLine("전문가 연결",c.escalation,rank==1)}}}}
 @Composable fun StepLine(title:String,body:String,dark:Boolean){Column{Text(title,fontSize=11.sp,fontWeight=FontWeight.Black,color=if(dark)Mint else Forest);Text(body,fontSize=13.sp,lineHeight=19.sp,color=if(dark)Color.White else Ink)}}
 @Composable fun DiseaseList(items:List<DiseaseAlert>){
- var scope by remember{mutableStateOf("국내")};val filtered=items.filter{it.scope==scope}
- Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text("질병·방역",fontSize=22.sp,fontWeight=FontWeight.Black);SingleChoiceSegmentedButtonRow{listOf("국내","국외").forEachIndexed{i,s->SegmentedButton(scope==s,{scope=s},SegmentedButtonDefaults.itemShape(i,2)){Text(s)}}}}
+ var scope by remember{mutableStateOf("국내")};val filtered=if(scope=="관심")items.filter{it.disease in listOf("ASF","PRRS","PED","구제역")}else items.filter{it.scope==scope}
+ Text("질병·방역",fontSize=22.sp,fontWeight=FontWeight.Black);Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf("국내","국외","관심","분류 확인 필요").forEach{s->FilterChip(scope==s,{scope=s},{Text(s)})}}
  if(filtered.isEmpty())Text("현재 수집된 $scope 공개정보가 없습니다.",Modifier.padding(vertical=18.dp),color=Color.Gray)
  filtered.take(12).forEach{x->Surface(color=Color.White,shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(16.dp)){Row(verticalAlignment=Alignment.CenterVertically){EvidenceBadge(x.level);Spacer(Modifier.width(7.dp));Text(scope,fontSize=10.sp,color=Color.Gray)};Text(x.disease,Modifier.padding(top=9.dp),fontSize=17.sp,fontWeight=FontWeight.Black);Text(x.summary,fontSize=12.sp,maxLines=3,overflow=TextOverflow.Ellipsis);Text(x.source,Modifier.padding(top=7.dp),fontSize=10.sp,color=Color.Gray)}}}
  SourceNote("국내와 국외 신호를 분리하며 공식 확인과 공개정보·확인중도 합쳐 표시하지 않습니다. 앱은 질병을 확정 진단하거나 처방하지 않습니다.")
