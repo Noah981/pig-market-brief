@@ -13,5 +13,23 @@
     "status": "source_confirmed",
     "provider": "KAHIS",
     "note": "공식 발생정보를 사용하되 자동 API 제공방식 확인 후 수집기 활성화"
+  },
+  "mainlandPig": {
+    "provider": "축산물품질평가원",
+    "label": "육지 백돼지",
+    "scope": "제주 제외",
+    "status": "exact_operation_pending",
+    "note": "KAPE 공식 통계의 돼지 경락가격은 제주 제외 기준. 최신 API operation 확인 후 연결"
+  },
+  "jejuPig": {
+    "provider": "축산물품질평가원",
+    "label": "제주 돼지",
+    "scope": "제주 별도",
+    "status": "connected",
+    "operation": "auct/pigJejuGrade",
+    "segments": [
+      "백돼지",
+      "흑돼지"
+    ]
   }
 }
