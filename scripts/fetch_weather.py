@@ -29,8 +29,16 @@ def fetch(name,nx,ny,key,date,t):
                               "base_date":date,"base_time":t,"nx":nx,"ny":ny},safe="%")
     # urlencode가 이미 인코딩된 인증키를 재인코딩할 수 있어 serviceKey는 별도 조립
     params=urllib.parse.urlencode({"pageNo":1,"numOfRows":1000,"dataType":"JSON","base_date":date,"base_time":t,"nx":nx,"ny":ny})
-    url=BASE+"?serviceKey="+key+"&"+params
-    with urllib.request.urlopen(url,timeout=8) as r: data=json.load(r)
+    # data.go.kr 화면의 Encoding/Decoding 키 어느 쪽을 Secret에 넣어도 1회만 인코딩되도록 정규화
+    normalized_key=urllib.parse.quote(urllib.parse.unquote(key), safe="")
+    url=BASE+"?serviceKey="+normalized_key+"&"+params
+    req=urllib.request.Request(url, headers={"User-Agent":"pig-market-brief/1.0"})
+    with urllib.request.urlopen(req,timeout=12) as r:
+        raw=r.read()
+    try:
+        data=json.loads(raw.decode("utf-8"))
+    except Exception:
+        raise RuntimeError("KMA non-JSON response: "+raw[:180].decode("utf-8","replace"))
     items=data["response"]["body"]["items"]["item"]
     today=datetime.now(KST).strftime("%Y%m%d")
     vals={}
