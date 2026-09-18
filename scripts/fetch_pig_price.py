@@ -73,11 +73,16 @@ def main():
     merged0={r["date"]:r for r in cached_rows}
     # 발표 감시는 API 한도를 보호하기 위해 오늘 1회만 조회한다. 실패하면 기존 확정값 유지.
     day=now.strftime("%Y%m%d")
-    try:
-        price,count=day_price(key,day)
-        if price: merged0[day]={"date":day,"price":price,"count":count}
-    except Exception as e:
-        print("KAPE current fetch skipped",day,e)
+    # KAPE 공식 돼지 경락가격 알림은 매일 18시. 17:30~19:30에만 촘촘히 조회해 불필요한 API 소모를 막는다.
+    poll_now = (now.hour==17 and now.minute>=30) or now.hour in (18,19)
+    if poll_now:
+        try:
+            price,count=day_price(key,day)
+            if price: merged0[day]={"date":day,"price":price,"count":count}
+        except Exception as e:
+            print("KAPE current fetch skipped",day,e)
+    else:
+        print("KAPE price poll idle outside release window")
     rows=sorted(merged0.values(),key=lambda r:r["date"])
     if not rows:
         # 최초 설치 시에만 최근 45일을 순차 조회
