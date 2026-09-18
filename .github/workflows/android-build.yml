@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "android/**"
-      - ".github/workflows/android-build.yml"
+      - ".github/workflows/android-build.yml"\n      - "scripts/**"
 permissions:
   contents: read
 jobs:
