@@ -35,9 +35,8 @@ jobs:
           cp android/app/build/outputs/apk/debug/app-debug.apk docs/downloads/todaypig-latest.apk
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/downloads/todaypig-latest.apk
-          git diff --cached --quiet || git commit -m "Publish latest Android APK"
-          git pull --rebase --autostash origin main || { git rebase --abort || true; git pull origin main; }
-          git add docs/downloads/todaypig-latest.apk
-          git diff --cached --quiet || git commit -m "Publish latest Android APK"
+          git fetch origin main
+          git reset --soft origin/main
+          git add -f docs/downloads/todaypig-latest.apk
+          git commit -m "Publish latest Android APK" || true
           git push origin HEAD:main
