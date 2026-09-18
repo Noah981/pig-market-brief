@@ -36,17 +36,32 @@ def day_price(key, day):
     return (round(value/count) if count else None),count
 
 def grade_detail(key,day):
-    grades=[("1+","1+"),("1","1"),("2","2"),("등외","등외")]
-    # pigGrade 응답에서 등급별 필드를 자동 탐색해 공식 응답에 있는 값만 노출
     params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"Y"}
     q=urllib.parse.urlencode(params);encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
     with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
-    fields={}
+    # KAPE 응답 태그를 등급별로 분류. 숫자가 실제 응답에 존재할 때만 표시한다.
+    groups={"1+":[],"1":[],"2":[],"등외":[]}
     for x in root.findall(".//item"):
         for ch in list(x):
-            t=(ch.text or "").replace(",","").strip()
-            if t and t.replace(".","",1).isdigit(): fields.setdefault(ch.tag,[]).append(float(t))
-    return {"date":day,"source":"축산물품질평가원","note":"등급별 상세는 KAPE pigGrade 원자료 기반","rawFields":{k:round(sum(v)/len(v),1) for k,v in fields.items() if "Amt" in k or "Price" in k}}
+            tag=ch.tag.lower(); t=(ch.text or "").replace(",","").strip()
+            try: val=float(t)
+            except: continue
+            if val<=0 or not ("amt" in tag or "price" in tag): continue
+            if "1p" in tag or "1plus" in tag or "1+" in tag: groups["1+"].append(val)
+            elif re.search(r"(^|_)1(g|grade|amt|price)",tag): groups["1"].append(val)
+            elif re.search(r"(^|_)2(g|grade|amt|price)",tag): groups["2"].append(val)
+            elif "egrade" in tag or "out" in tag: groups["등외"].append(val)
+    prices={g:round(sum(v)/len(v)) for g,v in groups.items() if v}
+    now=datetime.now(KST)
+    latest_day=datetime.strptime(day,"%Y%m%d").date()
+    today=now.date()
+    if latest_day==today:
+        state="당일 경락가격 반영"
+    elif now.hour<18:
+        state="금일 경락 진행 중 · 최근 확정 "+latest_day.strftime("%m/%d")
+    else:
+        state="오늘 확정가격 대기 · 최근 확정 "+latest_day.strftime("%m/%d")
+    return {"date":day,"source":"축산물품질평가원","status":state,"prices":prices,"updatedAt":now.isoformat()}
 
 def main():
     key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
