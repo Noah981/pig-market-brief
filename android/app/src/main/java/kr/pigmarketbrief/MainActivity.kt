@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.work.*
+import java.util.concurrent.TimeUnit
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -69,7 +71,7 @@ suspend fun loadData():AppData=withContext(Dispatchers.IO){
  }catch(e:Exception){AppData(error=e.message)}
 }
 
-class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);if(android.os.Build.VERSION.SDK_INT>=33 && ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS),77);setContent{
+class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);if(android.os.Build.VERSION.SDK_INT>=33 && ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS),77);scheduleDiseaseWorker(this);setContent{
  MaterialTheme(colorScheme=lightColorScheme(primary=Color(0xFFFF4F78),secondary=Color(0xFF3478D4),background=Color(0xFFFFFBFC),surface=Color.White,surfaceVariant=Color(0xFFFFF1F5))){BriefingApp()}
 }}}
 
@@ -149,3 +151,17 @@ fun showTestPriceNotification(ctx:Context,price:Int){val nm=ctx.getSystemService
 @Composable fun Checklist(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected};Text("농장 정밀점검",fontSize=27.sp,fontWeight=FontWeight.Black);Text(selected+" · 구간별로 확인하고 주의/불량을 남기세요.",color=Color(0xFF74717B));val sections=listOf("급이·사료" to listOf("급이기 막힘·브리징","사료 허실·바닥 낙하","사료 변질·곰팡이·냄새","사료 전환 시점·섭취량"),"음수" to listOf("니플 작동·유량","급수기 높이·접근성","수질·배관 오염","더운 시간대 음수상태"),"환기·환경" to listOf("돈사 온도·일교차","최소환기·팬 작동","암모니아·가스·결로","밀사·바닥 습도"),"질병·위생" to listOf("기침·호흡기 증상","설사·분변 상태","위축돈·폐사 증가","차량·사람·물품 방역"),"모돈·분만" to listOf("모돈 BCS","포유돈 섭취량","변비·음수","포유자돈 보온·설사"),"자돈" to listOf("입질사료 접근성","초기 섭취량","보온·온도","돈군 균일도"),"육성·비육·출하" to listOf("일당증체·섭취량","출하체중·출하일령","폐사율","FCR·사료효율"));var bad by remember{mutableIntStateOf(0)};sections.forEach{sec->Card(colors=CardDefaults.cardColors(containerColor=Color.White),shape=RoundedCornerShape(22.dp)){Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(9.dp)){Text(sec.first,fontSize=18.sp,fontWeight=FontWeight.Black,color=Color(0xFF198754));sec.second.forEach{item->var state by remember(item){mutableStateOf("미확인")};Column{Text(item,fontWeight=FontWeight.Bold);Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){listOf("양호","주의","불량").forEach{x->FilterChip(selected=state==x,onClick={state=x},label={Text(x,fontSize=11.sp)})}}}}}}};if(r!=null&&r.checks.isNotEmpty())Card(colors=CardDefaults.cardColors(containerColor=Color(0xFFFFF5E9)),shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(16.dp)){Text("오늘 기상 연동 우선점검",fontWeight=FontWeight.Black,color=Color(0xFFE58B2A));r.checks.forEach{Text("• "+it,fontSize=13.sp)}}};Card(colors=CardDefaults.cardColors(containerColor=Color(0xFFEEF9F3)),shape=RoundedCornerShape(20.dp)){Text("기록 항목 · 출하체중 · 출하일령 · FCR · 폐사율 · 사료섭취량 · 질병증상 · 개선조치",Modifier.padding(16.dp),color=Color(0xFF198754),fontWeight=FontWeight.Bold)}}
 @Composable fun Region(d:AppData,selected:String,onSelect:(String)->Unit){Text("지역 선택",fontSize=27.sp,fontWeight=FontWeight.Black);Text("대한민국 시·도를 선택해 농장 기상을 확인하세요.",color=Color(0xFF74717B));Card(colors=CardDefaults.cardColors(containerColor=Color(0xFFFFF4F7)),shape=RoundedCornerShape(28.dp)){Column(Modifier.fillMaxWidth().padding(18.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(12.dp)){Text("대한민국",fontSize=20.sp,fontWeight=FontWeight.Black);Text("●",fontSize=82.sp,color=Color(0xFFFFB7C8));Text("현재 선택 · "+selected,fontWeight=FontWeight.Black,color=Color(0xFFFF4F78));Text("아래 지역을 누르면 즉시 변경됩니다.",fontSize=12.sp,color=Color(0xFF74717B))}};val r=d.regions.firstOrNull{it.name==selected};if(r!=null)Card(colors=CardDefaults.cardColors(containerColor=Color(0xFFEDF6FF)),shape=RoundedCornerShape(20.dp)){Column(Modifier.fillMaxWidth().padding(16.dp)){Text(selected,fontSize=18.sp,fontWeight=FontWeight.Black,color=Color(0xFF3478D4));Text("${r.min.toInt()}~${r.max.toInt()}℃ · 최대습도 ${r.humidity.toInt()}% · 강수 ${r.rain.toInt()}%",fontWeight=FontWeight.Bold)}};Text("시·도",fontSize=18.sp,fontWeight=FontWeight.Black);d.regions.sortedBy{it.name}.chunked(2).forEach{pair->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)){pair.forEach{x->FilterChip(selected==x.name,{onSelect(x.name)},{Text(x.name)},modifier=Modifier.weight(1f))};if(pair.size==1)Spacer(Modifier.weight(1f))}}}
 
+
+class DiseaseWorker(ctx:Context,params:WorkerParameters):CoroutineWorker(ctx,params){
+ override suspend fun doWork():Result=withContext(Dispatchers.IO){
+  try{
+   val body=OkHttpClient().newCall(Request.Builder().url("$DATA_ROOT/disease-alerts.json").cacheControl(okhttp3.CacheControl.FORCE_NETWORK).build()).execute().use{if(!it.isSuccessful) return@withContext Result.retry();it.body!!.string()}
+   val root=JSONObject(body);val arr=root.optJSONArray("items")?:return@withContext Result.success();if(arr.length()==0)return@withContext Result.success()
+   val x=arr.getJSONObject(0);val alert=DiseaseAlert(x.optString("disease"),x.optString("source"),x.optString("summary"));notifyNewDiseaseAlerts(applicationContext,listOf(alert));Result.success()
+  }catch(e:Exception){Result.retry()}
+ }
+}
+fun scheduleDiseaseWorker(ctx:Context){
+ val req=PeriodicWorkRequestBuilder<DiseaseWorker>(15,TimeUnit.MINUTES).setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build()
+ WorkManager.getInstance(ctx).enqueueUniquePeriodicWork("disease-fast-watch",ExistingPeriodicWorkPolicy.UPDATE,req)
+}
