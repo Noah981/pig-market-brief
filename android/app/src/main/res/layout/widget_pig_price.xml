@@ -4,5 +4,6 @@
 <TextView android:id="@+id/widgetPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="가격 확인 중" android:textStyle="bold" android:textSize="28sp" android:textColor="#101820"/>
 <TextView android:id="@+id/widgetChange" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="전일 · 전월 비교" android:textStyle="bold" android:textSize="12sp" android:textColor="#245A84"/>
 <TextView android:id="@+id/widgetGrades" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:text="1+  -   1  -   2  -   등외  -" android:textStyle="bold" android:textSize="12sp" android:textColor="#27313B"/>
+<TextView android:id="@+id/widgetGrades" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="1+ -   1 -   2 -   등외 -" android:textStyle="bold" android:textSize="11sp" android:textColor="#27313B"/>
 <TextView android:id="@+id/widgetCheck" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:maxLines="1" android:ellipsize="end" android:text="오늘 체크" android:textSize="11sp" android:textColor="#6B747D"/>
 </LinearLayout>
