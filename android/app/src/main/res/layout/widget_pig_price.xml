@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widgetRoot" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp" android:background="@drawable/widget_bg">
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="오늘돈가 · 전국(제주 제외)" android:textStyle="bold" android:textSize="13sp" android:textColor="#17151B"/>
+<TextView android:id="@+id/widgetPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="업데이트 중" android:textStyle="bold" android:textSize="27sp" android:textColor="#17151B"/>
+<TextView android:id="@+id/widgetChange" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="" android:textStyle="bold" android:textSize="13sp" android:textColor="#3478D4"/>
+<TextView android:id="@+id/widgetCheck" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="2" android:ellipsize="end" android:text="오늘 체크" android:textSize="12sp" android:textColor="#74717B"/>
+</LinearLayout>
