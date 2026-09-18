@@ -71,13 +71,13 @@ def main():
         try: cached_rows=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
         except Exception: pass
     merged0={r["date"]:r for r in cached_rows}
-    for ago in range(9,-1,-1):
-        day=(now-timedelta(days=ago)).strftime("%Y%m%d")
-        try:
-            price,count=day_price(key,day)
-            if price: merged0[day]={"date":day,"price":price,"count":count}
-        except Exception as e:
-            print("KAPE recent fetch skipped",day,e)
+    # 발표 감시는 API 한도를 보호하기 위해 오늘 1회만 조회한다. 실패하면 기존 확정값 유지.
+    day=now.strftime("%Y%m%d")
+    try:
+        price,count=day_price(key,day)
+        if price: merged0[day]={"date":day,"price":price,"count":count}
+    except Exception as e:
+        print("KAPE current fetch skipped",day,e)
     rows=sorted(merged0.values(),key=lambda r:r["date"])
     if not rows:
         # 최초 설치 시에만 최근 45일을 순차 조회
@@ -101,7 +101,10 @@ def main():
     def avg(prefix):
         a=[r["price"] for r in rows if r["date"].startswith(prefix)]
         return round(sum(a)/len(a)) if a else 0
-    month_avg=avg(month) or month_api(month); prev_month_avg=avg(prev_month) or month_api(prev_month); last_year_avg=avg(last_year) or month_api(last_year)
+    def safe_month(prefix):
+        try: return month_api(prefix)
+        except Exception as e: print("KAPE month comparison skipped",prefix,e); return 0
+    month_avg=avg(month) or safe_month(month); prev_month_avg=avg(prev_month) or safe_month(prev_month); last_year_avg=avg(last_year) or safe_month(last_year)
     payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg,"previousMonthAverage":prev_month_avg,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else 0,"lastYearMonthAverage":last_year_avg,"lastYearChange":month_avg-last_year_avg if last_year_avg else 0,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
