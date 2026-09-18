@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "android/**"
-      - ".github/workflows/android-build.yml"\n      - "scripts/**"
+      - ".github/workflows/android-build.yml"
 permissions:
   contents: read
 jobs:
@@ -20,8 +20,6 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Install Gradle
-        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
       - name: Build debug APK
