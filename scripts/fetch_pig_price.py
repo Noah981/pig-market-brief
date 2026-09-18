@@ -49,7 +49,9 @@ def main():
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]
     if HIST.exists():
-        try:\n            cached=json.loads(HIST.read_text(encoding="utf-8"))\n            old=cached.get("rows",[]) if cached.get("scope")==payload["scope"] else []
+        try:
+            cached=json.loads(HIST.read_text(encoding="utf-8"))
+            old=cached.get("rows",[]) if cached.get("scope")==payload["scope"] else []
         except Exception: pass
     merged={r["date"]:r for r in old}
     for r in rows: merged[r["date"]]=r
