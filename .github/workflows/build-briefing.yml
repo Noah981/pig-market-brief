@@ -1,4 +1,5 @@
 name: Build pig briefing
+# trigger-refresh
 on:
   workflow_dispatch:
   schedule:
