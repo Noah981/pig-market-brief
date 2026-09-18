@@ -10,6 +10,7 @@ on:
   schedule:
     - cron: "20 9 * * *"
     - cron: "20 10 * * *"
+    - cron: "17 * * * *"
 permissions:
   contents: write
 jobs:
@@ -36,6 +37,8 @@ jobs:
         run: python scripts/build_briefing.py
       - name: Build market analysis
         run: python scripts/build_market_analysis.py
+      - name: Fetch official livestock disease alerts
+        run: python scripts/fetch_disease_alerts.py || echo "Disease feed failed; keeping previous data"
       - name: Commit generated data
         run: |
           git config user.name "github-actions[bot]"
