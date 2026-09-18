@@ -31,8 +31,9 @@ brief={
  "scope":"대한민국 전역 · 제주 포함",
  "weatherSource":weather.get("source"),
  "regions":regions,
- "market":{"nationalPigPrice":{"status":"pending_official_operation_verification"},
-           "jejuPig":{"status":"adapter_ready_next"}}
+ "market":{"mainlandWhitePig":{"label":"육지 백돼지","scope":"제주 제외","status":"pending_exact_api_operation","unit":"원/kg"},
+           "jejuWhitePig":{"label":"제주 백돼지","scope":"제주","sourceFile":"kape-jeju.json"},
+           "jejuBlackPig":{"label":"제주 흑돼지","scope":"제주","sourceFile":"kape-jeju.json"}}
 }
 (DATA/"briefing.json").write_text(json.dumps(brief,ensure_ascii=False,indent=2),encoding="utf-8")
 print(f"briefing regions={len(regions)}")
