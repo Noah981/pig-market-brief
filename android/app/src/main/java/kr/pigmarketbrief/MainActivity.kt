@@ -51,7 +51,8 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
 }
 @Composable fun Home(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected}?:d.regions.firstOrNull()
  Text("$selected · 오늘의 양돈 브리핑",style=MaterialTheme.typography.titleMedium)
- Card{Column(Modifier.padding(16.dp)){Text("제주 돼지 경락가격",style=MaterialTheme.typography.titleMedium);d.prices.take(4).forEach{Text("${it.grade}  일반 ${it.normal}원/kg · 흑돼지 ${it.black}원/kg")};Text("※ 제주 공식 경락가격 범위")}}
+ Card{Column(Modifier.padding(16.dp)){Text("육지 백돼지",style=MaterialTheme.typography.titleMedium);Text("전국(제주 제외) 공식 경락가격 연결 준비 중");Text("※ 메인 돈가는 육지 백돼지 기준")}}
+ Card{Column(Modifier.padding(16.dp)){Text("제주 시세 · 별도",style=MaterialTheme.typography.titleMedium);d.prices.take(4).forEach{Text("${it.grade}  백돼지 ${it.normal}원/kg · 흑돼지 ${it.black}원/kg")};Text("※ 제주도는 육지 시세와 합산하지 않음")}}
  if(r!=null) Card{Column(Modifier.padding(16.dp)){Text("오늘 날씨",style=MaterialTheme.typography.titleMedium);Text("${r.min.toInt()}~${r.max.toInt()}℃ · 습도 최대 ${r.humidity.toInt()}% · 강수 ${r.rain.toInt()}%");if(r.risks.isNotEmpty())Text("체크요인: "+r.risks.joinToString(" · "))}}
  if(r!=null) Card{Column(Modifier.padding(16.dp)){Text("오늘의 농장 체크 TOP 3",style=MaterialTheme.typography.titleMedium);r.checks.forEachIndexed{i,s->Text("${i+1}. $s")}}}
  Text("업데이트 "+d.updated.take(16).replace("T"," "))
