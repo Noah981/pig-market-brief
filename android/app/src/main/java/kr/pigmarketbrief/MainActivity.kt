@@ -41,7 +41,7 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
 @Composable fun BriefingApp(){
  var tab by remember{mutableIntStateOf(0)}; var data by remember{mutableStateOf<AppData?>(null)}; var selected by remember{mutableStateOf("경상북도")}
  LaunchedEffect(Unit){data=loadData()}
- Scaffold(bottomBar={NavigationBar{listOf("홈","시황","농장점검","지역").forEachIndexed{i,t->NavigationBarItem(tab==i,{tab=i},{}, {Text(t)})}}}){pad->
+ Scaffold(bottomBar={NavigationBar{listOf("홈","시황","농장점검","지역").forEachIndexed{i,t->NavigationBarItem(selected = tab == i, onClick = { tab = i }, icon = {}, label = { Text(t) })}}}){pad->
   Column(Modifier.padding(pad).padding(16.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)){
    Text("양돈 브리핑",style=MaterialTheme.typography.headlineMedium)
    when{data==null->CircularProgressIndicator();data!!.error!=null->Text("데이터 연결 오류: "+data!!.error)
@@ -57,6 +57,6 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
  if(r!=null) Card{Column(Modifier.padding(16.dp)){Text("오늘의 농장 체크 TOP 3",style=MaterialTheme.typography.titleMedium);r.checks.forEachIndexed{i,s->Text("${i+1}. $s")}}}
  Text("업데이트 "+d.updated.take(16).replace("T"," "))
 }
-@Composable fun Market(d:AppData){Text("제주 경락 시황",style=MaterialTheme.typography.titleLarge);d.prices.forEach{Card{Column(Modifier.padding(12.dp)){Text(it.grade+" 등급");Text("전체 ${it.all} · 일반 ${it.normal} · 흑돼지 ${it.black} 원/kg")}}};Text("전국 돈가는 최신 공식 operation 검증 후 별도 연결합니다.")}
+@Composable fun Market(d:AppData){Text("전국 돈가",style=MaterialTheme.typography.titleLarge);Text("전국(제주 제외) 백돼지 공식 경락가격 연결 준비 중");HorizontalDivider();Text("제주 시세 · 별도",style=MaterialTheme.typography.titleLarge);d.prices.forEach{Card{Column(Modifier.padding(12.dp)){Text(it.grade+" 등급");Text("제주 백돼지 ${it.normal} · 제주 흑돼지 ${it.black} 원/kg")}}}}
 @Composable fun Checklist(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected};Text("$selected 우선 점검",style=MaterialTheme.typography.titleLarge);r?.checks?.forEachIndexed{i,s->Card{Text("${i+1}. $s",Modifier.padding(16.dp))}};Spacer(Modifier.height(8.dp));Text("기본 점검: 급이·사료 · 음수 · 환기·환경 · 질병·위생 · 모돈·자돈 · 출하·기록")}
 @Composable fun Region(d:AppData,selected:String,onSelect:(String)->Unit){Text("관심지역",style=MaterialTheme.typography.titleLarge);d.regions.sortedBy{it.name}.forEach{r->FilterChip(selected==r.name,{onSelect(r.name)},{Text(r.name)});Spacer(Modifier.height(4.dp))}}
