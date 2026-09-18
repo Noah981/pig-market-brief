@@ -37,7 +37,7 @@ def day_price(key, day):
 def main():
     key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
     rows=[]
-    for ago in range(44,-1,-1):
+    for ago in range(399,-1,-1):
         day=(now-timedelta(days=ago)).strftime("%Y%m%d")
         price,count=day_price(key,day)
         if price:
@@ -45,7 +45,12 @@ def main():
     if not rows: raise RuntimeError("No KAPE pigGrade national rows")
     latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
     diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
-    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"전국 돈가","scope":"탕박·등외제외·제주제외·암+거세 두수가중","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
+    month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
+    def avg(prefix):
+        a=[r["price"] for r in rows if r["date"].startswith(prefix)]
+        return round(sum(a)/len(a)) if a else 0
+    month_avg=avg(month); prev_month_avg=avg(prev_month); last_year_avg=avg(last_year)
+    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg,"previousMonthAverage":prev_month_avg,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else 0,"lastYearMonthAverage":last_year_avg,"lastYearChange":month_avg-last_year_avg if last_year_avg else 0,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]
     if HIST.exists():
@@ -55,6 +60,6 @@ def main():
         except Exception: pass
     merged={r["date"]:r for r in old}
     for r in rows: merged[r["date"]]=r
-    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":payload["scope"],"rows":sorted(merged.values(),key=lambda r:r["date"])},ensure_ascii=False,indent=2),encoding="utf-8")
+    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":"탕박·등외제외·제주제외·암+거세 두수가중","rows":sorted(merged.values(),key=lambda r:r["date"])},ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": main()
