@@ -16,6 +16,19 @@ DISEASES={
  "로타바이러스":"로타바이러스","대장균":"대장균","돈단독":"돈단독","오제스키":"오제스키병"}
 DISEASES.update({"African swine fever":"ASF","foot and mouth disease":"구제역","classical swine fever":"돼지열병","porcine reproductive and respiratory syndrome":"PRRS","porcine epidemic diarrhea":"PED","swine influenza":"돼지인플루엔자"})
 EVENT=re.compile(r"발생|확진|양성|의심|신고|방역|이동중지|위기경보|검출|outbreak|confirmed|positive|reported|alert",re.I)
+COUNTRIES=[
+ ("VN",("베트남","vietnam","까마우","ca mau")),("CN",("중국","china","chinese")),
+ ("JP",("일본","japan")),("US",("미국","united states","usa")),
+ ("KR",("대한민국","한국","korea","경기","강원","충북","충남","전북","전남","경북","경남","제주","창녕","예천","순천"))]
+
+def country_code(text,expected_scope=None):
+ lower=text.lower()
+ for code,names in COUNTRIES:
+  if any(name in lower for name in names):return code
+ return "KR" if expected_scope=="국내" else None
+
+def classify(code):
+ return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
 
 def fetch(url):
  req=urllib.request.Request(url,headers={"User-Agent":"TodayPig/5.0 provenance feed"})
@@ -24,7 +37,7 @@ def fetch(url):
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def diseases(text):return sorted({v for k,v in DISEASES.items() if k.lower() in text.lower()})
 
-def official_page(source,url,scope="국내"):
+def official_page(source,url,scope="국내",default_country=None):
  out=[]
  try:
   raw=fetch(url)
@@ -32,7 +45,8 @@ def official_page(source,url,scope="국내"):
    title=clean(label);ds=diseases(title)
    if len(title)<8 or not ds or not EVENT.search(title):continue
    link=urllib.parse.urljoin(url,href)
-   for disease in ds:out.append({"disease":disease,"source":source,"scope":scope,"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat()})
+   code=country_code(title,scope) or default_country
+   for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat()})
  except Exception as e:print("official source skipped",source,e)
  return out
 
@@ -46,7 +60,8 @@ def public_news(scope="국내"):
    for item in root.findall(".//item")[:10]:
     title=clean(item.findtext("title") or "");ds=diseases(title)
     if not ds or not EVENT.search(title):continue
-    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","scope":scope,"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":item.findtext("pubDate"),"detectedAt":datetime.now(KST).isoformat()})
+    code=country_code(title,scope)
+    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":item.findtext("pubDate"),"detectedAt":datetime.now(KST).isoformat()})
   except Exception as e:print("public source skipped",term,e)
  return out
 
