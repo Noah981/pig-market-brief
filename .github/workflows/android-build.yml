@@ -31,12 +31,13 @@ jobs:
       - name: Publish permanent latest APK
         working-directory: .
         run: |
-          mkdir -p docs/downloads
-          cp android/app/build/outputs/apk/debug/app-debug.apk docs/downloads/todaypig-latest.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk /tmp/todaypig-latest.apk
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
-          git reset --soft origin/main
+          git reset --hard origin/main
+          mkdir -p docs/downloads
+          cp /tmp/todaypig-latest.apk docs/downloads/todaypig-latest.apk
           git add -f docs/downloads/todaypig-latest.apk
-          git commit -m "Publish latest Android APK" || true
+          git diff --cached --quiet || git commit -m "Publish latest Android APK"
           git push origin HEAD:main
