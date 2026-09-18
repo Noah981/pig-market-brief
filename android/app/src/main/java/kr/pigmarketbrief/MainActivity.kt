@@ -43,14 +43,14 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
  LaunchedEffect(Unit){data=loadData()}
  Scaffold(bottomBar={NavigationBar{listOf("홈","시황","농장점검","지역").forEachIndexed{i,t->NavigationBarItem(selected = tab == i, onClick = { tab = i }, icon = {}, label = { Text(t) })}}}){pad->
   Column(Modifier.padding(pad).padding(16.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)){
-   Text("양돈 브리핑",style=MaterialTheme.typography.headlineMedium)
-   when{data==null->CircularProgressIndicator();data!!.error!=null->Text("데이터 연결 오류: "+data!!.error)
+   Text("오늘돈가",style=MaterialTheme.typography.headlineMedium)
+   when{data==null->CircularProgressIndicator();data!!.error!=null->Column(verticalArrangement=Arrangement.spacedBy(8.dp)){Text("데이터를 불러오지 못했습니다.",style=MaterialTheme.typography.titleMedium);Text("잠시 후 다시 실행해 주세요.");Text(data!!.error!!,style=MaterialTheme.typography.bodySmall)}
     tab==0->Home(data!!,selected);tab==1->Market(data!!);tab==2->Checklist(data!!,selected);else->Region(data!!,selected){selected=it}}
   }
  }
 }
 @Composable fun Home(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected}?:d.regions.firstOrNull()
- Text("$selected · 오늘의 양돈 브리핑",style=MaterialTheme.typography.titleMedium)
+ Text("$selected · 오늘의 브리핑",style=MaterialTheme.typography.titleMedium)
  Card{Column(Modifier.padding(16.dp)){Text("전국 돈가",style=MaterialTheme.typography.titleMedium);Text("전국(제주 제외) 백돼지 공식 경락가격 연결 준비 중");Text("※ 앱의 기본 돈가 기준")}}
  Card{Column(Modifier.padding(16.dp)){Text("제주 시세 · 별도",style=MaterialTheme.typography.titleMedium);d.prices.take(4).forEach{Text("${it.grade}  백돼지 ${it.normal}원/kg · 흑돼지 ${it.black}원/kg")};Text("※ 제주도는 육지 시세와 합산하지 않음")}}
  if(r!=null) Card{Column(Modifier.padding(16.dp)){Text("오늘 날씨",style=MaterialTheme.typography.titleMedium);Text("${r.min.toInt()}~${r.max.toInt()}℃ · 습도 최대 ${r.humidity.toInt()}% · 강수 ${r.rain.toInt()}%");if(r.risks.isNotEmpty())Text("체크요인: "+r.risks.joinToString(" · "))}}
