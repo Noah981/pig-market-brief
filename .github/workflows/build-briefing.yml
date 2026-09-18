@@ -6,6 +6,7 @@ on:
     paths:
       - "scripts/**"
       - "config/**"
+      - ".github/workflows/build-briefing.yml"
   schedule:
     - cron: "20 9 * * *"
     - cron: "20 10 * * *"
