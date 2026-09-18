@@ -37,7 +37,7 @@ def day_price(key, day):
 def main():
     key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
     rows=[]
-    for ago in range(20,-1,-1):
+    for ago in range(44,-1,-1):
         day=(now-timedelta(days=ago)).strftime("%Y%m%d")
         price,count=day_price(key,day)
         if price:
@@ -49,7 +49,7 @@ def main():
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]
     if HIST.exists():
-        try: old=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
+        try:\n            cached=json.loads(HIST.read_text(encoding="utf-8"))\n            old=cached.get("rows",[]) if cached.get("scope")==payload["scope"] else []
         except Exception: pass
     merged={r["date"]:r for r in old}
     for r in rows: merged[r["date"]]=r
