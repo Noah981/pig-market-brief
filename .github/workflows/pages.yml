@@ -7,7 +7,7 @@ on:
       - ".github/workflows/pages.yml"
   workflow_dispatch:
   workflow_run:
-    workflows: ["Build pig briefing"]
+    workflows: ["Build pig briefing", "Build Android APK"]
     types: [completed]
 permissions:
   contents: read
