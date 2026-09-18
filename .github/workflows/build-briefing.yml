@@ -17,7 +17,7 @@ jobs:
       - name: Fetch KMA weather
         env:
           KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
-        run: python scripts/fetch_weather.py
+        run: python scripts/fetch_weather.py || echo "Weather fetch failed; keeping previous cached data"
       - name: Fetch KAPE national representative pig price
         env:
           KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
@@ -25,7 +25,7 @@ jobs:
       - name: Fetch KAPE Jeju pig prices
         env:
           KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
-        run: python scripts/fetch_kape_jeju.py
+        run: python scripts/fetch_kape_jeju.py || echo "Jeju fetch failed; keeping previous cached data"
       - name: Build briefing
         run: python scripts/build_briefing.py
       - name: Commit generated data
