@@ -6,7 +6,7 @@ on:
       - "android/**"
       - ".github/workflows/android-build.yml"
 permissions:
-  contents: read
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -28,3 +28,14 @@ jobs:
         with:
           name: pig-market-brief-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Publish permanent latest APK
+        working-directory: .
+        run: |
+          mkdir -p docs/downloads
+          cp android/app/build/outputs/apk/debug/app-debug.apk docs/downloads/todaypig-latest.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/downloads/todaypig-latest.apk
+          git diff --cached --quiet || git commit -m "Publish latest Android APK"
+          git pull --rebase origin main
+          git push origin HEAD:main
