@@ -31,7 +31,9 @@ data class RegionBrief(val name:String,val min:Double,val max:Double,val humidit
 data class JejuPrice(val grade:String,val all:String,val normal:String,val black:String)
 fun comma(s:String):String=s.toIntOrNull()?.let{java.text.NumberFormat.getIntegerInstance(java.util.Locale.KOREA).format(it)}?:s
 
-data class PigPrice(val date:String="",val price:Int=0,val previousPrice:Int=0,val change:Int=0,val changePct:Double=0.0)\ndata class HistPoint(val date:String,val price:Int)\ndata class AppData(val updated:String="",val regions:List<RegionBrief> = emptyList(),val prices:List<JejuPrice> = emptyList(),val pig:PigPrice=PigPrice(),val history:List<HistPoint> = emptyList(),val error:String?=null)
+data class PigPrice(val date:String="",val price:Int=0,val previousPrice:Int=0,val change:Int=0,val changePct:Double=0.0)
+data class HistPoint(val date:String,val price:Int)
+data class AppData(val updated:String="",val regions:List<RegionBrief> = emptyList(),val prices:List<JejuPrice> = emptyList(),val pig:PigPrice=PigPrice(),val history:List<HistPoint> = emptyList(),val error:String?=null)
 
 suspend fun loadData():AppData=withContext(Dispatchers.IO){
  try{
@@ -44,7 +46,8 @@ suspend fun loadData():AppData=withContext(Dispatchers.IO){
   }
   val ps=mutableListOf<JejuPrice>(); val rows=k.optJSONArray("rows")
   if(rows!=null) for(i in 0 until rows.length()){val x=rows.getJSONObject(i);ps+=JejuPrice(x.optString("gradeName"),x.optString("totPrice","-"),x.optString("publicTotPrice","-"),x.optString("blackTotPrice","-"))}
-  val ha=h.optJSONArray("rows"); val hs=mutableListOf<HistPoint>(); if(ha!=null) for(i in 0 until ha.length()){val x=ha.getJSONObject(i);hs+=HistPoint(x.optString("date"),x.optInt("price"))}\n  AppData(b.optString("updatedAt"),rs,ps,PigPrice(p.optString("date"),p.optInt("price"),p.optInt("previousPrice"),p.optInt("change"),p.optDouble("changePct")),hs)
+  val ha=h.optJSONArray("rows"); val hs=mutableListOf<HistPoint>(); if(ha!=null) for(i in 0 until ha.length()){val x=ha.getJSONObject(i);hs+=HistPoint(x.optString("date"),x.optInt("price"))}
+  AppData(b.optString("updatedAt"),rs,ps,PigPrice(p.optString("date"),p.optInt("price"),p.optInt("previousPrice"),p.optInt("change"),p.optDouble("changePct")),hs)
  }catch(e:Exception){AppData(error=e.message)}
 }
 
