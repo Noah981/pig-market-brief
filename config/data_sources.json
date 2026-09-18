@@ -1,0 +1,17 @@
+{
+  "kape": {
+    "status": "partial",
+    "note": "제주 돼지도체 등급별 경락가격은 사용자 제공 공식 가이드로 확인. 전국/권역 최신 operation은 검증 후 활성화"
+  },
+  "weather": {
+    "status": "ready_for_key",
+    "provider": "기상청",
+    "shortForecast": "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0",
+    "note": "전국 5km 격자 단기예보. KMA_SERVICE_KEY 필요"
+  },
+  "disease": {
+    "status": "source_confirmed",
+    "provider": "KAHIS",
+    "note": "공식 발생정보를 사용하되 자동 API 제공방식 확인 후 수집기 활성화"
+  }
+}
