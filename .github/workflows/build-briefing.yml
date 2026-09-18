@@ -12,6 +12,9 @@ on:
     - cron: "7 * * * *"
 permissions:
   contents: write
+concurrency:
+  group: briefing-data-writer
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,11 +41,15 @@ jobs:
         run: python scripts/build_market_analysis.py
       - name: Fetch official livestock disease alerts
         run: python scripts/fetch_disease_alerts.py || echo "Disease feed failed; keeping previous data"
-      - name: Commit generated data
+      - name: Commit generated data safely
         run: |
+          cp -R docs/data /tmp/generated-data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+          rm -rf docs/data
+          cp -R /tmp/generated-data docs/data
           git add docs/data/
           git diff --cached --quiet || git commit -m "Update briefing data"
-          git pull --rebase origin main
           git push origin HEAD:main
