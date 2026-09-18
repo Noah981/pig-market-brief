@@ -90,8 +90,14 @@ object DataRepository{
  }
 }
 
-class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);scheduleBackgroundSync(this);setContent{TodayPigTheme{TodayPigApp()}}}}
-@Composable fun TodayPigTheme(content:@Composable()->Unit){
+class MainActivity:ComponentActivity(){
+ override fun onCreate(savedInstanceState:Bundle?){
+  super.onCreate(savedInstanceState)
+  scheduleBackgroundSync(this)
+  setContent { TodayPigTheme { TodayPigApp() } }
+ }
+}
+@Composable fun TodayPigTheme(content: @Composable () -> Unit){
  MaterialTheme(colorScheme=lightColorScheme(primary=Forest,onPrimary=Color.White,secondary=Amber,background=Paper,surface=Color.White,onSurface=Ink,error=Red),content=content)
 }
 
