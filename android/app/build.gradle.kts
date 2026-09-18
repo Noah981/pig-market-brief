@@ -10,8 +10,8 @@ android {
         applicationId = "kr.pigmarketbrief"
         minSdk = 26
         targetSdk = 35
-        versionCode = 260
-        versionName = "2.6.0"
+        versionCode = 250
+        versionName = "2.5.0"
     }
     buildFeatures { compose = true }
     compileOptions {
