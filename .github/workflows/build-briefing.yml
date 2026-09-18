@@ -10,7 +10,7 @@ on:
   schedule:
     - cron: "20 9 * * *"
     - cron: "20 10 * * *"
-    - cron: "17 * * * *"
+    - cron: "*/15 * * * *"
 permissions:
   contents: write
 jobs:
