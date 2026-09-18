@@ -1,0 +1,45 @@
+import json
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+
+ROOT=Path(__file__).resolve().parents[1]
+DATA=ROOT/"docs/data"
+KST=timezone(timedelta(hours=9))
+
+def load(name,default):
+    try:return json.loads((DATA/name).read_text(encoding="utf-8"))
+    except:return default
+
+p=load("pig-price.json",{})
+h=load("pig-price-history.json",{"rows":[]})
+rows=[x for x in h.get("rows",[]) if x.get("price",0)>0 and x.get("count",0)>500]
+latest=p.get("price",0); prev=p.get("previousPrice",0); change=p.get("change",0)
+last7=rows[-7:]
+avg7=round(sum(x["price"] for x in last7)/len(last7)) if last7 else 0
+trend7=latest-avg7 if latest and avg7 else 0
+count=p.get("count",0)
+recent_counts=[x.get("count",0) for x in rows[-8:-1] if x.get("count",0)>0]
+avg_count=round(sum(recent_counts)/len(recent_counts)) if recent_counts else 0
+
+factors=[]
+if change<0:
+    factors.append({"title":"당일 경락가격 하락","status":"확인","detail":f"전 거래일 대비 {abs(change):,}원/kg 하락했습니다. 이는 가격 변화 자체를 설명하는 사실이며 단독으로 원인을 확정하지 않습니다."})
+elif change>0:
+    factors.append({"title":"당일 경락가격 상승","status":"확인","detail":f"전 거래일 대비 {change:,}원/kg 상승했습니다."})
+if avg7:
+    factors.append({"title":"최근 7거래일 흐름","status":"체크","detail":f"최근 7거래일 평균은 {avg7:,}원/kg이며 오늘 가격은 평균 대비 {latest-avg7:+,}원입니다."})
+if avg_count:
+    pct=(count-avg_count)/avg_count*100
+    factors.append({"title":"경매 두수 변화","status":"체크","detail":f"오늘 집계 두수 {count:,}두, 직전 거래일 평균 대비 {pct:+.1f}%입니다. 경매 물량 변화는 가격 변동과 함께 볼 요인입니다."})
+factors.append({"title":"하반기 공급 여건","status":"배경","detail":"KREI 2026 전망은 하반기 돼지 도축 마릿수가 전년보다 증가하고 연평균 도매가격은 전년보다 낮을 가능성을 제시했습니다. 당일 하락의 단일 원인으로 단정할 수는 없습니다."})
+factors.append({"title":"공식 월간 확인","status":"배경","detail":"축산물품질평가원 2026년 7월 통계는 돼지 경락가격 6,236원/kg(제주 제외), 전월 대비 1.7% 하락을 발표했습니다."})
+
+summary=("오늘 돈가는 전 거래일보다 낮습니다. " if change<0 else "오늘 돈가는 전 거래일보다 높습니다. " if change>0 else "오늘 돈가는 전 거래일과 같습니다. ")
+summary+="당일 가격은 경매 물량·출하 흐름·수요 등 여러 요인의 결과이므로 앱은 확인 가능한 지표와 중기 수급 배경을 분리해 보여줍니다."
+
+out={"updatedAt":datetime.now(KST).isoformat(),"headline":"오늘 돈가, 왜 움직였나","summary":summary,"factors":factors,
+"sources":[
+{"name":"축산물품질평가원","label":"돼지 경락가격·등급판정 통계","url":"https://www.ekape.or.kr/"},
+{"name":"KREI 농업관측센터","label":"2026 돼지 수급·가격 전망","url":"https://aglook.krei.re.kr/"}
+]}
+(DATA/"market-analysis.json").write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding="utf-8")
