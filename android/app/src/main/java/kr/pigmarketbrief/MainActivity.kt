@@ -7,6 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +29,8 @@ import org.json.JSONObject
 private const val DATA_ROOT="https://noah981.github.io/pig-market-brief/data"
 data class RegionBrief(val name:String,val min:Double,val max:Double,val humidity:Double,val rain:Double,val risks:List<String>,val checks:List<String>)
 data class JejuPrice(val grade:String,val all:String,val normal:String,val black:String)
+fun comma(s:String):String=s.toIntOrNull()?.let{java.text.NumberFormat.getIntegerInstance(java.util.Locale.KOREA).format(it)}?:s
+
 data class AppData(val updated:String="",val regions:List<RegionBrief> = emptyList(),val prices:List<JejuPrice> = emptyList(),val error:String?=null)
 
 suspend fun loadData():AppData=withContext(Dispatchers.IO){
@@ -59,11 +66,13 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
 @Composable fun Home(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected}?:d.regions.firstOrNull()
  Text("오늘의 양돈 브리핑",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold); Text("관심지역 · $selected",style=MaterialTheme.typography.bodyLarge)
  Card{Column(Modifier.padding(16.dp)){Text("전국 돈가 · 제주 제외",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);Text("공식 가격 연결 중",style=MaterialTheme.typography.headlineMedium,fontWeight=FontWeight.Bold);Text("정확한 공식 데이터만 표시합니다.")}}
- Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(18.dp)){Text("제주 시세 · 별도",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);d.prices.take(4).forEach{Text("${it.grade}  백돼지 ${it.normal}원/kg · 흑돼지 ${it.black}원/kg")};Text("※ 제주도는 육지 시세와 합산하지 않음")}}
+ Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(18.dp)){Text("제주 시세 · 별도",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);d.prices.take(4).forEach{Text("${it.grade}  백돼지 ${comma(it.normal)}원/kg · 흑돼지 ${comma(it.black)}원/kg")};Text("※ 제주도는 육지 시세와 합산하지 않음")}}
  if(r!=null) Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){Text("오늘 날씨 · $selected",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);Text("☁️  ${r.min.toInt()}~${r.max.toInt()}℃",style=MaterialTheme.typography.headlineMedium,fontWeight=FontWeight.Bold);Text("최대습도 ${r.humidity.toInt()}%   강수확률 ${r.rain.toInt()}%");if(r.risks.isNotEmpty())AssistChip(onClick={},label={Text(r.risks.joinToString(" · "))})}}
  if(r!=null) Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Text("오늘 꼭 볼 것",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);r.checks.take(3).forEachIndexed{i,s->Text("✓  $s",fontSize=17.sp)}}}
  Text("업데이트 "+d.updated.take(16).replace("T"," "))
 }
-@Composable fun Market(d:AppData){Text("시황",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold);Text("2026 연간 돈가",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.fillMaxWidth().padding(20.dp)){Text("월별 평균 돈가 그래프",fontWeight=FontWeight.Bold);Spacer(Modifier.height(18.dp));Text("1월   2월   3월   4월   5월   6월",style=MaterialTheme.typography.bodyMedium);Text("공식 전국 월평균 데이터 연결 후 그래프가 표시됩니다.",style=MaterialTheme.typography.bodySmall)}};Text("제주 시세 · 별도",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);d.prices.forEach{Card{Column(Modifier.padding(12.dp)){Text(it.grade+" 등급");Text("제주 백돼지 ${it.normal} · 제주 흑돼지 ${it.black} 원/kg")}}}}
+@Composable fun Market(d:AppData){Text("시황",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold);Text("2026 연간 돈가",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.fillMaxWidth().padding(20.dp)){Text("2026 월별 평균 돈가",fontWeight=FontWeight.Bold,fontSize=20.sp);Text("전국 · 제주 제외 · 원/kg",style=MaterialTheme.typography.bodySmall);PriceChart();Text("2월 5,284 · 3월 5,229 · 4월 6,176",fontSize=14.sp);Text("5월 6,388 · 6월 6,343 · 7월 6,236",fontSize=14.sp);Text("공식 확인 완료 월만 표시",style=MaterialTheme.typography.bodySmall)}};Text("제주 시세 · 별도",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);d.prices.forEach{Card{Column(Modifier.padding(12.dp)){Text(it.grade+" 등급");Text("제주 백돼지 ${comma(it.normal)} · 제주 흑돼지 ${comma(it.black)} 원/kg")}}}}
 @Composable fun Checklist(d:AppData,selected:String){val r=d.regions.firstOrNull{it.name==selected};Text("$selected 농장점검",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold);r?.checks?.forEachIndexed{i,s->Card{Text("${i+1}. $s",Modifier.padding(16.dp))}};Spacer(Modifier.height(8.dp));Text("기본 점검: 급이·사료 · 음수 · 환기·환경 · 질병·위생 · 모돈·자돈 · 출하·기록")}
 @Composable fun Region(d:AppData,selected:String,onSelect:(String)->Unit){Text("지역",style=MaterialTheme.typography.headlineSmall,fontWeight=FontWeight.Bold);Card(shape=RoundedCornerShape(20.dp)){Column(Modifier.fillMaxWidth().padding(20.dp),horizontalAlignment=Alignment.CenterHorizontally){Text("대한민국 지역 지도",style=MaterialTheme.typography.titleLarge,fontWeight=FontWeight.Bold);Text("지도형 선택 화면 준비 중");Text("시·도 선택 → 시·군 확대",style=MaterialTheme.typography.bodyMedium)}};Text("빠른 지역 선택",style=MaterialTheme.typography.titleMedium,fontWeight=FontWeight.Bold);d.regions.sortedBy{it.name}.chunked(2).forEach{pair->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)){pair.forEach{r->FilterChip(selected==r.name,{onSelect(r.name)},{Text(r.name)},modifier=Modifier.weight(1f))};if(pair.size==1)Spacer(Modifier.weight(1f))}}}
+
+@Composable fun PriceChart(){val v=listOf(5284f,5229f,6176f,6388f,6343f,6236f);Column{Canvas(Modifier.fillMaxWidth().height(180.dp)){val lo=4800f;val hi=6800f;for(i in 0..4){val y=size.height*i/4;drawLine(Color(0xFFE8EAED),Offset(0f,y),Offset(size.width,y),2f)};val p=Path();v.forEachIndexed{i,n->val x=size.width*i/(v.size-1);val y=size.height-(n-lo)/(hi-lo)*size.height;if(i==0)p.moveTo(x,y)else p.lineTo(x,y);drawCircle(Color(0xFFE94F6D),8f,Offset(x,y))};drawPath(p,Color(0xFFE94F6D),style=Stroke(6f))};Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){listOf("2월","3월","4월","5월","6월","7월").forEach{Text(it,fontSize=12.sp)}}}}
