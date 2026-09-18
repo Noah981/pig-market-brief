@@ -1,369 +1,402 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-09-19T07:25:27.309907+09:00",
+  "updatedAt": "2026-09-19T08:07:04.874585+09:00",
   "items": [
     {
       "disease": "ASF",
       "source": "공개뉴스",
-      "scope": "국내",
+      "countryCode": "VN",
+      "scope": "국외",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "까마우성은 아프리카돼지열병 발생 지역을 격리하고 면밀히 모니터링하고 있습니다. - Vietnam.vn",
       "sourceUrl": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNTFBfTEZORV8tMFNGU181dHlORkVSRlYzSnppSE5oRkFnT1RMVElUMzhCb2paZm14Q2RKSVdMLVhuNmhuQUF6UnF6c1I1a2tDMmR5VHkzQmx2TnNLZklQbEFaVVVzR3VuaGJyY3B2RS1XdG9wVmwzV3diZ3BlYi13MUstVWJQbVE5SThZQkNn?oc=5",
       "publishedAt": "Fri, 18 Sep 2026 14:50:46 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011359+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312517+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
-      "scope": "국내",
+      "countryCode": "VN",
+      "scope": "국외",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "까마우성은 아프리카돼지열병 발생 지역을 격리하고 면밀히 모니터링하고 있습니다. - Vietnam.vn",
       "sourceUrl": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNTFBfTEZORV8tMFNGU181dHlORkVSRlYzSnppSE5oRkFnT1RMVElUMzhCb2paZm14Q2RKSVdMLVhuNmhuQUF6UnF6c1I1a2tDMmR5VHkzQmx2TnNLZklQbEFaVVVzR3VuaGJyY3B2RS1XdG9wVmwzV3diZ3BlYi13MUstVWJQbVE5SThZQkNn?oc=5",
       "publishedAt": "Fri, 18 Sep 2026 14:50:46 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011381+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312536+09:00"
     },
     {
       "disease": "ASF",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "추석 연휴 구제역·아프리카돼지열병(ASF) 등 가축전염병 차단방역 총력 - 사회적경제뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiP0FVX3lxTE9HVzExSnM0Z2ZxeGhOTzY4WC14aW42Tzh3TGZFbWFTNkxRT0YxRXV3SUxEWjJobEpHS0hqY1JkTQ?oc=5",
       "publishedAt": "Thu, 17 Sep 2026 01:43:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011449+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312614+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "추석 연휴 구제역·아프리카돼지열병(ASF) 등 가축전염병 차단방역 총력 - 사회적경제뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiP0FVX3lxTE9HVzExSnM0Z2ZxeGhOTzY4WC14aW42Tzh3TGZFbWFTNkxRT0YxRXV3SUxEWjJobEpHS0hqY1JkTQ?oc=5",
       "publishedAt": "Thu, 17 Sep 2026 01:43:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011451+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312618+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "추석 연휴 구제역·아프리카돼지열병(ASF) 등 가축전염병 차단방역 총력 - 사회적경제뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiP0FVX3lxTE9HVzExSnM0Z2ZxeGhOTzY4WC14aW42Tzh3TGZFbWFTNkxRT0YxRXV3SUxEWjJobEpHS0hqY1JkTQ?oc=5",
       "publishedAt": "Thu, 17 Sep 2026 01:43:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011454+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312620+09:00"
     },
     {
       "disease": "ASF",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "창녕서 경남 첫 아프리카돼지열병 발생…3천900마리 살처분 - 매일경제 마켓",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1zclV0alRNXzhhWjZ4eDZiSUxPa1hTN2FIeTZJZk9rV3JsRXIteW1oSy1fbm9odmxUVGwyMmh2TmVpT092MURjcVJ4OGcweTE5?oc=5",
       "publishedAt": "Sat, 12 Sep 2026 23:09:27 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011514+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312689+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "창녕서 경남 첫 아프리카돼지열병 발생…3천900마리 살처분 - 매일경제 마켓",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1zclV0alRNXzhhWjZ4eDZiSUxPa1hTN2FIeTZJZk9rV3JsRXIteW1oSy1fbm9odmxUVGwyMmh2TmVpT092MURjcVJ4OGcweTE5?oc=5",
       "publishedAt": "Sat, 12 Sep 2026 23:09:27 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011517+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312692+09:00"
     },
     {
       "disease": "ASF",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "순천시, 양돈농가 방역시설 집중 점검...‘아프리카돼지열병 차단 방역’ - 농수축산신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcUZ4XzZidnNKT2hWcFFGQVV5RXJUeGFjZ3J3ZlZEbnRQLTUzdW04X3MxeG1Seko4NHFJRVROMWlzWEdDVUNXWDktZjdLX1hsUGY5RnpvUE5qZF8wTWJ4Tkh0MmZQYklSNFZKQg?oc=5",
       "publishedAt": "Thu, 17 Sep 2026 00:11:48 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011537+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312719+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "순천시, 양돈농가 방역시설 집중 점검...‘아프리카돼지열병 차단 방역’ - 농수축산신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcUZ4XzZidnNKT2hWcFFGQVV5RXJUeGFjZ3J3ZlZEbnRQLTUzdW04X3MxeG1Seko4NHFJRVROMWlzWEdDVUNXWDktZjdLX1hsUGY5RnpvUE5qZF8wTWJ4Tkh0MmZQYklSNFZKQg?oc=5",
       "publishedAt": "Thu, 17 Sep 2026 00:11:48 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011539+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312721+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "구제역 예방...정부, 겨울철 특별방역 돌입 - 한국농촌경제신문",
+      "summary": "구제역 예방...정부, 겨울철 특별방역 돌입 - kenews.co.kr",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE96ZTlVMGJOV3dSa3NUTkFlaklwM3JJZ3dLUlczSWRiVXhOR1NJN2RCT0x0dDh1NVpLVE5veEpxUGQ5dm1vU1BPek56QV9WRExpbWZNb24zVmo1Sm9fbVR5OQ?oc=5",
       "publishedAt": "Wed, 16 Sep 2026 02:00:35 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011563+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312746+09:00"
     },
     {
       "disease": "ASF",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "순천시, 아프리카돼지열병(ASF) 없는 청정축산 지킨다…양돈농장 방역 강화 - 시사의창",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBiMkNUOW9hUWRtS2tuSi1ZeThVLVVVYjItVEtIUllNQi1laEVnbF9TV1F6WGVESk56ZFlzM1ZKZVJCMGRaY2tUVU1Ea01Od1Z0SjhITg?oc=5",
       "publishedAt": "Wed, 16 Sep 2026 08:23:10 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011586+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312774+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "순천시, 아프리카돼지열병(ASF) 없는 청정축산 지킨다…양돈농장 방역 강화 - 시사의창",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBiMkNUOW9hUWRtS2tuSi1ZeThVLVVVYjItVEtIUllNQi1laEVnbF9TV1F6WGVESk56ZFlzM1ZKZVJCMGRaY2tUVU1Ea01Od1Z0SjhITg?oc=5",
       "publishedAt": "Wed, 16 Sep 2026 08:23:10 GMT",
-      "detectedAt": "2026-09-19T07:25:25.011590+09:00"
+      "detectedAt": "2026-09-19T08:07:02.312777+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "올겨울 AI·구제역·ASF 비상…정부, 10월부터 특별방역 돌입 - 뉴스1",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1pLUFPZmtybGtkTzlqQXNEeG1INklFR0VoRExDb2JpZmMyWDJZMjFBLWpjREdrZUNYNGxDaFpUemNmVjFESGItN3lwV0ZacGViS3kybVZvUzI3Z9IBWkFVX3lxTE1pLUFPZmtybGtkTzlqQXNEeG1INklFR0VoRExDb2JpZmMyWDJZMjFBLWpjREdrZUNYNGxDaFpUemNmVjFESGItN3lwV0ZacGViS3kybVZvUzI3Zw?oc=5",
       "publishedAt": "Wed, 16 Sep 2026 02:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.467934+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104697+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "[속보] 예천 돼지농장 환경시료서 구제역 항원 검출...최종 '음성' - 돼지와사람",
+      "summary": "[속보] 예천 돼지농장 환경시료서 구제역 항원 검출...최종 '음성' - pigpeople.net",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE11emo4ODRPR0xsbkg4U2hIOWhZWGJuZVpuMUwzLS1hQ0dWQ0ZSNzdEVUdqM3lvUGczSzFDbVhpOUFVOTFsUFcxMXlDR0M3dHVMNTlSRzhkaWlZUzJvblNzdlBB?oc=5",
       "publishedAt": "Sat, 27 Jun 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.467957+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104730+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "경북서 11년 만에 구제역 발생…예천 돼지·소 농장서 양성 확인 - 쿠키뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE16TVNLS21tb1pVb0dBV0VfYTd6ak1pa1IwaFZpbnkxa0JDUjR1am5KSnhqZUhXb0JxcGl2RFR5cDBwOUxlNlBCdXdyUWJmUE1XYVhFYmU5SmRuZVlpZzdZOU5tSQ?oc=5",
       "publishedAt": "Sun, 06 Sep 2026 10:16:15 GMT",
-      "detectedAt": "2026-09-19T07:25:25.467977+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104758+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "경북 예천 돼지·소 농장서 구제역 발생 - 팜인사이트",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1zeE1zNGNtSnh3bXFYV0NtX2pzc0tNMFAzWkI4Z3hSdXBEYndtdy05Y2tCYi1LZEV3MXNTS3FZN2pndDN2Z0NSOHZBUjEyb3V6SVp5SUd6SHM1YjQ0YzQ1dzMySUhGeEJHX1ZqTnpn?oc=5",
       "publishedAt": "Mon, 06 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.467994+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104780+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "경북 예천 돼지·소 농장에서 구제역 발생···안동·영주·상주·문경·의성·충북 단양, '심각' 단계 - 대구MBC",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE5XQS1nYWxXNllrZFdtUy0yXzlGZUw0R0h4N1JmVjdBZ2JiNUJVR3V5Q25tQm12TVVtSGtUd2VQbjVYUktHY2c1eTdYVTQ?oc=5",
       "publishedAt": "Fri, 03 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.468017+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104810+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "국내 최대 축산지 경북서 11년 만에 구제역...\"방역 비상\" - YTN",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBlaHpYZWJxeXhNdmNLOWw3QVFHSm1vZFd1clVkTkRvd09yQnRSMURYUVladG9iZjRNUEl4U18zeTBUS2lBYnkzN0U3VjlvZzgyX1YzTUpidzgyclVvLVE?oc=5",
       "publishedAt": "Fri, 03 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.468037+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104835+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "9개월 만에 국내서 구제역 발생…\"엄중한 상황\" - 연합뉴스TV",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFB4RHN4aDZ3SlpLQnE5MlAtUmNFVW8yWlE4R0E4UDFHWThKcUVfb3pKY3kyZXI4VjQ0Vi1PLXktZmpqRENUMFA5WXFPMklfM2lRd0Y0RnFOMl9zdnBGSWhYRWxTV3BOb0U?oc=5",
       "publishedAt": "Sat, 31 Jan 2026 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.468054+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104857+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "경북서 11년 만에 구제역 발생…최대 축산지 '비상'(종합) - 연합뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5ESW1XRlRqR0RfOG1JT0JRV1dBR001Mno2TkxUWXdKQkNFbk1hWG52OC1DcmUyOHB3NTBkaFpFM2lQUkxfcVNrbGdRZnQtTTFzNnB0U2lrZXpyTGfSAWBBVV95cUxNdC1JRHBncDJRSGRuOWRUYm0tRlBKRS13R05uOV8wUWw3SXdyempiUHJGVXNJZk8zYndHbzVWM2JyUHJ0Tkt0ckpUdWVaWF9HSVlTU3BMY1QySDBnY3lUV3o?oc=5",
       "publishedAt": "Fri, 03 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.468072+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104881+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "경북 예천 소·돼지 농장 6곳서 구제역 발생 - dailyvet.co.kr",
+      "summary": "경북 예천 소·돼지 농장 6곳서 구제역 발생 - 데일리벳",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBCZXFsd2hldm1uNHFhcVJBT2xXYUVFOFo5NWN6eHU5WXZrUkYwel9TaGp1WHZfV1ZBU3NabjEwVk9ULXZieWpzVGlNa3RLYnVCS1N1cnZwTFdzZ1VXZ2hvV2EyY2VyMUpZ?oc=5",
       "publishedAt": "Fri, 03 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.468090+09:00"
+      "detectedAt": "2026-09-19T08:07:03.104904+09:00"
     },
     {
       "disease": "PED",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "동절기 PED 발생 급증 우려 - 농수축산신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5nOVM3cDF6cTkzcnNfbGxvWG5sT0hMTTQwXzNUUWFqTUFTeGt0eHBCSk8tV2txbUlGSHAwaVgtUm1lNzdMNDZRX2dqM1J1VmxGRVItT0xzRWljaDBHSmJodTJEZDJ2d1JGYjkw?oc=5",
       "publishedAt": "Mon, 14 Sep 2026 09:03:56 GMT",
-      "detectedAt": "2026-09-19T07:25:25.790967+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453394+09:00"
     },
     {
       "disease": "PED",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "'돼지유행성설사(PED)' 발생주의보 - 뉴스스토리",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9iVENjZm00VTlHdThiOEVPLTZzQ3R3RHJ4ZTRtd1BxelpvMWNqN0VXcmZGeEtvNmpUTTd1eDBtX1Nia2NRMEFtZjdGblJyQ01OOUlqQW1DNlBoZGx2VldYM0Y1MDVGcnV6RF9neTJR?oc=5",
       "publishedAt": "Tue, 24 Mar 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791020+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453449+09:00"
     },
     {
       "disease": "PED",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "‘돼지열병’ 2030년까지 청정화···PED·PRRS 발생도 최소화한다 - 한국농어민신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9YTnN5TU55cE9RNGJJaFdXTjRCWFYyaG9DaGpLSzhCQWxJSktZUjViYmY0OVRURUNCR1BlQUZRVUFYYy13cVNBMENKbDJlOE1VdEZJTU9XNC1CRWlXOC1hNUlSRHlLUXhqNUQ4bg?oc=5",
       "publishedAt": "Mon, 10 Nov 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791062+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453498+09:00"
     },
     {
       "disease": "PRRS",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "‘돼지열병’ 2030년까지 청정화···PED·PRRS 발생도 최소화한다 - 한국농어민신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9YTnN5TU55cE9RNGJJaFdXTjRCWFYyaG9DaGpLSzhCQWxJSktZUjViYmY0OVRURUNCR1BlQUZRVUFYYy13cVNBMENKbDJlOE1VdEZJTU9XNC1CRWlXOC1hNUlSRHlLUXhqNUQ4bg?oc=5",
       "publishedAt": "Mon, 10 Nov 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791065+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453501+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "‘돼지열병’ 2030년까지 청정화···PED·PRRS 발생도 최소화한다 - 한국농어민신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9YTnN5TU55cE9RNGJJaFdXTjRCWFYyaG9DaGpLSzhCQWxJSktZUjViYmY0OVRURUNCR1BlQUZRVUFYYy13cVNBMENKbDJlOE1VdEZJTU9XNC1CRWlXOC1hNUlSRHlLUXhqNUQ4bg?oc=5",
       "publishedAt": "Mon, 10 Nov 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791067+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453504+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "농식품부 ‘돼지소모성질병’ 방역 강화… 2030년 ‘돼지열병 청정국’ 지위 도전 - 조선비즈 - Chosunbiz",
       "sourceUrl": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOeWJEWmt3QlhtbHV0YlZkYVV1VkNyQ0JGZHp3dkM0ZlN3d3lHNm9MR0lRRHZlaEthVnYwRE5KdG41WUtnczQ4a1UyMDctRXMyNU1xUHNIdC1nRTk2dVhjOFU3N2ZhNGNHelYzUWxPbVlLdTJTOVBNSGZTM3lVdVUwREVSenZPZ9IBmgFBVV95cUxQLW04Rm9HWXBwUXQxYWtHMUJQdFJpY0tQR0FLVEx5SHVPNHRHRlE1alFXT0NreHJrZHd1bzluRnBYNVI4MFFJSlJkdFRYS3poTnpzWTNTTS1oOFBWQWlHOVZXUFRCYUZOQ2tlMzlHV2hLdVd5cjNINGgzYzlWZmxNZnpHMFYzb3RwcExVXzlkS3hubTVnT0xSb1BB?oc=5",
       "publishedAt": "Wed, 05 Nov 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791110+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453551+09:00"
     },
     {
       "disease": "PED",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "[팩트체크] 올해 상반기 PED 229건 발생? - 돼지와사람",
+      "summary": "[팩트체크] 올해 상반기 PED 229건 발생? - pigpeople.net",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9Zck1qRWpOREVXX0dFeHNfR0ZLUE1sOEZxZV96S2NQWnNKcjdpOEdPMldOaHdSRUJBSTBOdVhUdG13aHNSNWVMWl94VjYyaVNETWRxT3F1OE10MnNpOGlPcTVB?oc=5",
       "publishedAt": "Thu, 20 Nov 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791171+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453596+09:00"
     },
     {
       "disease": "PED",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "돼지유행성설사(PED) 발생 현황과 겨울철 예방을 위한 농장 방역관리 / 최세은 연구사 - 축산정보뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE15TVRuOEY4a3o0MHhuWTFwdDB2S0J0N3pUcW9HTHVpdnpUOGpxRF9oWkV0YlhyM3ZrRmt3WnJwcWJ4N0VBMTJhcDI3YWZmSzNCc3RFMFJ1aWFuZw?oc=5",
       "publishedAt": "Mon, 11 Nov 2024 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:25.791194+09:00"
+      "detectedAt": "2026-09-19T08:07:03.453624+09:00"
     },
     {
       "disease": "ASF",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "당진 아프리카돼지열병 조기 포착 실패, 발생 후 47일 이상 걸렸다 - dailyvet.co.kr",
+      "summary": "당진 아프리카돼지열병 조기 포착 실패, 발생 후 47일 이상 걸렸다 - 데일리벳",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5mRGpVNUN0WGZIOFZqejgtWGJwM2Ytd25xSDRGblRfNERRa0h4OUd3SGR0QVkzaFpkMlB0MTJtWTZycXIwbjAzV2xRVG5qWEFldkU2MlRaeGs4NEVlWlc5MUtWQ2s3YV9S?oc=5",
       "publishedAt": "Tue, 02 Dec 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:26.263476+09:00"
+      "detectedAt": "2026-09-19T08:07:03.734549+09:00"
     },
     {
       "disease": "돼지열병",
       "source": "공개뉴스",
+      "countryCode": "KR",
       "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
-      "summary": "당진 아프리카돼지열병 조기 포착 실패, 발생 후 47일 이상 걸렸다 - dailyvet.co.kr",
+      "summary": "당진 아프리카돼지열병 조기 포착 실패, 발생 후 47일 이상 걸렸다 - 데일리벳",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5mRGpVNUN0WGZIOFZqejgtWGJwM2Ytd25xSDRGblRfNERRa0h4OUd3SGR0QVkzaFpkMlB0MTJtWTZycXIwbjAzV2xRVG5qWEFldkU2MlRaeGs4NEVlWlc5MUtWQ2s3YV9S?oc=5",
       "publishedAt": "Tue, 02 Dec 2025 08:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:26.263479+09:00"
+      "detectedAt": "2026-09-19T08:07:03.734551+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
-      "scope": "국외",
+      "countryCode": "KR",
+      "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "충주시, '26 충북도 가축방역 우수 시군 선정… 구제역 7년 연속 미발생 달성 - 브레이크뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE5KSjNGWWVuYUdJNUJKbDc2NDRLT3hzZDRJOGhadzlNRG4zYWpCS1J5SklWZ3ZhSmNBaHFLcTBMNV94QQ?oc=5",
       "publishedAt": "Fri, 18 Sep 2026 06:39:00 GMT",
-      "detectedAt": "2026-09-19T07:25:26.528634+09:00"
+      "detectedAt": "2026-09-19T08:07:04.012015+09:00"
     },
     {
       "disease": "구제역",
       "source": "공개뉴스",
-      "scope": "국외",
+      "countryCode": "KR",
+      "scope": "국내",
       "evidenceLevel": "PUBLIC_UNCONFIRMED",
       "level": "공개정보 · 확인중",
       "summary": "“방역 틈새 없앤다” 예천군, 구제역 추가 발생 없이 6일째 총력 방어 - 브레이크뉴스",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE9XNUE5SkxNaVJIWFd1cXJYRjh0cmtONV9UM194N1lDeHZHdkZjOEZDNENncXpPdTVET2FhRE1rVERSVm44N0pIRQ?oc=5",
       "publishedAt": "Wed, 08 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-19T07:25:26.810388+09:00"
+      "detectedAt": "2026-09-19T08:07:04.272142+09:00"
     }
   ],
   "evidencePolicy": {
