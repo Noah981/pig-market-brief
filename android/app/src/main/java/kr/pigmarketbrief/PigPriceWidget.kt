@@ -30,7 +30,7 @@ class PigPriceWidget : AppWidgetProvider() {
                 fun get(name:String)=client.newCall(Request.Builder().url("$WIDGET_DATA_ROOT/$name").build()).execute().use{r->if(!r.isSuccessful)error("HTTP");r.body!!.string()}
                 val p=JSONObject(get("pig-price.json"))
                 val price=p.optInt("price")
-                val diff=p.optInt("change");val pm=p.optInt("previousMonthChange");val gp=try{JSONObject(get("pig-grade-detail.json")).optJSONObject("prices")}catch(_:Exception){null}; val pm=p.optInt("previousMonthChange")
+                val diff=p.optInt("change"); val pm=p.optInt("previousMonthChange")
                 val gd=JSONObject(get("pig-grade-detail.json")); val gp=gd.optJSONObject("prices"); val b=JSONObject(get("briefing.json")).optJSONArray("regions")
                 var check="앱에서 오늘의 농장 체크 확인"
                 if(b!=null) for(i in 0 until b.length()){
