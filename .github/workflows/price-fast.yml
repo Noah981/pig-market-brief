@@ -1,0 +1,31 @@
+name: Fast KAPE price watch
+on:
+  workflow_dispatch:
+  schedule:
+    # KAPE 공식 돼지 경락가격 알림은 18:00 KST. 발표 전후만 5분 감시.
+    - cron: "*/5 8-10 * * *"
+permissions:
+  contents: write
+concurrency:
+  group: fast-kape-price
+  cancel-in-progress: true
+jobs:
+  price:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch KAPE pig auction price
+        env:
+          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
+        run: python scripts/fetch_pig_price.py
+      - name: Commit price data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json
+          git diff --cached --quiet || git commit -m "Update KAPE price"
+          git pull --rebase origin main
+          git push origin HEAD:main
