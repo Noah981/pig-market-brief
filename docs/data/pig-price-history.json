@@ -1,7 +1,223 @@
 {
   "source": "축산물품질평가원",
   "scope": "탕박·등외제외·제주제외·암+거세 두수가중",
+  "formulaVersion": "kape-pig-grade-v2",
+  "coverage": {
+    "from": "20230901",
+    "to": "20260918",
+    "minimumMonths": 36
+  },
   "rows": [
+    {
+      "date": "20230901",
+      "price": 5166,
+      "count": 139690,
+      "resolution": "month"
+    },
+    {
+      "date": "20231001",
+      "price": 4592,
+      "count": 146193,
+      "resolution": "month"
+    },
+    {
+      "date": "20231101",
+      "price": 4667,
+      "count": 157738,
+      "resolution": "month"
+    },
+    {
+      "date": "20231201",
+      "price": 4615,
+      "count": 147491,
+      "resolution": "month"
+    },
+    {
+      "date": "20240101",
+      "price": 4163,
+      "count": 162164,
+      "resolution": "month"
+    },
+    {
+      "date": "20240201",
+      "price": 4059,
+      "count": 131886,
+      "resolution": "month"
+    },
+    {
+      "date": "20240301",
+      "price": 4467,
+      "count": 126856,
+      "resolution": "month"
+    },
+    {
+      "date": "20240401",
+      "price": 4614,
+      "count": 129953,
+      "resolution": "month"
+    },
+    {
+      "date": "20240501",
+      "price": 4889,
+      "count": 131137,
+      "resolution": "month"
+    },
+    {
+      "date": "20240601",
+      "price": 5465,
+      "count": 101968,
+      "resolution": "month"
+    },
+    {
+      "date": "20240701",
+      "price": 5164,
+      "count": 122028,
+      "resolution": "month"
+    },
+    {
+      "date": "20240801",
+      "price": 4984,
+      "count": 119645,
+      "resolution": "month"
+    },
+    {
+      "date": "20240901",
+      "price": 5464,
+      "count": 113731,
+      "resolution": "month"
+    },
+    {
+      "date": "20241001",
+      "price": 5172,
+      "count": 135087,
+      "resolution": "month"
+    },
+    {
+      "date": "20241101",
+      "price": 5007,
+      "count": 122773,
+      "resolution": "month"
+    },
+    {
+      "date": "20241201",
+      "price": 5188,
+      "count": 138173,
+      "resolution": "month"
+    },
+    {
+      "date": "20250101",
+      "price": 4731,
+      "count": 121059,
+      "resolution": "month"
+    },
+    {
+      "date": "20250201",
+      "price": 4446,
+      "count": 126570,
+      "resolution": "month"
+    },
+    {
+      "date": "20250301",
+      "price": 4870,
+      "count": 112820,
+      "resolution": "month"
+    },
+    {
+      "date": "20250401",
+      "price": 5180,
+      "count": 119296,
+      "resolution": "month"
+    },
+    {
+      "date": "20250501",
+      "price": 5312,
+      "count": 112027,
+      "resolution": "month"
+    },
+    {
+      "date": "20250601",
+      "price": 5566,
+      "count": 106039,
+      "resolution": "month"
+    },
+    {
+      "date": "20250701",
+      "price": 5789,
+      "count": 120461,
+      "resolution": "month"
+    },
+    {
+      "date": "20250801",
+      "price": 5951,
+      "count": 119433,
+      "resolution": "month"
+    },
+    {
+      "date": "20250901",
+      "price": 5906,
+      "count": 146940,
+      "resolution": "month"
+    },
+    {
+      "date": "20251001",
+      "price": 5365,
+      "count": 113306,
+      "resolution": "month"
+    },
+    {
+      "date": "20251101",
+      "price": 5317,
+      "count": 116894,
+      "resolution": "month"
+    },
+    {
+      "date": "20251201",
+      "price": 5283,
+      "count": 140785,
+      "resolution": "month"
+    },
+    {
+      "date": "20260101",
+      "price": 4852,
+      "count": 120741,
+      "resolution": "month"
+    },
+    {
+      "date": "20260201",
+      "price": 5088,
+      "count": 96235,
+      "resolution": "month"
+    },
+    {
+      "date": "20260301",
+      "price": 4894,
+      "count": 123790,
+      "resolution": "month"
+    },
+    {
+      "date": "20260401",
+      "price": 5603,
+      "count": 112932,
+      "resolution": "month"
+    },
+    {
+      "date": "20260501",
+      "price": 5862,
+      "count": 107697,
+      "resolution": "month"
+    },
+    {
+      "date": "20260601",
+      "price": 5835,
+      "count": 123234,
+      "resolution": "month"
+    },
+    {
+      "date": "20260701",
+      "price": 5675,
+      "count": 130011,
+      "resolution": "month"
+    },
     {
       "date": "20260805",
       "price": 5816,

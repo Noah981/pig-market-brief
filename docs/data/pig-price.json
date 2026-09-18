@@ -3,6 +3,16 @@
   "operation": "auct/pigGrade",
   "label": "축산유통정보 공지 돈가",
   "scope": "전국·탕박·등외제외·제주제외",
+  "formula": "암+거세 성별 응답의 거래두수 가중평균",
+  "filters": {
+    "skinYn": "Y",
+    "egradeExceptYn": "Y",
+    "sexCd": [
+      "025001",
+      "025003"
+    ],
+    "jeju": "excluded_by_official_national_series"
+  },
   "date": "20260918",
   "price": 5499,
   "previousDate": "20260917",
@@ -16,6 +26,7 @@
   "lastYearChange": 161,
   "count": 5151,
   "unit": "원/kg",
-  "updatedAt": "2026-09-19T05:49:47.536769+09:00",
-  "status": "ok"
+  "updatedAt": "2026-09-19T07:00:30.270277+09:00",
+  "status": "ok",
+  "displayStatus": "확정"
 }
