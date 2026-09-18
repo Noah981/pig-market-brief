@@ -80,13 +80,13 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
 lateinit var LocalAppContext:Context
 @Composable fun BriefingApp(){
  LocalAppContext=LocalContext.current
- var tab by remember{mutableIntStateOf(0)}; var data by remember{mutableStateOf<AppData?>(null)}; var selected by remember{mutableStateOf("경상북도")}
+ val prefs=LocalContext.current.getSharedPreferences("app",Context.MODE_PRIVATE); var tab by remember{mutableIntStateOf(0)}; var data by remember{mutableStateOf<AppData?>(null)}; var selected by remember{mutableStateOf(prefs.getString("region","경상북도") ?: "경상북도")}
  LaunchedEffect(Unit){data=loadData();val x=data;if(x!=null)notifyNewDiseaseAlerts(LocalAppContext,x.diseaseAlerts)}
- Scaffold(containerColor=Color(0xFFF6F8FA),bottomBar={NavigationBar(containerColor=Color.White){listOf("홈","시황","농장점검","지역").forEachIndexed{i,t->NavigationBarItem(selected = tab == i, onClick = { tab = i }, icon = {}, label = { Text(t,fontSize=10.sp) })}}}){pad->
+ Scaffold(containerColor=Color(0xFFF6F8FA),bottomBar={NavigationBar(containerColor=Color.White){listOf("홈","시황","오늘점검","지역","정산").forEachIndexed{i,t->NavigationBarItem(selected = tab == i, onClick = { tab = i }, icon = {}, label = { Text(t,fontSize=10.sp) })}}}){pad->
   Column(Modifier.padding(pad).padding(horizontal=18.dp,vertical=16.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(16.dp)){
    HeroHeader()
    when{data==null->CircularProgressIndicator();data!!.error!=null->Column(verticalArrangement=Arrangement.spacedBy(8.dp)){Text("데이터를 불러오지 못했습니다.",style=MaterialTheme.typography.titleMedium);Text("잠시 후 다시 실행해 주세요.");Text(data!!.error!!,style=MaterialTheme.typography.bodySmall)}
-    tab==0->Home(data!!,selected){tab=it};tab==1->Market(data!!);tab==2->Checklist(data!!,selected);else->Region(data!!,selected){selected=it}}
+    tab==0->Home(data!!,selected){tab=it};tab==1->Market(data!!);tab==2->Checklist(data!!,selected);tab==3->Region(data!!,selected){selected=it;prefs.edit().putString("region",it).apply()};else->SettlementCalculator(data!!.pig.price)}
   }
  }
 }
