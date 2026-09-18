@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"docs/data/pig-price.json"
+DETAIL=ROOT/"docs/data/pig-grade-detail.json"
 HIST=ROOT/"docs/data/pig-price-history.json"
 KST=timezone(timedelta(hours=9))
 BASE="http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade"
@@ -34,6 +35,19 @@ def day_price(key, day):
         v,n=request(key,day,sex); value+=v; count+=n
     return (round(value/count) if count else None),count
 
+def grade_detail(key,day):
+    grades=[("1+","1+"),("1","1"),("2","2"),("등외","등외")]
+    # pigGrade 응답에서 등급별 필드를 자동 탐색해 공식 응답에 있는 값만 노출
+    params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"Y"}
+    q=urllib.parse.urlencode(params);encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
+    with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
+    fields={}
+    for x in root.findall(".//item"):
+        for ch in list(x):
+            t=(ch.text or "").replace(",","").strip()
+            if t and t.replace(".","",1).isdigit(): fields.setdefault(ch.tag,[]).append(float(t))
+    return {"date":day,"source":"축산물품질평가원","note":"등급별 상세는 KAPE pigGrade 원자료 기반","rawFields":{k:round(sum(v)/len(v),1) for k,v in fields.items() if "Amt" in k or "Price" in k}}
+
 def main():
     key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
     rows=[]
@@ -52,6 +66,7 @@ def main():
     month_avg=avg(month); prev_month_avg=avg(prev_month); last_year_avg=avg(last_year)
     payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg,"previousMonthAverage":prev_month_avg,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else 0,"lastYearMonthAverage":last_year_avg,"lastYearChange":month_avg-last_year_avg if last_year_avg else 0,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+    DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]
     if HIST.exists():
         try:
