@@ -37,5 +37,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/downloads/todaypig-latest.apk
           git diff --cached --quiet || git commit -m "Publish latest Android APK"
-          git pull --rebase origin main
+          git pull --rebase --autostash origin main || { git rebase --abort || true; git pull origin main; }
+          git add docs/downloads/todaypig-latest.apk
+          git diff --cached --quiet || git commit -m "Publish latest Android APK"
           git push origin HEAD:main
