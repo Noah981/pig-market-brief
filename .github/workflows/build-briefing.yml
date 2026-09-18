@@ -33,6 +33,8 @@ jobs:
         run: python scripts/fetch_kape_jeju.py || echo "Jeju fetch failed; keeping previous cached data"
       - name: Build briefing
         run: python scripts/build_briefing.py
+      - name: Build market analysis
+        run: python scripts/build_market_analysis.py
       - name: Commit generated data
         run: |
           git config user.name "github-actions[bot]"
