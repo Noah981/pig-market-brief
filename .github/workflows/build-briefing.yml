@@ -1,6 +1,11 @@
 name: Build pig briefing
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - "config/**"
   schedule:
     - cron: "20 9 * * *"
     - cron: "20 10 * * *"
