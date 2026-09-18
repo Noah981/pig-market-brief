@@ -22,4 +22,13 @@ class FarmDecisionEngineTest {
   val r=FarmDecisionEngine.evaluate(FarmContext("김천","자돈",10.0,15.0,60.0,diarrhea=true,mortalityRise=true))
   assertTrue(r.first{it.domain==RiskDomain.ENTERIC}.score>=90)
  }
+ @Test fun staleSignalReducesPriority(){
+  val fresh=FarmDecisionEngine.evaluate(FarmContext("경북","자돈",5.0,18.0,70.0,signal=TimedSignal(1.0,2.0,1.0,EvidenceLevel.OFFICIAL))).first()
+  val stale=FarmDecisionEngine.evaluate(FarmContext("경북","자돈",5.0,18.0,70.0,signal=TimedSignal(1.0,120.0,1.0,EvidenceLevel.OFFICIAL))).first()
+  assertTrue(fresh.score>stale.score)
+ }
+ @Test fun decisionContainsClosedLoopPath(){
+  val r=FarmDecisionEngine.evaluate(FarmContext("경북","자돈",4.0,17.0,70.0,cough=true)).first()
+  assertTrue(r.observe.isNotEmpty());assertTrue(r.measure.isNotEmpty());assertTrue(r.firstAdjustment.isNotBlank());assertTrue(r.escalation.isNotBlank())
+ }
 }

@@ -15,6 +15,13 @@ import java.util.Locale
 private const val WIDGET_DATA_ROOT = "https://noah981.github.io/pig-market-brief/data"
 
 class PigPriceWidget : AppWidgetProvider() {
+    companion object {
+        fun updateAll(context: Context) {
+            val manager=AppWidgetManager.getInstance(context)
+            val ids=manager.getAppWidgetIds(android.content.ComponentName(context,PigPriceWidget::class.java))
+            if(ids.isNotEmpty()) PigPriceWidget().onUpdate(context,manager,ids)
+        }
+    }
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         ids.forEach { id -> update(context, manager, id) }
     }
@@ -33,9 +40,10 @@ class PigPriceWidget : AppWidgetProvider() {
                 val diff=p.optInt("change"); val pm=p.optInt("previousMonthChange")
                 val gd=JSONObject(get("pig-grade-detail.json")); val gp=gd.optJSONObject("prices"); val b=JSONObject(get("briefing.json")).optJSONArray("regions")
                 var check="앱에서 오늘의 농장 체크 확인"
+                val selected=context.getSharedPreferences("todaypig",Context.MODE_PRIVATE).getString("region","경상북도")
                 if(b!=null) for(i in 0 until b.length()){
                     val x=b.getJSONObject(i)
-                    if(x.optString("region")=="경상북도"){check=x.optJSONArray("top3")?.optString(0,check)?:check;break}
+                    if(x.optString("region")==selected){check=x.optJSONArray("top3")?.optString(0,check)?:check;break}
                 }
                 val nf=NumberFormat.getIntegerInstance(Locale.KOREA)
                 views.setTextViewText(R.id.widgetPrice,if(price>0)nf.format(price)+" 원/kg" else "가격 확인 중")

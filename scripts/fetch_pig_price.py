@@ -10,7 +10,9 @@ KST=timezone(timedelta(hours=9))
 BASE="http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade"
 
 def request(key, day, sex, end_day=None):
-    params={"startYmd":day,"endYmd":end_day or day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"N"}
+    # egradeExceptYn=Y is the API's explicit "등외 제외" selector.  The old
+    # implementation used N while labelling the result as 등외 제외.
+    params={"startYmd":day,"endYmd":end_day or day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"Y"}
     q=urllib.parse.urlencode(params)
     encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
     with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r:
@@ -36,7 +38,9 @@ def day_price(key, day):
     return (round(value/count) if count else None),count
 
 def grade_detail(key,day):
-    params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"Y"}
+    # Grade detail must include the out-of-grade bucket so it can be shown
+    # separately.  Never infer a missing grade from unrelated numeric fields.
+    params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"N"}
     q=urllib.parse.urlencode(params);encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
     with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
     # KAPE 응답 태그를 등급별로 분류. 숫자가 실제 응답에 존재할 때만 표시한다.
@@ -93,6 +97,27 @@ def main():
                 if price: rows.append({"date":day,"price":price,"count":count})
             except Exception: break
     if not rows: raise RuntimeError("No KAPE pigGrade national rows")
+
+    # Maintain a minimum three-calendar-year comparison set.  One official
+    # month-range aggregate is stored as YYYYMM01 when daily history is absent;
+    # current daily rows remain authoritative for the headline and day chart.
+    first_month=(now.replace(day=1)-timedelta(days=31*35)).replace(day=1)
+    cursor=first_month
+    existing_months={r["date"][:6] for r in rows}
+    while cursor<=now.replace(day=1):
+        prefix=cursor.strftime("%Y%m")
+        if prefix not in existing_months:
+            try:
+                y,m=cursor.year,cursor.month
+                nextm=(cursor+timedelta(days=32)).replace(day=1)
+                end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
+                value=count=0
+                for sex in ("025001","025003"):
+                    v,n=request(key,cursor.strftime("%Y%m%d"),sex,end);value+=v;count+=n
+                if count: rows.append({"date":prefix+"01","price":round(value/count),"count":count,"resolution":"month"})
+            except Exception as e: print("KAPE 3-year backfill skipped",prefix,e)
+        cursor=(cursor+timedelta(days=32)).replace(day=1)
+    rows=sorted(rows,key=lambda r:r["date"])
     latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
     diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
     month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
@@ -110,7 +135,7 @@ def main():
         try: return month_api(prefix)
         except Exception as e: print("KAPE month comparison skipped",prefix,e); return 0
     month_avg=avg(month) or safe_month(month); prev_month_avg=avg(prev_month) or safe_month(prev_month); last_year_avg=avg(last_year) or safe_month(last_year)
-    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg,"previousMonthAverage":prev_month_avg,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else 0,"lastYearMonthAverage":last_year_avg,"lastYearChange":month_avg-last_year_avg if last_year_avg else 0,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
+    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","formula":"암+거세 성별 응답의 거래두수 가중평균","filters":{"skinYn":"Y","egradeExceptYn":"Y","sexCd":["025001","025003"],"jeju":"excluded_by_official_national_series"},"date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg or None,"previousMonthAverage":prev_month_avg or None,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else None,"lastYearMonthAverage":last_year_avg or None,"lastYearChange":month_avg-last_year_avg if last_year_avg else None,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok","displayStatus":"확정"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]
@@ -121,6 +146,7 @@ def main():
         except Exception: pass
     merged={r["date"]:r for r in old}
     for r in rows: merged[r["date"]]=r
-    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":"탕박·등외제외·제주제외·암+거세 두수가중","rows":sorted(merged.values(),key=lambda r:r["date"])},ensure_ascii=False,indent=2),encoding="utf-8")
+    coverage=sorted(merged.values(),key=lambda r:r["date"])
+    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":"탕박·등외제외·제주제외·암+거세 두수가중","formulaVersion":"kape-pig-grade-v2","coverage":{"from":coverage[0]["date"] if coverage else None,"to":coverage[-1]["date"] if coverage else None,"minimumMonths":36},"rows":coverage},ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": main()
