@@ -2,76 +2,178 @@
   "source": "기상청 단기예보 조회서비스",
   "baseDate": "20260918",
   "baseTime": "2000",
-  "updatedAt": "2026-09-18T21:07:41.113589+09:00",
-  "regions": [],
-  "errors": [
+  "updatedAt": "2026-09-18T22:14:26.137136+09:00",
+  "regions": [
     {
       "region": "서울특별시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "광주광역시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "대전광역시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "인천광역시",
-      "error": "<urlopen error timed out>"
+      "nx": 60,
+      "ny": 127,
+      "tempMin": 21.0,
+      "tempMax": 23.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "울산광역시",
-      "error": "<urlopen error timed out>"
+      "nx": 102,
+      "ny": 84,
+      "tempMin": 22.0,
+      "tempMax": 22.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 60.0
+    },
+    {
+      "region": "대전광역시",
+      "nx": 67,
+      "ny": 100,
+      "tempMin": 21.0,
+      "tempMax": 22.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "광주광역시",
+      "nx": 58,
+      "ny": 74,
+      "tempMin": 22.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "부산광역시",
-      "error": "<urlopen error timed out>"
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 22.0,
+      "tempMax": 22.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "인천광역시",
+      "nx": 55,
+      "ny": 124,
+      "tempMin": 22.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "세종특별자치시",
-      "error": "<urlopen error timed out>"
+      "nx": 66,
+      "ny": 103,
+      "tempMin": 20.0,
+      "tempMax": 21.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "대구광역시",
-      "error": "<urlopen error timed out>"
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 20.0,
+      "tempMax": 21.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "충청북도",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "경상북도",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "충청남도",
-      "error": "<urlopen error timed out>"
+      "nx": 69,
+      "ny": 107,
+      "tempMin": 20.0,
+      "tempMax": 22.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "강원특별자치도",
-      "error": "<urlopen error timed out>"
+      "nx": 73,
+      "ny": 134,
+      "tempMin": 18.0,
+      "tempMax": 19.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 85.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "충청남도",
+      "nx": 68,
+      "ny": 100,
+      "tempMin": 21.0,
+      "tempMax": 21.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "전북특별자치도",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "경기도",
-      "error": "<urlopen error timed out>"
+      "nx": 63,
+      "ny": 89,
+      "tempMin": 22.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "전라남도",
-      "error": "<urlopen error timed out>"
+      "nx": 51,
+      "ny": 67,
+      "tempMin": 22.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "경상북도",
+      "nx": 89,
+      "ny": 91,
+      "tempMin": 21.0,
+      "tempMax": 22.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 20.0
+    },
+    {
+      "region": "경기도",
+      "nx": 60,
+      "ny": 120,
+      "tempMin": 22.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "경상남도",
-      "error": "<urlopen error timed out>"
+      "nx": 91,
+      "ny": 77,
+      "tempMin": 21.0,
+      "tempMax": 22.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "제주특별자치도",
-      "error": "<urlopen error timed out>"
+      "nx": 52,
+      "ny": 38,
+      "tempMin": 24.0,
+      "tempMax": 24.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 30.0
     }
-  ]
+  ],
+  "errors": []
 }
