@@ -65,12 +65,28 @@ def grade_detail(key,day):
 
 def main():
     key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
-    rows=[]
-    for ago in range(399,-1,-1):
+    # API 요청 제한을 피하기 위해 기존 이력을 재사용하고 최근 10일만 갱신한다.
+    cached_rows=[]
+    if HIST.exists():
+        try: cached_rows=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
+        except Exception: pass
+    merged0={r["date"]:r for r in cached_rows}
+    for ago in range(9,-1,-1):
         day=(now-timedelta(days=ago)).strftime("%Y%m%d")
-        price,count=day_price(key,day)
-        if price:
-            rows.append({"date":day,"price":price,"count":count})
+        try:
+            price,count=day_price(key,day)
+            if price: merged0[day]={"date":day,"price":price,"count":count}
+        except Exception as e:
+            print("KAPE recent fetch skipped",day,e)
+    rows=sorted(merged0.values(),key=lambda r:r["date"])
+    if not rows:
+        # 최초 설치 시에만 최근 45일을 순차 조회
+        for ago in range(44,-1,-1):
+            day=(now-timedelta(days=ago)).strftime("%Y%m%d")
+            try:
+                price,count=day_price(key,day)
+                if price: rows.append({"date":day,"price":price,"count":count})
+            except Exception: break
     if not rows: raise RuntimeError("No KAPE pigGrade national rows")
     latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
     diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
