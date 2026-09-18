@@ -1,8 +1,48 @@
 {
-  "updatedAt": "2026-09-18T22:55:09.123357+09:00",
+  "updatedAt": "2026-09-18T22:59:07.758573+09:00",
   "scope": "대한민국 전역 · 제주 포함",
   "weatherSource": "기상청 단기예보 조회서비스",
   "regions": [
+    {
+      "region": "부산광역시",
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 22.0,
+      "tempMax": 22.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 30.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "대구광역시",
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 20.0,
+      "tempMax": 21.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 20.0,
+      "riskFactors": [
+        "고습"
+      ],
+      "farmChecks": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ],
+      "top3": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ]
+    },
     {
       "region": "대전광역시",
       "nx": 67,
@@ -21,14 +61,48 @@
       ]
     },
     {
-      "region": "부산광역시",
-      "nx": 98,
-      "ny": 76,
+      "region": "인천광역시",
+      "nx": 55,
+      "ny": 124,
       "tempMin": 22.0,
-      "tempMax": 22.0,
-      "diurnalRange": 0.0,
+      "tempMax": 23.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "세종특별자치시",
+      "nx": 66,
+      "ny": 103,
+      "tempMin": 20.0,
+      "tempMax": 21.0,
+      "diurnalRange": 1.0,
       "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
+      "rainProbabilityMax": 20.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "서울특별시",
+      "nx": 60,
+      "ny": 127,
+      "tempMin": 21.0,
+      "tempMax": 23.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -78,53 +152,13 @@
       ]
     },
     {
-      "region": "세종특별자치시",
-      "nx": 66,
-      "ny": 103,
-      "tempMin": 20.0,
-      "tempMax": 21.0,
-      "diurnalRange": 1.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 20.0,
-      "riskFactors": [],
-      "farmChecks": [],
-      "top3": [
-        "급이기·급수기 청결 확인",
-        "환기 상태 확인",
-        "돈군 건강상태 관찰"
-      ]
-    },
-    {
-      "region": "대구광역시",
-      "nx": 89,
-      "ny": 90,
-      "tempMin": 20.0,
-      "tempMax": 21.0,
-      "diurnalRange": 1.0,
-      "humidityMax": 80.0,
-      "rainProbabilityMax": 20.0,
-      "riskFactors": [
-        "고습"
-      ],
-      "farmChecks": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ],
-      "top3": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ]
-    },
-    {
-      "region": "인천광역시",
-      "nx": 55,
-      "ny": 124,
+      "region": "경기도",
+      "nx": 60,
+      "ny": 120,
       "tempMin": 22.0,
       "tempMax": 23.0,
       "diurnalRange": 1.0,
-      "humidityMax": 70.0,
+      "humidityMax": 65.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
@@ -135,14 +169,14 @@
       ]
     },
     {
-      "region": "서울특별시",
-      "nx": 60,
-      "ny": 127,
-      "tempMin": 21.0,
+      "region": "전북특별자치도",
+      "nx": 63,
+      "ny": 89,
+      "tempMin": 22.0,
       "tempMax": 23.0,
-      "diurnalRange": 2.0,
-      "humidityMax": 70.0,
-      "rainProbabilityMax": 0.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -169,13 +203,13 @@
       ]
     },
     {
-      "region": "경기도",
-      "nx": 60,
-      "ny": 120,
-      "tempMin": 22.0,
-      "tempMax": 23.0,
-      "diurnalRange": 1.0,
-      "humidityMax": 65.0,
+      "region": "충청남도",
+      "nx": 68,
+      "ny": 100,
+      "tempMin": 21.0,
+      "tempMax": 21.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 75.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
@@ -209,14 +243,14 @@
       ]
     },
     {
-      "region": "전북특별자치도",
-      "nx": 63,
-      "ny": 89,
+      "region": "전라남도",
+      "nx": 51,
+      "ny": 67,
       "tempMin": 22.0,
       "tempMax": 23.0,
       "diurnalRange": 1.0,
       "humidityMax": 75.0,
-      "rainProbabilityMax": 20.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -246,40 +280,6 @@
         "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
         "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
         "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ]
-    },
-    {
-      "region": "충청남도",
-      "nx": 68,
-      "ny": 100,
-      "tempMin": 21.0,
-      "tempMax": 21.0,
-      "diurnalRange": 0.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 0.0,
-      "riskFactors": [],
-      "farmChecks": [],
-      "top3": [
-        "급이기·급수기 청결 확인",
-        "환기 상태 확인",
-        "돈군 건강상태 관찰"
-      ]
-    },
-    {
-      "region": "전라남도",
-      "nx": 51,
-      "ny": 67,
-      "tempMin": 22.0,
-      "tempMax": 23.0,
-      "diurnalRange": 1.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 0.0,
-      "riskFactors": [],
-      "farmChecks": [],
-      "top3": [
-        "급이기·급수기 청결 확인",
-        "환기 상태 확인",
-        "돈군 건강상태 관찰"
       ]
     },
     {
