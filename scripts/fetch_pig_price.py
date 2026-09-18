@@ -9,8 +9,8 @@ HIST=ROOT/"docs/data/pig-price-history.json"
 KST=timezone(timedelta(hours=9))
 BASE="http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade"
 
-def request(key, day, sex):
-    params={"startYmd":day,"endYmd":day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"N"}
+def request(key, day, sex, end_day=None):
+    params={"startYmd":day,"endYmd":end_day or day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"N"}
     q=urllib.parse.urlencode(params)
     encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
     with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r:
@@ -91,10 +91,17 @@ def main():
     latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
     diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
     month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
+    # 월별 비교값은 일별 캐시가 부족하면 KAPE에 월 범위로 직접 조회해 보강한다.
+    def month_api(prefix):
+        y=int(prefix[:4]);m=int(prefix[4:6]);start=f"{y:04d}{m:02d}01"; nextm=(datetime(y,m,28)+timedelta(days=4)).replace(day=1); end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
+        value=count=0
+        for sex in ("025001","025003"):
+            v,n=request(key,start,sex,end);value+=v;count+=n
+        return round(value/count) if count else 0
     def avg(prefix):
         a=[r["price"] for r in rows if r["date"].startswith(prefix)]
         return round(sum(a)/len(a)) if a else 0
-    month_avg=avg(month); prev_month_avg=avg(prev_month); last_year_avg=avg(last_year)
+    month_avg=avg(month) or month_api(month); prev_month_avg=avg(prev_month) or month_api(prev_month); last_year_avg=avg(last_year) or month_api(last_year)
     payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg,"previousMonthAverage":prev_month_avg,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else 0,"lastYearMonthAverage":last_year_avg,"lastYearChange":month_avg-last_year_avg if last_year_avg else 0,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
