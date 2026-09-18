@@ -1,4 +1,5 @@
 import json, os, urllib.parse, urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -29,7 +30,7 @@ def fetch(name,nx,ny,key,date,t):
     # urlencode가 이미 인코딩된 인증키를 재인코딩할 수 있어 serviceKey는 별도 조립
     params=urllib.parse.urlencode({"pageNo":1,"numOfRows":1000,"dataType":"JSON","base_date":date,"base_time":t,"nx":nx,"ny":ny})
     url=BASE+"?serviceKey="+key+"&"+params
-    with urllib.request.urlopen(url,timeout=20) as r: data=json.load(r)
+    with urllib.request.urlopen(url,timeout=8) as r: data=json.load(r)
     items=data["response"]["body"]["items"]["item"]
     today=datetime.now(KST).strftime("%Y%m%d")
     vals={}
@@ -53,9 +54,12 @@ def main():
     if not key: raise SystemExit("KMA_SERVICE_KEY missing")
     now=datetime.now(KST); date,t=base_time(now)
     regions=[]; errors=[]
-    for name,(nx,ny) in POINTS.items():
-        try: regions.append(fetch(name,nx,ny,key,date,t))
-        except Exception as e: errors.append({"region":name,"error":str(e)[:160]})
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures={pool.submit(fetch,name,nx,ny,key,date,t):name for name,(nx,ny) in POINTS.items()}
+        for future in as_completed(futures):
+            name=futures[future]
+            try: regions.append(future.result())
+            except Exception as e: errors.append({"region":name,"error":str(e)[:160]})
     payload={"source":"기상청 단기예보 조회서비스","baseDate":date,"baseTime":t,
              "updatedAt":now.isoformat(),"regions":regions,"errors":errors}
     OUT.parent.mkdir(parents=True,exist_ok=True)
