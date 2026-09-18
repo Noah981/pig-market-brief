@@ -3,7 +3,7 @@ name: Build pig briefing
 on:
   workflow_dispatch:
   schedule:
-    - cron: "20 9 * * *"
+    - cron: "20 9 * * *"\n    - cron: "20 10 * * *"
 permissions:
   contents: write
 jobs:
@@ -18,7 +18,7 @@ jobs:
         env:
           KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
         run: python scripts/fetch_weather.py
-      - name: Fetch KAPE Jeju pig prices
+      - name: Fetch KAPE national representative pig price\n        env:\n          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}\n        run: python scripts/fetch_pig_price.py\n      - name: Fetch KAPE Jeju pig prices
         env:
           KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
         run: python scripts/fetch_kape_jeju.py
