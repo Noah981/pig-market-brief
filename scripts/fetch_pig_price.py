@@ -6,10 +6,10 @@ KST=timezone(timedelta(hours=9)); BASE="http://data.ekape.or.kr/openapi-data/ser
 def main():
  key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST); end=now.strftime("%Y%m%d"); start=(now-timedelta(days=40)).strftime("%Y%m%d")
  q=urllib.parse.urlencode({"startYmd":start,"endYmd":end,"numOfRows":100,"pageNo":1})
- with urllib.request.urlopen(BASE+"?serviceKey="+key+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
+ url=BASE+"?serviceKey="+urllib.parse.quote(urllib.parse.unquote(key),safe="")+"&"+q\n with urllib.request.urlopen(url,timeout=15) as r: root=ET.fromstring(r.read())\n code=(root.findtext(".//resultCode") or "").strip(); msg=(root.findtext(".//resultMsg") or "").strip()\n if code and code!="00": raise RuntimeError("KAPE "+code+" "+msg)
  rows=[]
  for x in root.findall(".//item"):
-  typ=x.findtext("sableGubn"); price=int((x.findtext("costAmt") or "0").replace(",","")); date=x.findtext("sumYmd")
+  typ=(x.findtext("sableGubn") or "").strip(); price=int((x.findtext("costAmt") or "0").replace(",","")); date=(x.findtext("sumYmd") or "").strip()
   if typ in ("전체","대표가격") and price>0: rows.append({"date":date,"price":price})
  rows=sorted(rows,key=lambda r:r["date"])
  if len(rows)<1: raise RuntimeError("No representative pig price rows")
