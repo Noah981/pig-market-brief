@@ -8,9 +8,10 @@ on:
       - "config/**"
       - ".github/workflows/build-briefing.yml"
   schedule:
-    - cron: "20 9 * * *"
-    - cron: "20 10 * * *"
-    - cron: "*/15 * * * *"
+    # KAPE 돈가가 발표되는 오후 시간대(KST)는 5분 간격으로 재확인
+    - cron: "*/5 6-10 * * *"
+    # 그 외 시간은 질병/속보 감시용 15분 간격
+    - cron: "*/15 0-5,11-23 * * *"
 permissions:
   contents: write
 jobs:
