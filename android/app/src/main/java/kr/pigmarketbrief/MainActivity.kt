@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -99,18 +101,20 @@ class MainActivity:ComponentActivity(){
  }
 }
 @Composable fun TodayPigTheme(content: @Composable () -> Unit){
- MaterialTheme(colorScheme=lightColorScheme(primary=Forest,onPrimary=Color.White,secondary=Amber,background=Paper,surface=Color.White,onSurface=Ink,error=Red),content=content)
+ val dark=isSystemInDarkTheme()
+ MaterialTheme(colorScheme=if(dark) darkColorScheme(primary=Color(0xFF64A6FF),secondary=Color(0xFFFFB340),background=Color(0xFF0F1012),surface=Color(0xFF1C1C1E),onSurface=Color(0xFFF5F5F7),error=Color(0xFFFF6961)) else lightColorScheme(primary=Forest,onPrimary=Color.White,secondary=Amber,background=Paper,surface=Color.White,onSurface=Ink,error=Red),content=content)
 }
 
 @Composable fun TodayPigApp(){
- val ctx=LocalContext.current;val scope=rememberCoroutineScope();val prefs=remember{ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE)};var tab by remember{mutableIntStateOf(0)};var data by remember{mutableStateOf<AppData?>(null)};var loading by remember{mutableStateOf(true)};var region by remember{mutableStateOf(prefs.getString("region","경상북도")?:"경상북도")}
- suspend fun refresh(){loading=true;data=DataRepository.load(ctx);loading=false}
+ val ctx=LocalContext.current;val scope=rememberCoroutineScope();val prefs=remember{ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE)};var tab by remember{mutableIntStateOf(0)};var data by remember{mutableStateOf<AppData?>(null)};var loading by remember{mutableStateOf(true)};var refreshMessage by remember{mutableStateOf<String?>(null)};var region by remember{mutableStateOf(prefs.getString("region","경상북도")?:"경상북도")}
+ suspend fun refresh(){if(loading&&data!=null)return;loading=true;val next=DataRepository.load(ctx);data=next;loading=false;refreshMessage=if(next.error==null)"최신 데이터로 갱신되었습니다" else "갱신하지 못했습니다 · 네트워크를 확인하세요"}
  LaunchedEffect(Unit){refresh()}
- Scaffold(containerColor=Paper,floatingActionButton={SmallFloatingActionButton(onClick={scope.launch{refresh()}},containerColor=Ink,contentColor=Color.White,shape=CircleShape){Text(if(loading)"···" else "↻",fontSize=22.sp,fontWeight=FontWeight.Black)}},bottomBar={NavigationBar(containerColor=Color.White,tonalElevation=0.dp){listOf("오늘","가격","행동","기록","설정").forEachIndexed{i,s->NavigationBarItem(tab==i,{tab=i},{Text(listOf("●","↗","✓","▤","⚙")[i],fontWeight=FontWeight.Black)},label={Text(s,fontSize=11.sp)})}}}){pad->
+ Scaffold(containerColor=MaterialTheme.colorScheme.background,floatingActionButton={ExtendedFloatingActionButton(onClick={if(!loading)scope.launch{refresh()}},containerColor=MaterialTheme.colorScheme.onSurface,contentColor=MaterialTheme.colorScheme.surface,shape=RoundedCornerShape(18.dp),icon={if(loading)CircularProgressIndicator(Modifier.size(18.dp),strokeWidth=2.dp)else Text("↻",fontSize=20.sp)},text={Text(if(loading)"갱신 중" else "새로고침",fontWeight=FontWeight.Bold)})},bottomBar={NavigationBar(containerColor=MaterialTheme.colorScheme.surface,tonalElevation=0.dp){listOf("오늘","가격","행동","기록","설정").forEachIndexed{i,s->NavigationBarItem(tab==i,{tab=i},{Text(listOf("●","↗","✓","▤","⚙")[i],fontWeight=FontWeight.Black)},label={Text(s,fontSize=11.sp)})}}}){pad->
   Column(Modifier.padding(pad).fillMaxSize().verticalScroll(rememberScrollState())){
    AppBar(region){tab=4}
    if(loading&&data==null)LoadingState() else if(data?.error!=null&&data?.pig?.price==null)ErrorState(data!!.error!!){loading=true} else when(tab){0->TodayScreen(data?:AppData(),region,{tab=it});1->MarketScreen(data?:AppData());2->ActionScreen(data?:AppData(),region);3->RecordsScreen();else->SettingsScreen(data?:AppData(),region){region=it;prefs.edit().putString("region",it).apply()}}
    Spacer(Modifier.height(24.dp))
+   refreshMessage?.let{Text(it,Modifier.fillMaxWidth().padding(16.dp),color=if(it.startsWith("최신"))Forest else Red,fontSize=12.sp,fontWeight=FontWeight.Bold);LaunchedEffect(it){kotlinx.coroutines.delay(2500);refreshMessage=null}}
   }
  }
 }
@@ -145,17 +149,26 @@ class MainActivity:ComponentActivity(){
   Text(period,fontSize=18.sp,fontWeight=FontWeight.Black)
   if(shown.size<2)Text("공식 확정 데이터가 더 쌓이면 표시됩니다",Modifier.padding(vertical=30.dp),color=Color.Gray) else {
    val values=shown.map{it.price.toFloat()};val lo=values.minOrNull()?:0f;val hi=values.maxOrNull()?:1f
-   Canvas(Modifier.fillMaxWidth().height(190.dp).padding(vertical=16.dp)){for(i in 0..3)drawLine(Color(0xFFE5E9E5),Offset(0f,size.height*i/3),Offset(size.width,size.height*i/3),1f);val path=Path();values.forEachIndexed{i,v->val x=if(values.size==1)0f else size.width*i/(values.size-1);val y=size.height-(v-lo)/(hi-lo).coerceAtLeast(1f)*size.height;if(i==0)path.moveTo(x,y)else path.lineTo(x,y)};drawPath(path,Forest,style=Stroke(4f));drawCircle(Amber,8f,Offset(size.width,size.height-(values.last()-lo)/(hi-lo).coerceAtLeast(1f)*size.height))}
-   Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){shown.filterIndexed{i,_->i==0||i==shown.lastIndex||i==shown.size/2}.forEach{Text(formatAxis(it.date),fontSize=10.sp,color=Color.Gray)}}
+   if(period=="3개년 월간")ThreeYearChart(shown,lo,hi) else {Canvas(Modifier.fillMaxWidth().height(190.dp).padding(vertical=16.dp)){for(i in 0..3)drawLine(Color(0xFFE5E9E5),Offset(0f,size.height*i/3),Offset(size.width,size.height*i/3),1f);val path=Path();values.forEachIndexed{i,v->val x=if(values.size==1)0f else size.width*i/(values.size-1);val y=size.height-(v-lo)/(hi-lo).coerceAtLeast(1f)*size.height;if(i==0)path.moveTo(x,y)else path.lineTo(x,y)};drawPath(path,Forest,style=Stroke(4f));drawCircle(Amber,8f,Offset(size.width,size.height-(values.last()-lo)/(hi-lo).coerceAtLeast(1f)*size.height))};Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){shown.filterIndexed{i,_->i==0||i==shown.lastIndex||i==shown.size/2}.forEach{Text(formatAxis(it.date),fontSize=10.sp,color=Color.Gray)}}}
    if(period=="3개년 월간")MonthlyPriceTable(shown)
   }
  }}
 }
 
-@Composable fun MonthlyPriceTable(points:List<HistPoint>){
- HorizontalDivider(color=Color(0xFFE7EBE8));Text("월별 확정 평균",fontWeight=FontWeight.Black)
- points.groupBy{it.date.take(4)}.toSortedMap().forEach{(year,months)->Column(verticalArrangement=Arrangement.spacedBy(7.dp)){Text(year,fontSize=13.sp,fontWeight=FontWeight.Black,color=Forest);Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(7.dp)){(1..12).forEach{m->val item=months.firstOrNull{it.date.substring(4,6).toIntOrNull()==m};Surface(color=if(item==null)Paper else Color(0xFFEAF3EE),shape=RoundedCornerShape(12.dp)){Column(Modifier.width(62.dp).padding(vertical=9.dp),horizontalAlignment=Alignment.CenterHorizontally){Text("${m}월",fontSize=10.sp,color=Color.Gray);Text(item?.let{comma(it.price)}?:"—",fontSize=11.sp,fontWeight=FontWeight.Black)}}}}}}
+@Composable fun ThreeYearChart(points:List<HistPoint>,lo:Float,hi:Float){
+ val years=points.map{it.date.take(4)}.distinct().sorted();val colors=listOf(Color(0xFFA8B6C8),Color(0xFF5D8FC9),Forest)
+ Row(horizontalArrangement=Arrangement.spacedBy(12.dp)){years.forEachIndexed{i,y->Row(verticalAlignment=Alignment.CenterVertically){Box(Modifier.size(9.dp).background(colors.getOrElse(i){Forest},CircleShape));Spacer(Modifier.width(5.dp));Text(y,fontSize=11.sp,fontWeight=FontWeight.Bold)}}}
+ Canvas(Modifier.fillMaxWidth().height(210.dp).padding(vertical=14.dp)){for(i in 0..3)drawLine(Color(0xFFE4E7EB),Offset(0f,size.height*i/3),Offset(size.width,size.height*i/3),1f);years.forEachIndexed{yi,year->val monthly=points.filter{it.date.startsWith(year)}.associateBy{it.date.substring(4,6).toIntOrNull()};val path=Path();var active=false;(1..12).forEach{m->val item=monthly[m];if(item==null){active=false}else{val x=size.width*(m-1)/11f;val y=size.height-(item.price-lo)/(hi-lo).coerceAtLeast(1f)*size.height;if(!active)path.moveTo(x,y)else path.lineTo(x,y);active=true;drawCircle(colors.getOrElse(yi){Forest},if(item.price==monthly.values.maxOf{it.price}||item.price==monthly.values.minOf{it.price})7f else 4f,Offset(x,y))}};drawPath(path,colors.getOrElse(yi){Forest},style=Stroke(if(yi==years.lastIndex)4f else 2.5f))}}
+ Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){(1..12).forEach{Text("${it}월",fontSize=8.sp,color=Color.Gray)}}
 }
+
+@Composable fun MonthlyPriceTable(points:List<HistPoint>){
+ val ctx=LocalContext.current;val grouped=points.groupBy{it.date.take(4)}.toSortedMap();val all=points.map{it.price};val globalHigh=all.maxOrNull();val globalLow=all.minOrNull()
+ HorizontalDivider(color=Color(0xFFE7EBE8));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Column{Text("월별 확정 평균",fontWeight=FontWeight.Black);Text("단위 원/kg · 없는 월은 —",fontSize=10.sp,color=Color.Gray)};TextButton({sharePriceCsv(ctx,grouped)}){Text("CSV 내보내기")}}
+ grouped.forEach{(year,months)->val hi=months.maxByOrNull{it.price};val low=months.minByOrNull{it.price};Column(verticalArrangement=Arrangement.spacedBy(7.dp)){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(year,fontSize=13.sp,fontWeight=FontWeight.Black,color=Forest);Text("평균 ${comma(months.map{it.price}.average().roundToInt())} · 최고 ${hi?.date?.takeLast(2)?.toIntOrNull()}월 · 최저 ${low?.date?.takeLast(2)?.toIntOrNull()}월",fontSize=9.sp,color=Color.Gray)};Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(7.dp)){(1..12).forEach{m->val item=months.firstOrNull{it.date.substring(4,6).toIntOrNull()==m};val tag=when(item?.price){globalHigh->"전체 최고";globalLow->"전체 최저";hi?.price->"최고";low?.price->"최저";else->null};Surface(color=if(tag!=null)Color(0xFFFFE8C2)else if(item==null)Paper else Color(0xFFEAF3EE),shape=RoundedCornerShape(12.dp)){Column(Modifier.width(70.dp).padding(vertical=9.dp),horizontalAlignment=Alignment.CenterHorizontally){Text("${m}월",fontSize=10.sp,color=Color.Gray);Text(item?.let{comma(it.price)}?:"—",fontSize=11.sp,fontWeight=FontWeight.Black);if(tag!=null)Text(tag,fontSize=8.sp,color=if(tag.contains("최고"))Red else Blue,fontWeight=FontWeight.Black)}}}}}}
+ val highs=grouped.mapValues{it.value.maxByOrNull{p->p.price}};val lows=grouped.mapValues{it.value.minByOrNull{p->p.price}};Text("3개년 최고 ${points.maxByOrNull{it.price}?.let{"${it.date.take(4)}년 ${it.date.takeLast(2).toIntOrNull()}월 ${comma(it.price)}원"}?:"—"} · 최저 ${points.minByOrNull{it.price}?.let{"${it.date.take(4)}년 ${it.date.takeLast(2).toIntOrNull()}월 ${comma(it.price)}원"}?:"—"}",fontSize=11.sp,fontWeight=FontWeight.Bold)
+}
+fun sharePriceCsv(ctx:Context,grouped:Map<String,List<HistPoint>>){val header=(1..12).joinToString(","){"${it}월"};val body=grouped.entries.joinToString("\n"){(year,rows)->val byMonth=rows.associateBy{it.date.substring(4,6).toIntOrNull()};year+","+(1..12).joinToString(","){byMonth[it]?.price?.toString()?:""}};val csv="연도,$header\n$body";ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/csv").putExtra(Intent.EXTRA_SUBJECT,"오늘돈가 3개년 월별가격.csv").putExtra(Intent.EXTRA_TEXT,csv),"CSV 내보내기"))}
 fun monthAverages(rows:List<HistPoint>)=rows.groupBy{it.date.take(6)}.toSortedMap().map{HistPoint(it.key,it.value.map{v->v.price}.average().roundToInt())}
 @Composable fun CompareGrid(p:PigPrice){Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){CompareCell("전월 평균",p.previousMonth,p.monthAverage);CompareCell("전년 동월",p.lastYearMonth,p.monthAverage);CompareCell("현재월 평균",p.monthAverage,p.price)}}
 @Composable fun RowScope.CompareCell(label:String,base:Int?,now:Int?){Surface(Modifier.weight(1f),color=Color.White,shape=RoundedCornerShape(16.dp)){Column(Modifier.padding(12.dp)){Text(label,fontSize=10.sp,color=Color.Gray);Text(base?.let{comma(it)}?:"집계중",fontWeight=FontWeight.Black,fontSize=14.sp);if(base!=null&&now!=null)Text("${if(now-base>=0)"+" else ""}${comma(now-base)}",fontSize=10.sp,color=if(now-base>=0)Red else Blue)}}}
@@ -179,16 +192,21 @@ fun saveRecord(ctx:Context,r:FarmRecord){val p=ctx.getSharedPreferences("records
 @Composable fun Settlement(){
  val ctx=LocalContext.current
  val price=ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE).getInt("widget_price",0)
- var rate by remember{mutableStateOf("78")};var liveWeight by remember{mutableStateOf("115")};var heads by remember{mutableStateOf("1")};var selectedCert by remember{mutableStateOf("저탄소")};var certValue by remember{mutableStateOf("0")};var bonuses by remember{mutableStateOf<Map<String,Double>>(emptyMap())}
+ var mode by remember{mutableStateOf("중량×단가")};var rate by remember{mutableStateOf("78")};var averageWeight by remember{mutableStateOf("115")};var totalWeightInput by remember{mutableStateOf("")};var heads by remember{mutableStateOf("1")};var baseAmount by remember{mutableStateOf("")};var kgRate by remember{mutableStateOf(price.takeIf{it>0}?.toString()?:"")};var perHead by remember{mutableStateOf("")};var fixed by remember{mutableStateOf("")};var selectedCert by remember{mutableStateOf("저탄소 축산물")};var certValue by remember{mutableStateOf("0")};var bonuses by remember{mutableStateOf<Map<String,Double>>(emptyMap())}
  fun number(value:String)=value.toDoubleOrNull()?:0.0
- val base=price*number(rate)/100*number(liveWeight)*number(heads);val bonus=bonuses.values.sum()*number(heads);val total=base+bonus
- Card(colors=CardDefaults.cardColors(containerColor=Ink),shape=RoundedCornerShape(28.dp)){Column(Modifier.padding(20.dp)){Text("예상 정산",color=Mint,fontWeight=FontWeight.Bold);Text(if(price>0)"${comma(total.roundToInt())}원" else "돈가 집계중",fontSize=34.sp,fontWeight=FontWeight.Black,color=Color.White);Text("KAPE ${if(price>0)comma(price) else "—"}원 × 지급률 ${rate}% × 출하체중 ${liveWeight}kg × ${heads}두",fontSize=11.sp,color=Color.White.copy(.7f))}}
- Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){Box(Modifier.weight(1f)){SimpleField("계약 지급률 %",rate){rate=it}};Box(Modifier.weight(1f)){SimpleField("출하체중 kg",liveWeight){liveWeight=it}}};SimpleField("출하두수",heads){heads=it}
+ val calculatedWeight=number(averageWeight)*number(heads);val totalWeight=if(totalWeightInput.isBlank())calculatedWeight else number(totalWeightInput);val bonus=bonuses.values.sum();val core=when(mode){"중량×단가"->totalWeight*number(kgRate);"기준금액×지급률"->number(baseAmount)*number(rate)/100;"두수×두당액"->number(heads)*number(perHead);"고정 지급"->number(fixed);else->totalWeight*number(kgRate)+number(heads)*number(perHead)+number(fixed)};val total=core+bonus
+ val valid=number(heads)>0&&when(mode){"중량×단가"->totalWeight>0&&number(kgRate)>0;"기준금액×지급률"->number(baseAmount)>0&&number(rate)>0;"두수×두당액"->number(perHead)>0;"고정 지급"->number(fixed)>0;else->totalWeight>0}
+ val formula=when(mode){"중량×단가"->"${comma(totalWeight.roundToInt())}kg × ${comma(number(kgRate).roundToInt())}원/kg";"기준금액×지급률"->"${comma(number(baseAmount).roundToInt())}원 × ${rate}%";"두수×두당액"->"${heads}두 × ${comma(number(perHead).roundToInt())}원/두";"고정 지급"->"고정 ${comma(number(fixed).roundToInt())}원";else->"중량 지급 + 두당 지급 + 고정 지급"}
+ Card(colors=CardDefaults.cardColors(containerColor=Ink),shape=RoundedCornerShape(28.dp)){Column(Modifier.padding(20.dp)){Text("예상 정산",color=Mint,fontWeight=FontWeight.Bold);Text(if(valid)"${comma(total.roundToInt())}원" else "필수값을 입력하세요",fontSize=32.sp,fontWeight=FontWeight.Black,color=Color.White);Text(if(valid)"$formula + 인증 ${comma(bonus.roundToInt())}원" else "선택한 정산 방식의 단가·중량·두수를 확인하세요",fontSize=11.sp,color=Color.White.copy(.7f))}}
+ Text("정산 방식",fontSize=18.sp,fontWeight=FontWeight.Black);Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf("중량×단가","기준금액×지급률","두수×두당액","고정 지급","복합 지급").forEach{FilterChip(mode==it,{mode=it},{Text(it)})}}
+ Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){Box(Modifier.weight(1f)){SimpleField("출하두수 (두)",heads){heads=it}};Box(Modifier.weight(1f)){SimpleField("평균 출하체중 (kg/두)",averageWeight){averageWeight=it}}};SimpleField("총 출하체중 (kg) · 비우면 자동 ${comma(calculatedWeight.roundToInt())}",totalWeightInput){totalWeightInput=it}
+ if(totalWeightInput.isNotBlank()&&abs(number(totalWeightInput)-calculatedWeight)>.5)SourceNote("직접 입력한 총 출하체중과 출하두수×평균 출하체중이 다릅니다. 직접 입력값을 계산에 사용합니다.")
+ when(mode){"중량×단가"->SimpleField("kg당 지급단가 (원/kg)",kgRate){kgRate=it};"기준금액×지급률"->{SimpleField("지급률 적용 기준금액 (원)",baseAmount){baseAmount=it};SimpleField("계약 지급률 (%)",rate){rate=it}};"두수×두당액"->SimpleField("두당 지급액 (원/두)",perHead){perHead=it};"고정 지급"->SimpleField("고정 지급액 (원)",fixed){fixed=it};else->{SimpleField("kg당 지급단가 (원/kg)",kgRate){kgRate=it};SimpleField("두당 지급액 (원/두)",perHead){perHead=it};SimpleField("고정 지급액 (원)",fixed){fixed=it}}}
  Text("인증·계약 가산",fontSize=18.sp,fontWeight=FontWeight.Black)
- Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf("저탄소","무항생제","HACCP","동물복지","깨끗한축산농장","지역브랜드","기타").forEach{FilterChip(selectedCert==it,{selectedCert=it;certValue=(bonuses[it]?:0.0).toString().removeSuffix(".0")},{Text(it)})}}
- Row(horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){SimpleField("두당 가산액(원)",certValue){certValue=it}};Button({bonuses=bonuses+(selectedCert to number(certValue))},shape=RoundedCornerShape(14.dp)){Text("적용")}}
- bonuses.filterValues{it>0}.forEach{(name,value)->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(name,fontSize=12.sp);Text("두당 +${comma(value.roundToInt())}원",fontSize=12.sp,fontWeight=FontWeight.Black)}}
- SourceNote("지급률은 출하체중을 기준으로 적용합니다. 인증·브랜드 가산은 전국 공통값이 아니므로 계약서에 정한 두당 가산액을 직접 입력하세요. 실제 정산식이 kg당 가산이면 기타 항목에 넣지 말고 계약 정산서를 기준으로 확인해야 합니다.")
+ Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf("저탄소 축산물","무항생제 축산물","HACCP","깨끗한 축산농장","동물복지","유기축산물","지역 브랜드","조합 자체","기타").forEach{FilterChip(selectedCert==it,{selectedCert=it;certValue=(bonuses[it]?:0.0).toString().removeSuffix(".0")},{Text(it)})}}
+ Row(horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=Alignment.CenterVertically){Box(Modifier.weight(1f)){SimpleField("인증 지급액 (원)",certValue){certValue=it}};Button({if(number(certValue)>=0)bonuses=bonuses+(selectedCert to number(certValue))},shape=RoundedCornerShape(14.dp)){Text("추가")}}
+ bonuses.filterValues{it>0}.forEach{(name,value)->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(name,fontSize=12.sp);Text("+${comma(value.roundToInt())}원",fontSize=12.sp,fontWeight=FontWeight.Black)}}
+ SourceNote("산출식: $formula${if(bonus>0)" + 인증 ${comma(bonus.roundToInt())}원" else ""}. 인증 지급액과 지급률은 전국 공통 기준이 아니라 농가·계약별 사용자 입력값입니다. 과거 도체중은 출하체중으로 자동 변환하지 않습니다.")
 }
 @Composable fun Performance(){val ctx=LocalContext.current;val a=try{JSONArray(ctx.getSharedPreferences("records",Context.MODE_PRIVATE).getString("rows","[]"))}catch(_:Exception){JSONArray()};Card(colors=CardDefaults.cardColors(containerColor=Color.White),shape=RoundedCornerShape(22.dp)){Column(Modifier.padding(18.dp)){Text("기록 ${a.length()}건",fontSize=24.sp,fontWeight=FontWeight.Black);Text("FCR·폐사율·출하일령은 동일 기준의 기록이 2건 이상 쌓이면 전후 변화로 표시됩니다.",color=Color.Gray);Text("추천 수행률 · 조기발견시간 · 대응시간도 동의한 익명 실증에서 산식과 함께 추적할 수 있도록 설계했습니다.",Modifier.padding(top=12.dp),fontSize=12.sp)}}}
 
