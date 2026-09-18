@@ -1,125 +1,176 @@
 {
   "source": "축산물품질평가원",
+  "scope": "탕박·등외제외·제주제외·암+거세 두수가중",
   "rows": [
     {
+      "date": "20260805",
+      "price": 5816,
+      "count": 6840
+    },
+    {
+      "date": "20260806",
+      "price": 5656,
+      "count": 7237
+    },
+    {
+      "date": "20260807",
+      "price": 5112,
+      "count": 3888
+    },
+    {
       "date": "20260810",
-      "price": 6918
+      "price": 6135,
+      "count": 6713
     },
     {
       "date": "20260811",
-      "price": 6923
+      "price": 5809,
+      "count": 6981
     },
     {
       "date": "20260812",
-      "price": 6953
+      "price": 5594,
+      "count": 7430
     },
     {
       "date": "20260813",
-      "price": 6973
+      "price": 5482,
+      "count": 7605
     },
     {
       "date": "20260814",
-      "price": 6879
+      "price": 6057,
+      "count": 1141
     },
     {
       "date": "20260817",
-      "price": 6965
+      "price": 5949,
+      "count": 6065
     },
     {
       "date": "20260818",
-      "price": 6710
+      "price": 5728,
+      "count": 6721
     },
     {
       "date": "20260819",
-      "price": 6683
+      "price": 5682,
+      "count": 6837
     },
     {
       "date": "20260820",
-      "price": 6821
+      "price": 5591,
+      "count": 7003
     },
     {
       "date": "20260821",
-      "price": 6828
+      "price": 4784,
+      "count": 2844
     },
     {
       "date": "20260824",
-      "price": 7099
+      "price": 6084,
+      "count": 5720
     },
     {
       "date": "20260825",
-      "price": 7215
+      "price": 6216,
+      "count": 6140
     },
     {
       "date": "20260826",
-      "price": 7056
+      "price": 5749,
+      "count": 6269
     },
     {
       "date": "20260827",
-      "price": 7070
+      "price": 5776,
+      "count": 6776
     },
     {
       "date": "20260828",
-      "price": 7214
+      "price": 5099,
+      "count": 2858
     },
     {
       "date": "20260831",
-      "price": 7391
+      "price": 6334,
+      "count": 6450
     },
     {
       "date": "20260901",
-      "price": 7414
+      "price": 6246,
+      "count": 6128
     },
     {
       "date": "20260902",
-      "price": 7380
+      "price": 6129,
+      "count": 6363
     },
     {
       "date": "20260903",
-      "price": 7555
+      "price": 6166,
+      "count": 6469
     },
     {
       "date": "20260904",
-      "price": 7742
+      "price": 5731,
+      "count": 3418
     },
     {
       "date": "20260907",
-      "price": 7980
+      "price": 6660,
+      "count": 7777
     },
     {
       "date": "20260908",
-      "price": 7907
+      "price": 6403,
+      "count": 7581
     },
     {
       "date": "20260909",
-      "price": 7767
+      "price": 6233,
+      "count": 7718
     },
     {
       "date": "20260910",
-      "price": 7802
+      "price": 6184,
+      "count": 8042
     },
     {
       "date": "20260911",
-      "price": 7828
+      "price": 5668,
+      "count": 5850
+    },
+    {
+      "date": "20260912",
+      "price": 4865,
+      "count": 182
     },
     {
       "date": "20260914",
-      "price": 7687
+      "price": 6626,
+      "count": 6895
     },
     {
       "date": "20260915",
-      "price": 7784
+      "price": 6277,
+      "count": 7927
     },
     {
       "date": "20260916",
-      "price": 7943
+      "price": 6215,
+      "count": 8045
     },
     {
       "date": "20260917",
-      "price": 7874
+      "price": 6097,
+      "count": 7957
     },
     {
       "date": "20260918",
-      "price": 7812
+      "price": 5499,
+      "count": 5151
     }
   ]
 }

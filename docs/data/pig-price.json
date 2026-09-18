@@ -1,14 +1,16 @@
 {
   "source": "축산물품질평가원",
-  "operation": "auct/pigRepresentativePrice",
+  "operation": "auct/pigGrade",
   "label": "전국 돈가",
+  "scope": "탕박·등외제외·제주제외·암+거세 두수가중",
   "date": "20260918",
-  "price": 7812,
+  "price": 5499,
   "previousDate": "20260917",
-  "previousPrice": 7874,
-  "change": -62,
-  "changePct": -0.79,
+  "previousPrice": 6097,
+  "change": -598,
+  "changePct": -9.81,
+  "count": 5151,
   "unit": "원/kg",
-  "updatedAt": "2026-09-18T17:28:39.326221+09:00",
+  "updatedAt": "2026-09-18T18:04:59.722264+09:00",
   "status": "ok"
 }
