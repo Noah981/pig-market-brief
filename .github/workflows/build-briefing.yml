@@ -7,12 +7,7 @@ on:
       - "scripts/**"
       - "config/**"
       - ".github/workflows/build-briefing.yml"
-  schedule:
-    # KAPE 돈가가 발표되는 오후 시간대(KST)는 5분 간격으로 재확인
-    - cron: "*/5 6-10 * * *"
-    # 그 외 시간은 질병/속보 감시용 15분 간격
-    - cron: "*/15 0-5,11-23 * * *"
-permissions:
+  schedule:\n    # 전체 브리핑은 시간당 갱신. 돈가 발표 감시는 price-fast.yml에서 분리 수행.\n    - cron: "7 * * * *"\npermissions:
   contents: write
 jobs:
   build:
