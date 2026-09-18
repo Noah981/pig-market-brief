@@ -6,7 +6,7 @@ SOURCES=[
  ("공식·농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do"),
  ("공식·농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do"),
 ]
-KEYS=["아프리카돼지열병","ASF","구제역","돼지열병","PED","PRRS"]
+KEYS=["아프리카돼지열병","ASF","구제역","돼지열병","PED","PRRS","돼지인플루엔자","PCV2","써코바이러스","마이코플라즈마","흉막폐렴","회장염","살모넬라","로타바이러스","대장균","돈단독","오제스키병"]
 EVENT=["발생","확진","양성","의심","신고","방역","이동중지","위기경보"]
 items=[]
 def scan(source,url,kind):
@@ -22,7 +22,7 @@ def scan(source,url,kind):
  except Exception: pass
 for x in SOURCES: scan(x[0],x[1],"공식")
 # 공개 뉴스 검색은 공식 확인 전 '속보/확인중'으로만 분류한다.
-for k in ["아프리카돼지열병 ASF","구제역 돼지","PED 돼지","PRRS 돼지"]:
+for k in ["아프리카돼지열병 ASF","구제역 돼지","PED 돼지","PRRS 돼지","돼지인플루엔자","PCV2 써코바이러스 돼지","마이코플라즈마 돼지","흉막폐렴 돼지","회장염 돼지","살모넬라 돼지","오제스키병 돼지"]:
  q=urllib.parse.quote(k+" 발생")
  scan("공개뉴스·Google News","https://news.google.com/rss/search?q="+q+"&hl=ko&gl=KR&ceid=KR:ko","확인중")
 seen=set();dedup=[]
