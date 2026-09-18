@@ -1,4 +1,4 @@
-import os, json, urllib.parse, urllib.request, xml.etree.ElementTree as ET
+import os, json, re, urllib.parse, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
