@@ -18,6 +18,10 @@ jobs:
         env:
           KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
         run: python scripts/fetch_weather.py
+      - name: Fetch KAPE Jeju pig prices
+        env:
+          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
+        run: python scripts/fetch_kape_jeju.py
       - name: Build briefing
         run: python scripts/build_briefing.py
       - name: Commit generated data
