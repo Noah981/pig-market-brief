@@ -12,6 +12,8 @@ import org.json.JSONObject
 import java.text.NumberFormat
 import java.util.Locale
 
+private const val WIDGET_DATA_ROOT = "https://noah981.github.io/pig-market-brief/data"
+
 class PigPriceWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         ids.forEach { id -> update(context, manager, id) }
@@ -25,7 +27,7 @@ class PigPriceWidget : AppWidgetProvider() {
         Thread {
             try {
                 val client=OkHttpClient()
-                fun get(name:String)=client.newCall(Request.Builder().url("$DATA_ROOT/$name").build()).execute().use{r->if(!r.isSuccessful)error("HTTP");r.body!!.string()}
+                fun get(name:String)=client.newCall(Request.Builder().url("$WIDGET_DATA_ROOT/$name").build()).execute().use{r->if(!r.isSuccessful)error("HTTP");r.body!!.string()}
                 val p=JSONObject(get("pig-price.json"))
                 val price=p.optInt("price")
                 val diff=p.optInt("change")
