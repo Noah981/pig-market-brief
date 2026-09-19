@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../data/market_repository.dart';
 
 class PageShell extends StatelessWidget {
   const PageShell({super.key, required this.title, required this.subtitle, required this.child});
@@ -29,14 +30,15 @@ class PageShell extends StatelessWidget {
 }
 
 class MarketOverviewPage extends StatelessWidget {
-  const MarketOverviewPage({super.key});
+  const MarketOverviewPage({super.key,this.snapshot});
+  final MarketSnapshot? snapshot;
   @override
   Widget build(BuildContext context) {
-    const tiles = [
-      _MarketTile('🐷', '전국 돈가', '6,442', '원/kg', '▼ 298원 (-4.42%)', false),
-      _MarketTile('🌽', '옥수수', '301.2', r'$/톤', '▲ 2.4 (+0.8%)', true),
-      _MarketTile('🫘', '대두박', '423.5', r'$/톤', '▲ 5.1 (+1.2%)', true),
-      _MarketTile('＄', '달러 환율', '1,386', '원', '▲ 6 (+0.4%)', true),
+    final tiles = [
+      _MarketTile('🐷','전국 돈가',snapshot==null?'확인 중':_number(snapshot!.price),snapshot==null?'':'원/kg',_change(snapshot),(snapshot?.change??-1)>=0),
+      const _MarketTile('🌽', '옥수수', '연결 대기', '', '공식 데이터 확인 중', false),
+      const _MarketTile('🫘', '대두박', '연결 대기', '', '공식 데이터 확인 중', false),
+      const _MarketTile('＄', '달러 환율', '연결 대기', '', '공식 데이터 확인 중', false),
     ];
     const summaries = [
       ('돈가', '하락', '전일 대비 298원 (-4.42%)'),
@@ -55,13 +57,15 @@ class MarketOverviewPage extends StatelessWidget {
           children: tiles,
         ),
         const SizedBox(height: 10),
-        const SizedBox(height: 104, child: _MarketTile('🛢️', '국제 유가 (WTI)', '68.4', r'$/배럴', '▼ 1.2 (-1.7%)', false, wide: true)),
+        const SizedBox(height:104,child:_MarketTile('🛢️','국제 유가 (WTI)','연결 대기','','공식 데이터 확인 중',false,wide:true)),
         const SizedBox(height: 18),
         const _SectionTitle('시황 요약 (오늘)'),
         ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3)),
       ]),
     );
   }
+  String _number(int value)=>value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');
+  String _change(MarketSnapshot? s){if(s==null)return '공식 데이터 연결 중';return '${s.change>=0?'▲':'▼'} ${s.change.abs()}원 (${s.changePct.toStringAsFixed(2)}%)';}
 }
 
 class _MarketTile extends StatelessWidget {
