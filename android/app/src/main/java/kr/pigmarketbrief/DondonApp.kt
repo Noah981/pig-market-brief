@@ -61,7 +61,7 @@ private val Apricot=Color(0xFFFFF2DF)
 private val DeepInk=Color(0xFF17171C)
 private val Muted=Color(0xFF71717A)
 
-@Composable fun DondonTheme(content: @Composable () -> Unit){val dark=isSystemInDarkTheme();MaterialTheme(colorScheme=if(dark)darkColorScheme(primary=Color(0xFF8DD5AD),background=Color(0xFF111113),surface=Color(0xFF202024),onSurface=Color(0xFFF8F7F5))else lightColorScheme(primary=Coral,onPrimary=Color.White,background=Ivory,surface=Color.White,onSurface=DeepInk),content=content)}
+@Composable fun DondonTheme(content: @Composable () -> Unit){val dark=isSystemInDarkTheme();MaterialTheme(colorScheme=if(dark)darkColorScheme(primary=Color(0xFF8DD5AD),secondary=Color(0xFF9BC7AE),surfaceVariant=Color(0xFF29382E),onSurfaceVariant=Color(0xFFD2DBD4),background=Color(0xFF111113),surface=Color(0xFF202024),onSurface=Color(0xFFF8F7F5))else lightColorScheme(primary=Coral,onPrimary=Color.White,secondary=Color(0xFF477A60),surfaceVariant=Color(0xFFEDF2EC),onSurfaceVariant=Color(0xFF46554B),background=Ivory,surface=Color.White,onSurface=DeepInk),content=content)}
 
 @Composable fun LegacyDondonApp(){
  val ctx=LocalContext.current;val scope=rememberCoroutineScope();val prefs=remember{ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE)};var tab by remember{mutableIntStateOf(0)};var data by remember{mutableStateOf<AppData?>(null)};var loading by remember{mutableStateOf(true)};var region by remember{mutableStateOf(prefs.getString("region","경상북도")?:"경상북도")};var refreshed by remember{mutableStateOf<String?>(null)}
@@ -78,7 +78,7 @@ private val Muted=Color(0xFF71717A)
 }
 
 @Composable fun AutoLocationBootstrap(current:String,onLocated:(String,String?)->Unit){val ctx=LocalContext.current;val prefs=remember{ctx.getSharedPreferences("todaypig",Context.MODE_PRIVATE)};val scope=rememberCoroutineScope();fun locate(){val lm=ctx.getSystemService(Context.LOCATION_SERVICE)as LocationManager;val provider=when{lm.isProviderEnabled(LocationManager.GPS_PROVIDER)->LocationManager.GPS_PROVIDER;lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)->LocationManager.NETWORK_PROVIDER;else->return};try{if(android.os.Build.VERSION.SDK_INT>=30)lm.getCurrentLocation(provider,CancellationSignal(),ctx.mainExecutor){loc->if(loc!=null)scope.launch{val a=withContext(Dispatchers.IO){try{Geocoder(ctx,Locale.KOREA).getFromLocation(loc.latitude,loc.longitude,1)?.firstOrNull()}catch(_:Exception){null}};a?.adminArea?.let{onLocated(it,a.subAdminArea?:a.locality)}}}else lm.getLastKnownLocation(provider)?.let{loc->scope.launch{val a=withContext(Dispatchers.IO){try{Geocoder(ctx,Locale.KOREA).getFromLocation(loc.latitude,loc.longitude,1)?.firstOrNull()}catch(_:Exception){null}};a?.adminArea?.let{onLocated(it,a.subAdminArea?:a.locality)}}}}catch(_:SecurityException){}}
- val launcher=rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){r->if(r.values.any{it})locate()}
+ val launcher=rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){r->prefs.edit().putBoolean("location_initialized",true).apply();if(r.values.any{it})locate()}
  LaunchedEffect(Unit){if(!prefs.getBoolean("location_initialized",false)){if(ContextCompat.checkSelfPermission(ctx,Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)locate()else launcher.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION))}}
 }
 
