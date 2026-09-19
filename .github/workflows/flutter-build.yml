@@ -19,10 +19,10 @@ jobs:
       - name: Generate platform shells
         working-directory: flutter_app
         run: flutter create --platforms=android,ios --org kr.dondonhae .
-      - name: Copy project pig photo asset
+      - name: Prepare pig photo asset
         run: |
           mkdir -p flutter_app/assets/images
-          cp android/app/src/main/res/drawable-nodpi/dondontoday_pig_hero.png flutter_app/assets/images/pig_hero.png
+          base64 -d android/app/src/main/res/raw/pig_hero.b64 > flutter_app/assets/images/pig_hero.png
       - name: Resolve packages
         working-directory: flutter_app
         run: flutter pub get
