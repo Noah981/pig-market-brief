@@ -21,7 +21,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);_loadMarket();_timer=Timer.periodic(const Duration(minutes:30),(_)=>_refreshMarket());}
   @override void dispose(){_timer?.cancel();WidgetsBinding.instance.removeObserver(this);super.dispose();}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_refreshMarket();}
-  Future<void> _loadMarket()async{final cached=await _marketRepository.cached();if(mounted&&cached!=null)setState(()=>_market=cached);await _refreshMarket();}
+  Future<void> _loadMarket()async{try{final cached=await _marketRepository.cached();if(mounted&&cached!=null)setState(()=>_market=cached);}catch(_){}await _refreshMarket();}
   Future<void> _refreshMarket()async{try{final value=await _marketRepository.refresh();if(mounted)setState(()=>_market=value);}catch(_){}}
   @override Widget build(BuildContext context)=>Scaffold(
     bottomNavigationBar:BottomNavigation(index:_nav,onSelected:(i)=>setState(()=>_nav=i)),

@@ -1,6 +1,7 @@
 import 'package:dondonhae/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> renderAt(WidgetTester tester, double width, String name) async {
   tester.view.devicePixelRatio = 1;
@@ -13,6 +14,7 @@ Future<void> renderAt(WidgetTester tester, double width, String name) async {
 }
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
