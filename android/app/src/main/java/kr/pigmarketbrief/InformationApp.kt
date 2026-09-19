@@ -1,0 +1,107 @@
+package kr.pigmarketbrief
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.math.BigDecimal
+
+@Composable fun DondonApp(){
+ val ctx=LocalContext.current;val scope=rememberCoroutineScope();val prefs=remember{ctx.getSharedPreferences("dondon_profile",Context.MODE_PRIVATE)}
+ var ready by remember{mutableStateOf(prefs.getBoolean("onboarded",false))};var tab by remember{mutableIntStateOf(0)};var detail by remember{mutableStateOf("")}
+ var data by remember{mutableStateOf(AppData())};var busy by remember{mutableStateOf(false)};var extension by remember{mutableStateOf(JSONObject())};var generation by remember{mutableIntStateOf(0)}
+ suspend fun refresh(){if(busy)return;busy=true;try{data=DataRepository.load(ctx);extension=withContext(Dispatchers.IO){try{JSONObject(NetworkStore.get(ctx,"platform.json").raw?:"{}")}catch(_:Exception){JSONObject()}}}finally{busy=false}}
+ LaunchedEffect(Unit){data=DataRepository.load(ctx,cacheOnly=true);refresh();while(true){kotlinx.coroutines.delay(15*60*1000L);refresh()}}
+ DisposableEffect(ctx){val owner=ctx as? androidx.activity.ComponentActivity;val observer=androidx.lifecycle.LifecycleEventObserver{_,event->if(event==androidx.lifecycle.Lifecycle.Event.ON_RESUME)scope.launch{refresh()}};owner?.lifecycle?.addObserver(observer);onDispose{owner?.lifecycle?.removeObserver(observer)}}
+ if(!ready){Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),verticalArrangement=Arrangement.spacedBy(20.dp)){BrandSymbol();Text("돈돈해",fontSize=40.sp,fontWeight=FontWeight.Black,color=MaterialTheme.colorScheme.primary);Text("양돈의 오늘을 든든하게",fontSize=24.sp);Text("돈가부터 질병, 지원사업까지\n농장에 필요한 오늘의 정보를 한곳에서 확인하세요.");ProfileEditor{generation++};Button({prefs.edit().putBoolean("onboarded",true).apply();ready=true},Modifier.fillMaxWidth().heightIn(min=52.dp)){Text("시작하기")};Text("지역은 나중에 바꿀 수 있습니다. 회원가입 없이 사용하세요.")};return}
+ AutoLocationBootstrap(""){province,district->ctx.getSharedPreferences("todaypig",0).edit().putString("region",province).putString("district",district).putBoolean("location_initialized",true).apply()}
+ fun open(target:String){detail=target}
+ Scaffold(bottomBar={NavigationBar(containerColor=MaterialTheme.colorScheme.surface){listOf("오늘","돈가","시장","혜택","더보기").forEachIndexed{i,label->NavigationBarItem(selected=tab==i,onClick={tab=i;detail=""},icon={Text(listOf("⌂","↗","▥","◇","⋯")[i],fontSize=24.sp)},label={Text(label,fontSize=14.sp)},colors=NavigationBarItemDefaults.colors(selectedIconColor=MaterialTheme.colorScheme.primary,selectedTextColor=MaterialTheme.colorScheme.primary,indicatorColor=MaterialTheme.colorScheme.surfaceVariant))}}}){padding->
+ Column(Modifier.padding(padding).fillMaxSize().verticalScroll(remember(tab,detail){androidx.compose.foundation.ScrollState(0)}).padding(horizontal=12.dp,vertical=4.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
+  if(tab!=0||detail.isNotEmpty()) Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){TextButton({detail=""}){Text(if(detail.isEmpty())"돈돈해" else "‹ 돌아가기",fontSize=22.sp,fontWeight=FontWeight.Black)};TextButton({scope.launch{refresh()}},enabled=!busy){Text(if(busy)"갱신 중" else "↻ 새로고침")}}
+  if(data.stale)Notice("마지막 저장 데이터\n돈가 기준 ${formatDay(data.pig.date)} · 갱신 ${displayUpdate(data.pig.updatedAt)}")
+  when(detail){
+   "질병"->{Heading("질병·방역","발생국 기준으로 국내와 해외를 구분합니다");DiseaseList(data.diseases);Notice("발생 좌표가 없는 공고는 거리로 환산하지 않습니다. 공식 방역 공고와 발생 확인 정보를 구분해 확인하세요.")}
+   "프로필"->ProfileEditor{generation++}
+   "정산"->SimpleEstimate(data.pig)
+   "사료"->OrderReminder()
+   "알림"->NotificationPreferences()
+   "지역"->RegionSelector(ctx.getSharedPreferences("todaypig",0).getString("region","")?:"",{ctx.getSharedPreferences("todaypig",0).edit().putString("region",it).apply();generation++},data.regions)
+   "인증"->CertificationHub()
+   "화면"->AppearanceSettings()
+   else->when(tab){
+    0->ExactReferenceHome(data,extension,{tab=1},{tab=2},{open(it)},{scope.launch{refresh()}})
+    1->{Heading("전국 돈가","생산자 돼지 경락가격");CurrentPrice(data.pig){};PriceHistoryView(data);CompareGrid(data.pig);SourceLink("축산물품질평가원 공식 정보","https://www.ekape.or.kr/")}
+    2->MarketFlow(extension)
+    3->{Heading("내 지역 혜택",farmRegion(ctx).ifBlank{"농장 소재지를 먼저 설정하세요"});Tile("농장 지역·조건 설정","GPS와 별도로 농장 소재지를 저장합니다"){open("프로필")};Benefits(extension);Tile("우리 농장 인증","깨끗한 축산농장 · HACCP · 무항생제 · 저탄소"){open("인증")}}
+    else->{Heading("필요할 때 간단하게","매일 입력하지 않아도 괜찮습니다");listOf("질병" to "국내외 질병·방역","정산" to "출하 정산 예측","사료" to "사료 주문시기","프로필" to "농장 지역·조건","인증" to "우리 농장 인증","지역" to "GPS 현재 위치","알림" to "알림 설정","화면" to "화면 모드").forEach{(target,title)->Tile(title,"열기"){open(target)}}}
+   }
+  }
+ }
+ }
+}
+@Composable fun Heading(title:String,sub:String){Text(title,fontSize=28.sp,fontWeight=FontWeight.Bold);Text(sub,fontSize=16.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)}
+@Composable fun Notice(text:String){Surface(color=MaterialTheme.colorScheme.surfaceVariant,shape=RoundedCornerShape(18.dp)){Text(text,Modifier.fillMaxWidth().padding(16.dp),fontSize=16.sp)}}
+@Composable fun Tile(title:String,subtitle:String,onClick:()->Unit){Card(Modifier.fillMaxWidth().clickable(onClick=onClick),shape=RoundedCornerShape(22.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)){Column(Modifier.padding(20.dp),verticalArrangement=Arrangement.spacedBy(8.dp)){Text(title+"  ›",fontSize=21.sp,fontWeight=FontWeight.Bold);Text(subtitle,fontSize=16.sp)}}}
+@Composable fun SourceLink(label:String,url:String){val ctx=LocalContext.current;val valid=runCatching{Uri.parse(url)}.getOrNull()?.let{it.scheme=="https"&&!it.host.isNullOrBlank()}==true;TextButton({runCatching{ctx.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(url)))}},enabled=valid){Text(label,fontSize=16.sp)}}
+@Composable fun CurrentPrice(p:PigPrice,compact:Boolean=false,on:()->Unit){Card(Modifier.fillMaxWidth().clickable(onClick=on),shape=RoundedCornerShape(24.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)){Column(Modifier.padding(22.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){Text("전국 돈가",fontSize=22.sp,fontWeight=FontWeight.Bold);Text(p.price?.let{"${comma(it)} 원/kg"}?:"발표 대기",fontSize=36.sp,fontWeight=FontWeight.Black);Text(priceStatus(p),fontSize=16.sp);if(p.previous!=null&&p.price!=null){val diff=p.price-p.previous;val pct=if(p.previous>0)diff*100.0/p.previous else null;Text("${if(diff>0)"▲ +" else if(diff<0)"▼ −" else "― "}${comma(kotlin.math.abs(diff))}원 · ${pct?.let{String.format(java.util.Locale.KOREA,"%+.2f%%",it)}?:"비교 불가"}",fontSize=20.sp,fontWeight=FontWeight.Bold);Text("비교 기준 ${formatDay(p.previousDate)} · ${comma(p.previous)}원",fontSize=16.sp)};Text(if(compact)"${formatDay(p.date)} · ${p.basis}\n축산물품질평가원 · ${displayUpdate(p.updatedAt)} 갱신" else "기준일 ${formatDay(p.date)}\n${p.basis}\n축산물품질평가원\n갱신 ${displayUpdate(p.updatedAt)}",fontSize=14.sp)}}}
+fun farmRegion(ctx:Context):String {val p=ctx.getSharedPreferences("dondon_profile",0);return listOf(p.getString("province","")?:"",p.getString("district","")?:"").filter{it.isNotBlank()}.joinToString(" ")}
+@Composable fun ProfileEditor(onSave:()->Unit){val ctx=LocalContext.current;val p=remember{ctx.getSharedPreferences("dondon_profile",0)};var province by remember{mutableStateOf(p.getString("province","")?:"")};var district by remember{mutableStateOf(p.getString("district","")?:"")};var saved by remember{mutableStateOf(false)};Text("농장 소재지",fontSize=24.sp,fontWeight=FontWeight.Bold);Text("지원사업은 현재 GPS보다 등록 농장 지역을 우선합니다.");OutlinedTextField(province,{province=it;saved=false},label={Text("시·도")},modifier=Modifier.fillMaxWidth(),singleLine=true);OutlinedTextField(district,{district=it;saved=false},label={Text("시·군·구")},modifier=Modifier.fillMaxWidth(),singleLine=true);Text("축종 · 양돈");listOf("축산업 허가","깨끗한 축산농장","HACCP","무항생제","저탄소 축산물").forEach{label->var checked by remember{mutableStateOf(p.getBoolean(label,false))};Row(verticalAlignment=Alignment.CenterVertically){Checkbox(checked,{checked=it;p.edit().putBoolean(label,it).apply()});Text(label,fontSize=18.sp)}};Button({p.edit().putString("province",province.trim()).putString("district",district.trim()).apply();saved=true;onSave()},Modifier.fillMaxWidth(),enabled=province.isNotBlank()&&district.isNotBlank()){Text(if(saved)"저장 완료" else "지역 저장")};Notice("프로필은 이 기기에만 저장합니다. 자격 검증 결과가 아닌 사용자 등록 정보입니다.")}
+@Composable fun SimpleEstimate(p:PigPrice){var heads by remember{mutableStateOf("")};var weight by remember{mutableStateOf("")};var price by remember{mutableStateOf(p.price?.toString()?:"")};var percent by remember{mutableStateOf("")};var perHead by remember{mutableStateOf("")};var confirmed by remember{mutableStateOf(false)};var policy by remember{mutableStateOf("중복 가능")};Heading("출하 정산 예측","두수·평균 도체중·단가로 계산합니다");listOf(Triple("출하두수",heads,{v:String->heads=v}),Triple("평균 도체중 kg/두",weight,{v:String->weight=v}),Triple("적용가격 원/kg",price,{v:String->price=v}),Triple("계약 가산 % · 선택",percent,{v:String->percent=v}),Triple("계약 가산 원/두 · 선택",perHead,{v:String->perHead=v})).forEach{(label,value,change)->OutlinedTextField(value,change,label={Text(label)},modifier=Modifier.fillMaxWidth(),singleLine=true)};Text("자동 불러온 단가 기준 ${formatDay(p.date)} · ${priceStatus(p)}");Row(verticalAlignment=Alignment.CenterVertically){Checkbox(confirmed,{confirmed=it});Text("실제 계약에서 확인한 가산입니다")};listOf("중복 가능","가장 높은 혜택만","중복 불가 · %만").forEach{FilterChip(policy==it,{policy=it},{Text(it)})};val result=runCatching{estimate(heads.toInt(),weight.toBigDecimal(),price.toBigDecimal(),listOf(Incentive("계약","%",if(percent.isBlank())BigDecimal.ZERO else percent.toBigDecimal(),confirmed),Incentive("계약","원/두",if(perHead.isBlank())BigDecimal.ZERO else perHead.toBigDecimal(),confirmed)),policy)}.getOrNull();Notice(result?.let{"예상 기본 정산  ${it.base.toPlainString()}원\n예상 추가금액  +${it.extra.toPlainString()}원\n최종 예상금액  ${it.total.toPlainString()}원"}?:"두수·도체중·가격에 올바른 양수를 입력해주세요.");Notice("인증만으로 가산하지 않습니다. 실제 도축장·조합·브랜드·계약조건 및 공제액에 따라 실수령액은 달라집니다.")}
+@Composable fun OrderReminder(){val ctx=LocalContext.current;val p=remember{ctx.getSharedPreferences("dondon_profile",0)};var last by remember{mutableStateOf(p.getString("last_order","")?:"")};var cycle by remember{mutableStateOf(p.getInt("order_cycle",0).takeIf{it>0}?.toString()?:"")};var revision by remember{mutableIntStateOf(0)};Heading("사료 주문시기","최근 주문일과 평소 주기만 알려주세요");OutlinedTextField(last,{last=it},label={Text("최근 주문일 YYYY-MM-DD")},modifier=Modifier.fillMaxWidth());OutlinedTextField(cycle,{cycle=it},label={Text("평균 주문주기 · 일")},modifier=Modifier.fillMaxWidth());val due=remember(last,cycle,revision){feedDue(last,cycle.toIntOrNull()?:0,p.getString("snooze",null))};Notice(due?.let{"다음 주문 예상일 $it"}?:"올바른 날짜와 1~365일 주기를 입력해주세요.");Button({p.edit().putString("last_order",last).putInt("order_cycle",cycle.toInt()).putBoolean("feed_alert",true).remove("snooze").remove("feed_notified").apply();requestNotify(ctx);revision++},enabled=due!=null&&parseDay(last)?.isAfter(todayKorea())==false){Text("주문시기 알림 저장")};Button({last=todayKorea().toString();p.edit().putString("last_order",last).remove("snooze").remove("feed_notified").apply();revision++},enabled=due!=null){Text("주문 완료")};OutlinedButton({p.edit().putString("snooze",todayKorea().plusDays(3).toString()).remove("feed_notified").apply();revision++},enabled=due!=null){Text("3일 뒤 다시")};OutlinedButton({val next=(due?:todayKorea()).coerceAtLeast(todayKorea()).plusDays((cycle.toLongOrNull()?:1));p.edit().putString("snooze",next.toString()).remove("feed_notified").apply();revision++},enabled=due!=null){Text("이번에는 필요 없음")};Notice("기기의 백그라운드 실행 정책에 따라 알림 시각이 늦어질 수 있습니다.")}
+@Composable fun NotificationPreferences(){val ctx=LocalContext.current;Heading("알림 설정","필요한 정보만 받아보세요");listOf(Triple("돈가 갱신","todaypig","price_alert"),Triple("국내 질병·방역","todaypig","disease_alert"),Triple("사료 주문시기","dondon_profile","feed_alert"),Triple("내 지역 지원사업·마감","dondon_profile","benefit_alert"),Triple("야간 알림 끄기 · 22~07시","dondon_profile","quiet_hours")).forEach{(label,store,key)->val p=remember{ctx.getSharedPreferences(store,0)};var value by remember{mutableStateOf(p.getBoolean(key,key=="quiet_hours"))};Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text(label,Modifier.weight(1f));Switch(value,{value=it;p.edit().putBoolean(key,it).apply();if(it)requestNotify(ctx)})}};Notice("지원사업 알림은 연결된 공식 공고를 기준으로 동작합니다. 기기 정기 확인 방식이므로 즉시 알림은 보장되지 않습니다.")}
+@Composable fun Benefits(feed:JSONObject){val ctx=LocalContext.current;val region=farmRegion(ctx);val rows=feed.optJSONArray("benefits");val matches=(0 until (rows?.length()?:0)).map{rows!!.getJSONObject(it)}.filter{it.optString("region")=="전국"||(region.isNotBlank()&&region.contains(it.optString("region").takeIf{r->r.isNotBlank()}?:"__unknown__"))};if(matches.isEmpty())Notice("현재 연결된 맞춤 공고가 없습니다.\n수집 연결 상태를 확인 중입니다. 지원사업이 없다는 뜻은 아닙니다.");matches.forEach{x->Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)){Column(Modifier.padding(18.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){Text(x.optString("title"),fontSize=22.sp,fontWeight=FontWeight.Bold);Text(x.optString("agency")+" · "+x.optString("region"));val days=daysUntil(x.optString("deadline"));Text(days?.let{if(it<0)"마감" else if(it==0L)"오늘 마감" else "D-$it"}?:"마감일 확인 필요");Text("지원내용: "+x.optString("support","원문 확인"));Text("대상: "+x.optString("target","원문 확인"));val req=x.optJSONArray("requirements");for(i in 0 until(req?.length()?:0)){val condition=req!!.getString(i);Text((if(ctx.getSharedPreferences("dondon_profile",0).getBoolean(condition,false))"✓ 등록 조건 일치 · " else "△ 추가 확인 · ")+condition)};Text("준비서류: "+x.optString("documents","공식 원문 확인"));SourceLink("공식 공고 확인",x.optString("url"));Text("실제 신청 가능 여부는 공식 공고와 담당부서에 확인해주세요.")}}};SourceLink("정부24에서 지원 확인","https://www.gov.kr/")}
+@Composable fun CertificationHub(){val ctx=LocalContext.current;Heading("우리 농장 인증","신청요건과 일정은 최신 공식 안내를 확인하세요");listOf("깨끗한 축산농장" to "https://www.lemi.or.kr/","HACCP" to "https://www.haccp.or.kr/","무항생제" to "https://www.enviagro.go.kr/","저탄소 축산물" to "https://www.ekape.or.kr/").forEach{(name,url)->Card(Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)){Column(Modifier.padding(18.dp)){Text(name,fontSize=22.sp,fontWeight=FontWeight.Bold);Text(if(ctx.getSharedPreferences("dondon_profile",0).getBoolean(name,false))"인증 완료 · 사용자 등록" else "미등록");SourceLink("공식 담당기관 확인",url)}}};Notice("인증별 상세요건·모집일정은 공식 자료 검증 후 제공됩니다. 인증 보유만으로 정산 가산을 적용하지 않습니다.")}
+@Composable fun MarketFlow(feed:JSONObject){Heading("원료 흐름","오르고 있는지, 내리고 있는지 간단하게");val rows=feed.optJSONArray("markets");listOf("옥수수","대두박","소맥","대두","원/달러","WTI","국내 경유").forEach{name->val x=(0 until(rows?.length()?:0)).map{rows!!.getJSONObject(it)}.firstOrNull{it.optString("name")==name};Card(Modifier.fillMaxWidth(),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.surface)){Column(Modifier.padding(18.dp)){Text(name,fontSize=22.sp,fontWeight=FontWeight.Bold);if(x==null||x.isNull("value"))Text("데이터 연결 대기",fontSize=18.sp)else{Text("${x.optDouble("value")} ${x.optString("unit")}",fontSize=26.sp);Text("${x.optString("basis")} · ${x.optString("date")}");Text("${x.optString("source")} · 갱신 ${x.optString("updatedAt")}");SourceLink("원본 확인",x.optString("url"))}}}};Notice("국제 참고가격은 국내 실제 사료 구매단가와 다릅니다. 확인되지 않은 가격은 표시하지 않습니다.")}
+@Composable fun PriceHistoryView(d:AppData){var period by remember{mutableStateOf("7일")};Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)){listOf("7일","1개월","3개월","1년","3년").forEach{FilterChip(period==it,{period=it},{Text(it)})}};val cutoff=todayKorea().minusDays(when(period){"7일"->7;"1개월"->30;"3개월"->90;"1년"->365;else->1095}.toLong());val rows=d.history.filter{parseDay(it.date)?.let{date->date>=cutoff&&date<=todayKorea()}==true}.sortedBy{it.date};if(period=="3년")PriceChart(rows,"3개년 월간")else{val daily=rows.filter{it.resolution=="day"};TouchPriceChart(daily);daily.takeLast(31).reversed().forEach{Text("${formatDay(it.date)}    ${comma(it.price)} 원/kg",fontSize=17.sp)}}}
+
+@Composable fun BrandSymbol(){androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_dondontoday),"돈돈해 심벌",Modifier.size(64.dp))}
+
+@Composable fun TouchPriceChart(rows:List<HistPoint>){
+ val sorted=rows.filter{it.resolution=="day"}.sortedBy{it.date}
+ if(sorted.isEmpty()){Notice("이 기간에는 확인된 일별 가격이 없습니다.");return}
+ var selected by remember(sorted){mutableIntStateOf(sorted.lastIndex)}
+ val low=sorted.minOf{it.price};val high=sorted.maxOf{it.price};val color=MaterialTheme.colorScheme.primary
+ Text("${formatDay(sorted[selected].date)} · ${comma(sorted[selected].price)}원/kg",fontSize=20.sp,fontWeight=FontWeight.Bold)
+ androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(170.dp).pointerInput(sorted){detectTapGestures{tap->selected=((tap.x/size.width)*(sorted.size-1)).toInt().coerceIn(0,sorted.lastIndex)}}){
+  val path=androidx.compose.ui.graphics.Path()
+  sorted.forEachIndexed{i,p->val x=if(sorted.size==1)size.width/2 else size.width*i/(sorted.size-1);val y=size.height*.9f-(p.price-low).toFloat()/(high-low).coerceAtLeast(1)*size.height*.8f
+   val gap=if(i==0)false else java.time.temporal.ChronoUnit.DAYS.between(parseDay(sorted[i-1].date),parseDay(p.date))>3
+   if(i==0||gap)path.moveTo(x,y)else path.lineTo(x,y)
+   drawCircle(color,if(i==selected)9f else 4f,androidx.compose.ui.geometry.Offset(x,y))
+  };drawPath(path,color,style=androidx.compose.ui.graphics.drawscope.Stroke(4f))
+ }
+ Text("최고 ${comma(high)}원 · 최저 ${comma(low)}원",fontSize=16.sp)
+ Text("그래프를 누르면 날짜별 값을 확인합니다. 수집되지 않은 날은 0원으로 계산하지 않습니다.",fontSize=14.sp)
+}
+
+fun displayUpdate(value:String):String=try{java.time.OffsetDateTime.parse(value).format(java.time.format.DateTimeFormatter.ofPattern("MM.dd HH:mm"))}catch(_:Exception){"확인 필요"}
+
+@Composable fun AppearanceSettings(){
+ val ctx=LocalContext.current
+ Heading("화면 모드","편안하게 읽을 수 있는 화면을 선택하세요")
+ listOf("system" to "휴대폰 설정 따르기","light" to "밝은 모드","dark" to "다크 모드").forEach{(mode,label)->
+  Button({ctx.getSharedPreferences("todaypig",0).edit().putString("appearance",mode).apply();(ctx as? androidx.activity.ComponentActivity)?.recreate()},Modifier.fillMaxWidth().heightIn(min=52.dp)){Text(label)}
+ }
+}

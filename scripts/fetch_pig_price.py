@@ -118,7 +118,9 @@ def main():
             except Exception as e: print("KAPE 3-year backfill skipped",prefix,e)
         cursor=(cursor+timedelta(days=32)).replace(day=1)
     rows=sorted(rows,key=lambda r:r["date"])
-    latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
+    daily_rows=[r for r in rows if r.get("resolution","day")=="day"]
+    if not daily_rows: raise RuntimeError("No daily KAPE values; monthly data cannot be a daily price")
+    latest=daily_rows[-1]; prev=daily_rows[-2] if len(daily_rows)>1 else latest
     diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
     month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
     # 월별 비교값은 일별 캐시가 부족하면 KAPE에 월 범위로 직접 조회해 보강한다.
@@ -135,7 +137,7 @@ def main():
         try: return month_api(prefix)
         except Exception as e: print("KAPE month comparison skipped",prefix,e); return 0
     month_avg=avg(month) or safe_month(month); prev_month_avg=avg(prev_month) or safe_month(prev_month); last_year_avg=avg(last_year) or safe_month(last_year)
-    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","formula":"암+거세 성별 응답의 거래두수 가중평균","filters":{"skinYn":"Y","egradeExceptYn":"Y","sexCd":["025001","025003"],"jeju":"excluded_by_official_national_series"},"date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg or None,"previousMonthAverage":prev_month_avg or None,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else None,"lastYearMonthAverage":last_year_avg or None,"lastYearChange":month_avg-last_year_avg if last_year_avg else None,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok","displayStatus":"확정"}
+    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","formula":"암+거세 성별 응답의 거래두수 가중평균","filters":{"skinYn":"Y","egradeExceptYn":"Y","sexCd":["025001","025003"],"jeju":"excluded_by_official_national_series"},"date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg or None,"previousMonthAverage":prev_month_avg or None,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else None,"lastYearMonthAverage":last_year_avg or None,"lastYearChange":month_avg-last_year_avg if last_year_avg else None,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok","displayStatus":"공식 조회값 · 확정 여부 확인 필요"}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
     old=[]

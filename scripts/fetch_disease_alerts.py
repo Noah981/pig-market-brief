@@ -23,9 +23,8 @@ COUNTRIES=[
 
 def country_code(text,expected_scope=None):
  lower=text.lower()
- for code,names in COUNTRIES:
-  if any(name in lower for name in names):return code
- return "KR" if expected_scope=="국내" else None
+ matches={code for code,names in COUNTRIES if any(name in lower for name in names)}
+ return next(iter(matches)) if len(matches)==1 else None
 
 def classify(code):
  return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
@@ -35,7 +34,10 @@ def fetch(url):
  return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
-def diseases(text):return sorted({v for k,v in DISEASES.items() if k.lower() in text.lower()})
+def diseases(text):
+ values={v for k,v in DISEASES.items() if k.lower() in text.lower()}
+ if "ASF" in values and "돼지열병" in values and not re.search(r"(?<!아프리카)돼지열병|classical swine fever",text,re.I):values.discard("돼지열병")
+ return sorted(values)
 
 def official_page(source,url,scope="국내",default_country=None):
  out=[]
@@ -65,16 +67,22 @@ def public_news(scope="국내"):
   except Exception as e:print("public source skipped",term,e)
  return out
 
-items=[]
-items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do")
-items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do")
-items+=official_page("WOAH 세계동물보건기구","https://www.woah.org/en/disease/african-swine-fever/","국외")
-items+=public_news("국내")
-items+=public_news("국외")
-seen=set();dedup=[]
-for x in items:
- key=(x["disease"],x["summary"])
- if key not in seen:seen.add(key);dedup.append(x)
-payload={"schemaVersion":2,"updatedAt":datetime.now(KST).isoformat(),"items":dedup[:50],"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생/확진/방역 공지가 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
-OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
-print("disease signals",len(dedup))
+def main():
+ items=[]
+ items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do")
+ items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do")
+ items+=official_page("WOAH 세계동물보건기구","https://www.woah.org/en/disease/african-swine-fever/","국외")
+ items+=public_news("국내")
+ items+=public_news("국외")
+ seen=set();dedup=[]
+ for x in items:
+  key=(x["disease"],x["summary"])
+  if key not in seen:seen.add(key);dedup.append(x)
+ payload={"schemaVersion":2,"updatedAt":datetime.now(KST).isoformat(),"items":dedup[:50],"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생/확진/방역 공지가 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ if not dedup:
+  print("No verified response; preserving existing cache")
+  return
+ OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+ print("disease signals",len(dedup))
+
+if __name__=="__main__":main()

@@ -1,12 +1,10 @@
 name: Build Android APK
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "android/**"
-      - ".github/workflows/android-build.yml"
+  pull_request:
+    paths: ["android/**", ".github/workflows/android-build.yml"]
 permissions:
-  contents: write
+  contents: read
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -19,27 +17,36 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-35 build-tools;35.0.0
+          log-accepted-android-sdk-licenses: false
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
-      - name: Run unit tests
-        run: gradle :app:testDebugUnitTest --stacktrace
-      - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pig-market-brief-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Publish permanent latest APK
+      - name: Validate collectors
         working-directory: .
+        run: python -m unittest discover -s scripts -p test_platform.py -v
+      - name: Test and build
+        run: gradle :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease --stacktrace
+      - name: Enable emulator acceleration
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk /tmp/todaypig-latest.apk
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git reset --hard origin/main
-          mkdir -p docs/downloads
-          cp /tmp/todaypig-latest.apk docs/downloads/todaypig-latest.apk
-          git add -f docs/downloads/todaypig-latest.apk
-          git diff --cached --quiet || git commit -m "Publish latest Android APK"
-          git push origin HEAD:main
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and navigate Android app
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: python scripts/android_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dondonhae-validation
+          path: |
+            android/app/build/outputs/apk/
+            android/app/build/test-results/
+            android/app/build/reports/

@@ -1,0 +1,32 @@
+name: Publish Dondonhae APK
+on:
+  push:
+    branches: [codex/dondonhae-information-platform]
+    paths: [".github/workflows/publish-apk.yml"]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-35 build-tools;35.0.0
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Test and build reference home
+        working-directory: android
+        run: gradle :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease --stacktrace
+      - name: Publish download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk dondonhae-5.0.2.apk
+          gh release create dondonhae-v5.0.2 dondonhae-5.0.2.apk --target "${{ github.sha }}" --title "돈돈해 5.0.2 사진 기준 홈" --notes "첨부 사진 기준 홈 화면 재구성 빌드."

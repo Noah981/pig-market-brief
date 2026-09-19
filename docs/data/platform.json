@@ -1,0 +1,17 @@
+{
+  "markets": [],
+  "benefits": [],
+  "checkedAt": "2026-09-19T12:05:45.933396+09:00",
+  "sourceStatus": [
+    {
+      "id": "regional-benefits",
+      "agency": "지역 공식 공고",
+      "status": "연결 검증 대기"
+    },
+    {
+      "id": "official-market",
+      "agency": "공식 시장 데이터",
+      "status": "연결 검증 대기"
+    }
+  ]
+}

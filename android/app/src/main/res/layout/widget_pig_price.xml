@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widgetRoot" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp" android:background="@drawable/widget_bg">
-<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="돈돈해 · 생산자 돼지 경락가격" android:textStyle="bold" android:textSize="12sp" android:textColor="#F34F72"/>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="돈돈해 · 생산자 돼지 경락가격" android:textStyle="bold" android:textSize="12sp" android:textColor="#17634C"/>
 <TextView android:id="@+id/widgetPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="가격 확인 중" android:textStyle="bold" android:textSize="28sp" android:textColor="#101820"/>
 <TextView android:id="@+id/widgetChange" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="전일 · 전월 비교" android:textStyle="bold" android:textSize="12sp" android:textColor="#1976D2"/>
 <TextView android:id="@+id/widgetGrades" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:text="1+  -   1  -   2  -   등외  -" android:textStyle="bold" android:textSize="12sp" android:textColor="#27313B"/>
