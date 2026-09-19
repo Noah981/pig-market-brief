@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 abstract final class AppColors {
   static const coral = Color(0xFFF72F62);
@@ -26,7 +25,7 @@ abstract final class AppTheme {
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.background,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.coral),
-        textTheme: GoogleFonts.notoSansKrTextTheme().apply(
+        textTheme: Typography.material2021(platform: TargetPlatform.android).black.apply(
           bodyColor: AppColors.text,
           displayColor: AppColors.text,
         ),
