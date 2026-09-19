@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../data/market_repository.dart';
+import '../models/dashboard_models.dart';
+import 'market_detail_pages.dart';
 
 class PageShell extends StatelessWidget {
   const PageShell({super.key, required this.title, required this.subtitle, required this.child});
@@ -30,22 +32,21 @@ class PageShell extends StatelessWidget {
 }
 
 class MarketOverviewPage extends StatelessWidget {
-  const MarketOverviewPage({super.key,this.snapshot});
+  const MarketOverviewPage({super.key,this.snapshot,this.commodities=const [],this.analysis});
   final MarketSnapshot? snapshot;
+  final List<Commodity> commodities;
+  final MarketAnalysis? analysis;
   @override
   Widget build(BuildContext context) {
     final tiles = [
-      _MarketTile('🐷','전국 돈가',snapshot==null?'확인 중':_number(snapshot!.price),snapshot==null?'':'원/kg',_change(snapshot),(snapshot?.change??-1)>=0),
-      const _MarketTile('🌽', '옥수수', '연결 대기', '', '공식 데이터 확인 중', false),
-      const _MarketTile('🫘', '대두박', '연결 대기', '', '공식 데이터 확인 중', false),
-      const _MarketTile('＄', '달러 환율', '연결 대기', '', '공식 데이터 확인 중', false),
+      _MarketTile('🐷','전국 돈가',snapshot==null?'확인 중':_number(snapshot!.price),snapshot==null?'':'원/kg',_change(snapshot),(snapshot?.change??-1)>=0,onTap:()=>_openPig(context)),
+      _commodityTile('🌽','corn',context),
+      _commodityTile('🫘','soybean_meal',context),
+      _commodityTile('＄','usd_krw',context),
     ];
     final summaries = [
-      ('돈가', '하락', '전일 대비 298원 (-4.42%)'),
-      ('옥수수', '확인 중', '공식 데이터 연결 대기'),
-      ('대두박', '확인 중', '공식 데이터 연결 대기'),
-      ('환율', '확인 중', '공식 데이터 연결 대기'),
-      ('유가', '확인 중', '공식 데이터 연결 대기'),
+      ('돈가', snapshot==null?'확인 중':(snapshot!.change>=0?'상승':'하락'), _change(snapshot)),
+      ...commodities.map((x)=>(x.name.replaceAll('\n',' '),x.change==null?'확인 중':(x.change!>=0?'상승':'하락'),x.change==null?'공식 데이터 연결 대기':'전일 대비 ${x.change!.abs().toStringAsFixed(1)}%')),
     ];
     return PageShell(
       title: '시황', subtitle: '지금, 시장의 흐름을 한눈에',
@@ -57,7 +58,7 @@ class MarketOverviewPage extends StatelessWidget {
           children: tiles,
         ),
         const SizedBox(height: 10),
-        const SizedBox(height:104,child:_MarketTile('🛢️','국제 유가 (WTI)','연결 대기','','공식 데이터 확인 중',false,wide:true)),
+        SizedBox(height:104,child:_commodityTile('🛢️','wti',context,wide:true)),
         const SizedBox(height: 18),
         const _SectionTitle('시황 요약 (오늘)'),
         ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3)),
@@ -66,14 +67,18 @@ class MarketOverviewPage extends StatelessWidget {
   }
   String _number(int value)=>value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');
   String _change(MarketSnapshot? s){if(s==null)return '공식 데이터 연결 중';return '${s.change>=0?'▲':'▼'} ${s.change.abs()}원 (${s.changePct.toStringAsFixed(2)}%)';}
+  Commodity? _find(String id){for(final item in commodities){if(item.id==id)return item;}return null;}
+  Widget _commodityTile(String emoji,String id,BuildContext context,{bool wide=false}){final item=_find(id);final label={'corn':'옥수수','soybean_meal':'대두박','usd_krw':'달러 환율','wti':'국제 유가 (WTI)'}[id]!;return _MarketTile(emoji,label,item?.value??'연결 대기',item?.unit??'',item?.change==null?'공식 데이터 확인 중':'${item!.change!>=0?'▲':'▼'} ${item.change!.abs().toStringAsFixed(1)}%',(item?.change??0)>=0,wide:wide,onTap:item==null?null:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));}
+  void _openPig(BuildContext context)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:snapshot,analysis:analysis)));
 }
 
 class _MarketTile extends StatelessWidget {
-  const _MarketTile(this.emoji, this.name, this.value, this.unit, this.change, this.up, {this.wide = false});
+  const _MarketTile(this.emoji, this.name, this.value, this.unit, this.change, this.up, {this.wide = false,this.onTap});
   final String emoji, name, value, unit, change;
   final bool up, wide;
+  final VoidCallback? onTap;
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => InkWell(borderRadius:BorderRadius.circular(15),onTap:onTap,child:Container(
     padding: const EdgeInsets.all(13), decoration: appCard(radius: 15),
     child: Row(children: [
       Text(emoji, style: TextStyle(fontSize: wide ? 30 : 25)),
@@ -85,7 +90,7 @@ class _MarketTile extends StatelessWidget {
       ])),
       const Icon(Icons.chevron_right, color: AppColors.coral, size: 17),
     ]),
-  );
+  ));
 }
 
 class DiseasePage extends StatefulWidget {

@@ -16,12 +16,34 @@ class TodoItem {
 }
 
 class Commodity {
-  const Commodity(this.name, this.value, this.unit, this.change, this.icon);
+  const Commodity(this.name, this.value, this.unit, this.change, this.icon,
+      {this.id = '', this.source = '', this.asOf = ''});
   final String name;
   final String value;
   final String unit;
   final double? change;
   final IconData icon;
+  final String id;
+  final String source;
+  final String asOf;
+}
+
+class MarketFactor {
+  const MarketFactor(this.title, this.status, this.detail);
+  final String title;
+  final String status;
+  final String detail;
+}
+
+class MarketAnalysis {
+  const MarketAnalysis({
+    required this.summary,
+    required this.factors,
+    required this.updatedAt,
+  });
+  final String summary;
+  final List<MarketFactor> factors;
+  final String updatedAt;
 }
 
 class NoticeItem {

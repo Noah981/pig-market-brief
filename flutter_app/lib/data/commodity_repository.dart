@@ -55,12 +55,23 @@ class CommodityRepository {
   Commodity _item(
       Map<String, dynamic>? row, String label, IconData icon) {
     if (row == null || row['value'] is! num) {
-      return Commodity(label, '확인 중', '', null, icon);
+      return Commodity(label, '확인 중', '', null, icon,
+          id: row?['name']?.toString() ?? _idForLabel(label));
     }
     final value = (row['value'] as num).toDouble();
     final decimals = value >= 1000 ? 1 : 2;
     final text = value.toStringAsFixed(decimals);
     final change = (row['changePct'] as num?)?.toDouble();
-    return Commodity(label, text, row['unit']?.toString() ?? '', change, icon);
+    return Commodity(label, text, row['unit']?.toString() ?? '', change, icon,
+        id: row['name']?.toString() ?? _idForLabel(label),
+        source: row['source']?.toString() ?? '',
+        asOf: row['date']?.toString() ?? row['updatedAt']?.toString() ?? '');
+  }
+
+  String _idForLabel(String label) {
+    if (label.startsWith('옥수수')) return 'corn';
+    if (label.startsWith('대두박')) return 'soybean_meal';
+    if (label.startsWith('국제유가')) return 'wti';
+    return 'usd_krw';
   }
 }
