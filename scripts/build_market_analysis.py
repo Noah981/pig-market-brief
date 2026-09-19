@@ -17,7 +17,7 @@ latest=p.get("price",0); prev=p.get("previousPrice",0); change=p.get("change",0)
 last7=rows[-7:]
 avg7=round(sum(x["price"] for x in last7)/len(last7)) if last7 else 0
 trend7=latest-avg7 if latest and avg7 else 0
-count=p.get("count",0)
+count=p.get("count") or 0
 recent_counts=[x.get("count",0) for x in rows[-8:-1] if x.get("count",0)>0]
 avg_count=round(sum(recent_counts)/len(recent_counts)) if recent_counts else 0
 
@@ -28,7 +28,7 @@ elif change>0:
     factors.append({"title":"당일 경락가격 상승","status":"확인","detail":f"전 거래일 대비 {change:,}원/kg 상승했습니다."})
 if avg7:
     factors.append({"title":"최근 7거래일 흐름","status":"체크","detail":f"최근 7거래일 평균은 {avg7:,}원/kg이며 오늘 가격은 평균 대비 {latest-avg7:+,}원입니다."})
-if avg_count:
+if count and avg_count:
     pct=(count-avg_count)/avg_count*100
     factors.append({"title":"경매 두수 변화","status":"체크","detail":f"오늘 집계 두수 {count:,}두, 직전 거래일 평균 대비 {pct:+.1f}%입니다. 경매 물량 변화는 가격 변동과 함께 볼 요인입니다."})
 factors.append({"title":"하반기 공급 여건","status":"배경","detail":"KREI 2026 전망은 하반기 돼지 도축 마릿수가 전년보다 증가하고 연평균 도매가격은 전년보다 낮을 가능성을 제시했습니다. 당일 하락의 단일 원인으로 단정할 수는 없습니다."})
