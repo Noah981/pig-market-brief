@@ -24,7 +24,7 @@ class _DiseasePageState extends State<DiseasePage>{
   }
   void _pickRegion(){
     const regions=<String,(double,double)>{'경북 김천':(36.139,128.114),'경북 상주':(36.410,128.159),'경북 문경':(36.586,128.186),'경북 성주':(35.919,128.283),'경북 고령':(35.726,128.263),'경북 칠곡':(35.995,128.401),'대구 군위':(36.242,128.573),'대구 달성':(35.774,128.431)};
-    showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:ListView(shrinkWrap:true,children:[const ListTile(title:Text('지역을 선택하세요',style:TextStyle(fontWeight:FontWeight.w900))),...regions.entries.map((x)=>ListTile(title:Text(x.key),onTap:(){setState((){_location=x.key;_lat=x.value.$1;_lng=x.value.$2;_message=null;});Navigator.pop(context);})),]));
+    showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:ListView(shrinkWrap:true,children:[const ListTile(title:Text('지역을 선택하세요',style:TextStyle(fontWeight:FontWeight.w900))),...regions.entries.map((x)=>ListTile(title:Text(x.key),onTap:(){setState((){_location=x.key;_lat=x.value.$1;_lng=x.value.$2;_message=null;});Navigator.pop(context);})),])));
   }
   @override Widget build(BuildContext context)=>PageShell(title:'질병 정보',subtitle:'공식 확인과 공개정보 신호를 구분해 보여드립니다',child:Column(children:[
     _tabs(),const SizedBox(height:10),_counts(),const SizedBox(height:10),
