@@ -23,7 +23,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage>{
     const SliverToBoxAdapter(child:FarmHeroSection()),
     SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,8,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,series:priceSeries,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
-      SizedBox(height:190,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:TodoSummaryCard(items:_todos,onToggle:(i)=>setState(()=>_todos[i].done=!_todos[i].done))),const SizedBox(width:8),const Expanded(child:WeatherSummaryCard())])),
+      SizedBox(height:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:TodoSummaryCard(items:_todos,onToggle:(i)=>setState(()=>_todos[i].done=!_todos[i].done))),const SizedBox(width:8),const Expanded(child:WeatherSummaryCard())])),
     ]))
   ])));
 }
