@@ -12,7 +12,7 @@ def load(name,default):
 
 p=load("pig-price.json",{})
 h=load("pig-price-history.json",{"rows":[]})
-rows=[x for x in h.get("rows",[]) if x.get("price",0)>0 and x.get("count",0)>500]
+rows=[x for x in h.get("rows",[]) if (x.get("price") or 0)>0 and (x.get("count") or 0)>500]
 latest=p.get("price",0); prev=p.get("previousPrice",0); change=p.get("change",0)
 last7=rows[-7:]
 avg7=round(sum(x["price"] for x in last7)/len(last7)) if last7 else 0
