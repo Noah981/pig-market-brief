@@ -38,8 +38,8 @@ import java.math.BigDecimal
  AutoLocationBootstrap(""){province,district->ctx.getSharedPreferences("todaypig",0).edit().putString("region",province).putString("district",district).putBoolean("location_initialized",true).apply()}
  fun open(target:String){detail=target}
  Scaffold(bottomBar={NavigationBar(containerColor=MaterialTheme.colorScheme.surface){listOf("오늘","돈가","시장","혜택","더보기").forEachIndexed{i,label->NavigationBarItem(selected=tab==i,onClick={tab=i;detail=""},icon={Text(listOf("⌂","↗","▥","◇","⋯")[i],fontSize=24.sp)},label={Text(label,fontSize=14.sp)},colors=NavigationBarItemDefaults.colors(selectedIconColor=MaterialTheme.colorScheme.primary,selectedTextColor=MaterialTheme.colorScheme.primary,indicatorColor=MaterialTheme.colorScheme.surfaceVariant))}}}){padding->
- Column(Modifier.padding(padding).fillMaxSize().verticalScroll(remember(tab,detail){androidx.compose.foundation.ScrollState(0)}).padding(20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)){
-  Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){TextButton({detail=""}){Text(if(detail.isEmpty())"돈돈해" else "‹ 돌아가기",fontSize=22.sp,fontWeight=FontWeight.Black)};TextButton({scope.launch{refresh()}},enabled=!busy){Text(if(busy)"갱신 중" else "↻ 새로고침")}}
+ Column(Modifier.padding(padding).fillMaxSize().verticalScroll(remember(tab,detail){androidx.compose.foundation.ScrollState(0)}).padding(horizontal=12.dp,vertical=4.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
+  if(tab!=0||detail.isNotEmpty()) Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){TextButton({detail=""}){Text(if(detail.isEmpty())"돈돈해" else "‹ 돌아가기",fontSize=22.sp,fontWeight=FontWeight.Black)};TextButton({scope.launch{refresh()}},enabled=!busy){Text(if(busy)"갱신 중" else "↻ 새로고침")}}
   if(data.stale)Notice("마지막 저장 데이터\n돈가 기준 ${formatDay(data.pig.date)} · 갱신 ${displayUpdate(data.pig.updatedAt)}")
   when(detail){
    "질병"->{Heading("질병·방역","발생국 기준으로 국내와 해외를 구분합니다");DiseaseList(data.diseases);Notice("발생 좌표가 없는 공고는 거리로 환산하지 않습니다. 공식 방역 공고와 발생 확인 정보를 구분해 확인하세요.")}
@@ -51,7 +51,7 @@ import java.math.BigDecimal
    "인증"->CertificationHub()
    "화면"->AppearanceSettings()
    else->when(tab){
-    0->{Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){BrandSymbol();Column{Text("양돈의 오늘을 든든하게",fontSize=20.sp,fontWeight=FontWeight.Bold);Text(todayKorea().toString(),fontSize=14.sp)}};CurrentPrice(data.pig,compact=true){tab=1};Tile("오늘의 시장","옥수수 · 대두박 · 소맥 · 환율 · 유가"){tab=2};Tile("질병·방역","국내외 공식 발표와 확인 중 정보를 확인하세요"){open("질병")};Tile("내 지역 지원사업",farmRegion(ctx).ifBlank{"농장 지역을 설정해주세요"}){tab=3};Tile("오늘 알아둘 소식","정책·지원사업·인증 소식"){tab=3};Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){OutlinedButton({open("정산")},Modifier.weight(1f)){Text("정산 예측")};OutlinedButton({open("사료")},Modifier.weight(1f)){Text("주문 알림")}}}
+    0->ReferenceHome(data,extension,{tab=1},{tab=2},{open(it)},{scope.launch{refresh()}})
     1->{Heading("전국 돈가","생산자 돼지 경락가격");CurrentPrice(data.pig){};PriceHistoryView(data);CompareGrid(data.pig);SourceLink("축산물품질평가원 공식 정보","https://www.ekape.or.kr/")}
     2->MarketFlow(extension)
     3->{Heading("내 지역 혜택",farmRegion(ctx).ifBlank{"농장 소재지를 먼저 설정하세요"});Tile("농장 지역·조건 설정","GPS와 별도로 농장 소재지를 저장합니다"){open("프로필")};Benefits(extension);Tile("우리 농장 인증","깨끗한 축산농장 · HACCP · 무항생제 · 저탄소"){open("인증")}}
