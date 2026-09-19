@@ -27,14 +27,14 @@ jobs:
         env:
           KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
         run: python scripts/fetch_weather.py || echo "Weather fetch failed; keeping previous cached data"
-      - name: Fetch KAPE national ex-Jeju pig auction price
-        env:
-          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
-        run: python scripts/fetch_pig_price.py
+      # 대표 돈가는 축산유통정보 다봄의 '생산자 돼지 경락가격' 공표값만
+      # 사용한다. pigGrade 원자료 자체 가중평균 수집기는 다른 값이므로 호출하지 않는다.
       - name: Fetch KAPE Jeju pig prices
         env:
           KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
         run: python scripts/fetch_kape_jeju.py || echo "Jeju fetch failed; keeping previous cached data"
+      - name: Update verified market and benefits adapters
+        run: python scripts/platform_pipeline.py
       - name: Build briefing
         run: python scripts/build_briefing.py
       - name: Build market analysis
