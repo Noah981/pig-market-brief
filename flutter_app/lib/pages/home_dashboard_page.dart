@@ -34,11 +34,15 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _refreshAnalysis()async{try{final value=await _analysisRepository.refresh();if(mounted)setState(()=>_analysis=value);}catch(_){}}
   Future<void> _loadCommodities()async{try{final cached=await _commodityRepository.cached();if(mounted&&cached.isNotEmpty)setState(()=>_commodities=cached);}catch(_){}await _refreshCommodities();}
   Future<void> _refreshCommodities()async{try{final value=await _commodityRepository.refresh();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}catch(_){}}
+  Future<void> _pullToRefresh()async{
+    await Future.wait([_refreshMarket(),_refreshAnalysis(),_refreshCommodities()]);
+    if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('최신 시황을 확인했습니다.'),duration:Duration(seconds:1)));
+  }
   @override Widget build(BuildContext context)=>Scaffold(
     bottomNavigationBar:BottomNavigation(index:_nav,onSelected:(i)=>setState(()=>_nav=i)),
     body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis),const DiseasePage(),const FarmCheckPage(),const MorePage()])),
   );
-  Widget _home()=>Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:430),child:CustomScrollView(key:const PageStorageKey('home'),slivers:[
+  Widget _home()=>Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:430),child:RefreshIndicator(color:AppColors.coral,onRefresh:_pullToRefresh,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),key:const PageStorageKey('home'),slivers:[
     const SliverToBoxAdapter(child:FarmHeroSection()),
     SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,8,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,series:priceSeries,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
@@ -49,7 +53,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
       const NoticeCard(items:notices),
       const SizedBox(height:12),
     ]))
-  ])));
+  ]))));
   void _openPigPrice()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:_market,analysis:_analysis)));
   void _openCommodity(Commodity item)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item)));
 }

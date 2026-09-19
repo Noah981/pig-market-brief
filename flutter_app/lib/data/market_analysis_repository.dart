@@ -19,7 +19,7 @@ class MarketAnalysisRepository {
   }
 
   Future<MarketAnalysis> refresh() async {
-    final response = await _client.get(Uri.parse(_url)).timeout(const Duration(seconds: 12));
+    final response = await _client.get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}')).timeout(const Duration(seconds: 12));
     if (response.statusCode != 200) throw Exception('Market analysis unavailable');
     final raw = utf8.decode(response.bodyBytes);
     final value = _decode(raw);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class MarketSnapshot {
   const MarketSnapshot({required this.price,required this.previousPrice,required this.change,required this.changePct,required this.date,required this.updatedAt,required this.source,required this.scope,required this.history,required this.fromCache});
@@ -30,11 +31,13 @@ class MarketRepository {
 
   Future<MarketSnapshot?> cached()async{
     final prefs=await SharedPreferences.getInstance();
-    final raw=prefs.getString(_cacheKey);if(raw==null)return null;
+    var raw=prefs.getString(_cacheKey);
+    raw??=await rootBundle.loadString('assets/data/pig-price.json');
     try{return MarketSnapshot.fromJson(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
   }
   Future<MarketSnapshot> refresh()async{
-    final responses=await Future.wait([_client.get(Uri.parse(_priceUrl)).timeout(const Duration(seconds:12)),_client.get(Uri.parse(_historyUrl)).timeout(const Duration(seconds:12))]);
+    final stamp=DateTime.now().millisecondsSinceEpoch;
+    final responses=await Future.wait([_client.get(Uri.parse('$_priceUrl?v=$stamp')).timeout(const Duration(seconds:12)),_client.get(Uri.parse('$_historyUrl?v=$stamp')).timeout(const Duration(seconds:12))]);
     if(responses.any((r)=>r.statusCode!=200))throw Exception('Official data unavailable');
     final priceJson=jsonDecode(utf8.decode(responses[0].bodyBytes)) as Map<String,dynamic>;
     final historyJson=jsonDecode(utf8.decode(responses[1].bodyBytes)) as Map<String,dynamic>;

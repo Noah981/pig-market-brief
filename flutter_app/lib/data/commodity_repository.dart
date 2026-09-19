@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../models/dashboard_models.dart';
 
@@ -16,9 +17,9 @@ class CommodityRepository {
 
   Future<List<Commodity>> cached() async {
     final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
-    if (raw == null) return const [];
+    final value = raw ?? await rootBundle.loadString('assets/data/platform.json');
     try {
-      return _parse(jsonDecode(raw) as Map<String, dynamic>);
+      return _parse(jsonDecode(value) as Map<String, dynamic>);
     } catch (_) {
       return const [];
     }
@@ -26,7 +27,7 @@ class CommodityRepository {
 
   Future<List<Commodity>> refresh() async {
     final response = await _client
-        .get(Uri.parse(_url))
+        .get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}'))
         .timeout(const Duration(seconds: 12));
     if (response.statusCode != 200) throw Exception('Market data unavailable');
     final raw = utf8.decode(response.bodyBytes);

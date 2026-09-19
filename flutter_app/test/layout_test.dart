@@ -18,6 +18,15 @@ void main() {
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
+  testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());
+    await tester.pumpAndSettle();
+    expect(find.text('6,442'), findsOneWidget);
+    expect(find.byType(RefreshIndicator), findsOneWidget);
+  });
   testWidgets('하단 메뉴가 실제 화면으로 이동한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
