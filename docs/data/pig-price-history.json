@@ -4,7 +4,7 @@
   "formulaVersion": "kape-pig-grade-v2",
   "coverage": {
     "from": "20230901",
-    "to": "20260918",
+    "to": "20260919",
     "minimumMonths": 36
   },
   "rows": [
@@ -387,6 +387,11 @@
       "date": "20260918",
       "price": 5499,
       "count": 5151
+    },
+    {
+      "date": "20260919",
+      "price": 7016,
+      "count": 36
     }
   ]
 }
