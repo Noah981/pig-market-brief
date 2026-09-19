@@ -1,0 +1,38 @@
+name: Build Flutter reference app
+on:
+  push:
+    branches: [codex/dondonhae-information-platform]
+    paths: ["flutter_app/**", ".github/workflows/flutter-build.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.4"
+          channel: stable
+          cache: true
+      - name: Generate platform shells
+        working-directory: flutter_app
+        run: flutter create --platforms=android,ios --org kr.dondonhae .
+      - name: Copy project pig photo asset
+        run: |
+          mkdir -p flutter_app/assets/images
+          cp android/app/src/main/res/drawable-nodpi/dondontoday_pig_hero.png flutter_app/assets/images/pig_hero.png
+      - name: Resolve packages
+        working-directory: flutter_app
+        run: flutter pub get
+      - name: Analyze
+        working-directory: flutter_app
+        run: flutter analyze
+      - name: Build APK
+        working-directory: flutter_app
+        run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dondonhae-flutter-reference
+          path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
