@@ -30,4 +30,24 @@ void main() {
       expect(tester.takeException(), isNull);
     }
   });
+  testWidgets('돈가와 원료 카드가 상세 화면으로 이동한다', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('돈가 변동 이유'));
+    await tester.pumpAndSettle();
+    expect(find.text('전국 돈가 상세'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('commodity_wti')), 250);
+    await tester.tap(find.byKey(const ValueKey('commodity_wti')));
+    await tester.pumpAndSettle();
+    expect(find.text('국제유가 (WTI) 상세'), findsOneWidget);
+    expect(find.text('왜 오르내리나요?'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
