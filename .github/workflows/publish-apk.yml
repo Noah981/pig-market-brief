@@ -14,17 +14,26 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools platforms;android-35 build-tools;35.0.0
+          log-accepted-android-sdk-licenses: false
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
       - name: Build installable APK
-        working-directory: android
-        run: chmod +x gradlew && ./gradlew assembleDebug
+        run: gradle :app:assembleDebug --stacktrace
       - name: Publish public download
+        working-directory: .
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
