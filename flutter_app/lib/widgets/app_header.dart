@@ -1,0 +1,61 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
+
+class AppHeader extends StatefulWidget {
+  const AppHeader({super.key});
+
+  @override
+  State<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends State<AppHeader> {
+  late DateTime _now;
+  Timer? _clock;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+    _clock = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() => _now = DateTime.now());
+    });
+  }
+
+  @override
+  void dispose() {
+    _clock?.cancel();
+    super.dispose();
+  }
+
+  String _currentDateTime() {
+    final now = _now;
+    const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    String twoDigits(int value) => value.toString().padLeft(2, '0');
+    return '${now.year}년 ${now.month}월 ${now.day}일 '
+        '(${weekdays[now.weekday - 1]}) '
+        '${twoDigits(now.hour)}:${twoDigits(now.minute)}';
+  }
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: 52,
+        child: Row(children: [
+          Container(
+            width: 35,height:35,
+            decoration: BoxDecoration(border: Border.all(color: AppColors.coral, width: 2.4), shape: BoxShape.circle),
+            child: const Icon(Icons.savings_outlined, color: AppColors.coral, size: 21),
+          ),
+          const SizedBox(width: 9),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+            RichText(text: const TextSpan(style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900), children: [TextSpan(text: '돈', style: TextStyle(color: AppColors.text)), TextSpan(text: '돈해', style: TextStyle(color: AppColors.coral))])),
+            const Text('양돈의 오늘을 든든하게', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w600)),
+          ]),
+          const Spacer(),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(_currentDateTime(), style: const TextStyle(fontSize: 7.5, color: AppColors.secondary)),
+            const SizedBox(height: 2),
+            const Badge(smallSize: 6, child: Icon(Icons.notifications, size: 20, color: Color(0xFF24344D))),
+          ]),
+        ]),
+      );
+}

@@ -1,10 +1,10 @@
 {
   "source": "축산물품질평가원",
-  "scope": "탕박·등외제외·제주제외·암+거세 두수가중",
-  "formulaVersion": "kape-pig-grade-v2",
+  "scope": "생산자 돼지 경락가격·전국·탕박·등외제외·제주제외",
+  "formulaVersion": "kape-dabom-published-v1",
   "coverage": {
     "from": "20230901",
-    "to": "20260919",
+    "to": "20260918",
     "minimumMonths": 36
   },
   "rows": [
@@ -380,18 +380,13 @@
     },
     {
       "date": "20260917",
-      "price": 6097,
-      "count": 7957
+      "price": 6740,
+      "count": null
     },
     {
       "date": "20260918",
-      "price": 5499,
-      "count": 5151
-    },
-    {
-      "date": "20260919",
-      "price": 7016,
-      "count": 36
+      "price": 6442,
+      "count": null
     }
   ]
 }
