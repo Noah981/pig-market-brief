@@ -5,7 +5,7 @@ on:
     paths: ["flutter_app/**", ".github/workflows/flutter-build.yml"]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -38,3 +38,10 @@ jobs:
         with:
           name: dondonhae-flutter-reference
           path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
+      - name: Publish APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp flutter_app/build/app/outputs/flutter-apk/app-debug.apk dondonhae-flutter-1.0.0.apk
+          gh release delete dondonhae-flutter-v1.0.0 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.0.0 dondonhae-flutter-1.0.0.apk --target "${{ github.sha }}" --title "돈돈해 Flutter 1.0.0" --notes "첨부 디자인을 Flutter 컴포넌트로 재현한 실행 가능한 Android APK."
