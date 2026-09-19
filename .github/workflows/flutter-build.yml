@@ -2,7 +2,7 @@ name: Flutter UI build
 on:
   workflow_dispatch:
   push:
-    branches: [codex/dondonhae-information-platform]
+    branches: [main]
     paths: ['flutter_app/**', '.github/workflows/flutter-build.yml']
 permissions:
   contents: write
