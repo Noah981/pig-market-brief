@@ -127,7 +127,7 @@ class _CommodityChart extends StatelessWidget {
             final index = value.round().clamp(0, points.length - 1);
             if (value != 0 && value < points.length - 2 && index % 3 != 0) return const SizedBox();
             final date = points[index].date;
-            return Padding(padding: const EdgeInsets.only(top: 5), child: Text(date.length >= 7 ? date.substring(5, 7) + '/' + date.substring(8, 10) : date, style: const TextStyle(fontSize: 8, color: AppColors.secondary)));
+            return Padding(padding: const EdgeInsets.only(top: 5), child: Text(date.length >= 10 ? '${date.substring(5, 7)}/${date.substring(8, 10)}' : date, style: const TextStyle(fontSize: 8, color: AppColors.secondary)));
           }))),
           lineTouchData: LineTouchData(enabled: true, touchTooltipData: LineTouchTooltipData(getTooltipItems: (spots) => spots.map((x) => LineTooltipItem(x.y.toStringAsFixed(x.y >= 1000 ? 1 : 2), const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800))).toList())),
           lineBarsData: [LineChartBarData(spots: List.generate(values.length, (i) => FlSpot(i.toDouble(), values[i])), color: AppColors.coral, barWidth: 2.5, isCurved: true, dotData: const FlDotData(show: false), belowBarData: BarAreaData(show: true, color: AppColors.lightCoral.withValues(alpha: .55)))],
