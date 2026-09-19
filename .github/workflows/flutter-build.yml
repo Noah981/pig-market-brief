@@ -5,7 +5,7 @@ on:
     branches: [codex/dondonhae-information-platform]
     paths: ['flutter_app/**', '.github/workflows/flutter-build.yml']
 permissions:
-  contents: read
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -37,3 +37,11 @@ jobs:
           path: |
             flutter_app/test/goldens/*.png
             flutter_app/build/app/outputs/flutter-apk/app-release.apk
+      - name: Publish verified APK and screenshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.0.apk
+          cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
+          gh release delete dondonhae-flutter-v1.1.0 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.1.0 dondonhae-flutter-1.1.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.0" --notes "최종 동결 시안 기반 UI. 360/390/412dp 오버플로 검사와 5탭 이동 검증 완료."

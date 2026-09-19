@@ -10,7 +10,7 @@ class FarmHeroSection extends StatelessWidget {
         child: Stack(fit: StackFit.expand, children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-            child: Image.asset('assets/images/pig_hero.png', fit: BoxFit.cover, alignment: Alignment.centerRight,
+            child: Image.asset('assets/images/pig_hero.jpg', fit: BoxFit.cover, alignment: Alignment.centerRight,
               errorBuilder: (_, __, ___) => Container(color: AppColors.lightCoral)),
           ),
           DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .96), Colors.white.withValues(alpha: .34), Colors.transparent]))),
