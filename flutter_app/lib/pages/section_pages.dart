@@ -93,40 +93,6 @@ class _MarketTile extends StatelessWidget {
   ));
 }
 
-class DiseasePage extends StatefulWidget {
-  const DiseasePage({super.key});
-  @override State<DiseasePage> createState() => _DiseasePageState();
-}
-class _DiseasePageState extends State<DiseasePage> {
-  int tab = 0;
-  @override
-  Widget build(BuildContext context) {
-    const outbreaks = ['공식 국내 발생정보를 확인하고 있습니다.'];
-    return PageShell(
-      title: '질병 정보', subtitle: '가축질병 상황을 빠르게 확인하세요',
-      child: Column(children: [
-        _Tabs(labels: const ['국내', '해외'], index: tab, onTap: (i) => setState(() => tab = i)),
-        const SizedBox(height: 12),
-        const Row(children: [Expanded(child: _Count('ASF', '2')), Expanded(child: _Count('구제역', '0')), Expanded(child: _Count('PED', '1')), Expanded(child: _Count('PRRS', '3'))]),
-        const SizedBox(height: 12),
-        Container(
-          height: 285, decoration: appCard(radius: 16),
-          child: const Stack(children: [
-            Center(child: Icon(Icons.map_outlined, size: 210, color: Color(0xFFE5E6E9))),
-            Positioned(left: 110, top: 70, child: Icon(Icons.circle, size: 10, color: AppColors.coral)),
-            Positioned(right: 75, top: 100, child: Icon(Icons.circle, size: 10, color: AppColors.coral)),
-            Positioned(right: 55, top: 180, child: Icon(Icons.circle, size: 10, color: AppColors.coral)),
-            Positioned(right: 14, bottom: 13, child: Text('●  발생 지역\n●  내 위치', style: TextStyle(fontSize: 10, color: AppColors.coral))),
-          ]),
-        ),
-        const SizedBox(height: 16),
-        const _SectionTitle('최근 발생 현황'),
-        ...outbreaks.map((x) => _ListRow(x)),
-      ]),
-    );
-  }
-}
-
 class FarmCheckPage extends StatefulWidget {
   const FarmCheckPage({super.key});
   @override State<FarmCheckPage> createState() => _FarmCheckPageState();
@@ -195,10 +161,6 @@ class _Tabs extends StatelessWidget {
     child: Row(children: List.generate(labels.length, (i) => Expanded(child: InkWell(onTap: () => onTap(i), child: Container(alignment: Alignment.center, decoration: BoxDecoration(color: i == index ? AppColors.coral : Colors.transparent, borderRadius: BorderRadius.circular(13)), child: Text(labels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: i == index ? Colors.white : AppColors.secondary))))))),
   );
 }
-class _Count extends StatelessWidget {
-  const _Count(this.name, this.count); final String name, count;
-  @override Widget build(BuildContext context) => Container(margin: const EdgeInsets.symmetric(horizontal: 2), padding: const EdgeInsets.symmetric(vertical: 8), decoration: BoxDecoration(color: const Color(0xFFF8F8FA), borderRadius: BorderRadius.circular(12)), child: Text('$name  $count', textAlign: TextAlign.center, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800, color: count == '0' ? AppColors.secondary : AppColors.coral)));
-}
 class _CheckRow extends StatelessWidget {
   const _CheckRow({required this.label, required this.checked, required this.onTap}); final String label; final bool checked; final VoidCallback onTap;
   @override Widget build(BuildContext context) => InkWell(onTap: onTap, child: SizedBox(height: 39, child: Row(children: [Icon(checked ? Icons.check_box : Icons.check_box_outline_blank, color: checked ? AppColors.coral : AppColors.secondary, size: 20), const SizedBox(width: 7), Expanded(child: Text(label, style: const TextStyle(fontSize: 10.5))), Text(checked ? '양호' : '확인', style: TextStyle(fontSize: 9, color: checked ? AppColors.coral : AppColors.secondary))])));
@@ -206,10 +168,6 @@ class _CheckRow extends StatelessWidget {
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow(this.name, this.state, this.detail); final String name, state, detail;
   @override Widget build(BuildContext context) => Container(height: 40, decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.divider))), child: Row(children: [SizedBox(width: 58, child: Text(name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700))), SizedBox(width: 58, child: Text(state, style: const TextStyle(fontSize: 10, color: AppColors.coral))), Expanded(child: Text(detail, style: const TextStyle(fontSize: 10, color: AppColors.secondary)))]));
-}
-class _ListRow extends StatelessWidget {
-  const _ListRow(this.text); final String text;
-  @override Widget build(BuildContext context) => Container(height: 40, alignment: Alignment.centerLeft, decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.divider))), child: Text(text, style: const TextStyle(fontSize: 10.5)));
 }
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle(this.text); final String text;

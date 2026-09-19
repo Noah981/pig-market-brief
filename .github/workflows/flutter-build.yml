@@ -20,6 +20,7 @@ jobs:
         working-directory: flutter_app
         run: |
           flutter create --platforms=android,ios .
+          python ../scripts/configure_flutter_platform.py
           rm -f test/widget_test.dart
       - name: Analyze
         working-directory: flutter_app
@@ -29,6 +30,7 @@ jobs:
         run: |
           flutter test test/market_repository_test.dart
           flutter test test/commodity_repository_test.dart
+          flutter test test/disease_repository_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         working-directory: flutter_app
@@ -44,7 +46,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.1.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.2.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.1.1 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.1.1 dondonhae-flutter-1.1.1.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.1" --notes "돈가·원료 공식 데이터 기본 표시, 캐시 우회 갱신, 아래로 당겨 새로고침 적용. 360/390/412dp 오버플로 및 상세 이동 검증 완료."
+          gh release delete dondonhae-flutter-v1.1.2 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.1.2 dondonhae-flutter-1.1.2.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.2" --notes "국내·해외 질병 분리, 대한민국 질병지도, GPS·수동지역·거리, 출처 상세와 오프라인 캐시 적용."

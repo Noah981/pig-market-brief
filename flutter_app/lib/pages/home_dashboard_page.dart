@@ -15,6 +15,7 @@ import '../widgets/market_reason_card.dart';
 import '../widgets/weather_summary_card.dart';
 import 'section_pages.dart';
 import 'market_detail_pages.dart';
+import 'disease_page.dart';
 
 class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({super.key});

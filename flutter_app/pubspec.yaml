@@ -1,7 +1,7 @@
 name: dondonhae
 description: 돈돈해 모바일 대시보드
 publish_to: none
-version: 1.1.1+2
+version: 1.1.2+3
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
@@ -10,6 +10,8 @@ dependencies:
   fl_chart: ^0.69.2
   http: ^1.2.2
   shared_preferences: ^2.3.5
+  geolocator: ^13.0.2
+  url_launcher: ^6.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -21,3 +23,4 @@ flutter:
     - assets/data/pig-price.json
     - assets/data/pig-price-history.json
     - assets/data/platform.json
+    - assets/data/disease-alerts.json
