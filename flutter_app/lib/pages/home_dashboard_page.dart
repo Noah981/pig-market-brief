@@ -22,9 +22,9 @@ class HomeDashboardPage extends StatefulWidget {
 }
 class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindingObserver{
   int _nav=0; int _period=0;
-  final _marketRepository=MarketRepository();MarketSnapshot? _market;Timer? _timer;
+  final _marketRepository=MarketRepository();MarketSnapshot? _market=MarketRepository.bundledSnapshot;Timer? _timer;
   final _analysisRepository=MarketAnalysisRepository();MarketAnalysis? _analysis;
-  final _commodityRepository=CommodityRepository();List<Commodity> _commodities=commodities;
+  final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);_loadMarket();_loadAnalysis();_loadCommodities();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();});}
   @override void dispose(){_timer?.cancel();WidgetsBinding.instance.removeObserver(this);super.dispose();}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_refreshMarket();}

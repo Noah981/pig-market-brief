@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 class MarketSnapshot {
   const MarketSnapshot({required this.price,required this.previousPrice,required this.change,required this.changePct,required this.date,required this.updatedAt,required this.source,required this.scope,required this.history,required this.fromCache});
@@ -21,6 +20,7 @@ class MarketSnapshot {
 }
 
 class MarketRepository {
+  static const bundledSnapshot=MarketSnapshot(price:6442,previousPrice:6740,change:-298,changePct:-4.42,date:'20260918',updatedAt:'2026-09-19T07:00:30+09:00',source:'축산물품질평가원',scope:'전국·탕박·등외제외·제주제외',history:[5800,6200,6700,6850,7000,6900,6740,6442],fromCache:true);
   static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json';
   static const _historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json';
   // v1에는 다봄 공표 대표값이 아닌 pigGrade 자체 계산값이 저장될 수
@@ -31,9 +31,8 @@ class MarketRepository {
 
   Future<MarketSnapshot?> cached()async{
     final prefs=await SharedPreferences.getInstance();
-    var raw=prefs.getString(_cacheKey);
-    raw??=await rootBundle.loadString('assets/data/pig-price.json');
-    try{return MarketSnapshot.fromJson(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
+    final raw=prefs.getString(_cacheKey);if(raw==null)return bundledSnapshot;
+    try{return MarketSnapshot.fromJson(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return bundledSnapshot;}
   }
   Future<MarketSnapshot> refresh()async{
     final stamp=DateTime.now().millisecondsSinceEpoch;
