@@ -6,7 +6,7 @@ class FarmHeroSection extends StatelessWidget {
   const FarmHeroSection({super.key});
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: 156,
+        height: 126,
         child: Stack(fit: StackFit.expand, children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
@@ -14,8 +14,8 @@ class FarmHeroSection extends StatelessWidget {
               errorBuilder: (_, __, ___) => Container(color: AppColors.lightCoral)),
           ),
           DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .96), Colors.white.withValues(alpha: .34), Colors.transparent]))),
-          const Padding(padding: EdgeInsets.symmetric(horizontal: 18), child: Align(alignment: Alignment.topCenter, child: AppHeader())),
-          const Positioned(right: 15, bottom: 13, child: Text('건강한 돼지,\n더 큰 내일', textAlign: TextAlign.right, style: TextStyle(fontSize: 14, height: 1.25, fontWeight: FontWeight.w900))),
+          const Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Align(alignment: Alignment.topCenter, child: AppHeader())),
+          const Positioned(right: 13, bottom: 9, child: Text('건강한 돼지,\n더 큰 내일', textAlign: TextAlign.right, style: TextStyle(fontSize: 11, height: 1.2, fontWeight: FontWeight.w900))),
         ]),
       );
 }

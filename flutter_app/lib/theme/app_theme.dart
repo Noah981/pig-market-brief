@@ -16,9 +16,9 @@ abstract final class AppColors {
 }
 
 abstract final class AppSpacing {
-  static const page = 20.0;
-  static const section = 14.0;
-  static const radius = 24.0;
+  static const page = 12.0;
+  static const section = 10.0;
+  static const radius = 20.0;
 }
 
 abstract final class AppTheme {
@@ -30,6 +30,7 @@ abstract final class AppTheme {
           bodyColor: AppColors.text,
           displayColor: AppColors.text,
         ),
+        splashFactory: NoSplash.splashFactory,
       );
 }
 

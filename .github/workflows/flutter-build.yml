@@ -1,47 +1,37 @@
-name: Build Flutter reference app
+name: Flutter UI build
 on:
+  workflow_dispatch:
   push:
     branches: [codex/dondonhae-information-platform]
-    paths: ["flutter_app/**", ".github/workflows/flutter-build.yml"]
-  workflow_dispatch:
+    paths: ['flutter_app/**', '.github/workflows/flutter-build.yml']
 permissions:
-  contents: write
+  contents: read
 jobs:
-  verify:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.4"
+          flutter-version: '3.27.4'
           channel: stable
           cache: true
-      - name: Generate platform shells
+      - name: Generate platform files
         working-directory: flutter_app
-        run: |
-          flutter create --platforms=android,ios --org kr.dondonhae .
-          rm -rf test
-      - name: Prepare pig photo asset
-        run: |
-          mkdir -p flutter_app/assets/images
-          base64 -d android/app/src/main/res/raw/pig_hero.b64 > flutter_app/assets/images/pig_hero.png
-      - name: Resolve packages
-        working-directory: flutter_app
-        run: flutter pub get
+        run: flutter create --platforms=android,ios .
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
-      - name: Build APK
+      - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
-        run: flutter build apk --debug
+        run: flutter test --update-goldens test/layout_test.dart
+      - name: Build release APK
+        working-directory: flutter_app
+        run: flutter build apk --release
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: dondonhae-flutter-reference
-          path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
-      - name: Publish APK
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-debug.apk dondonhae-flutter-1.0.0.apk
-          gh release delete dondonhae-flutter-v1.0.0 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.0.0 dondonhae-flutter-1.0.0.apk --target "${{ github.sha }}" --title "돈돈해 Flutter 1.0.0" --notes "첨부 디자인을 Flutter 컴포넌트로 재현한 실행 가능한 Android APK."
+          name: dondonhae-flutter-ui-validation
+          path: |
+            flutter_app/test/goldens/*.png
+            flutter_app/build/app/outputs/flutter-apk/app-release.apk
