@@ -18,7 +18,9 @@ jobs:
           cache: true
       - name: Generate platform shells
         working-directory: flutter_app
-        run: flutter create --platforms=android,ios --org kr.dondonhae .
+        run: |
+          flutter create --platforms=android,ios --org kr.dondonhae .
+          rm -rf test
       - name: Prepare pig photo asset
         run: |
           mkdir -p flutter_app/assets/images
