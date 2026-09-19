@@ -386,12 +386,12 @@
     }
   ],
   "benefits": [],
-  "checkedAt": "2026-09-20T04:32:52.289916+09:00",
+  "checkedAt": "2026-09-20T04:35:10.877052+09:00",
   "sourceStatus": [
     {
       "id": "fred-public-series",
       "agency": "FRED 공개 시계열",
-      "status": "연결 완료"
+      "status": "일부 연결 · 0/6"
     }
   ]
 }

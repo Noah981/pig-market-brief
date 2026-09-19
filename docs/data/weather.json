@@ -1,16 +1,12 @@
 {
   "source": "기상청 단기예보 조회서비스",
-  "baseDate": "20260919",
-  "baseTime": "2300",
-  "updatedAt": "2026-09-20T02:09:54.605150+09:00",
+  "baseDate": "20260920",
+  "baseTime": "0200",
+  "updatedAt": "2026-09-20T04:34:06.460122+09:00",
   "regions": [],
   "errors": [
     {
-      "region": "세종특별자치시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "서울특별시",
+      "region": "대구광역시",
       "error": "<urlopen error timed out>"
     },
     {
@@ -18,7 +14,11 @@
       "error": "<urlopen error timed out>"
     },
     {
-      "region": "인천광역시",
+      "region": "울산광역시",
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "region": "서울특별시",
       "error": "<urlopen error timed out>"
     },
     {
@@ -26,19 +26,19 @@
       "error": "<urlopen error timed out>"
     },
     {
+      "region": "인천광역시",
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "region": "세종특별자치시",
+      "error": "<urlopen error timed out>"
+    },
+    {
       "region": "대전광역시",
       "error": "<urlopen error timed out>"
     },
     {
-      "region": "울산광역시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "대구광역시",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "충청남도",
+      "region": "경기도",
       "error": "<urlopen error timed out>"
     },
     {
@@ -46,11 +46,15 @@
       "error": "<urlopen error timed out>"
     },
     {
-      "region": "경상북도",
+      "region": "강원특별자치도",
       "error": "<urlopen error timed out>"
     },
     {
       "region": "전북특별자치도",
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "region": "경상북도",
       "error": "<urlopen error timed out>"
     },
     {
@@ -62,11 +66,7 @@
       "error": "<urlopen error timed out>"
     },
     {
-      "region": "강원특별자치도",
-      "error": "<urlopen error timed out>"
-    },
-    {
-      "region": "경기도",
+      "region": "충청남도",
       "error": "<urlopen error timed out>"
     },
     {
