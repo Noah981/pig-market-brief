@@ -44,17 +44,7 @@ private val RefPaleBlue=Color(0xFFEEF7FF)
  }
 }
 
-@Composable private fun ExactHeader(){
- Box(Modifier.fillMaxWidth().height(125.dp)){
-  androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.dondontoday_pig_hero),null,Modifier.fillMaxSize(),contentScale=androidx.compose.ui.layout.ContentScale.Crop)
-  Box(Modifier.matchParentSize().background(Color.White.copy(.16f)))
-  Row(Modifier.align(Alignment.TopStart).padding(14.dp),verticalAlignment=Alignment.CenterVertically){
-   BrandSymbol();Spacer(Modifier.width(5.dp));Column{Text("돈돈해",fontSize=28.sp,fontWeight=FontWeight.Black,color=RefText);Text("양돈의 오늘을 든든하게",fontSize=11.sp,fontWeight=FontWeight.Bold,color=RefText)}
-  }
-  Column(Modifier.align(Alignment.TopEnd).padding(12.dp),horizontalAlignment=Alignment.End){Text(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 (E) HH:mm",Locale.KOREAN)),fontSize=10.sp,color=RefText);Text("●",fontSize=15.sp,color=RefPink)}
-  Text("건강한 돼지,\n더 큰 내일",Modifier.align(Alignment.BottomEnd).padding(12.dp),fontSize=13.sp,lineHeight=16.sp,fontWeight=FontWeight.Black,color=RefText)
- }
-}
+@Composable private fun ExactHeader(){ DondonHero() }
 
 @Composable private fun ExactPriceCard(d:AppData,onPrice:()->Unit,onRefresh:()->Unit){val p=d.pig;val ch=p.change?:((p.price?:0)-(p.previous?:0));Card(Modifier.fillMaxWidth().clickable(onClick=onPrice),shape=RoundedCornerShape(22.dp),colors=CardDefaults.cardColors(containerColor=Color.White),elevation=CardDefaults.cardElevation(2.dp)){Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(7.dp)){
  Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Text("전국 돈가",fontSize=23.sp,fontWeight=FontWeight.Black,color=RefText);Text(" (제주 제외)",fontSize=13.sp,fontWeight=FontWeight.Bold);Spacer(Modifier.weight(1f));Text("최종 업데이트 ${displayUpdate(p.updatedAt)}",fontSize=9.sp,color=RefGray);TextButton(onRefresh,contentPadding=PaddingValues(4.dp)){Text("↻",fontSize=23.sp,color=RefGray)}}
