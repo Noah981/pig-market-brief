@@ -35,6 +35,8 @@ jobs:
         env:
           KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
         run: python scripts/fetch_kape_jeju.py || echo "Jeju fetch failed; keeping previous cached data"
+      - name: Update verified market and benefits adapters
+        run: python scripts/platform_pipeline.py
       - name: Build briefing
         run: python scripts/build_briefing.py
       - name: Build market analysis

@@ -35,8 +35,8 @@ data class StoredResponse(val raw:String?,val cached:Boolean)
 object NetworkStore{
  val client=OkHttpClient.Builder().connectTimeout(5,TimeUnit.SECONDS).readTimeout(8,TimeUnit.SECONDS).callTimeout(12,TimeUnit.SECONDS).build()
  private const val ROOT="https://noah981.github.io/pig-market-brief/data"
- @Volatile var cacheOnly=false
- fun get(ctx:Context,name:String):StoredResponse{
+ 
+ fun get(ctx:Context,name:String,cacheOnly:Boolean=false):StoredResponse{
   val prefs=ctx.getSharedPreferences("verified_feed_cache",Context.MODE_PRIVATE)
   val previous=prefs.getString(name,null)
   if(cacheOnly)return StoredResponse(previous,true)

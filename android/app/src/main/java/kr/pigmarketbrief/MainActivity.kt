@@ -71,10 +71,10 @@ data class AppData(val pig:PigPrice=PigPrice(),val history:List<HistPoint> = emp
 data class FarmRecord(val at:String,val stage:String,val weight:Double?,val days:Int?,val fcr:Double?,val mortality:Double?,val intake:Double?,val symptom:String,val action:String,val result:String)
 
 object DataRepository{
- suspend fun load(ctx:Context):AppData=withContext(Dispatchers.IO){
+ suspend fun load(ctx:Context,cacheOnly:Boolean=false):AppData=withContext(Dispatchers.IO){
   val client=NetworkStore.client
   var usedCache=false
-  fun get(name:String):String? { val result=NetworkStore.get(ctx,name); if(result.cached)usedCache=true; return result.raw }
+  fun get(name:String):String? { val result=NetworkStore.get(ctx,name,cacheOnly); if(result.cached)usedCache=true; return result.raw }
 
   val priceRaw=get("pig-price.json");val historyRaw=get("pig-price-history.json");val briefRaw=get("briefing.json");val diseaseRaw=get("disease-alerts.json");val gradeRaw=get("pig-grade-detail.json");val jejuRaw=get("kape-jeju.json")
   if(priceRaw==null&&historyRaw==null)return@withContext AppData(error="공식 데이터 서버에 연결할 수 없습니다. 저장된 기록은 계속 사용할 수 있습니다.")
@@ -188,7 +188,7 @@ fun monthAverages(rows:List<HistPoint>)=rows.groupBy{it.date.take(6)}.toSortedMa
  var scope by remember{mutableStateOf("국내")};val filtered=if(scope=="관심")items.filter{it.disease in listOf("ASF","PRRS","PED","구제역")}else items.filter{it.scope==scope}
  Text("질병·방역",fontSize=22.sp,fontWeight=FontWeight.Black);Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(6.dp)){listOf("국내","국외","관심","분류 확인 필요").forEach{s->FilterChip(scope==s,{scope=s},{Text(s)})}}
  if(filtered.isEmpty())Text("현재 수집된 $scope 공개정보가 없습니다.",Modifier.padding(vertical=18.dp),color=Color.Gray)
- filtered.take(12).forEach{x->Surface(color=Color.White,shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(16.dp)){Row(verticalAlignment=Alignment.CenterVertically){EvidenceBadge(x.level);Spacer(Modifier.width(7.dp));Text(scope,fontSize=10.sp,color=Color.Gray)};Text(x.disease,Modifier.padding(top=9.dp),fontSize=17.sp,fontWeight=FontWeight.Black);Text(x.summary,fontSize=12.sp,maxLines=3,overflow=TextOverflow.Ellipsis);Text(x.source,Modifier.padding(top=7.dp),fontSize=10.sp,color=Color.Gray)}}}
+ filtered.take(12).forEach{x->Surface(color=Color.White,shape=RoundedCornerShape(20.dp)){Column(Modifier.padding(16.dp)){Row(verticalAlignment=Alignment.CenterVertically){EvidenceBadge(x.level);Spacer(Modifier.width(7.dp));Text(scope,fontSize=10.sp,color=Color.Gray)};Text(x.disease,Modifier.padding(top=9.dp),fontSize=17.sp,fontWeight=FontWeight.Black);Text(x.summary,fontSize=12.sp,maxLines=3,overflow=TextOverflow.Ellipsis);Text(x.source,Modifier.padding(top=7.dp),fontSize=14.sp,color=Color.Gray);SourceLink("공식/원문 확인",x.url)}}}
  SourceNote("국내와 국외 신호를 분리하며 공식 확인과 공개정보·확인중도 합쳐 표시하지 않습니다. 앱은 질병을 확정 진단하거나 처방하지 않습니다.")
 }
 
