@@ -19,6 +19,8 @@ List<TodoItem> mockTodos() => [
 const commodities = [
   Commodity('옥수수', '확인 중', '', null, Icons.grass, id:'corn'),
   Commodity('대두박', '확인 중', '', null, Icons.eco, id:'soybean_meal'),
+  Commodity('소맥', '확인 중', '', null, Icons.grain, id:'wheat'),
+  Commodity('대두', '확인 중', '', null, Icons.spa, id:'soybean'),
   Commodity('국제유가\n(WTI)', '확인 중', '', null, Icons.local_gas_station, id:'wti'),
   Commodity('환율\n(USD/KRW)', '확인 중', '', null, Icons.attach_money, id:'usd_krw'),
 ];

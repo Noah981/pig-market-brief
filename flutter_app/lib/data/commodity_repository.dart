@@ -47,6 +47,8 @@ class CommodityRepository {
     return [
       _item(byName['corn'], '옥수수', Icons.grass),
       _item(byName['soybean_meal'], '대두박', Icons.eco),
+      _item(byName['wheat'], '소맥', Icons.grain),
+      _item(byName['soybean'], '대두', Icons.spa),
       _item(byName['wti'], '국제유가\n(WTI)', Icons.local_gas_station),
       _item(byName['usd_krw'], '환율\n(USD/KRW)', Icons.attach_money),
     ];
@@ -62,15 +64,26 @@ class CommodityRepository {
     final decimals = value >= 1000 ? 1 : 2;
     final text = value.toStringAsFixed(decimals);
     final change = (row['changePct'] as num?)?.toDouble();
+    final history = (row['history'] as List? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .where((x) => x['value'] is num)
+        .map((x) => CommodityPoint(x['date']?.toString() ?? '', (x['value'] as num).toDouble()))
+        .toList();
     return Commodity(label, text, row['unit']?.toString() ?? '', change, icon,
         id: row['name']?.toString() ?? _idForLabel(label),
         source: row['source']?.toString() ?? '',
-        asOf: row['date']?.toString() ?? row['updatedAt']?.toString() ?? '');
+        asOf: row['date']?.toString() ?? row['updatedAt']?.toString() ?? '',
+        frequency: row['frequency']?.toString() ?? '',
+        basis: row['basis']?.toString() ?? '',
+        url: row['url']?.toString() ?? '',
+        history: history);
   }
 
   String _idForLabel(String label) {
     if (label.startsWith('옥수수')) return 'corn';
     if (label.startsWith('대두박')) return 'soybean_meal';
+    if (label.startsWith('소맥')) return 'wheat';
+    if (label.startsWith('대두')) return 'soybean';
     if (label.startsWith('국제유가')) return 'wti';
     return 'usd_krw';
   }

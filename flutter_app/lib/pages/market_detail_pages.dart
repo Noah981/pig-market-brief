@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
@@ -53,9 +54,13 @@ class CommodityDetailPage extends StatelessWidget {
         _ValueCard(
           title: item.name.replaceAll('\n', ' '),
           value: item.change == null ? '공식 데이터 연결 대기' : '${item.value} ${item.unit}',
-          change: item.change == null ? '확인되지 않은 수치는 표시하지 않습니다.' : '${item.change! >= 0 ? '▲ 상승' : '▼ 하락'} ${item.change!.abs().toStringAsFixed(1)}%',
+          change: item.change == null ? '확인되지 않은 수치는 표시하지 않습니다.' : '${item.change! >= 0 ? '▲ 상승' : '▼ 하락'} ${item.change!.abs().toStringAsFixed(1)}% · ${item.frequency == 'monthly' ? '전월 대비' : '직전 발표 대비'}',
           up: (item.change ?? 0) >= 0,
         ),
+        if (item.history.length >= 2) ...[
+          const SizedBox(height: 14),
+          _CommodityChart(points: item.history),
+        ],
         const SizedBox(height: 16),
         const Text('왜 오르내리나요?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 5),
@@ -65,7 +70,7 @@ class CommodityDetailPage extends StatelessWidget {
         const SizedBox(height: 12),
         _InfoBox(item.source.isEmpty
             ? '데이터 출처 연결 검증 중\n값과 변동 이유가 공식 자료로 확인되면 자동 표시합니다.'
-            : '출처: ${item.source}${item.asOf.isEmpty ? '' : '\n기준: ${item.asOf}'}'),
+            : '출처: ${item.source}${item.asOf.isEmpty ? '' : '\n기준일: ${item.asOf}'}${item.basis.isEmpty ? '' : '\n기준: ${item.basis}'}\n갱신주기: ${item.frequency == 'monthly' ? '월간' : '일간'}'),
       ]),
     );
   }
@@ -74,6 +79,8 @@ class CommodityDetailPage extends StatelessWidget {
     switch (id) {
       case 'corn':
       case 'soybean_meal':
+      case 'soybean':
+      case 'wheat':
         return const [
           ('미국 선물시장', 'CBOT 선물가격과 거래 흐름을 확인합니다.'),
           ('작황과 공급', 'USDA 작황·재고·수출입 전망과 주요 산지 날씨를 확인합니다.'),
@@ -95,6 +102,38 @@ class CommodityDetailPage extends StatelessWidget {
           ('공식 고시환율', '공식 기준시점과 적용 환율 종류를 확인합니다.'),
         ];
     }
+  }
+}
+
+class _CommodityChart extends StatelessWidget {
+  const _CommodityChart({required this.points});
+  final List<CommodityPoint> points;
+  @override
+  Widget build(BuildContext context) {
+    final values = points.map((x) => x.value).toList();
+    final low = values.reduce((a, b) => a < b ? a : b);
+    final high = values.reduce((a, b) => a > b ? a : b);
+    final padding = (high - low).abs() < 0.01 ? high * .08 : (high - low) * .16;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 14, 10, 7), decoration: appCard(radius: 18),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('최근 흐름', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 12),
+        SizedBox(height: 150, child: LineChart(LineChartData(
+          minY: low - padding, maxY: high + padding,
+          borderData: FlBorderData(show: false),
+          gridData: FlGridData(show: true, drawVerticalLine: false, getDrawingHorizontalLine: (_) => const FlLine(color: AppColors.divider, strokeWidth: 1)),
+          titlesData: FlTitlesData(topTitles: const AxisTitles(), rightTitles: const AxisTitles(), leftTitles: const AxisTitles(), bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 22, interval: (points.length - 1) / 3, getTitlesWidget: (value, meta) {
+            final index = value.round().clamp(0, points.length - 1);
+            if (value != 0 && value < points.length - 2 && index % 3 != 0) return const SizedBox();
+            final date = points[index].date;
+            return Padding(padding: const EdgeInsets.only(top: 5), child: Text(date.length >= 7 ? date.substring(5, 7) + '/' + date.substring(8, 10) : date, style: const TextStyle(fontSize: 8, color: AppColors.secondary)));
+          }))),
+          lineTouchData: LineTouchData(enabled: true, touchTooltipData: LineTouchTooltipData(getTooltipItems: (spots) => spots.map((x) => LineTooltipItem(x.y.toStringAsFixed(x.y >= 1000 ? 1 : 2), const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800))).toList())),
+          lineBarsData: [LineChartBarData(spots: List.generate(values.length, (i) => FlSpot(i.toDouble(), values[i])), color: AppColors.coral, barWidth: 2.5, isCurved: true, dotData: const FlDotData(show: false), belowBarData: BarAreaData(show: true, color: AppColors.lightCoral.withValues(alpha: .55)))],
+        ))),
+      ]),
+    );
   }
 }
 

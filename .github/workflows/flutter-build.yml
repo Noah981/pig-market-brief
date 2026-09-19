@@ -28,6 +28,7 @@ jobs:
         working-directory: flutter_app
         run: |
           flutter test test/market_repository_test.dart
+          flutter test test/commodity_repository_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         working-directory: flutter_app
