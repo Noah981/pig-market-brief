@@ -1,12 +1,12 @@
 name: Build Android APK
 on:
   workflow_dispatch:
+  pull_request:
+    paths: ["android/**", ".github/workflows/android-build.yml"]
   push:
-    paths:
-      - "android/**"
-      - ".github/workflows/android-build.yml"
+    paths: ["android/**", ".github/workflows/android-build.yml"]
 permissions:
-  contents: write
+  contents: read
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -19,27 +19,17 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+      - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
-      - name: Run unit tests
-        run: gradle :app:testDebugUnitTest --stacktrace
-      - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace
+      - name: Test and build
+        run: gradle :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease --stacktrace
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: pig-market-brief-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Publish permanent latest APK
-        working-directory: .
-        run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk /tmp/todaypig-latest.apk
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git reset --hard origin/main
-          mkdir -p docs/downloads
-          cp /tmp/todaypig-latest.apk docs/downloads/todaypig-latest.apk
-          git add -f docs/downloads/todaypig-latest.apk
-          git diff --cached --quiet || git commit -m "Publish latest Android APK"
-          git push origin HEAD:main
+          name: dondonhae-validation
+          path: |
+            android/app/build/outputs/apk/
+            android/app/build/test-results/
+            android/app/build/reports/
