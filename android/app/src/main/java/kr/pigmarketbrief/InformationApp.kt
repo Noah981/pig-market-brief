@@ -51,7 +51,7 @@ import java.math.BigDecimal
    "인증"->CertificationHub()
    "화면"->AppearanceSettings()
    else->when(tab){
-    0->ReferenceHome(data,extension,{tab=1},{tab=2},{open(it)},{scope.launch{refresh()}})
+    0->ExactReferenceHome(data,extension,{tab=1},{tab=2},{open(it)},{scope.launch{refresh()}})
     1->{Heading("전국 돈가","생산자 돼지 경락가격");CurrentPrice(data.pig){};PriceHistoryView(data);CompareGrid(data.pig);SourceLink("축산물품질평가원 공식 정보","https://www.ekape.or.kr/")}
     2->MarketFlow(extension)
     3->{Heading("내 지역 혜택",farmRegion(ctx).ifBlank{"농장 소재지를 먼저 설정하세요"});Tile("농장 지역·조건 설정","GPS와 별도로 농장 소재지를 저장합니다"){open("프로필")};Benefits(extension);Tile("우리 농장 인증","깨끗한 축산농장 · HACCP · 무항생제 · 저탄소"){open("인증")}}

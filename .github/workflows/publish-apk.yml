@@ -28,5 +28,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk dondonhae-5.0.1.apk
-          gh release create dondonhae-v5.0.1 dondonhae-5.0.1.apk --target "${{ github.sha }}" --title "돈돈해 5.0.1 디자인 수정" --notes "핑크 홈 디자인 수정 빌드."
+          cp android/app/build/outputs/apk/debug/app-debug.apk dondonhae-5.0.2.apk
+          gh release create dondonhae-v5.0.2 dondonhae-5.0.2.apk --target "${{ github.sha }}" --title "돈돈해 5.0.2 사진 기준 홈" --notes "첨부 사진 기준 홈 화면 재구성 빌드."
