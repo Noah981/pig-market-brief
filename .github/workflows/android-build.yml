@@ -3,8 +3,6 @@ on:
   workflow_dispatch:
   pull_request:
     paths: ["android/**", ".github/workflows/android-build.yml"]
-  push:
-    paths: ["android/**", ".github/workflows/android-build.yml"]
 permissions:
   contents: read
 jobs:
@@ -26,8 +24,24 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
+      - name: Validate collectors
+        working-directory: .
+        run: python -m unittest discover -s scripts -p test_platform.py -v
       - name: Test and build
         run: gradle :app:testDebugUnitTest :app:assembleDebug :app:assembleRelease --stacktrace
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and navigate Android app
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: python scripts/android_smoke.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

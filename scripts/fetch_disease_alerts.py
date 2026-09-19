@@ -23,9 +23,8 @@ COUNTRIES=[
 
 def country_code(text,expected_scope=None):
  lower=text.lower()
- for code,names in COUNTRIES:
-  if any(name in lower for name in names):return code
- return None
+ matches={code for code,names in COUNTRIES if any(name in lower for name in names)}
+ return next(iter(matches)) if len(matches)==1 else None
 
 def classify(code):
  return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
