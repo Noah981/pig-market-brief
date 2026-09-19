@@ -18,7 +18,9 @@ jobs:
           cache: true
       - name: Generate platform files
         working-directory: flutter_app
-        run: flutter create --platforms=android,ios .
+        run: |
+          flutter create --platforms=android,ios .
+          rm -f test/widget_test.dart
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
