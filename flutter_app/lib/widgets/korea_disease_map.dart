@@ -18,7 +18,7 @@ class _KoreaPainter extends CustomPainter{
   @override void paint(Canvas canvas,Size size){
     final fill=Paint()..color=const Color(0xFFE9EBEF);final line=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.4;
     final p=Path()..moveTo(size.width*.47,size.height*.03)..cubicTo(size.width*.35,size.height*.10,size.width*.38,size.height*.22,size.width*.30,size.height*.31)..cubicTo(size.width*.20,size.height*.42,size.width*.31,size.height*.51,size.width*.25,size.height*.61)..cubicTo(size.width*.18,size.height*.75,size.width*.35,size.height*.86,size.width*.45,size.height*.94)..cubicTo(size.width*.58,size.height*.89,size.width*.60,size.height*.78,size.width*.72,size.height*.69)..cubicTo(size.width*.82,size.height*.58,size.width*.72,size.height*.46,size.width*.77,size.height*.35)..cubicTo(size.width*.80,size.height*.22,size.width*.63,size.height*.17,size.width*.62,size.height*.08)..close();canvas.drawPath(p,fill);canvas.drawPath(p,line);
-    for(final y in [.22,.36,.50,.64,.78])canvas.drawLine(Offset(size.width*.30,size.height*y),Offset(size.width*.72,size.height*(y+.03)),line);
+    for(final y in [.22,.36,.50,.64,.78]){canvas.drawLine(Offset(size.width*.30,size.height*y),Offset(size.width*.72,size.height*(y+.03)),line);}
     canvas.drawOval(Rect.fromCenter(center:Offset(size.width*.36,size.height*.97),width:size.width*.18,height:size.height*.045),fill);
   }
   @override bool shouldRepaint(covariant CustomPainter oldDelegate)=>false;
