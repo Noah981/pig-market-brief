@@ -43,12 +43,12 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    final oilCard = find.byKey(const ValueKey('commodity_wti')).first;
-    await tester.ensureVisible(oilCard);
+    final commodityCard = find.byKey(const ValueKey('commodity_corn')).first;
+    await tester.ensureVisible(commodityCard);
     await tester.pumpAndSettle();
-    await tester.tap(oilCard);
+    await tester.tap(commodityCard);
     await tester.pumpAndSettle();
-    expect(find.text('국제유가 (WTI) 상세'), findsOneWidget);
+    expect(find.text('옥수수 상세'), findsOneWidget);
     expect(find.text('왜 오르내리나요?'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
