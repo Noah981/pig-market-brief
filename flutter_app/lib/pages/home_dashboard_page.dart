@@ -24,7 +24,7 @@ class HomeDashboardPage extends StatefulWidget {
 class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindingObserver{
   int _nav=0; int _period=0;
   final _marketRepository=MarketRepository();MarketSnapshot? _market=MarketRepository.bundledSnapshot;Timer? _timer;
-  final _analysisRepository=MarketAnalysisRepository();MarketAnalysis? _analysis;
+  final _analysisRepository=MarketAnalysisRepository();MarketAnalysis? _analysis=MarketAnalysisRepository.bundledSnapshot;
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);_loadMarket();_loadAnalysis();_loadCommodities();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();});}
   @override void dispose(){_timer?.cancel();WidgetsBinding.instance.removeObserver(this);super.dispose();}
@@ -49,7 +49,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
       MarketPriceCard(period:_period,series:priceSeries,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
       SizedBox(height:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),const Expanded(child:WeatherSummaryCard())])),
       const SizedBox(height:10),
-      CommodityTrendCard(items:_commodities,onTap:_openCommodity),
+      CommodityTrendCard(items:_commodities,onTap:_openCommodity,onHeaderTap:()=>setState(()=>_nav=1)),
       const SizedBox(height:10),
       const NoticeCard(items:notices),
       const SizedBox(height:12),

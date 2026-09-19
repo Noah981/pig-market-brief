@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
@@ -34,6 +35,10 @@ class PigPriceDetailPage extends StatelessWidget {
           _InfoBox(snapshot == null
               ? '출처: 축산물품질평가원 축산유통정보 다봄'
               : '출처: ${snapshot!.source}\n기준: ${snapshot!.scope}\n가격 기준일: ${_date(snapshot!.date)}'),
+          if(analysis!=null&&analysis!.sources.isNotEmpty)...[
+            const SizedBox(height:10),
+            ...analysis!.sources.map((x)=>_SourceButton(source:x)),
+          ],
         ]),
       );
 
@@ -66,11 +71,13 @@ class CommodityDetailPage extends StatelessWidget {
         const SizedBox(height: 5),
         const Text('아래는 가격 방향을 확인할 때 함께 보는 주요 변수입니다. 검증된 당일 원인이 확보되기 전에는 원인으로 단정하지 않습니다.', style: TextStyle(fontSize: 11, height: 1.5, color: AppColors.secondary)),
         const SizedBox(height: 10),
-        ...drivers.map((x) => _FactorTile(MarketFactor(x.$1, '확인 요인', x.$2))),
+        _FactorTile(MarketFactor('현재 변동 확인', '확인', item.change==null?'공식 발표값을 기다리고 있습니다.':'직전 공식 발표 대비 ${item.change!>=0?'상승':'하락'}했습니다. 아래 항목은 함께 확인할 변수이며 단일 원인으로 단정하지 않습니다.')),
+        ...drivers.map((x) => _FactorTile(MarketFactor(x.$1, '분석 변수', x.$2))),
         const SizedBox(height: 12),
         _InfoBox(item.source.isEmpty
             ? '데이터 출처 연결 검증 중\n값과 변동 이유가 공식 자료로 확인되면 자동 표시합니다.'
             : '출처: ${item.source}${item.asOf.isEmpty ? '' : '\n기준일: ${item.asOf}'}${item.basis.isEmpty ? '' : '\n기준: ${item.basis}'}\n갱신주기: ${item.frequency == 'monthly' ? '월간' : '일간'}'),
+        if(item.url.isNotEmpty)...[const SizedBox(height:10),_SourceButton(source:MarketSource(item.source,'공식 원자료 확인',item.url))],
       ]),
     );
   }
@@ -103,6 +110,11 @@ class CommodityDetailPage extends StatelessWidget {
         ];
     }
   }
+}
+
+class _SourceButton extends StatelessWidget{
+  const _SourceButton({required this.source});final MarketSource source;
+  @override Widget build(BuildContext context)=>Padding(padding:const EdgeInsets.only(bottom:7),child:OutlinedButton.icon(onPressed:()async{final uri=Uri.tryParse(source.url);if(uri!=null)await launchUrl(uri,mode:LaunchMode.externalApplication);},icon:const Icon(Icons.open_in_new,size:16),label:Align(alignment:Alignment.centerLeft,child:Text('${source.name} · ${source.label}',maxLines:2)),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(46),foregroundColor:AppColors.coral,side:const BorderSide(color:AppColors.divider))));
 }
 
 class _CommodityChart extends StatelessWidget {

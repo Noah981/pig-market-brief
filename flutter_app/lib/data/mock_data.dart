@@ -3,10 +3,10 @@ import '../models/dashboard_models.dart';
 import '../theme/app_theme.dart';
 
 const priceSeries = [
-  PriceSeries('일간', [5800, 6200, 6700, 6850, 7000, 6900, 6900, 6442]),
-  PriceSeries('주간', [6150, 6280, 6400, 6510, 6470, 6550, 6500, 6442]),
-  PriceSeries('월간', [5900, 6030, 6180, 6320, 6500, 6620, 6550, 6442]),
-  PriceSeries('연간', [5700, 5880, 6100, 6350, 6600, 6800, 6640, 6442]),
+  PriceSeries('일간', [PricePoint('09/09',5800),PricePoint('09/10',6200),PricePoint('09/11',6700),PricePoint('09/14',6850),PricePoint('09/15',7000),PricePoint('09/16',6900),PricePoint('09/17',6740),PricePoint('09/18',6442)]),
+  PriceSeries('주간', [PricePoint('8월1주',6150),PricePoint('8월2주',6280),PricePoint('8월3주',6400),PricePoint('8월4주',6510),PricePoint('9월1주',6470),PricePoint('9월2주',6442)]),
+  PriceSeries('월간', [PricePoint('2월',5088),PricePoint('3월',4894),PricePoint('4월',5603),PricePoint('5월',5862),PricePoint('6월',5835),PricePoint('7월',5675),PricePoint('8월',5816),PricePoint('9월',6442)]),
+  PriceSeries('연간', [PricePoint('2024',4829),PricePoint('2025',5280),PricePoint('2026',5638)]),
 ];
 
 List<TodoItem> mockTodos() => [

@@ -61,4 +61,22 @@ void main() {
     expect(find.text('왜 오르내리나요?'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    expect(find.text('9/18'),findsOneWidget);
+    await tester.tap(find.text('월간'));await tester.pump();
+    expect(find.text('8월'),findsWidgets);
+    await tester.tap(find.text('연간'));await tester.pump();
+    expect(find.text('2026'),findsOneWidget);
+    expect(tester.takeException(),isNull);
+  });
+  testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    final header=find.byKey(const ValueKey('international_market_header'));await tester.ensureVisible(header);await tester.tap(header);await tester.pumpAndSettle();
+    expect(find.text('국제정세 해석'),findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
+    expect(find.byType(Image),findsWidgets);expect(tester.takeException(),isNull);
+  });
 }

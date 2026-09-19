@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 class PriceSeries {
   final String label;
-  final List<double> values;
-  const PriceSeries(this.label, this.values);
+  final List<PricePoint> points;
+  const PriceSeries(this.label, this.points);
+  List<double> get values => points.map((x) => x.value).toList(growable: false);
+}
+
+class PricePoint {
+  const PricePoint(this.date, this.value, {this.resolution = 'day'});
+  final String date;
+  final double value;
+  final String resolution;
 }
 
 class TodoItem {
@@ -51,10 +59,17 @@ class MarketAnalysis {
     required this.summary,
     required this.factors,
     required this.updatedAt,
+    this.sources = const [],
   });
   final String summary;
   final List<MarketFactor> factors;
   final String updatedAt;
+  final List<MarketSource> sources;
+}
+
+class MarketSource {
+  const MarketSource(this.name, this.label, this.url);
+  final String name, label, url;
 }
 
 class NoticeItem {
