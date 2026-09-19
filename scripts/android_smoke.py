@@ -27,7 +27,13 @@ adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
 adb('shell','am','force-stop','kr.pigmarketbrief');adb('shell','am','start','-W','-n','kr.pigmarketbrief/.MainActivity');time.sleep(5)
 (out/'offline.png').write_bytes(adb('exec-out','screencap','-p'))
 assert any('마지막 저장 데이터' in n.get('text','') for n in nodes()),'Offline cache state not visible'
-adb('shell','cmd','uimode','night','yes');time.sleep(3)
+assert tap('더보기')
+for _ in range(6):
+ if tap('화면 모드  ›'):break
+ adb('shell','input','swipe','500','1450','500','500','450');time.sleep(1)
+else:raise AssertionError('Appearance settings not found')
+assert tap('다크 모드')
+time.sleep(3)
 (out/'dark.png').write_bytes(adb('exec-out','screencap','-p'))
 logs=adb('logcat','-d','-s','AndroidRuntime').decode(errors='replace');(out/'runtime.log').write_text(logs)
 assert 'FATAL EXCEPTION' not in logs,logs
