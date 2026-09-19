@@ -44,7 +44,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final oilCard = find.byKey(const ValueKey('commodity_wti')).first;
-    await tester.scrollUntilVisible(oilCard, 250);
+    await tester.ensureVisible(oilCard);
+    await tester.pumpAndSettle();
     await tester.tap(oilCard);
     await tester.pumpAndSettle();
     expect(find.text('국제유가 (WTI) 상세'), findsOneWidget);
