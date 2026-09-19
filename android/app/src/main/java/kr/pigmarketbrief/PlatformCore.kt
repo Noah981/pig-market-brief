@@ -58,3 +58,25 @@ fun checkFeedReminder(ctx:Context){
  if(notify(ctx,"사료 주문하실 시기가 아닌가요?","평소 주문주기를 기준으로 알려드렸습니다. 주문 완료·3일 뒤 다시를 선택할 수 있어요.",3001))p.edit().putString("feed_notified",due.toString()).apply()
 }
 class FeedReminderWorker(ctx:Context,params:WorkerParameters):CoroutineWorker(ctx,params){override suspend fun doWork():Result{checkFeedReminder(applicationContext);return Result.success()}}
+
+fun checkBenefitReminders(ctx:Context,feed:JSONObject){
+ val settings=ctx.getSharedPreferences("dondon_profile",0)
+ if(!settings.getBoolean("benefit_alert",false))return
+ val region=farmRegion(ctx);if(region.isBlank())return
+ val rows=feed.optJSONArray("benefits")?:return
+ val delivered=settings.getStringSet("benefit_notified",emptySet())!!.toMutableSet()
+ for(i in 0 until rows.length()){
+  val row=rows.optJSONObject(i)?:continue
+  val area=row.optString("region")
+  if(area.isBlank()||(area!="전국"&&!region.contains(area)))continue
+  val id=row.optString("id");if(id.isBlank())continue
+  val days=daysUntil(row.optString("deadline"))
+  if(days!=null&&days<0)continue
+  val stage=if(days in listOf(30L,14L,7L,3L,1L,0L))"deadline:${row.optString("deadline")}:$days" else "new"
+  val key="$id:$stage"
+  if(key in delivered)continue
+  val title=if(stage=="new")"내 지역 지원사업을 확인하세요" else "지원사업 마감 ${if(days==0L)"오늘" else "D-$days"}"
+  if(notify(ctx,title,row.optString("title")+" · 신청조건과 준비서류를 확인하세요",4001)){delivered.add(key);settings.edit().putStringSet("benefit_notified",delivered.toList().takeLast(1000).toSet()).apply()}
+  break // At most one benefit notification per scheduled run.
+ }
+}

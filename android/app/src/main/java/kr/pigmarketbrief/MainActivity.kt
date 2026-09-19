@@ -263,12 +263,16 @@ class SyncWorker(ctx:Context,params:WorkerParameters):CoroutineWorker(ctx,params
    if(notify(applicationContext,"국내 공식 질병·방역 소식",fresh.first().summary,2001)) { seen.addAll(fresh.map{it.url+it.summary});prefs.edit().putStringSet("seen_disease",seen.toList().takeLast(500).toSet()).apply() }
   }
  }
+ val extra=NetworkStore.get(applicationContext,"platform.json");if(!extra.cached&&extra.raw!=null)checkBenefitReminders(applicationContext,JSONObject(extra.raw))
  checkFeedReminder(applicationContext)
  if(data.error!=null)Result.retry()else Result.success()
 }catch(_:Exception){Result.retry()}}
 fun scheduleBackgroundSync(ctx:Context){val req=PeriodicWorkRequestBuilder<SyncWorker>(1,TimeUnit.HOURS).setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build();WorkManager.getInstance(ctx).enqueueUniquePeriodicWork("todaypig-sync",ExistingPeriodicWorkPolicy.KEEP,req);WorkManager.getInstance(ctx).enqueueUniquePeriodicWork("dondon-feed",ExistingPeriodicWorkPolicy.KEEP,PeriodicWorkRequestBuilder<FeedReminderWorker>(1,TimeUnit.HOURS).build())}
 fun notify(ctx:Context,title:String,text:String,idNum:Int):Boolean{
  if(android.os.Build.VERSION.SDK_INT>=33&&ContextCompat.checkSelfPermission(ctx,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)return false
+ val hour=java.time.ZonedDateTime.now(java.time.ZoneId.of("Asia/Seoul")).hour
+ val quiet=ctx.getSharedPreferences("dondon_profile",0).getBoolean("quiet_hours",true)
+ if(quiet&&(hour>=22||hour<7))return false
  val nm=ctx.getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
  if(!nm.areNotificationsEnabled())return false
  val id="dondon_updates";nm.createNotificationChannel(NotificationChannel(id,"돈돈해 주요 알림",NotificationManager.IMPORTANCE_DEFAULT))
