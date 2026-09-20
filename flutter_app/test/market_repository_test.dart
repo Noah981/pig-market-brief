@@ -22,8 +22,11 @@ void main(){
     expect(current.price,6442);expect(current.change,-298);expect(current.changePct,-4.42);expect(current.previousDate,'20260917');
     expect(current.seriesFor(0).points.length,7);expect(current.seriesFor(0).points.last.date,'20260918');
     expect(current.seriesFor(1).points.last.date,'20260918');
+    expect(current.seriesFor(1).points.first.date,'20260910');
     expect(current.seriesFor(2).points.map((x)=>x.date),containsAll(['20260101','20260801']));
+    expect(current.seriesFor(2).points.last.date,'20260901');
     expect(current.seriesFor(3).points.map((x)=>x.date),containsAll(['20240101','20250101','20260101']));
+    expect(current.seriesFor(3).points.first.date,'20240101');
     expect(current.monthAverage,6067);expect(current.yearAverage,5638);
     final cached=await repository.cached();expect(cached?.price,6442);expect(cached?.fromCache,isTrue);
   });
