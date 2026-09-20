@@ -1,7 +1,7 @@
 name: dondonhae
 description: 돈돈해 모바일 대시보드
 publish_to: none
-version: 1.5.0+14
+version: 1.6.0+15
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
@@ -26,4 +26,5 @@ flutter:
     - assets/data/platform.json
     - assets/data/disease-alerts.json
     - assets/images/korea_admin_map.jpeg
+    - assets/images/korea_disease_reference.png
     - assets/images/dondonhae_symbol.png
