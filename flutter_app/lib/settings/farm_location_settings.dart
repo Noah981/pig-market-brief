@@ -38,7 +38,12 @@ class FarmLocationSettings extends ChangeNotifier {
   }
   static double _distance2(double lat,double lng,FarmLocation x){final a=lat-x.latitude,b=lng-x.longitude;return a*a+b*b;}
   static List<FarmLocation> get all=>locations.values.expand((x)=>x).toList(growable:false);
-  static FarmLocation? find(String text){for(final x in all){if(text.contains(x.cityCounty.replaceAll(RegExp(r'[시군구]$'),'')))return x;}return null;}
+  static FarmLocation? find(String text){
+    final ordered=[...all]..sort((a,b)=>b.cityCounty.length.compareTo(a.cityCounty.length));
+    for(final x in ordered){if(text.contains(x.cityCounty))return x;}
+    for(final x in ordered){final stem=x.cityCounty.replaceAll(RegExp(r'[시군구]$'),'');if(stem.length>=2&&text.contains(stem))return x;}
+    return null;
+  }
 
   static final Map<String,List<FarmLocation>> locations={
     '서울특별시':_p('서울특별시','종로구,중구,용산구,성동구,광진구,동대문구,중랑구,성북구,강북구,도봉구,노원구,은평구,서대문구,마포구,양천구,강서구,구로구,금천구,영등포구,동작구,관악구,서초구,강남구,송파구,강동구',37.5665,126.9780),
