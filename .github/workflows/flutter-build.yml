@@ -1,6 +1,8 @@
 name: Flutter UI build
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
     paths: ['flutter_app/**', '.github/workflows/flutter-build.yml']
