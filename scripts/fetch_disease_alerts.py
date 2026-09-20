@@ -25,6 +25,7 @@ COUNTRIES=[
 ]
 PLACES={
  "강화군":(37.746,126.488),"예천군":(36.657,128.452),"창녕군":(35.544,128.492),"순천시":(34.950,127.487),
+ "고양시":(37.658,126.832),"의령군":(35.322,128.261),"무안군":(34.990,126.481),"연천군":(38.096,127.075),
  "영주시":(36.805,128.624),"상주시":(36.410,128.159),"문경시":(36.586,128.186),"김천시":(36.139,128.114),
  "경주시":(35.856,129.224),"포천시":(37.895,127.200),"연천군":(38.096,127.075),"철원군":(38.146,127.313),
  "화천군":(38.106,127.708),"양구군":(38.110,127.990),"인제군":(38.069,128.170),"고성군":(38.380,128.467)
@@ -58,7 +59,7 @@ def region_fields(text):
   if name in text:return {"region":name,"latitude":lat,"longitude":lng}
  for name,(lat,lng) in PLACES.items():
   stem=re.sub(r'[시군구]$','',name)
-  if re.search(rf'(?<![가-힣]){re.escape(stem)}(?:서|지역|일대|농장)',text):return {"region":name,"latitude":lat,"longitude":lng}
+  if re.search(rf'(?<![가-힣]){re.escape(stem)}(?:시|군|구|서|지역|일대|\s)',text):return {"region":name,"latitude":lat,"longitude":lng}
  return {}
 
 def event_title(text):return bool(OUTBREAK_EVENT.search(text)) and not NON_EVENT.search(text)
@@ -74,13 +75,20 @@ def official_page(source,url,scope="국내",default_country=None):
  out=[]
  try:
   raw=fetch(url)
-  for href,label in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',raw,re.I|re.S):
+  for match in re.finditer(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',raw,re.I|re.S):
+   href,label=match.groups()
    title=clean(label);ds=diseases(title)
    if len(title)<8 or not ds or not event_title(title):continue
    link=urllib.parse.urljoin(url,href)
    code=country_code(title,scope) or default_country
    if not code:continue
-   for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
+   nearby=clean(raw[max(0,match.start()-600):min(len(raw),match.end()+600)])
+   date_match=re.search(r'(20\d{2})[.\-/](\d{1,2})[.\-/](\d{1,2})',nearby)
+   published=(f'{date_match.group(1)}-{int(date_match.group(2)):02d}-{int(date_match.group(3)):02d}' if date_match else datetime.now(KST).date().isoformat())
+   try:
+    if datetime.fromisoformat(published).date()<datetime.now(KST).date()-timedelta(days=365):continue
+   except ValueError:continue
+   for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
  except Exception as e:print("official source skipped",source,e)
  return out
 
@@ -102,7 +110,9 @@ def public_news(scope="국내"):
 
 def main():
  items=[]
- items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do",default_country="KR")
+ items+=official_page("농림축산식품부 가축전염병 중앙사고수습본부","https://www.mafra.go.kr/FMD-AI2/",default_country="KR")
+ items+=official_page("농림축산식품부 ASF 보도자료","https://www.mafra.go.kr/FMD-AI2/2241/subview.do",default_country="KR")
+ items+=official_page("농림축산식품부 구제역 발생현황","https://www.mafra.go.kr/FMD-AI2/2216/subview.do",default_country="KR")
  items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do",default_country="KR")
  # WOAH의 질병 소개 페이지는 개별 발생 공고가 아니므로 수집하지 않는다.
  # 해외는 국가가 제목에 명시된 최신 공개정보만 표시하고 공식 원문 여부를 구분한다.

@@ -7,7 +7,7 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity(){
  private var channel:MethodChannel?=null
- override fun getInitialRoute():String?=if(intent?.getBooleanExtra("open_price",false)==true)"/price" else super.getInitialRoute()
+ override fun getInitialRoute():String?=when{intent?.getBooleanExtra("open_price",false)==true->"/price";intent?.getBooleanExtra("open_disease",false)==true->"/disease";else->super.getInitialRoute()}
  override fun configureFlutterEngine(flutterEngine:FlutterEngine){
   super.configureFlutterEngine(flutterEngine)
   channel=MethodChannel(flutterEngine.dartExecutor.binaryMessenger,"dondonhae/price_widget")
@@ -19,5 +19,5 @@ class MainActivity: FlutterActivity(){
    }else result.notImplemented()
   }
  }
- override fun onNewIntent(intent:Intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("open_price",false))channel?.invokeMethod("openPrice",null)}
+ override fun onNewIntent(intent:Intent){super.onNewIntent(intent);setIntent(intent);if(intent.getBooleanExtra("open_price",false))channel?.invokeMethod("openPrice",null);if(intent.getBooleanExtra("open_disease",false))channel?.invokeMethod("openDisease",null)}
 }

@@ -11,6 +11,8 @@ class DiseaseClassifierTest(unittest.TestCase):
  def test_real_regions(self):
   self.assertEqual(region_fields('경남 창녕서 ASF 발생')['region'],'창녕군')
   self.assertEqual(region_fields('전남 순천시 ASF 발생')['region'],'순천시')
+  self.assertEqual(region_fields('경남 의령 돼지농장 ASF 발생')['region'],'의령군')
+  self.assertEqual(region_fields('전남 무안 돼지농장 ASF 발생')['region'],'무안군')
  def test_unknown_domestic_title_is_not_forced_to_korea(self):
   self.assertIsNone(country_code('돼지 질병 발생 소식','국내'))
  def test_named_domestic_region_is_korea(self):

@@ -8,6 +8,7 @@ import android.graphics.*
 import android.os.Build
 import android.widget.RemoteViews
 import org.json.JSONObject
+import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.NumberFormat
@@ -15,6 +16,7 @@ import java.util.Calendar
 import java.util.Locale
 
 private const val PRICE_URL="https://noah981.github.io/pig-market-brief/data/pig-price.json"
+private const val DISEASE_URL="https://noah981.github.io/pig-market-brief/data/disease-alerts.json"
 private const val PREFS="dondonhae_price_widget"
 
 object PriceWidgetStore{
@@ -69,9 +71,25 @@ object PriceWidgetStore{
  private fun notifyPrice(c:Context,price:Int,change:Int,date:String,key:String){val p=prefs(c);if(p.getString("notified_key","")==key)return;val nm=c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager;if(Build.VERSION.SDK_INT>=26)nm.createNotificationChannel(NotificationChannel("pig_price","돈가 업데이트",NotificationManager.IMPORTANCE_HIGH));val body="${NumberFormat.getNumberInstance(Locale.KOREA).format(price)}원/kg · 전일 대비 ${if(change>=0)"▲" else "▼"} ${kotlin.math.abs(change)}원";val n=if(Build.VERSION.SDK_INT>=26)Notification.Builder(c,"pig_price") else Notification.Builder(c);n.setSmallIcon(R.mipmap.ic_launcher).setContentTitle("돈돈해 | 오늘의 돈가").setContentText(body).setStyle(Notification.BigTextStyle().bigText("오늘 전국 돈가가 업데이트되었습니다.\n$body\n눌러서 오늘의 돈가 흐름을 확인하세요.")).setContentIntent(openPrice(c)).setAutoCancel(true);nm.notify(6442,n.build());p.edit().putString("notified_key",key).apply()}
 }
 
+object DiseaseAlertStore{
+ private const val PREFS_NAME="dondonhae_disease_alerts"
+ fun fetch(c:Context){
+  try{
+   val connection=(URL(DISEASE_URL+"?v="+System.currentTimeMillis()).openConnection() as HttpURLConnection).apply{connectTimeout=12000;readTimeout=12000;requestMethod="GET"}
+   if(connection.responseCode!=200)return
+   val root=JSONObject(connection.inputStream.bufferedReader().use{it.readText()});val rows=root.optJSONArray("items")?:JSONArray();val current=linkedSetOf<String>();val official=mutableListOf<JSONObject>()
+   for(i in 0 until rows.length()){val x=rows.optJSONObject(i)?:continue;if(x.optString("countryCode")!="KR"||x.optString("evidenceLevel")!="OFFICIAL")continue;val key=listOf(x.optString("disease"),x.optString("region"),x.optString("publishedAt"),x.optString("sourceUrl")).joinToString("|");if(key.replace("|","").isEmpty())continue;current.add(key);official.add(x)}
+   val prefs=c.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);val initialized=prefs.getBoolean("initialized",false);val previous=prefs.getStringSet("known",emptySet())?:emptySet()
+   if(initialized){for(x in official){val key=listOf(x.optString("disease"),x.optString("region"),x.optString("publishedAt"),x.optString("sourceUrl")).joinToString("|");if(!previous.contains(key))notify(c,x,key)}}
+   prefs.edit().putBoolean("initialized",true).putStringSet("known",current).putString("updated_at",root.optString("updatedAt")).apply()
+  }catch(_:Exception){}
+ }
+ private fun notify(c:Context,x:JSONObject,key:String){val nm=c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager;if(Build.VERSION.SDK_INT>=26)nm.createNotificationChannel(NotificationChannel("disease","질병 알림",NotificationManager.IMPORTANCE_HIGH));val disease=x.optString("disease","가축질병");val region=x.optString("region","국내");val intent=Intent(c,MainActivity::class.java).putExtra("open_disease",true).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP);val pending=PendingIntent.getActivity(c,4201,intent,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE);val n=if(Build.VERSION.SDK_INT>=26)Notification.Builder(c,"disease") else Notification.Builder(c);n.setSmallIcon(R.mipmap.ic_launcher).setContentTitle("돈돈해 | 국내 신규 질병정보").setContentText("$region에서 $disease 공식 발생정보가 확인됐습니다.").setStyle(Notification.BigTextStyle().bigText("$region에서 $disease 공식 발생정보가 확인됐습니다.\n공식 원문과 방역지침을 확인하세요.")).setContentIntent(pending).setAutoCancel(true);nm.notify(key.hashCode(),n.build())}
+}
+
 abstract class BasePriceWidgetProvider:AppWidgetProvider(){override fun onUpdate(c:Context,m:AppWidgetManager,ids:IntArray){PriceUpdateScheduler.schedule(c);PriceWidgetStore.render(c);asyncFetch(c)}override fun onEnabled(c:Context){PriceUpdateScheduler.schedule(c);PriceWidgetStore.render(c);asyncFetch(c)}override fun onAppWidgetOptionsChanged(c:Context,m:AppWidgetManager,id:Int,options:android.os.Bundle){PriceWidgetStore.render(c)}private fun asyncFetch(c:Context){val pending=goAsync();Thread{try{PriceWidgetStore.fetch(c.applicationContext)}finally{pending.finish()}}.start()}}
 class PriceWidgetSmallProvider:BasePriceWidgetProvider()
 class PriceWidgetWideProvider:BasePriceWidgetProvider()
-class PriceUpdateReceiver:BroadcastReceiver(){override fun onReceive(c:Context,i:Intent){val pending=goAsync();Thread{try{PriceWidgetStore.fetch(c.applicationContext)}finally{pending.finish()}}.start()}}
+class PriceUpdateReceiver:BroadcastReceiver(){override fun onReceive(c:Context,i:Intent){val pending=goAsync();Thread{try{PriceWidgetStore.fetch(c.applicationContext);DiseaseAlertStore.fetch(c.applicationContext)}finally{pending.finish()}}.start()}}
 class PriceBootReceiver:BroadcastReceiver(){override fun onReceive(c:Context,i:Intent){PriceUpdateScheduler.schedule(c);PriceWidgetStore.render(c)}}
 object PriceUpdateScheduler{fun schedule(c:Context){val alarm=c.getSystemService(Context.ALARM_SERVICE) as AlarmManager;val intent=PendingIntent.getBroadcast(c,4102,Intent(c,PriceUpdateReceiver::class.java),PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE);alarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,android.os.SystemClock.elapsedRealtime()+60_000,15*60_000L,intent)}}
