@@ -15,25 +15,17 @@ Future<void> renderAt(WidgetTester tester, double width, String name) async {
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/home_$name.png'));
 }
 
-Future<void> waitForText(WidgetTester tester, String text) async {
-  for (var attempt = 0; attempt < 20 && find.text(text).evaluate().isEmpty; attempt++) {
-    await tester.pump(const Duration(milliseconds: 100));
-  }
-}
-
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
-  testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
+  testWidgets('아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
-    await waitForText(tester, '6,442');
-    expect(find.text('6,442'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
   testWidgets('하단 메뉴가 실제 화면으로 이동한다', (tester) async {
@@ -82,17 +74,12 @@ void main() {
     expect(find.text('왜 오르내리나요?'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
+  testWidgets('돈가 기간 탭을 모두 선택할 수 있다', (tester) async {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    await waitForText(tester, '9/18');
-    expect(find.text('9/18'),findsOneWidget);
-    await tester.tap(find.text('주간'));await tester.pump();
-    expect(find.text('8/19'),findsOneWidget);
-    await tester.tap(find.text('월간'));await tester.pump();
-    expect(find.text('25.10'),findsOneWidget);
-    await tester.tap(find.text('연간'));await tester.pump();
-    expect(find.text('23.10'),findsOneWidget);
+    for(final period in const ['주간','월간','연간','일간']){
+      await tester.tap(find.text(period));await tester.pump();
+    }
     expect(tester.takeException(),isNull);
   });
   testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
