@@ -49,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.3.0.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.3.1.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.3.0 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.3.0 dondonhae-flutter-1.3.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.3.0" --notes "공식 지원사업 자동수집·신규 공고 알림과 기본 매우 큰 글씨, 큰글씨 화면의 반응형 보정을 적용했습니다."
+          gh release delete dondonhae-flutter-v1.3.1 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.3.1 dondonhae-flutter-1.3.1.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.3.1" --notes "큰글씨 모드에서 상세 화면 상단이 잘리고 검게 표시되던 문제와 지원사업 카드 줄바꿈을 수정했습니다."
