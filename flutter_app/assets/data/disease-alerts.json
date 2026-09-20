@@ -1,6 +1,1 @@
-{"schemaVersion":2,"updatedAt":"2026-09-20T04:35:45+09:00","items":[
-{"disease":"구제역","source":"공개뉴스","countryCode":"KR","scope":"국내","evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":"강화 구제역 추가 발생 관련 공개정보","sourceUrl":"https://news.google.com/","publishedAt":"2026-09-19"},
-{"disease":"구제역","source":"공개뉴스","countryCode":"KR","scope":"국내","evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":"경북 예천 돼지·소 농장 구제역 관련 공개정보","sourceUrl":"https://news.google.com/","publishedAt":"2026-09-06"},
-{"disease":"ASF","source":"공개뉴스","countryCode":"KR","scope":"국내","evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":"경남 창녕 아프리카돼지열병 관련 공개정보","sourceUrl":"https://news.google.com/","publishedAt":"2026-09-12"},
-{"disease":"ASF","source":"공개뉴스","countryCode":"VN","scope":"국외","evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":"베트남 까마우성 아프리카돼지열병 관련 공개정보","sourceUrl":"https://news.google.com/","publishedAt":"2026-09-18"}
-],"notice":"공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+{"schemaVersion":2,"updatedAt":"","items":[],"notice":"앱 실행 후 공식 질병정보를 확인합니다. 공개정보는 공식 발생으로 해석하지 마세요."}
