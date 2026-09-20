@@ -47,16 +47,15 @@ class _AppHeaderState extends State<AppHeader> {
             child: const Icon(Icons.savings_outlined, color: AppColors.coral, size: 21),
           ),
           const SizedBox(width: 9),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+          Expanded(child:Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
             RichText(text: const TextSpan(style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900), children: [TextSpan(text: '돈', style: TextStyle(color: AppColors.text)), TextSpan(text: '돈해', style: TextStyle(color: AppColors.coral))])),
             const Text('양돈의 오늘을 든든하게', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w600)),
             const SizedBox(height:3),
             SizedBox(height:25,child:OutlinedButton.icon(key:const ValueKey('large_text_mode_button'),onPressed:()=>settings.setLargeTextMode(!settings.largeTextMode),icon:Icon(settings.largeTextMode?Icons.text_decrease:Icons.text_increase,size:13),label:Text(settings.largeTextMode?'기본 글씨':'큰글씨 모드'),style:OutlinedButton.styleFrom(padding:const EdgeInsets.symmetric(horizontal:7),minimumSize:const Size(0,25),tapTargetSize:MaterialTapTargetSize.shrinkWrap,textStyle:const TextStyle(fontSize:9,fontWeight:FontWeight.w900),foregroundColor:AppColors.coral,side:const BorderSide(color:AppColors.coral)))),
-          ]),
-          const Spacer(),
+          ])),
           Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(_currentDateTime(), style: const TextStyle(fontSize: 7.5, color: AppColors.secondary)),
-            const SizedBox(height: 2),
+            if(!settings.largeTextMode)Text(_currentDateTime(), style: const TextStyle(fontSize: 7.5, color: AppColors.secondary)),
+            if(!settings.largeTextMode)const SizedBox(height: 2),
             const Badge(smallSize: 6, child: Icon(Icons.notifications, size: 20, color: Color(0xFF24344D))),
           ]),
         ]),

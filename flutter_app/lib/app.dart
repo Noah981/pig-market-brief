@@ -22,6 +22,6 @@ class _DondonhaeAppState extends State<DondonhaeApp>{
           final media=MediaQuery.of(context);
           return MediaQuery(data:media.copyWith(textScaler:TextScaler.linear(settings.textScale)),child:child!);
         },
-        home: const HomeDashboardPage(),
+        home: HomeDashboardPage(key:ValueKey('home_${settings.largeTextMode}_${settings.textScale}')),
       );
 }
