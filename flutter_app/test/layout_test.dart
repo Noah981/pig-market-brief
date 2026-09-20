@@ -65,8 +65,8 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    final commodityCard = find.byKey(const ValueKey('commodity_corn')).first;
-    await tester.ensureVisible(commodityCard);
+    final commodityCard = find.byKey(const ValueKey('commodity_corn'));
+    await tester.scrollUntilVisible(commodityCard,300,scrollable:find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await tester.tap(commodityCard);
     await tester.pumpAndSettle();
@@ -87,7 +87,7 @@ void main() {
   testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    final header=find.byKey(const ValueKey('international_market_header'));await tester.ensureVisible(header);await tester.tap(header);await tester.pumpAndSettle();
+    final header=find.byKey(const ValueKey('international_market_header'));await tester.scrollUntilVisible(header,300,scrollable:find.byType(Scrollable).first);await tester.tap(header);await tester.pumpAndSettle();
     expect(find.text('국제정세 해석'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
     expect(find.byType(Image),findsWidgets);expect(tester.takeException(),isNull);
@@ -113,5 +113,10 @@ void main() {
     expect(tester.takeException(),isNull);
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
+  });
+  testWidgets('새 설치의 기본 글자 크기는 매우 크게 130%다',(tester)async{
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    expect(DisplaySettings.instance.selectedTextScale,1.3);expect(tester.takeException(),isNull);
   });
 }
