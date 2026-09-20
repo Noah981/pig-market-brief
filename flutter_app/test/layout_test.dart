@@ -115,10 +115,10 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
   });
-  testWidgets('새 설치의 기본 글자 크기는 매우 크게 130%다',(tester)async{
+  testWidgets('새 설치의 기본 글자 크기는 시안 기준 100%다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.selectedTextScale,1.3);expect(tester.takeException(),isNull);
+    expect(DisplaySettings.instance.selectedTextScale,1.0);expect(tester.takeException(),isNull);
   });
   for(final width in const [360.0,390.0,412.0]){
     testWidgets('큰글씨 상세 화면 ${width.toInt()}dp 배경·상단·오버플로 정상',(tester)async{
