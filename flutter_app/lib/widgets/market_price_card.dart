@@ -26,7 +26,7 @@ class MarketPriceCard extends StatelessWidget {
         ])),
         SizedBox(width: narrow?6:8), Container(width: narrow?105:114, padding: const EdgeInsets.all(9), decoration: BoxDecoration(color: AppColors.lightBlue,borderRadius: BorderRadius.circular(13)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Row(children:[Icon((snapshot?.change??0)>=0?Icons.trending_up:Icons.bar_chart,color:(snapshot?.change??0)>=0?AppColors.coral:AppColors.blue,size:18),const SizedBox(width:5),Flexible(child:Text(snapshot==null?'가격 확인 중':(snapshot!.change>=0?'전일 대비\n상승':'전일 대비\n하락'),style:TextStyle(fontSize:11,fontWeight:FontWeight.w900,color:(snapshot?.change??0)>=0?AppColors.coral:AppColors.blue)))]),const SizedBox(height:5),Text(snapshot==null?'공식 가격을 불러오고 있습니다.':'가격 변동 근거를 눌러 확인하세요.',style:const TextStyle(fontSize:8.5,height:1.35))])),
       ]);}),
-      const SizedBox(height:7),PriceLineChart(series:snapshot?.seriesFor(period)??series[period]),const SizedBox(height:3),PeriodTabBar(selected:period,onChanged:onPeriodChanged),const SizedBox(height:6),
+      const SizedBox(height:7),PriceLineChart(series:snapshot?.seriesFor(period)??const PriceSeries('공식 이력 확인 중',[])),const SizedBox(height:3),PeriodTabBar(selected:period,onChanged:onPeriodChanged),const SizedBox(height:6),
       Text(_sourceText(),style:const TextStyle(fontSize:7.5,color:AppColors.secondary)),
     ]),
   ));

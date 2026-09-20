@@ -4,6 +4,15 @@ import plistlib
 import shutil
 
 root=Path(__file__).resolve().parents[1]/"flutter_app"
+repo=root.parent
+
+# Bundle only the last successfully verified official snapshot. This is an
+# offline cache seed, not mock data; network failure must never turn it into 0.
+asset_data=root/"assets"/"data"
+asset_data.mkdir(parents=True,exist_ok=True)
+for name in ("pig-price.json","pig-price-history.json"):
+    source=repo/"docs"/"data"/name
+    if source.exists():shutil.copy2(source,asset_data/name)
 manifest=root/"android/app/src/main/AndroidManifest.xml"
 text=manifest.read_text(encoding="utf-8")
 text=text.replace('android:label="dondonhae"','android:label="돈돈해"')

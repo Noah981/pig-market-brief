@@ -1,7 +1,8 @@
 {
   "source": "축산물품질평가원",
-  "scope": "생산자 돼지 경락가격·전국·탕박·등외제외·제주제외",
-  "formulaVersion": "kape-dabom-published-v1",
+  "sourceUrl": "https://www.ekapepia.com/v3/price/auction/period/pig/auctionPrice.do",
+  "scope": "전국·탕박·등외제외·제주제외",
+  "formulaVersion": "kape-dabom-published-v2",
   "coverage": {
     "from": "20230901",
     "to": "20260918",
@@ -10,213 +11,219 @@
   "rows": [
     {
       "date": "20230901",
-      "price": 5166,
-      "count": 139690,
-      "resolution": "month"
+      "price": 5705,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20231001",
-      "price": 4592,
-      "count": 146193,
-      "resolution": "month"
+      "price": 4947,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20231101",
-      "price": 4667,
-      "count": 157738,
-      "resolution": "month"
+      "price": 5002,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20231201",
-      "price": 4615,
-      "count": 147491,
-      "resolution": "month"
+      "price": 4890,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240101",
-      "price": 4163,
-      "count": 162164,
-      "resolution": "month"
+      "price": 4386,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240201",
-      "price": 4059,
-      "count": 131886,
-      "resolution": "month"
+      "price": 4272,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240301",
-      "price": 4467,
-      "count": 126856,
-      "resolution": "month"
+      "price": 4807,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240401",
-      "price": 4614,
-      "count": 129953,
-      "resolution": "month"
+      "price": 4892,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240501",
-      "price": 4889,
-      "count": 131137,
-      "resolution": "month"
+      "price": 5278,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240601",
-      "price": 5465,
-      "count": 101968,
-      "resolution": "month"
+      "price": 5969,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240701",
-      "price": 5164,
-      "count": 122028,
-      "resolution": "month"
+      "price": 5694,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240801",
-      "price": 4984,
-      "count": 119645,
-      "resolution": "month"
+      "price": 5544,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20240901",
-      "price": 5464,
-      "count": 113731,
-      "resolution": "month"
+      "price": 6098,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20241001",
-      "price": 5172,
-      "count": 135087,
-      "resolution": "month"
+      "price": 5702,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20241101",
-      "price": 5007,
-      "count": 122773,
-      "resolution": "month"
+      "price": 5378,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20241201",
-      "price": 5188,
-      "count": 138173,
-      "resolution": "month"
+      "price": 5616,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250101",
-      "price": 4731,
-      "count": 121059,
-      "resolution": "month"
+      "price": 5056,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250201",
-      "price": 4446,
-      "count": 126570,
-      "resolution": "month"
+      "price": 4760,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250301",
-      "price": 4870,
-      "count": 112820,
-      "resolution": "month"
+      "price": 5345,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250401",
-      "price": 5180,
-      "count": 119296,
-      "resolution": "month"
+      "price": 5651,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250501",
-      "price": 5312,
-      "count": 112027,
-      "resolution": "month"
+      "price": 5812,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250601",
-      "price": 5566,
-      "count": 106039,
-      "resolution": "month"
+      "price": 6112,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250701",
-      "price": 5789,
-      "count": 120461,
-      "resolution": "month"
+      "price": 6365,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250801",
-      "price": 5951,
-      "count": 119433,
-      "resolution": "month"
+      "price": 6602,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20250901",
-      "price": 5906,
-      "count": 146940,
-      "resolution": "month"
+      "price": 6499,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20251001",
-      "price": 5365,
-      "count": 113306,
-      "resolution": "month"
+      "price": 5852,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20251101",
-      "price": 5317,
-      "count": 116894,
-      "resolution": "month"
+      "price": 5657,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20251201",
-      "price": 5283,
-      "count": 140785,
-      "resolution": "month"
+      "price": 5642,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260101",
-      "price": 4852,
-      "count": 120741,
-      "resolution": "month"
+      "price": 5206,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260201",
-      "price": 5088,
-      "count": 96235,
-      "resolution": "month"
+      "price": 5284,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260301",
-      "price": 4894,
-      "count": 123790,
-      "resolution": "month"
+      "price": 5229,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260401",
-      "price": 5603,
-      "count": 112932,
-      "resolution": "month"
+      "price": 6176,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260501",
-      "price": 5862,
-      "count": 107697,
-      "resolution": "month"
+      "price": 6388,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260601",
-      "price": 5835,
-      "count": 123234,
-      "resolution": "month"
+      "price": 6343,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260701",
-      "price": 5675,
-      "count": 130011,
-      "resolution": "month"
+      "price": 6236,
+      "resolution": "month",
+      "verified": true
+    },
+    {
+      "date": "20260801",
+      "price": 6405,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260805",
@@ -260,103 +267,129 @@
     },
     {
       "date": "20260817",
-      "price": 5949,
-      "count": 6065
+      "price": 6328,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260818",
-      "price": 5728,
-      "count": 6721
+      "price": 6333,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260819",
-      "price": 5682,
-      "count": 6837
+      "price": 6378,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260820",
-      "price": 5591,
-      "count": 7003
+      "price": 6420,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260821",
-      "price": 4784,
-      "count": 2844
+      "price": 6137,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260824",
-      "price": 6084,
-      "count": 5720
+      "price": 6453,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260825",
-      "price": 6216,
-      "count": 6140
+      "price": 6491,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260826",
-      "price": 5749,
-      "count": 6269
+      "price": 6578,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260827",
-      "price": 5776,
-      "count": 6776
+      "price": 6543,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260828",
-      "price": 5099,
-      "count": 2858
+      "price": 6744,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260831",
-      "price": 6334,
-      "count": 6450
+      "price": 6803,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260901",
-      "price": 6246,
-      "count": 6128
+      "price": 6850,
+      "resolution": "day",
+      "verified": true
+    },
+    {
+      "date": "20260901",
+      "price": 6943,
+      "resolution": "month",
+      "verified": true
     },
     {
       "date": "20260902",
-      "price": 6129,
-      "count": 6363
+      "price": 7010,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260903",
-      "price": 6166,
-      "count": 6469
+      "price": 7046,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260904",
-      "price": 5731,
-      "count": 3418
+      "price": 7038,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260907",
-      "price": 6660,
-      "count": 7777
+      "price": 7101,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260908",
-      "price": 6403,
-      "count": 7581
+      "price": 7088,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260909",
-      "price": 6233,
-      "count": 7718
+      "price": 7043,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260910",
-      "price": 6184,
-      "count": 8042
+      "price": 7090,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260911",
-      "price": 5668,
-      "count": 5850
+      "price": 6696,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260912",
@@ -365,28 +398,33 @@
     },
     {
       "date": "20260914",
-      "price": 6626,
-      "count": 6895
+      "price": 6993,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260915",
-      "price": 6277,
-      "count": 7927
+      "price": 7035,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260916",
-      "price": 6215,
-      "count": 8045
+      "price": 6828,
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260917",
       "price": 6740,
-      "count": null
+      "resolution": "day",
+      "verified": true
     },
     {
       "date": "20260918",
       "price": 6442,
-      "count": null
+      "resolution": "day",
+      "verified": true
     }
   ]
 }

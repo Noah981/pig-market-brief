@@ -1,7 +1,10 @@
 name: Fast KAPE price watch
 on:
-  # 기존 pigGrade 자체 가중평균은 다봄의 생산자 돼지 경락가격과 다른
-  # 값을 만들 수 있어 자동 실행을 중지한다. 다봄 공표값 수집기로만 교체한다.
+  schedule:
+    # 한국시간 평일 09:00~12:30 30분 간격 + 13:00/16:00 확인.
+    # 휴장일에는 값이 없으므로 기존 확정값을 유지한다.
+    - cron: "0,30 0-3 * * 1-5"
+    - cron: "0 4,7 * * 1-5"
   workflow_dispatch:
 permissions:
   contents: write
@@ -16,19 +19,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch KAPE pig auction price
-        env:
-          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
+      - name: Fetch and cross-check official KAPE Dabom price
         run: python scripts/fetch_pig_price.py
+      - name: Rebuild price movement analysis
+        run: PRICE_ONLY=1 python scripts/build_market_analysis.py
       - name: Commit price data safely
         run: |
           mkdir -p /tmp/price-data
-          cp docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json /tmp/price-data/
+          cp docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json docs/data/market-analysis.json /tmp/price-data/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
           cp /tmp/price-data/* docs/data/
-          git add docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json
+          git add docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json docs/data/market-analysis.json
           git diff --cached --quiet || git commit -m "Update KAPE price"
           git push origin HEAD:main

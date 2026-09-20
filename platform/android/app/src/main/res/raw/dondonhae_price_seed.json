@@ -8,6 +8,7 @@
   "previousPrice": 6740,
   "change": -298,
   "changePct": -4.42,
+  "history": [7090, 6696, 6993, 7035, 6828, 6740, 6442],
   "unit": "원/kg",
   "status": "bundled_verified_snapshot"
 }
