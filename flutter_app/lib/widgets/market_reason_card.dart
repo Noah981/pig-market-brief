@@ -21,10 +21,17 @@ class MarketReasonCard extends StatelessWidget {
           padding: const EdgeInsets.all(11),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Row(children: [
-              Icon(Icons.trending_down_rounded, color: AppColors.coral, size: 25),
-              SizedBox(width: 6),
-              Expanded(child: Text('돈가 변동 이유', style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900))),
-              Icon(Icons.chevron_right, color: AppColors.coral, size: 20),
+              Icon(Icons.trending_down_rounded, color: AppColors.coral, size: 22),
+              SizedBox(width: 5),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text('돈가 변동 이유', maxLines: 1, style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900)),
+                ),
+              ),
+              SizedBox(width: 2),
+              Icon(Icons.chevron_right, color: AppColors.coral, size: 18),
             ]),
             const SizedBox(height: 10),
             if (factors.isEmpty)
@@ -36,7 +43,7 @@ class MarketReasonCard extends StatelessWidget {
                       Container(margin: const EdgeInsets.only(top: 3), width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.coral, shape: BoxShape.circle)),
                       const SizedBox(width: 6),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(x.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800)),
+                        FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text(x.title, maxLines: 1, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800))),
                         Text(x.detail, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 8, height: 1.35, color: AppColors.secondary)),
                       ])),
                     ]),
