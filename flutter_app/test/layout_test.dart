@@ -1,5 +1,6 @@
 import 'package:dondonhae/app.dart';
 import 'package:dondonhae/settings/display_settings.dart';
+import 'package:dondonhae/pages/section_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,4 +120,14 @@ void main() {
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     expect(DisplaySettings.instance.selectedTextScale,1.3);expect(tester.takeException(),isNull);
   });
+  for(final width in const [360.0,390.0,412.0]){
+    testWidgets('큰글씨 상세 화면 ${width.toInt()}dp 배경·상단·오버플로 정상',(tester)async{
+      tester.view.physicalSize=Size(width,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(home:MediaQuery(data:MediaQueryData(size:Size(width,844),textScaler:const TextScaler.linear(1.55)),child:const PageShell(title:'내 지역 지원사업',subtitle:'경상북도 경주시 기준 공식 공고',child:Column(children:[SizedBox(height:52,child:OutlinedButton(onPressed:null,child:Text('경상북도 경주시 · 지역 변경'))),SizedBox(height:10),Card(child:Padding(padding:EdgeInsets.all(24),child:Text('현재 연결된 신규 공식 공고가 없습니다.',textAlign:TextAlign.center))),SizedBox(height:12),SizedBox(height:52,child:OutlinedButton(onPressed:null,child:Text('공식 공고 새로고침')))])))));
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('내 지역 지원사업')).dy,greaterThanOrEqualTo(16));
+      expect(find.byType(SafeArea),findsWidgets);
+      expect(tester.takeException(),isNull);
+    });
+  }
 }
