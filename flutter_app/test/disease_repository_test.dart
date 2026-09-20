@@ -15,7 +15,7 @@ void main(){
     final feed=await repo.refresh();
     expect(feed.items.where((x)=>x.scope=='국내').length,1);
     expect(feed.items.where((x)=>x.scope=='국외').length,1);
-    expect(feed.items.first.region,'예천');
+    expect(feed.items.first.region,'예천군');
     expect(feed.items.first.hasMapPoint,isTrue);
   });
 }
