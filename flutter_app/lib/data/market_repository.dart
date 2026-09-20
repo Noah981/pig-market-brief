@@ -25,7 +25,8 @@ class MarketSnapshot {
     final grouped=<String,List<double>>{};
     final official=history.where((x)=>x.resolution=='month').toList();
     for(final x in official){if(x.date.length>=6)grouped[x.date.substring(0,6)]=[x.value];}
-    for(final x in history.where((x)=>x.resolution!='month')){if(x.date.length>=6&&!grouped.containsKey(x.date.substring(0,6)))grouped.putIfAbsent(x.date.substring(0,6),()=>[]).add(x.value);}
+    final officialMonths=grouped.keys.toSet();
+    for(final x in history.where((x)=>x.resolution!='month')){if(x.date.length>=6&&!officialMonths.contains(x.date.substring(0,6)))grouped.putIfAbsent(x.date.substring(0,6),()=>[]).add(x.value);}
     final keys=grouped.keys.toList()..sort();
     return keys.map((k){final v=grouped[k]!;return PricePoint('${int.parse(k.substring(4,6))}월',v.reduce((a,b)=>a+b)/v.length);}).toList();
   }
