@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../settings/display_settings.dart';
 
 class AppHeader extends StatefulWidget {
   const AppHeader({super.key});
@@ -37,8 +38,8 @@ class _AppHeaderState extends State<AppHeader> {
         '${twoDigits(now.hour)}:${twoDigits(now.minute)}';
   }
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 52,
+  Widget build(BuildContext context) {final settings=DisplaySettings.instance;return SizedBox(
+        height: settings.largeTextMode?78:72,
         child: Row(children: [
           Container(
             width: 35,height:35,
@@ -49,6 +50,8 @@ class _AppHeaderState extends State<AppHeader> {
           Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
             RichText(text: const TextSpan(style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900), children: [TextSpan(text: '돈', style: TextStyle(color: AppColors.text)), TextSpan(text: '돈해', style: TextStyle(color: AppColors.coral))])),
             const Text('양돈의 오늘을 든든하게', style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w600)),
+            const SizedBox(height:3),
+            SizedBox(height:25,child:OutlinedButton.icon(key:const ValueKey('large_text_mode_button'),onPressed:()=>settings.setLargeTextMode(!settings.largeTextMode),icon:Icon(settings.largeTextMode?Icons.text_decrease:Icons.text_increase,size:13),label:Text(settings.largeTextMode?'기본 글씨':'큰글씨 모드'),style:OutlinedButton.styleFrom(padding:const EdgeInsets.symmetric(horizontal:7),minimumSize:const Size(0,25),tapTargetSize:MaterialTapTargetSize.shrinkWrap,textStyle:const TextStyle(fontSize:9,fontWeight:FontWeight.w900),foregroundColor:AppColors.coral,side:const BorderSide(color:AppColors.coral)))),
           ]),
           const Spacer(),
           Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -57,5 +60,5 @@ class _AppHeaderState extends State<AppHeader> {
             const Badge(smallSize: 6, child: Icon(Icons.notifications, size: 20, color: Color(0xFF24344D))),
           ]),
         ]),
-      );
+      );}
 }

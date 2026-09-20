@@ -8,6 +8,7 @@ import '../data/market_analysis_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
+import '../settings/display_settings.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_navigation.dart';
 import '../widgets/commodity_trend_card.dart';
@@ -56,7 +57,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
     const SliverToBoxAdapter(child:FarmHeroSection()),
     SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,8,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,series:priceSeries,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
-      SizedBox(height:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
+      SizedBox(height:DisplaySettings.instance.largeTextMode?270:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
       const SizedBox(height:10),
       CommodityTrendCard(items:_commodities,onTap:_openCommodity,onHeaderTap:()=>setState(()=>_nav=1)),
       const SizedBox(height:10),

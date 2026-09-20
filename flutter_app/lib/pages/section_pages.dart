@@ -118,7 +118,7 @@ class MorePage extends StatelessWidget {
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.1.6', Icons.info),
+    ('앱 정보', '버전 1.1.7', Icons.info),
   ];
   @override
   Widget build(BuildContext context) => PageShell(
@@ -133,7 +133,7 @@ class MorePage extends StatelessWidget {
   Future<void> _textSize(BuildContext context)async{
     final settings=DisplaySettings.instance;
     const choices=[(.85,'작게'),(1.0,'기본'),(1.15,'크게'),(1.3,'매우 크게')];
-    await showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[const ListTile(title:Text('글자 크기',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('선택하면 앱 전체 글자에 바로 적용됩니다.')),...choices.map((x)=>RadioListTile<double>(value:x.$1,groupValue:settings.textScale,title:Text(x.$2,style:TextStyle(fontSize:14*x.$1,fontWeight:FontWeight.w800)),onChanged:(value)async{if(value==null)return;await settings.setTextScale(value);if(context.mounted)Navigator.pop(context);})),const SizedBox(height:8)])));
+    await showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[const ListTile(title:Text('글자 크기',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('선택하면 앱 전체 글자에 바로 적용됩니다. 큰글씨 모드는 홈 상단에서 별도로 켤 수 있습니다.')),...choices.map((x)=>RadioListTile<double>(value:x.$1,groupValue:settings.selectedTextScale,title:Text(x.$2,style:TextStyle(fontSize:14*x.$1,fontWeight:FontWeight.w800)),onChanged:(value)async{if(value==null)return;await settings.setTextScale(value);if(context.mounted)Navigator.pop(context);})),const SizedBox(height:8)])));
   }
 }
 

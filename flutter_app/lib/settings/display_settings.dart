@@ -5,12 +5,18 @@ class DisplaySettings extends ChangeNotifier {
   DisplaySettings._();
   static final DisplaySettings instance=DisplaySettings._();
   static const _key='display_text_scale';
+  static const _largeKey='display_large_text_mode';
   double _textScale=1;
-  double get textScale=>_textScale;
+  bool _largeTextMode=false;
+  double get textScale=>_largeTextMode?1.55:_textScale;
+  double get selectedTextScale=>_textScale;
+  bool get largeTextMode=>_largeTextMode;
 
   Future<void> load()async{
-    final value=(await SharedPreferences.getInstance()).getDouble(_key)??1;
+    final prefs=await SharedPreferences.getInstance();
+    final value=prefs.getDouble(_key)??1;
     _textScale=value.clamp(.85,1.3).toDouble();
+    _largeTextMode=prefs.getBool(_largeKey)??false;
     notifyListeners();
   }
 
@@ -18,5 +24,11 @@ class DisplaySettings extends ChangeNotifier {
     _textScale=value.clamp(.85,1.3).toDouble();
     notifyListeners();
     await (await SharedPreferences.getInstance()).setDouble(_key,_textScale);
+  }
+
+  Future<void> setLargeTextMode(bool value)async{
+    _largeTextMode=value;
+    notifyListeners();
+    await (await SharedPreferences.getInstance()).setBool(_largeKey,value);
   }
 }
