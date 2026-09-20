@@ -1,152 +1,177 @@
-import os, json, re, urllib.parse, urllib.request, xml.etree.ElementTree as ET
+"""Collect the official KAPE Dabom producer pig auction price.
+
+The headline must match the public Dabom producer card and the detailed table:
+탕박 -> 등외제외 -> 전국(제주 제외). We do not reconstruct the headline from
+grade/sex averages because that can differ from the official published value.
+"""
+import json
+import re
+import urllib.parse
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/"docs/data/pig-price.json"
-DETAIL=ROOT/"docs/data/pig-grade-detail.json"
-HIST=ROOT/"docs/data/pig-price-history.json"
-KST=timezone(timedelta(hours=9))
-BASE="http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "docs/data/pig-price.json"
+HIST = ROOT / "docs/data/pig-price-history.json"
+DETAIL = ROOT / "docs/data/pig-grade-detail.json"
+KST = timezone(timedelta(hours=9))
+DETAIL_URL = "https://www.ekapepia.com/v3/price/auction/period/pig/auctionPrice.do"
+PRODUCER_URL = "https://www.ekapepia.com/v3/web/main.do?userGroup=producer"
 
-def request(key, day, sex, end_day=None):
-    # egradeExceptYn=Y is the API's explicit "등외 제외" selector.  The old
-    # implementation used N while labelling the result as 등외 제외.
-    params={"startYmd":day,"endYmd":end_day or day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"Y"}
-    q=urllib.parse.urlencode(params)
-    encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
-    with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r:
-        root=ET.fromstring(r.read())
-    code=(root.findtext(".//resultCode") or "").strip()
-    if code and code!="00":
-        raise RuntimeError("KAPE "+code+" "+(root.findtext(".//resultMsg") or ""))
-    total_value=0.0; total_count=0
-    for x in root.findall(".//item"):
-        amt=(x.findtext("c_1101eTotAmt") or "").replace(",","").strip()
-        cnt=(x.findtext("c_1101eTotCnt") or "").replace(",","").strip()
-        if amt and cnt:
-            a=float(amt); n=int(float(cnt))
-            if a>0 and n>0:
-                total_value += a*n; total_count += n
-    return total_value,total_count
 
-def day_price(key, day):
-    # 전국 돼지 경락가격: 탕박, 등외 제외, 제주 제외. 암+거세를 두수 가중평균.
-    value=count=0
-    for sex in ("025001","025003"):
-        v,n=request(key,day,sex); value+=v; count+=n
-    return (round(value/count) if count else None),count
+class TableParser(HTMLParser):
+    def __init__(self):
+        super().__init__(); self.rows = []; self._row = None; self._cell = None
 
-def grade_detail(key,day):
-    # Grade detail must include the out-of-grade bucket so it can be shown
-    # separately.  Never infer a missing grade from unrelated numeric fields.
-    params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"N"}
-    q=urllib.parse.urlencode(params);encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
-    with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
-    # KAPE 응답 태그를 등급별로 분류. 숫자가 실제 응답에 존재할 때만 표시한다.
-    groups={"1+":[],"1":[],"2":[],"등외":[]}
-    for x in root.findall(".//item"):
-        for ch in list(x):
-            tag=ch.tag.lower(); t=(ch.text or "").replace(",","").strip()
-            try: val=float(t)
-            except: continue
-            if val<=0 or not ("amt" in tag or "price" in tag): continue
-            if "1p" in tag or "1plus" in tag or "1+" in tag: groups["1+"].append(val)
-            elif re.search(r"(^|_)1(g|grade|amt|price)",tag): groups["1"].append(val)
-            elif re.search(r"(^|_)2(g|grade|amt|price)",tag): groups["2"].append(val)
-            elif "egrade" in tag or "out" in tag: groups["등외"].append(val)
-    prices={g:round(sum(v)/len(v)) for g,v in groups.items() if v}
-    now=datetime.now(KST)
-    latest_day=datetime.strptime(day,"%Y%m%d").date()
-    today=now.date()
-    if latest_day==today:
-        state="당일 경락가격 반영"
-    elif now.hour<18:
-        state="금일 경락 진행 중 · 최근 확정 "+latest_day.strftime("%m/%d")
-    else:
-        state="오늘 확정가격 대기 · 최근 확정 "+latest_day.strftime("%m/%d")
-    return {"date":day,"source":"축산물품질평가원","status":state,"prices":prices,"updatedAt":now.isoformat()}
+    def handle_starttag(self, tag, attrs):
+        if tag == "tr": self._row = []
+        elif tag in ("th", "td") and self._row is not None: self._cell = []
+
+    def handle_data(self, data):
+        if self._cell is not None: self._cell.append(data)
+
+    def handle_endtag(self, tag):
+        if tag in ("th", "td") and self._cell is not None and self._row is not None:
+            self._row.append(" ".join("".join(self._cell).split())); self._cell = None
+        elif tag == "tr" and self._row is not None:
+            self.rows.append(self._row); self._row = None
+
+
+def fetch(url, params=None):
+    if params: url += "?" + urllib.parse.urlencode(params)
+    request = urllib.request.Request(url, headers={"User-Agent": "DonDonHae/2.0 official-price-check"})
+    with urllib.request.urlopen(request, timeout=25) as response:
+        return response.read().decode("utf-8", "replace")
+
+
+def parse_excluding_outgrade_price(html):
+    parser = TableParser(); parser.feed(html)
+    for row in parser.rows:
+        if row and "등외제외" in row[0]:
+            for cell in row[1:]:
+                match = re.search(r"(?<!\d)([1-9]\d{0,2}(?:,\d{3})+)(?!\d)", cell)
+                if match: return int(match.group(1).replace(",", ""))
+    return None
+
+
+def official_period_price(start, end=None):
+    start_dash = datetime.strptime(start, "%Y%m%d").strftime("%Y-%m-%d")
+    end_dash = datetime.strptime(end or start, "%Y%m%d").strftime("%Y-%m-%d")
+    html = fetch(DETAIL_URL, {
+        "searchStartDate": start_dash, "searchEndDate": end_dash,
+        "searchCondition": "2", "searchCondition1": "", "searchCondition2": "1",
+    })
+    return parse_excluding_outgrade_price(html)
+
+
+def parse_producer_headline(html):
+    block = re.search(r'data-card="allPig"[\s\S]*?</a>', html)
+    if not block: raise ValueError("Dabom producer allPig card not found")
+    price_match = re.search(r"<em[^>]*>\s*([\d,]+)\s*</em>", block.group(0))
+    tail = html[block.end():block.end() + 5000]
+    date_match = re.search(r"(\d{2})년\s*(\d{2})월\s*(\d{2})일", tail)
+    if not price_match or not date_match: raise ValueError("Dabom producer headline price/date not found")
+    return {"price": int(price_match.group(1).replace(",", "")), "date": "20" + "".join(date_match.groups())}
+
+
+def load_history():
+    try:
+        root = json.loads(HIST.read_text(encoding="utf-8"))
+        return [r for r in root.get("rows", []) if re.fullmatch(r"\d{8}", str(r.get("date", ""))) and int(r.get("price", 0)) > 0]
+    except Exception: return []
+
+
+def atomic_write(path, payload):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"); tmp.replace(path)
+
+
+def month_bounds(day):
+    start = day.replace(day=1); next_month = (start + timedelta(days=32)).replace(day=1)
+    return start.strftime("%Y%m%d"), (next_month - timedelta(days=1)).strftime("%Y%m%d")
+
+
+def collect_periods(tasks, label):
+    results = {}
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = {pool.submit(official_period_price, start, end): key for key, start, end in tasks}
+        for future in as_completed(futures):
+            key = futures[future]
+            try:
+                value = future.result()
+                if value: results[key] = value
+            except Exception as error: print(f"KAPE {label} check skipped", key, str(error)[:160])
+    return results
+
 
 def main():
-    key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
-    # API 요청 제한을 피하기 위해 기존 이력을 재사용하고 최근 10일만 갱신한다.
-    cached_rows=[]
-    if HIST.exists():
-        try: cached_rows=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
-        except Exception: pass
-    merged0={r["date"]:r for r in cached_rows}
-    # 발표 감시는 API 한도를 보호하기 위해 오늘 1회만 조회한다. 실패하면 기존 확정값 유지.
-    day=now.strftime("%Y%m%d")
-    # KAPE 공식 돼지 경락가격 알림은 매일 18시. 17:30~19:30에만 촘촘히 조회해 불필요한 API 소모를 막는다.
-    poll_now = (now.hour==17 and now.minute>=30) or now.hour in (18,19)
-    if poll_now:
-        try:
-            price,count=day_price(key,day)
-            if price: merged0[day]={"date":day,"price":price,"count":count}
-        except Exception as e:
-            print("KAPE current fetch skipped",day,e)
-    else:
-        print("KAPE price poll idle outside release window")
-    rows=sorted(merged0.values(),key=lambda r:r["date"])
-    if not rows:
-        # 최초 설치 시에만 최근 45일을 순차 조회
-        for ago in range(44,-1,-1):
-            day=(now-timedelta(days=ago)).strftime("%Y%m%d")
-            try:
-                price,count=day_price(key,day)
-                if price: rows.append({"date":day,"price":price,"count":count})
-            except Exception: break
-    if not rows: raise RuntimeError("No KAPE pigGrade national rows")
+    now = datetime.now(KST)
+    # The producer headline is the publication gate. A detailed table can
+    # contain partial weekend/intraday trades before the representative value
+    # is officially rolled forward, so dates after this gate are ignored.
+    headline = parse_producer_headline(fetch(PRODUCER_URL))
+    published_day = datetime.strptime(headline["date"], "%Y%m%d").replace(tzinfo=KST)
+    existing = load_history()
+    merged = {f'{r["date"]}|{r.get("resolution", "day")}': r for r in existing if r["date"] <= headline["date"]}
+    daily_existing = {r["date"] for r in merged.values() if r.get("resolution", "day") == "day" and r.get("verified") is True}
 
-    # Maintain a minimum three-calendar-year comparison set.  One official
-    # month-range aggregate is stored as YYYYMM01 when daily history is absent;
-    # current daily rows remain authoritative for the headline and day chart.
-    first_month=(now.replace(day=1)-timedelta(days=31*35)).replace(day=1)
-    cursor=first_month
-    existing_months={r["date"][:6] for r in rows}
-    while cursor<=now.replace(day=1):
-        prefix=cursor.strftime("%Y%m")
-        if prefix not in existing_months:
-            try:
-                y,m=cursor.year,cursor.month
-                nextm=(cursor+timedelta(days=32)).replace(day=1)
-                end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
-                value=count=0
-                for sex in ("025001","025003"):
-                    v,n=request(key,cursor.strftime("%Y%m%d"),sex,end);value+=v;count+=n
-                if count: rows.append({"date":prefix+"01","price":round(value/count),"count":count,"resolution":"month"})
-            except Exception as e: print("KAPE 3-year backfill skipped",prefix,e)
-        cursor=(cursor+timedelta(days=32)).replace(day=1)
-    rows=sorted(rows,key=lambda r:r["date"])
-    latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
-    diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
-    month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
-    # 월별 비교값은 일별 캐시가 부족하면 KAPE에 월 범위로 직접 조회해 보강한다.
-    def month_api(prefix):
-        y=int(prefix[:4]);m=int(prefix[4:6]);start=f"{y:04d}{m:02d}01"; nextm=(datetime(y,m,28)+timedelta(days=4)).replace(day=1); end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
-        value=count=0
-        for sex in ("025001","025003"):
-            v,n=request(key,start,sex,end);value+=v;count+=n
-        return round(value/count) if count else 0
-    def avg(prefix):
-        a=[r["price"] for r in rows if r["date"].startswith(prefix)]
-        return round(sum(a)/len(a)) if a else 0
-    def safe_month(prefix):
-        try: return month_api(prefix)
-        except Exception as e: print("KAPE month comparison skipped",prefix,e); return 0
-    month_avg=avg(month) or safe_month(month); prev_month_avg=avg(prev_month) or safe_month(prev_month); last_year_avg=avg(last_year) or safe_month(last_year)
-    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","formula":"암+거세 성별 응답의 거래두수 가중평균","filters":{"skinYn":"Y","egradeExceptYn":"Y","sexCd":["025001","025003"],"jeju":"excluded_by_official_national_series"},"date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg or None,"previousMonthAverage":prev_month_avg or None,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else None,"lastYearMonthAverage":last_year_avg or None,"lastYearChange":month_avg-last_year_avg if last_year_avg else None,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok","displayStatus":"확정"}
-    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
-    DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
-    old=[]
-    if HIST.exists():
-        try:
-            cached=json.loads(HIST.read_text(encoding="utf-8"))
-            old=cached.get("rows",[]) if cached.get("scope")==payload["scope"] else []
-        except Exception: pass
-    merged={r["date"]:r for r in old}
-    for r in rows: merged[r["date"]]=r
-    coverage=sorted(merged.values(),key=lambda r:r["date"])
-    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":"탕박·등외제외·제주제외·암+거세 두수가중","formulaVersion":"kape-pig-grade-v2","coverage":{"from":coverage[0]["date"] if coverage else None,"to":coverage[-1]["date"] if coverage else None,"minimumMonths":36},"rows":coverage},ensure_ascii=False,indent=2),encoding="utf-8")
+    # Holidays return no value and are never written as zero.
+    recent_span = 35
+    daily_tasks = []
+    for ago in range(recent_span - 1, -1, -1):
+        candidate = published_day - timedelta(days=ago)
+        if candidate.weekday() >= 5: continue
+        day = candidate.strftime("%Y%m%d")
+        if day in daily_existing and ago > 2: continue
+        daily_tasks.append((day, day, day))
+    for day, value in collect_periods(daily_tasks, "daily").items():
+        merged[day + "|day"] = {"date": day, "price": value, "resolution": "day", "verified": True}
 
-if __name__=="__main__": main()
+    # Store official range aggregates for the 3-year graph.
+    cursor = (now.replace(day=1) - timedelta(days=31 * 35)).replace(day=1)
+    month_tasks = []
+    while cursor <= now.replace(day=1):
+        key = cursor.strftime("%Y%m"); stored = merged.get(key + "01|month")
+        if stored is None or stored.get("verified") is not True or (cursor.year, cursor.month) == (now.year, now.month):
+            start, end = month_bounds(cursor)
+            if (cursor.year, cursor.month) == (published_day.year, published_day.month): end = headline["date"]
+            month_tasks.append((key, start, end))
+        cursor = (cursor + timedelta(days=32)).replace(day=1)
+    for key, value in collect_periods(month_tasks, "month").items():
+        merged[key + "01|month"] = {"date": key + "01", "price": value, "resolution": "month", "verified": True}
+
+    daily = sorted((r for r in merged.values() if r.get("resolution", "day") == "day" and r.get("verified") is True), key=lambda r: r["date"])
+    if len(daily) < 2: raise RuntimeError("At least two official KAPE trading days are required")
+    latest, previous = daily[-1], daily[-2]
+
+    # Do not publish unless official producer headline and detail agree.
+    if headline["date"] != latest["date"] or headline["price"] != latest["price"]:
+        raise RuntimeError(f"KAPE screen mismatch: headline={headline}, detail={latest}")
+
+    change = latest["price"] - previous["price"]; change_pct = round(change / previous["price"] * 100, 2)
+    latest_date = datetime.strptime(latest["date"], "%Y%m%d")
+    month_average = official_period_price(latest_date.replace(day=1).strftime("%Y%m%d"), latest["date"])
+    year_average = official_period_price(latest_date.replace(month=1, day=1).strftime("%Y%m%d"), latest["date"])
+    payload = {
+        "source": "축산물품질평가원", "sourceUrl": DETAIL_URL,
+        "operation": "dabom/producer-pig-auction-price", "label": "생산자 돼지 경락가격",
+        "scope": "전국·탕박·등외제외·제주제외", "formula": "전체거래대금/전체거래중량",
+        "filters": {"skin": "탕박", "grade": "등외제외", "region": "전국(제주 제외)"},
+        "date": latest["date"], "price": latest["price"], "previousDate": previous["date"],
+        "previousPrice": previous["price"], "change": change, "changePct": change_pct,
+        "monthAverage": month_average, "yearAverage": year_average, "unit": "원/kg",
+        "updatedAt": now.isoformat(), "status": "ok", "displayStatus": "축산유통정보 다봄 공표값",
+        "verifiedAgainstOfficialScreen": True,
+    }
+    coverage = sorted(merged.values(), key=lambda r: (r["date"], r.get("resolution", "day")))
+    history = {"source": payload["source"], "sourceUrl": DETAIL_URL, "scope": payload["scope"],
+        "formulaVersion": "kape-dabom-published-v2",
+        "coverage": {"from": coverage[0]["date"], "to": latest["date"], "minimumMonths": 36}, "rows": coverage}
+    atomic_write(OUT, payload); atomic_write(HIST, history)
+    atomic_write(DETAIL, {"source": payload["source"], "date": latest["date"], "status": "공식 대표값 검증 완료", "prices": {}, "updatedAt": now.isoformat()})
+
+
+if __name__ == "__main__": main()

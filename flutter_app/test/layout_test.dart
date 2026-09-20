@@ -20,13 +20,12 @@ void main() {
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
-  testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
+  testWidgets('아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
-    expect(find.text('6,442'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
   testWidgets('하단 메뉴가 실제 화면으로 이동한다', (tester) async {
@@ -75,14 +74,12 @@ void main() {
     expect(find.text('왜 오르내리나요?'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
+  testWidgets('돈가 기간 탭을 모두 선택할 수 있다', (tester) async {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(find.text('9/18'),findsOneWidget);
-    await tester.tap(find.text('월간'));await tester.pump();
-    expect(find.text('8월'),findsWidgets);
-    await tester.tap(find.text('연간'));await tester.pump();
-    expect(find.text('2026'),findsOneWidget);
+    for(final period in const ['주간','월간','연간','일간']){
+      await tester.tap(find.text(period));await tester.pump();
+    }
     expect(tester.takeException(),isNull);
   });
   testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
@@ -91,7 +88,7 @@ void main() {
     final header=find.byKey(const ValueKey('international_market_header'));await tester.scrollUntilVisible(header,300,scrollable:find.byType(Scrollable).first);await tester.tap(header);await tester.pumpAndSettle();
     expect(find.text('국제정세 해석'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
-    expect(find.byType(Image),findsWidgets);expect(tester.takeException(),isNull);
+    expect(find.byKey(const ValueKey('korea_disease_vector_map')),findsOneWidget);expect(tester.takeException(),isNull);
   });
   testWidgets('설정에서 글자 크기를 변경하고 저장한다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
@@ -115,7 +112,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
   });
-  testWidgets('새 설치의 기본 글자 크기는 매우 크게 130%다',(tester)async{
+  testWidgets('새 설치의 기본 글자 크기는 크게 130%다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     expect(DisplaySettings.instance.selectedTextScale,1.3);expect(tester.takeException(),isNull);

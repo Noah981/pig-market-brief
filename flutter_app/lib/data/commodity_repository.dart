@@ -5,12 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/dashboard_models.dart';
+import '../core/network/api_environment.dart';
 
 class CommodityRepository {
   CommodityRepository({http.Client? client}) : _client = client ?? http.Client();
 
-  static const _url =
-      'https://noah981.github.io/pig-market-brief/data/platform.json';
+  static final _url = '${ApiEnvironment.publicDataBaseUrl}/platform.json';
   static const _cacheKey = 'verified_commodity_market_v1';
   final http.Client _client;
   static const bundledSnapshot = [

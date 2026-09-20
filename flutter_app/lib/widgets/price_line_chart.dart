@@ -18,13 +18,13 @@ class PriceLineChart extends StatelessWidget {
     borderData: FlBorderData(show: false),
     titlesData: FlTitlesData(topTitles: const AxisTitles(), rightTitles: const AxisTitles(),
       leftTitles: AxisTitles(sideTitles: SideTitles(showTitles:true,reservedSize:32,interval:(high+gap-(low-gap))/3,getTitlesWidget:(v,_)=>Text(_number(v),style:const TextStyle(fontSize:7,color:AppColors.secondary)))),
-      bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles:true,interval:1,reservedSize:20,getTitlesWidget:(v,_){final i=v.toInt();if(i<0||i>=series.points.length)return const SizedBox();final step=series.points.length>6?2:1;return i%step==0||i==series.points.length-1?Padding(padding:const EdgeInsets.only(top:3),child:Text(_label(series.points[i].date),style:const TextStyle(fontSize:7,color:AppColors.secondary))):const SizedBox();}))),
+      bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles:true,interval:1,reservedSize:20,getTitlesWidget:(v,_){final i=v.toInt();if(i<0||i>=series.points.length)return const SizedBox();final length=series.points.length;final step=length>24?6:length>12?3:length>6?2:1;return i%step==0||i==length-1?Padding(padding:const EdgeInsets.only(top:3),child:Text(_label(series.points[i]),style:const TextStyle(fontSize:7,color:AppColors.secondary))):const SizedBox();}))),
     lineTouchData: const LineTouchData(enabled: true),
     lineBarsData: [LineChartBarData(spots: List.generate(values.length, (i) => FlSpot(i.toDouble(), values[i])), color: AppColors.coral, barWidth: 2.5, isCurved: false,
       dotData: FlDotData(show: true, getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(radius: index == values.length-1 ? 5 : 3, color: index == values.length-1 ? Colors.white : AppColors.coral, strokeWidth: index == values.length-1 ? 3 : 0, strokeColor: AppColors.coral)),
       belowBarData: BarAreaData(show: true, gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors:[AppColors.lightCoral.withValues(alpha:.8),AppColors.lightCoral.withValues(alpha:.12)])))],
   )));
   }
-  String _label(String value){if(RegExp(r'^\d{8}$').hasMatch(value))return '${int.parse(value.substring(4,6))}/${int.parse(value.substring(6,8))}';return value;}
+  String _label(PricePoint point){final value=point.date;if(RegExp(r'^\d{8}$').hasMatch(value)){if(point.resolution=='month')return '${value.substring(2,4)}.${int.parse(value.substring(4,6))}';return '${int.parse(value.substring(4,6))}/${int.parse(value.substring(6,8))}';}return value;}
   String _number(double value)=>value.round().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');
 }

@@ -1,0 +1,8 @@
+.env
+.env.*
+config/api_env.local.json
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+scripts/__pycache__/

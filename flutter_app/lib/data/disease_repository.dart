@@ -4,10 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/disease_models.dart';
 import '../settings/farm_location_settings.dart';
+import '../core/network/api_environment.dart';
 
 class DiseaseRepository {
   DiseaseRepository({http.Client? client}):_client=client??http.Client();
-  static const _url='https://noah981.github.io/pig-market-brief/data/disease-alerts.json';
+  static final _url='${ApiEnvironment.publicDataBaseUrl}/disease-alerts.json';
   static const _cacheKey='verified_disease_feed_v2';
   final http.Client _client;
 

@@ -1,0 +1,14 @@
+{
+  "source": "축산물품질평가원",
+  "label": "생산자 돼지 경락가격",
+  "scope": "전국·탕박·등외제외·제주제외",
+  "date": "20260918",
+  "price": 6442,
+  "previousDate": "20260917",
+  "previousPrice": 6740,
+  "change": -298,
+  "changePct": -4.42,
+  "history": [7090, 6696, 6993, 7035, 6828, 6740, 6442],
+  "unit": "원/kg",
+  "status": "bundled_verified_snapshot"
+}

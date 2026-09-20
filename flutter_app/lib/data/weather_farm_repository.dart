@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/weather_farm_models.dart';
+import '../core/network/api_environment.dart';
 
 class WeatherFarmRepository {
   WeatherFarmRepository({http.Client? client}):_client=client??http.Client();
-  static const _url='https://noah981.github.io/pig-market-brief/data/briefing.json';
+  static final _url='${ApiEnvironment.publicDataBaseUrl}/briefing.json';
   static const _cacheKey='weather_farm_guide_v1';
   final http.Client _client;
   static const fallback=WeatherFarmGuide(region:'대구·경북',tempMin:16,tempMax:28,humidity:95,rainProbability:0,riskFactors:['큰 일교차','고습'],checks:['야간 최소환기와 입기구 방향을 확인하세요.','기침이 늘면 온도·일교차·암모니아를 확인하세요.','자돈이 뭉치면 외풍과 보온구역을 확인하세요.'],updatedAt:'2026-09-20T07:53:12+09:00',source:'기상청 단기예보 조회서비스',fromCache:true);

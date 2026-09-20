@@ -1,1 +1,26 @@
-{"source":"축산물품질평가원","operation":"dabom/producer-pig-auction-price","label":"생산자 돼지 경락가격","scope":"전국·탕박·등외제외·제주제외","date":"20260918","price":6442,"previousDate":"20260917","previousPrice":6740,"change":-298,"changePct":-4.42,"unit":"원/kg","updatedAt":"2026-09-19T07:00:30+09:00","status":"bundled_verified_snapshot"}
+{
+  "source": "축산물품질평가원",
+  "sourceUrl": "https://www.ekapepia.com/v3/price/auction/period/pig/auctionPrice.do",
+  "operation": "dabom/producer-pig-auction-price",
+  "label": "생산자 돼지 경락가격",
+  "scope": "전국·탕박·등외제외·제주제외",
+  "formula": "전체거래대금/전체거래중량",
+  "filters": {
+    "skin": "탕박",
+    "grade": "등외제외",
+    "region": "전국(제주 제외)"
+  },
+  "date": "20260918",
+  "price": 6442,
+  "previousDate": "20260917",
+  "previousPrice": 6740,
+  "change": -298,
+  "changePct": -4.42,
+  "monthAverage": 6943,
+  "yearAverage": 5989,
+  "unit": "원/kg",
+  "updatedAt": "2026-09-20T19:45:16.510176+09:00",
+  "status": "ok",
+  "displayStatus": "축산유통정보 다봄 공표값",
+  "verifiedAgainstOfficialScreen": true
+}

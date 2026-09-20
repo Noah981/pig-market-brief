@@ -41,11 +41,7 @@ class _AppHeaderState extends State<AppHeader> {
   Widget build(BuildContext context) {final settings=DisplaySettings.instance;return SizedBox(
         height: settings.largeTextMode?96:settings.textScale>=1.3?86:72,
         child: Row(children: [
-          Container(
-            width: 35,height:35,
-            decoration: BoxDecoration(border: Border.all(color: AppColors.coral, width: 2.4), shape: BoxShape.circle),
-            child: const Icon(Icons.savings_outlined, color: AppColors.coral, size: 21),
-          ),
+          SizedBox(width:35,height:35,child:Image.asset('assets/images/dondonhae_symbol.png',fit:BoxFit.contain)),
           const SizedBox(width: 9),
           Expanded(child:Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
             RichText(text: const TextSpan(style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900), children: [TextSpan(text: '돈', style: TextStyle(color: AppColors.text)), TextSpan(text: '돈해', style: TextStyle(color: AppColors.coral))])),

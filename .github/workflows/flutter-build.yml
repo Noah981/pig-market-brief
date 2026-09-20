@@ -27,6 +27,8 @@ jobs:
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Verify Android widget lifecycle contract
+        run: python -m unittest scripts/test_widget_contract.py scripts/test_kape_price.py
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
@@ -34,6 +36,7 @@ jobs:
           flutter test test/commodity_repository_test.dart
           flutter test test/disease_repository_test.dart
           flutter test test/weather_farm_repository_test.dart
+          flutter test test/data_foundation_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         working-directory: flutter_app
@@ -49,7 +52,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.4.0.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.6.0.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.4.0 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.4.0 dondonhae-flutter-1.4.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.4.0" --notes "질병 자동수집의 오분류를 차단하고 국내·해외·지역 검증을 강화했으며 신규 국내 공식 질병 알림을 적용했습니다."
+          gh release delete dondonhae-flutter-v1.6.0 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.6.0 dondonhae-flutter-1.6.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.6.0" --notes "첨부 최종 시안 기준 위젯·질병 지도·지원사업 상세·설정 화면을 정렬하고 돈가 위젯 연결을 보강했습니다."
