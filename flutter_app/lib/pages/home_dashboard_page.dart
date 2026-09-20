@@ -5,6 +5,7 @@ import '../data/commodity_repository.dart';
 import '../data/market_repository.dart';
 import '../data/market_analysis_repository.dart';
 import '../data/weather_farm_repository.dart';
+import '../data/benefit_repository.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
 import '../settings/display_settings.dart';
@@ -33,7 +34,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadMarket();_loadAnalysis();_loadCommodities();_loadWeather();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();_refreshWeather();});}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadMarket();_loadAnalysis();_loadCommodities();_loadWeather();_refreshBenefits();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();_refreshWeather();_refreshBenefits();});}
   @override void dispose(){_timer?.cancel();FarmLocationSettings.instance.removeListener(_locationChanged);WidgetsBinding.instance.removeObserver(this);super.dispose();}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_refreshMarket();}
   Future<void> _loadMarket()async{try{final cached=await _marketRepository.cached();if(mounted&&cached!=null)setState(()=>_market=cached);}catch(_){}await _refreshMarket();}
@@ -44,9 +45,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _refreshCommodities()async{try{final value=await _commodityRepository.refresh();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}catch(_){}}
   Future<void> _loadWeather()async{try{await FarmLocationSettings.instance.load();_weatherRegion=FarmLocationSettings.instance.location.province;final cached=await _weatherRepository.cached();if(mounted)setState(()=>_weather=cached.region==_weatherRegion?cached:_weather);}catch(_){}await _refreshWeather();}
   Future<void> _refreshWeather()async{try{final value=await _weatherRepository.refresh(region:_weatherRegion);if(mounted)setState(()=>_weather=value);}catch(_){}}
+  Future<void> _refreshBenefits()async{try{await FarmLocationSettings.instance.load();await BenefitRepository().refresh();}catch(_){}}
   void _locationChanged(){final region=FarmLocationSettings.instance.location.province;if(region!=_weatherRegion){_weatherRegion=region;_refreshWeather();}else if(mounted){setState((){});}}
   Future<void> _pullToRefresh()async{
-    await Future.wait([_refreshMarket(),_refreshAnalysis(),_refreshCommodities(),_refreshWeather()]);
+    await Future.wait([_refreshMarket(),_refreshAnalysis(),_refreshCommodities(),_refreshWeather(),_refreshBenefits()]);
     if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('최신 시황을 확인했습니다.'),duration:Duration(seconds:1)));
   }
   @override Widget build(BuildContext context)=>Scaffold(
@@ -57,7 +59,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
     const SliverToBoxAdapter(child:FarmHeroSection()),
     SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,8,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,series:priceSeries,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
-      SizedBox(height:DisplaySettings.instance.largeTextMode?270:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
+      SizedBox(height:DisplaySettings.instance.largeTextMode?310:DisplaySettings.instance.textScale>=1.3?255:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
       const SizedBox(height:10),
       CommodityTrendCard(items:_commodities,onTap:_openCommodity,onHeaderTap:()=>setState(()=>_nav=1)),
       const SizedBox(height:10),

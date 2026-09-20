@@ -35,6 +35,8 @@ jobs:
         run: python scripts/fetch_kape_jeju.py || echo "Jeju fetch failed; keeping previous cached data"
       - name: Update verified market and benefits adapters
         run: python scripts/platform_pipeline.py
+      - name: Collect official livestock support notices
+        run: python scripts/fetch_official_benefits.py || echo "Benefit fetch failed; keeping previous cached data"
       - name: Fetch verified exchange, energy and feed benchmarks
         run: python scripts/fetch_fred_markets.py || echo "Market fetch failed; keeping previous cached data"
       - name: Build briefing
