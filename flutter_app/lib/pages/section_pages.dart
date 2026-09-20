@@ -4,6 +4,9 @@ import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
 import '../settings/display_settings.dart';
 import 'market_detail_pages.dart';
+import '../settings/farm_location_settings.dart';
+import '../widgets/farm_location_picker.dart';
+import 'benefit_page.dart';
 
 class PageShell extends StatelessWidget {
   const PageShell({super.key, required this.title, required this.subtitle, required this.child});
@@ -106,29 +109,37 @@ class _MarketTile extends StatelessWidget {
   ));
 }
 
-class MorePage extends StatelessWidget {
+class MorePage extends StatefulWidget {
   const MorePage({super.key});
+  @override State<MorePage> createState()=>_MorePageState();
+}
+class _MorePageState extends State<MorePage>{
   static const items = [
     ('내 농장', '등록된 농장 정보 관리', Icons.home_work_outlined),
     ('인증 정보', '깨끗한 축산농장 · 저탄소 · HACCP 등', Icons.health_and_safety_outlined),
     ('정부·지자체 지원사업', '내 지역 맞춤 지원사업 확인', Icons.account_balance_outlined),
     ('알림 설정', '돈가 · 질병 · 주문 · 지원사업 등', Icons.notifications_outlined),
     ('글자 크기', '작게 · 기본 · 크게 · 매우 크게', Icons.text_fields),
-    ('지역 설정', '내 지역: 대구 달성군', Icons.location_on_outlined),
+    ('지역 설정', '', Icons.location_on_outlined),
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.1.7', Icons.info),
+    ('앱 정보', '버전 1.2.0', Icons.info),
   ];
+  @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_changed);FarmLocationSettings.instance.load();}
+  @override void dispose(){FarmLocationSettings.instance.removeListener(_changed);super.dispose();}
+  void _changed(){if(mounted)setState((){});}
   @override
   Widget build(BuildContext context) => PageShell(
     title: '', subtitle: '',
     child: Column(children: [
       ListTile(contentPadding:EdgeInsets.zero,leading:const CircleAvatar(radius:24,backgroundColor:AppColors.lightCoral,child:Icon(Icons.person,color:Color(0xFF4B5A70))),title:const Text('돈돈해님',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),subtitle:const Text('항상 감사합니다.',style:TextStyle(fontSize:10)),trailing:const Icon(Icons.settings_outlined),onTap:()=>_textSize(context)),
       const Divider(),
-      ...items.map((x) => ListTile(minTileHeight:57,contentPadding:EdgeInsets.zero,leading:Icon(x.$3,color:const Color(0xFF4B5A70),size:21),title:Text(x.$1,style:const TextStyle(fontSize:12,fontWeight:FontWeight.w800)),subtitle:x.$2.isEmpty?null:Text(x.$2,style:const TextStyle(fontSize:9,color:AppColors.secondary)),trailing:const Icon(Icons.chevron_right,size:18),onTap:x.$1=='글자 크기'?()=>_textSize(context):null)),
+      ...items.map((x){final subtitle=x.$1=='지역 설정'?'내 지역: ${FarmLocationSettings.instance.location.label}':x.$2;return ListTile(minTileHeight:57,contentPadding:EdgeInsets.zero,leading:Icon(x.$3,color:const Color(0xFF4B5A70),size:21),title:Text(x.$1,style:const TextStyle(fontSize:12,fontWeight:FontWeight.w800)),subtitle:subtitle.isEmpty?null:Text(subtitle,style:const TextStyle(fontSize:9,color:AppColors.secondary)),trailing:const Icon(Icons.chevron_right,size:18),onTap:()=>_open(context,x.$1));}),
     ]),
   );
+
+  void _open(BuildContext context,String item){if(item=='글자 크기'){_textSize(context);return;}if(item=='지역 설정'||item=='내 농장'){showFarmLocationPicker(context);return;}if(item=='정부·지자체 지원사업'){Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const BenefitPage()));return;}ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('$item 화면은 공식 데이터 연결을 준비하고 있습니다.')));}
 
   Future<void> _textSize(BuildContext context)async{
     final settings=DisplaySettings.instance;
