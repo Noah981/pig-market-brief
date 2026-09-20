@@ -10,7 +10,7 @@ class KoreaDiseaseMap extends StatelessWidget {
   final double? userLatitude,userLongitude;
   List<DiseaseAlert> get points=>items.where((x)=>x.isOfficial&&x.hasMapPoint).toList(growable:false);
 
-  @override Widget build(BuildContext context)=>AspectRatio(aspectRatio:420/535,child:ClipRRect(borderRadius:BorderRadius.circular(18),child:Material(color:Colors.white,child:LayoutBuilder(builder:(context,size)=>GestureDetector(behavior:HitTestBehavior.opaque,onTapUp:(event)=>_handleTap(event.localPosition,Size(size.maxWidth,size.maxHeight)),child:CustomPaint(painter:_KoreaMapPainter(items:points,userLatitude:userLatitude,userLongitude:userLongitude),child:const SizedBox.expand()))))));
+  @override Widget build(BuildContext context)=>AspectRatio(aspectRatio:420/535,child:ClipRRect(borderRadius:BorderRadius.circular(18),child:Material(color:Colors.white,child:LayoutBuilder(builder:(context,size)=>GestureDetector(behavior:HitTestBehavior.opaque,onTapUp:(event)=>_handleTap(event.localPosition,Size(size.maxWidth,size.maxHeight)),child:CustomPaint(key:const ValueKey('korea_disease_vector_map'),painter:_KoreaMapPainter(items:points,userLatitude:userLatitude,userLongitude:userLongitude),child:const SizedBox.expand()))))));
 
   void _handleTap(Offset tap,Size size){DiseaseAlert? selected;double nearest=double.infinity;for(final item in points){final p=_MapProjection.position(item.latitude!,item.longitude!,size);final distance=(p-tap).distance;if(distance<nearest){nearest=distance;selected=item;}}if(selected!=null&&nearest<=math.max(24,size.width*.065))onTap(selected);}
 }

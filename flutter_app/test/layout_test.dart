@@ -91,7 +91,7 @@ void main() {
     final header=find.byKey(const ValueKey('international_market_header'));await tester.scrollUntilVisible(header,300,scrollable:find.byType(Scrollable).first);await tester.tap(header);await tester.pumpAndSettle();
     expect(find.text('국제정세 해석'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
-    expect(find.byType(Image),findsWidgets);expect(tester.takeException(),isNull);
+    expect(find.byKey(const ValueKey('korea_disease_vector_map')),findsOneWidget);expect(tester.takeException(),isNull);
   });
   testWidgets('설정에서 글자 크기를 변경하고 저장한다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
