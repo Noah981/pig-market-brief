@@ -15,6 +15,12 @@ Future<void> renderAt(WidgetTester tester, double width, String name) async {
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/home_$name.png'));
 }
 
+Future<void> waitForText(WidgetTester tester, String text) async {
+  for (var attempt = 0; attempt < 20 && find.text(text).evaluate().isEmpty; attempt++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
@@ -26,6 +32,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
+    await waitForText(tester, '6,442');
     expect(find.text('6,442'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
@@ -78,11 +85,14 @@ void main() {
   testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    await waitForText(tester, '9/18');
     expect(find.text('9/18'),findsOneWidget);
+    await tester.tap(find.text('주간'));await tester.pump();
+    expect(find.text('8/19'),findsOneWidget);
     await tester.tap(find.text('월간'));await tester.pump();
-    expect(find.text('8월'),findsWidgets);
+    expect(find.text('25.10'),findsOneWidget);
     await tester.tap(find.text('연간'));await tester.pump();
-    expect(find.text('2026'),findsOneWidget);
+    expect(find.text('23.10'),findsOneWidget);
     expect(tester.takeException(),isNull);
   });
   testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
