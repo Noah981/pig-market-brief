@@ -44,7 +44,9 @@ jobs:
       - name: Build market analysis
         run: python scripts/build_market_analysis.py
       - name: Fetch official livestock disease alerts
-        run: python scripts/fetch_disease_alerts.py || echo "Disease feed failed; keeping previous data"
+        run: |
+          python -m unittest scripts/test_disease_classifier.py
+          python scripts/fetch_disease_alerts.py || echo "Disease feed failed; keeping previous data"
       - name: Commit generated data safely
         run: |
           cp -R docs/data /tmp/generated-data

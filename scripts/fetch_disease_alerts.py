@@ -5,6 +5,7 @@ levels.  A keyword match is a signal, never an app-side diagnosis.
 """
 import html,json,re,urllib.parse,urllib.request,xml.etree.ElementTree as ET
 from datetime import datetime,timezone,timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 OUT=Path("docs/data/disease-alerts.json")
@@ -15,11 +16,13 @@ DISEASES={
  "마이코플라즈마":"마이코플라즈마","흉막폐렴":"흉막폐렴","회장염":"회장염","살모넬라":"살모넬라",
  "로타바이러스":"로타바이러스","대장균":"대장균","돈단독":"돈단독","오제스키":"오제스키병"}
 DISEASES.update({"African swine fever":"ASF","foot and mouth disease":"구제역","classical swine fever":"돼지열병","porcine reproductive and respiratory syndrome":"PRRS","porcine epidemic diarrhea":"PED","swine influenza":"돼지인플루엔자"})
-EVENT=re.compile(r"발생|확진|양성|의심|신고|방역|이동중지|위기경보|검출|outbreak|confirmed|positive|reported|alert",re.I)
+OUTBREAK_EVENT=re.compile(r"발생|발병|확진|양성|의심축|의심 신고|검출|outbreak|confirmed|positive|suspected|reported",re.I)
+NON_EVENT=re.compile(r"발생[하지 ]*않|없는 청정|발생 대비|발생 예방|차단 방역|예방 훈련|모의 훈련|특별방역|집중 점검|방역 강화|선정|성과",re.I)
 COUNTRIES=[
+ ("KR",("대한민국","한국","국내","south korea","republic of korea","경기도","강원도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라북도","전라남도","경상북도","경상남도","제주특별자치도")),
  ("VN",("베트남","vietnam","까마우","ca mau")),("CN",("중국","china","chinese")),
  ("JP",("일본","japan")),("US",("미국","united states","usa")),
- ("KR",("대한민국","한국","korea","경기","강원","충북","충남","전북","전남","경북","경남","제주","창녕","예천","순천"))]
+]
 PLACES={
  "강화군":(37.746,126.488),"예천군":(36.657,128.452),"창녕군":(35.544,128.492),"순천시":(34.950,127.487),
  "영주시":(36.805,128.624),"상주시":(36.410,128.159),"문경시":(36.586,128.186),"김천시":(36.139,128.114),
@@ -31,7 +34,8 @@ def country_code(text,expected_scope=None):
  lower=text.lower()
  for code,names in COUNTRIES:
   if any(name in lower for name in names):return code
- return "KR" if expected_scope=="국내" else None
+ if expected_scope=="국내" and region_fields(text):return "KR"
+ return None
 
 def classify(code):
  return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
@@ -41,12 +45,30 @@ def fetch(url):
  return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
-def diseases(text):return sorted({v for k,v in DISEASES.items() if k.lower() in text.lower()})
+def diseases(text):
+ lower=text.lower();found=[];occupied=[]
+ for alias,value in sorted(DISEASES.items(),key=lambda x:len(x[0]),reverse=True):
+  for match in re.finditer(re.escape(alias.lower()),lower):
+   span=match.span()
+   if any(span[0]>=a and span[1]<=b for a,b in occupied):continue
+   found.append(value);occupied.append(span)
+ return list(dict.fromkeys(found))
 def region_fields(text):
  for name,(lat,lng) in PLACES.items():
+  if name in text:return {"region":name,"latitude":lat,"longitude":lng}
+ for name,(lat,lng) in PLACES.items():
   stem=re.sub(r'[시군구]$','',name)
-  if name in text or stem in text:return {"region":name,"latitude":lat,"longitude":lng}
+  if re.search(rf'(?<![가-힣]){re.escape(stem)}(?:서|지역|일대|농장)',text):return {"region":name,"latitude":lat,"longitude":lng}
  return {}
+
+def event_title(text):return bool(OUTBREAK_EVENT.search(text)) and not NON_EVENT.search(text)
+def recent(value,days=120):
+ if not value:return True
+ try:
+  parsed=parsedate_to_datetime(value)
+  if parsed.tzinfo is None:parsed=parsed.replace(tzinfo=timezone.utc)
+  return parsed>=datetime.now(timezone.utc)-timedelta(days=days)
+ except Exception:return True
 
 def official_page(source,url,scope="국내",default_country=None):
  out=[]
@@ -54,9 +76,10 @@ def official_page(source,url,scope="국내",default_country=None):
   raw=fetch(url)
   for href,label in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',raw,re.I|re.S):
    title=clean(label);ds=diseases(title)
-   if len(title)<8 or not ds or not EVENT.search(title):continue
+   if len(title)<8 or not ds or not event_title(title):continue
    link=urllib.parse.urljoin(url,href)
    code=country_code(title,scope) or default_country
+   if not code:continue
    for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
  except Exception as e:print("official source skipped",source,e)
  return out
@@ -69,23 +92,28 @@ def public_news(scope="국내"):
    url="https://news.google.com/rss/search?q="+urllib.parse.quote(term+(" 발생" if scope=="국내" else ""))+"&hl=ko&gl=KR&ceid=KR:ko"
    root=ET.fromstring(fetch(url));
    for item in root.findall(".//item")[:10]:
-    title=clean(item.findtext("title") or "");ds=diseases(title)
-    if not ds or not EVENT.search(title):continue
+    title=clean(item.findtext("title") or "");ds=diseases(title);published=item.findtext("pubDate") or ""
+    if not ds or not event_title(title) or not recent(published):continue
     code=country_code(title,scope)
-    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":item.findtext("pubDate"),"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
+    if not code:continue
+    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 공식 확인 필요","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
   except Exception as e:print("public source skipped",term,e)
  return out
 
-items=[]
-items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do")
-items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do")
-items+=official_page("WOAH 세계동물보건기구","https://www.woah.org/en/disease/african-swine-fever/","국외")
-items+=public_news("국내")
-items+=public_news("국외")
-seen=set();dedup=[]
-for x in items:
- key=(x["disease"],x["summary"])
- if key not in seen:seen.add(key);dedup.append(x)
-payload={"schemaVersion":2,"updatedAt":datetime.now(KST).isoformat(),"items":dedup[:50],"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생/확진/방역 공지가 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
-OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
-print("disease signals",len(dedup))
+def main():
+ items=[]
+ items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do",default_country="KR")
+ items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do",default_country="KR")
+ # WOAH의 질병 소개 페이지는 개별 발생 공고가 아니므로 수집하지 않는다.
+ # 해외는 국가가 제목에 명시된 최신 공개정보만 표시하고 공식 원문 여부를 구분한다.
+ items+=public_news("국내")
+ items+=public_news("국외")
+ seen=set();dedup=[]
+ for x in items:
+  key=(x["disease"],x["summary"])
+  if key not in seen:seen.add(key);dedup.append(x)
+ payload={"schemaVersion":2,"updatedAt":datetime.now(KST).isoformat(),"items":dedup[:50],"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+ print("disease signals",len(dedup))
+
+if __name__=="__main__":main()

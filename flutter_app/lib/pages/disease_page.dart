@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../widgets/korea_disease_map.dart';
 import '../settings/farm_location_settings.dart';
 import '../widgets/farm_location_picker.dart';
+import '../services/notification_service.dart';
 import 'section_pages.dart';
 
 class DiseasePage extends StatefulWidget{const DiseasePage({super.key});@override State<DiseasePage> createState()=>_DiseasePageState();}
@@ -18,7 +19,7 @@ class _DiseasePageState extends State<DiseasePage>{
   Future<void> _loadLocation()async{await FarmLocationSettings.instance.load();_syncLocation();}
   void _syncLocation(){final x=FarmLocationSettings.instance.location;if(mounted)setState((){_location=x.label;_lat=x.latitude;_lng=x.longitude;_gpsVerified=x.gpsVerified;});}
   Future<void> _load()async{try{final cached=await _repository.cached();if(mounted)setState(()=>_feed=cached);}catch(_){}await _refresh();}
-  Future<void> _refresh()async{try{final value=await _repository.refresh();if(mounted)setState(()=>_feed=value);}catch(_){if(mounted)setState(()=>_message='통신이 원활하지 않아 마지막 저장 정보를 표시합니다.');}}
+  Future<void> _refresh()async{try{final previous=(_feed?.items??const <DiseaseAlert>[]).map((x)=>x.stableKey).toSet();final value=await _repository.refresh();if(previous.isNotEmpty){for(final item in value.items.where((x)=>x.scope=='국내'&&x.isOfficial&&!previous.contains(x.stableKey))){await NotificationService.instance.newDisease(item.disease,item.region??'국내');}}if(mounted)setState(()=>_feed=value);}catch(_){if(mounted)setState(()=>_message='통신이 원활하지 않아 마지막 저장 정보를 표시합니다.');}}
   List<DiseaseAlert> get _items=>(_feed?.items??const []).where((x)=>x.scope==(_tab==0?'국내':'국외')).toList();
   Future<void> _useGps()async{
     if(!await Geolocator.isLocationServiceEnabled()){setState(()=>_message='위치 서비스가 꺼져 있습니다. 지역을 직접 선택해주세요.');return;}

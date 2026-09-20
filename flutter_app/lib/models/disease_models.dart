@@ -5,6 +5,7 @@ class DiseaseAlert {
   final double? latitude,longitude;
   bool get isOfficial=>evidenceLevel=='OFFICIAL';
   bool get hasMapPoint=>scope=='국내'&&latitude!=null&&longitude!=null;
+  String get stableKey=>'$disease|$countryCode|${region??''}|$summary';
 }
 
 class DiseaseFeed {
