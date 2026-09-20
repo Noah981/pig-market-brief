@@ -27,6 +27,8 @@ jobs:
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Verify Android widget lifecycle contract
+        run: python -m unittest scripts/test_widget_contract.py
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
@@ -34,6 +36,7 @@ jobs:
           flutter test test/commodity_repository_test.dart
           flutter test test/disease_repository_test.dart
           flutter test test/weather_farm_repository_test.dart
+          flutter test test/data_foundation_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         working-directory: flutter_app

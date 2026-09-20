@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/dashboard_models.dart';
 import '../services/price_widget_bridge.dart';
+import '../core/network/api_environment.dart';
+import '../core/data/data_state.dart';
 
 class MarketSnapshot {
   const MarketSnapshot({required this.price,required this.previousPrice,required this.change,required this.changePct,required this.date,required this.updatedAt,required this.source,required this.scope,required this.history,required this.fromCache});
@@ -56,7 +58,7 @@ class MarketRepository {
     PricePoint('20230901',5166,resolution:'month'),PricePoint('20240101',4163,resolution:'month'),PricePoint('20240901',5464,resolution:'month'),PricePoint('20250101',4731,resolution:'month'),PricePoint('20250901',5906,resolution:'month'),PricePoint('20260101',4852,resolution:'month'),PricePoint('20260801',5816,resolution:'month'),
     PricePoint('20260909',5800),PricePoint('20260910',6200),PricePoint('20260911',6700),PricePoint('20260914',6850),PricePoint('20260915',7000),PricePoint('20260916',6900),PricePoint('20260917',6740),PricePoint('20260918',6442),
   ],fromCache:true);
-  static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json',_historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json',_cacheKey='official_dabom_producer_pig_price_v3';
+  static final _priceUrl='${ApiEnvironment.publicDataBaseUrl}/pig-price.json',_historyUrl='${ApiEnvironment.publicDataBaseUrl}/pig-price-history.json';static const _cacheKey='official_dabom_producer_pig_price_v3';
   final http.Client _client; MarketRepository({http.Client? client}):_client=client??http.Client();
   Future<MarketSnapshot?> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey);
@@ -76,6 +78,7 @@ class MarketRepository {
     final combined=<String,dynamic>{'price':jsonDecode(utf8.decode(responses[0].bodyBytes)),'history':jsonDecode(utf8.decode(responses[1].bodyBytes))};
     final value=_decode(combined);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(combined));await PriceWidgetBridge.update(price:value.price,previousPrice:value.previousPrice,change:value.change,changePct:value.changePct,date:value.date,updatedAt:value.updatedAt);return value;
   }
+  Future<DataState<MarketSnapshot>> loadState()async{final cachedValue=await cached();try{final value=await refresh();final fetched=DateTime.now();final sourceTime=DateTime.tryParse(value.updatedAt);final meta=DataMeta(source:value.source,sourceTimestamp:sourceTime,fetchedAt:fetched,lastSuccessfulUpdate:fetched,isStale:false);return DataState.success(value,meta);}catch(error){if(cachedValue==null)return DataState.error(error);final sourceTime=DateTime.tryParse(cachedValue.updatedAt);final stale=sourceTime==null||DateTime.now().difference(sourceTime.toLocal())>const Duration(hours:36);final meta=DataMeta(source:cachedValue.source,sourceTimestamp:sourceTime,fetchedAt:DateTime.now(),lastSuccessfulUpdate:sourceTime,isStale:stale);return stale?DataState.stale(cachedValue,meta):DataState.error(error,lastGood:cachedValue,meta:meta);}}
   MarketSnapshot _decode(Map<String,dynamic> combined,{bool fromCache=false}){
     final price=((combined['price'] as Map?)?.cast<String,dynamic>())??combined;
     final history=((combined['history'] as Map?)?.cast<String,dynamic>())??const <String,dynamic>{};

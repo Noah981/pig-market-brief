@@ -4,12 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/dashboard_models.dart';
+import '../core/network/api_environment.dart';
 
 class MarketAnalysisRepository {
   MarketAnalysisRepository({http.Client? client}) : _client = client ?? http.Client();
 
-  static const _url =
-      'https://noah981.github.io/pig-market-brief/data/market-analysis.json';
+  static final _url = '${ApiEnvironment.publicDataBaseUrl}/market-analysis.json';
   static const _cacheKey = 'official_market_analysis_v1';
   final http.Client _client;
   static const bundledSnapshot=MarketAnalysis(

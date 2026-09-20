@@ -36,6 +36,7 @@ receivers='''
             </intent-filter>
         </receiver>'''
 if 'PriceWidgetSmallProvider' not in text:text=text.replace('</application>',receivers+'\n    </application>')
+text=text.replace('<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />','<action android:name="android.appwidget.action.APPWIDGET_UPDATE" /><action android:name="android.intent.action.CONFIGURATION_CHANGED" />')
 manifest.write_text(text,encoding="utf-8")
 
 template=root.parent/'platform'/'android'/'app'/'src'/'main'
@@ -48,6 +49,8 @@ if "coreLibraryDesugaringEnabled true" not in gtext:
     gtext=gtext.replace("android {", "android {\n    compileOptions {\n        coreLibraryDesugaringEnabled true\n        sourceCompatibility JavaVersion.VERSION_1_8\n        targetCompatibility JavaVersion.VERSION_1_8\n    }")
 if "desugar_jdk_libs" not in gtext:
     gtext += "\n\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
+if "androidx.work:work-runtime" not in gtext:
+    gtext=gtext.replace("dependencies {\n    coreLibraryDesugaring", "dependencies {\n    implementation 'androidx.work:work-runtime:2.10.0'\n    coreLibraryDesugaring")
 gradle.write_text(gtext,encoding="utf-8")
 
 plist=root/"ios/Runner/Info.plist"
