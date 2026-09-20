@@ -32,12 +32,22 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
-    for (final item in const [(1, '시황'), (2, '질병 정보'), (3, '농장점검'), (4, '돈돈해님')]) {
+    for (final item in const [(1, '시황'), (2, '질병 정보'), (3, '오늘 관리'), (4, '돈돈해님')]) {
       await tester.tap(find.byKey(ValueKey('nav_${item.$1}')));
       await tester.pumpAndSettle();
       expect(find.text(item.$2), findsWidgets);
       expect(tester.takeException(), isNull);
     }
+  });
+  testWidgets('날씨 카드가 질병·환기·수의사 통합 화면으로 이동한다',(tester)async{
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('weather_farm_guide')));await tester.pumpAndSettle();
+    expect(find.text('오늘 주의할 건강 신호'),findsOneWidget);
+    expect(find.text('오늘의 환기·점검 포인트'),findsOneWidget);
+    expect(find.text('수의사 연결'),findsOneWidget);
+    expect(find.text('약품·예방 정보'),findsOneWidget);
+    expect(tester.takeException(),isNull);
   });
   testWidgets('돈가와 원료 카드가 상세 화면으로 이동한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);

@@ -105,42 +105,6 @@ class _MarketTile extends StatelessWidget {
   ));
 }
 
-class FarmCheckPage extends StatefulWidget {
-  const FarmCheckPage({super.key});
-  @override State<FarmCheckPage> createState() => _FarmCheckPageState();
-}
-class _FarmCheckPageState extends State<FarmCheckPage> {
-  int tab = 0;
-  final checks = List<bool>.filled(8, false);
-  static const labels = ['온도 (적정 20~24℃)', '환기 상태', '급수 상태', '급이 상태', '돈방 상태', '분뇨 상태', '질병 이상 징후', '폐사 두수'];
-  @override
-  Widget build(BuildContext context) => PageShell(
-    title: '농장점검', subtitle: '오늘도 건강한 농장을 위해',
-    child: Column(children: [
-      _Tabs(labels: const ['분만사', '자돈사', '육성사', '비육사'], index: tab, onTap: (i) => setState(() => tab = i)),
-      const SizedBox(height: 13),
-      Row(children: [const Expanded(child: Text('점검 항목 (분만사)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900))), Text(_today(), style: const TextStyle(fontSize: 9, color: AppColors.secondary))]),
-      ...List.generate(checks.length, (i) => _CheckRow(label: labels[i], checked: checks[i], onTap: () => setState(() => checks[i] = !checks[i]))),
-      const SizedBox(height: 8),
-      TextField(maxLines: 2, decoration: InputDecoration(hintText: '특이사항이 있으면 입력하세요.', hintStyle: const TextStyle(fontSize: 10), filled: true, fillColor: const Color(0xFFF6F6F8), border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none))),
-      const SizedBox(height: 10),
-      SizedBox(width: double.infinity, height: 44, child: FilledButton(onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('점검 내용이 저장되었습니다.'))), style: FilledButton.styleFrom(backgroundColor: AppColors.coral), child: const Text('저장하기', style: TextStyle(fontWeight: FontWeight.w800)))),
-      const SizedBox(height: 16),
-      const _SectionTitle('최근 점검 기록'),
-      const _SummaryRow('9.17', '분만사', '이상 없음'),
-      const _SummaryRow('9.16', '자돈사', '환기 점검 필요'),
-      const _SummaryRow('9.15', '비육사', '이상 없음'),
-    ]),
-  );
-
-  String _today() {
-    final now = DateTime.now();
-    const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
-    String two(int value) => value.toString().padLeft(2, '0');
-    return '${now.year}.${two(now.month)}.${two(now.day)} (${weekdays[now.weekday - 1]})';
-  }
-}
-
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
   static const items = [
@@ -152,7 +116,7 @@ class MorePage extends StatelessWidget {
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.1.3', Icons.info),
+    ('앱 정보', '버전 1.1.4', Icons.info),
   ];
   @override
   Widget build(BuildContext context) => PageShell(
@@ -165,18 +129,6 @@ class MorePage extends StatelessWidget {
   );
 }
 
-class _Tabs extends StatelessWidget {
-  const _Tabs({required this.labels, required this.index, required this.onTap});
-  final List<String> labels; final int index; final ValueChanged<int> onTap;
-  @override Widget build(BuildContext context) => Container(
-    height: 38, padding: const EdgeInsets.all(3), decoration: BoxDecoration(color: const Color(0xFFF4F4F6), borderRadius: BorderRadius.circular(16)),
-    child: Row(children: List.generate(labels.length, (i) => Expanded(child: InkWell(onTap: () => onTap(i), child: Container(alignment: Alignment.center, decoration: BoxDecoration(color: i == index ? AppColors.coral : Colors.transparent, borderRadius: BorderRadius.circular(13)), child: Text(labels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: i == index ? Colors.white : AppColors.secondary))))))),
-  );
-}
-class _CheckRow extends StatelessWidget {
-  const _CheckRow({required this.label, required this.checked, required this.onTap}); final String label; final bool checked; final VoidCallback onTap;
-  @override Widget build(BuildContext context) => InkWell(onTap: onTap, child: SizedBox(height: 39, child: Row(children: [Icon(checked ? Icons.check_box : Icons.check_box_outline_blank, color: checked ? AppColors.coral : AppColors.secondary, size: 20), const SizedBox(width: 7), Expanded(child: Text(label, style: const TextStyle(fontSize: 10.5))), Text(checked ? '양호' : '확인', style: TextStyle(fontSize: 9, color: checked ? AppColors.coral : AppColors.secondary))])));
-}
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow(this.name, this.state, this.detail); final String name, state, detail;
   @override Widget build(BuildContext context) => Container(height: 40, decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.divider))), child: Row(children: [SizedBox(width: 58, child: Text(name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700))), SizedBox(width: 58, child: Text(state, style: const TextStyle(fontSize: 10, color: AppColors.coral))), Expanded(child: Text(detail, style: const TextStyle(fontSize: 10, color: AppColors.secondary)))]));
