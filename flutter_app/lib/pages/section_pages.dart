@@ -116,7 +116,7 @@ class MorePage extends StatelessWidget {
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.1.4', Icons.info),
+    ('앱 정보', '버전 1.1.5', Icons.info),
   ];
   @override
   Widget build(BuildContext context) => PageShell(

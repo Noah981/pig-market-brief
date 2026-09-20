@@ -47,6 +47,8 @@ void main() {
     expect(find.text('오늘의 환기·점검 포인트'),findsOneWidget);
     expect(find.text('수의사 연결'),findsOneWidget);
     expect(find.text('약품·예방 정보'),findsOneWidget);
+    expect(find.text('9월에 주의할 질환군'),findsOneWidget);
+    expect(find.textContaining('PRRS'),findsWidgets);
     expect(tester.takeException(),isNull);
   });
   testWidgets('돈가와 원료 카드가 상세 화면으로 이동한다', (tester) async {

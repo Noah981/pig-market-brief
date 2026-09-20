@@ -14,5 +14,8 @@ void main(){
     final risks=repository.risks(guide);
     expect(risks.map((x)=>x.title),containsAll(['호흡기 질환군 관찰','설사성 질환군 관찰']));
     expect(WeatherFarmRepository.medicines.first.caution,contains('수의사'));
+    final seasonal=repository.seasonalDiseases(DateTime(2026,9,20),guide);
+    expect(seasonal.map((x)=>x.name).join(' '),contains('PRRS'));
+    expect(seasonal.first.differentiate,contains('검사'));
   });
 }

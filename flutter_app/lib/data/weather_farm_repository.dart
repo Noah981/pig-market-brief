@@ -45,4 +45,17 @@ class WeatherFarmRepository {
     MedicineGuide('항균제','세균성 질환이 의심·확인될 때 검토하는 처방 계열','바이러스성 질환에는 효과가 없습니다. 진단·감수성·처방과 휴약기간 준수가 필요합니다.'),
     MedicineGuide('백신','질병 예방을 위한 농장별 프로그램','발병 후 치료제가 아닙니다. 돈군 면역상태와 접종 시기는 담당 수의사가 정해야 합니다.'),
   ];
+
+  List<SeasonalDiseaseGuide> seasonalDiseases(DateTime now,WeatherFarmGuide weather){
+    final coldSeason=now.month>=11||now.month<=3;
+    final transition=now.month==3||now.month==4||now.month==9||now.month==10||weather.diurnalRange>=8;
+    final result=<SeasonalDiseaseGuide>[];
+    if(transition)result.addAll(const [
+      SeasonalDiseaseGuide('PRRS·돼지인플루엔자 등 호흡기 질환군','환절기 일교차와 외풍은 돈군 스트레스를 높여 기존 감염의 임상증상이 두드러질 수 있습니다.','기침, 발열, 귀·피부 청색증, 호흡곤란, 성장정체, 모돈 유산·조산','PRRS, 인플루엔자, 마이코플라스마, 흉막폐렴은 증상이 겹칠 수 있어 PCR·부검 등 수의사 검사가 필요합니다.','복식호흡·고열·급격한 폐사·유산 증가 시 당일 수의사 상담'),
+      SeasonalDiseaseGuide('마이코플라스마성 폐렴·흉막폐렴 관찰','최소환기가 줄거나 결로·암모니아가 높아지면 호흡기 증상이 악화될 수 있습니다.','지속적인 마른기침, 복식호흡, 사료섭취 감소, 갑작스러운 고열·폐사','기침만으로 원인체를 구분할 수 없습니다. 돈사 환경 확인과 함께 검사해야 합니다.','입 벌림 호흡·혈성 비말·급사는 즉시 수의사 연락'),
+    ]);
+    if(coldSeason||weather.humidity>=80)result.add(const SeasonalDiseaseGuide('PED 등 설사성 질환군','저온·고습기에는 소독 후 건조가 늦어지고 분변 오염 관리가 어려워질 수 있습니다.','수양성 설사, 구토, 탈수, 포유자돈 체온저하·폐사','사료성 설사, 대장균, 로타바이러스 등과 증상이 비슷해 농장 내 전파양상과 검사가 필요합니다.','포유자돈 집단 설사·구토가 시작되면 이동을 줄이고 즉시 수의사 상담'));
+    if(weather.tempMax>=30)result.add(const SeasonalDiseaseGuide('열스트레스와 2차 건강문제','고온은 섭취량·번식성적을 낮추고 기존 질환의 회복을 방해할 수 있습니다.','헐떡임, 침흘림, 무기력, 사료섭취 감소, 포유돈 유량 저하','감염성 발열과 환경성 고체온을 체온·돈사온도·돈군 분포로 함께 확인해야 합니다.','쓰러짐·심한 호흡곤란은 즉시 냉각조치와 수의사 연락'));
+    return result.isEmpty?const [SeasonalDiseaseGuide('연중 기본 관찰','뚜렷한 계절 위험 신호가 낮아도 농장 내 질병은 발생할 수 있습니다.','섭취량·음수량 변화, 기침, 설사, 발열, 유산, 폐사 증가','한 가지 증상만으로 질병을 확정하지 않습니다.','돈군 단위로 급격한 변화가 있으면 수의사 상담')]:result;
+  }
 }

@@ -47,7 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.4.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.5.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.1.4 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.1.4 dondonhae-flutter-1.1.4.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.4" --notes "날씨 기반 건강 신호·환기 점검·수의사 바로 연결·약품 안전정보를 오늘 관리 화면으로 통합했습니다."
+          gh release delete dondonhae-flutter-v1.1.5 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.1.5 dondonhae-flutter-1.1.5.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.5" --notes "농장 소재지 날씨 자동선택과 월별 주의 질환군·대표 임상증상·감별 포인트·수의사 연락 기준을 적용했습니다."

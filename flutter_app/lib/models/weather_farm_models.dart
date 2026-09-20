@@ -18,3 +18,8 @@ class MedicineGuide {
   const MedicineGuide(this.category,this.use,this.caution);
   final String category,use,caution;
 }
+
+class SeasonalDiseaseGuide {
+  const SeasonalDiseaseGuide(this.name,this.whyNow,this.signs,this.differentiate,this.urgency);
+  final String name,whyNow,signs,differentiate,urgency;
+}
