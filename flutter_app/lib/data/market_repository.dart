@@ -32,7 +32,7 @@ class MarketSnapshot {
   List<PricePoint> _weekly(List<PricePoint> input){
     final result=<PricePoint>[];
     for(var end=input.length;end>0&&result.length<8;end-=7){
-      final start=(end-7).clamp(0,end) as int,chunk=input.sublist(start,end),raw=chunk.last.date;
+      final start=(end-7).clamp(0,end),chunk=input.sublist(start,end),raw=chunk.last.date;
       final value=chunk.map((x)=>x.value).reduce((a,b)=>a+b)/chunk.length;
       final day=int.tryParse(raw.substring(6,8))??1;
       result.insert(0,PricePoint('${int.parse(raw.substring(4,6))}월${((day-1)~/7)+1}주',value));
