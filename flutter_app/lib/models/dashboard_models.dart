@@ -26,7 +26,9 @@ class TodoItem {
 class Commodity {
   const Commodity(this.name, this.value, this.unit, this.change, this.icon,
       {this.id = '', this.source = '', this.asOf = '', this.frequency = '',
-      this.basis = '', this.url = '', this.history = const []});
+      this.basis = '', this.url = '', this.history = const [],this.analysisSummary='',
+      this.analysisUpdatedAt='',this.analysisConfidence='',this.analysisFactors=const [],
+      this.analysisSources=const []});
   final String name;
   final String value;
   final String unit;
@@ -39,6 +41,11 @@ class Commodity {
   final String basis;
   final String url;
   final List<CommodityPoint> history;
+  final String analysisSummary;
+  final String analysisUpdatedAt;
+  final String analysisConfidence;
+  final List<MarketFactor> analysisFactors;
+  final List<MarketSource> analysisSources;
 }
 
 class CommodityPoint {

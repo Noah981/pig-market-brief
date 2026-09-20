@@ -77,6 +77,9 @@ class CommodityRepository {
         .where((x) => x['value'] is num)
         .map((x) => CommodityPoint(x['date']?.toString() ?? '', (x['value'] as num).toDouble()))
         .toList();
+    final analysis=row['analysis'] is Map<String,dynamic>?row['analysis'] as Map<String,dynamic>:const <String,dynamic>{};
+    final factors=(analysis['factors'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketFactor(x['title']?.toString()??'',x['status']?.toString()??'추정',x['detail']?.toString()??'')).where((x)=>x.title.isNotEmpty&&x.detail.isNotEmpty).toList();
+    final sources=(analysis['sources'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketSource(x['name']?.toString()??'',x['label']?.toString()??'',x['url']?.toString()??'')).where((x)=>x.url.isNotEmpty).toList();
     return Commodity(label, text, row['unit']?.toString() ?? '', change, icon,
         id: row['name']?.toString() ?? _idForLabel(label),
         source: row['source']?.toString() ?? '',
@@ -84,7 +87,12 @@ class CommodityRepository {
         frequency: row['frequency']?.toString() ?? '',
         basis: row['basis']?.toString() ?? '',
         url: row['url']?.toString() ?? '',
-        history: history);
+        history: history,
+        analysisSummary:analysis['summary']?.toString()??'',
+        analysisUpdatedAt:analysis['updatedAt']?.toString()??'',
+        analysisConfidence:analysis['confidence']?.toString()??'',
+        analysisFactors:factors,
+        analysisSources:sources);
   }
 
   String _idForLabel(String label) {

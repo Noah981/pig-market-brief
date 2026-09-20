@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
 import 'pages/home_dashboard_page.dart';
+import 'settings/display_settings.dart';
 
-class DondonhaeApp extends StatelessWidget {
+class DondonhaeApp extends StatefulWidget {
   const DondonhaeApp({super.key});
+  @override State<DondonhaeApp> createState()=>_DondonhaeAppState();
+}
+
+class _DondonhaeAppState extends State<DondonhaeApp>{
+  final settings=DisplaySettings.instance;
+  @override void initState(){super.initState();settings.addListener(_changed);settings.load();}
+  @override void dispose(){settings.removeListener(_changed);super.dispose();}
+  void _changed(){if(mounted)setState((){});}
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: '돈돈해',
         theme: AppTheme.light,
+        builder:(context,child){
+          final media=MediaQuery.of(context);
+          return MediaQuery(data:media.copyWith(textScaler:TextScaler.linear(settings.textScale)),child:child!);
+        },
         home: const HomeDashboardPage(),
       );
 }

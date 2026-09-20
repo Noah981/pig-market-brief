@@ -47,7 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.5.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.6.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.1.5 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.1.5 dondonhae-flutter-1.1.5.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.5" --notes "농장 소재지 날씨 자동선택과 월별 주의 질환군·대표 임상증상·감별 포인트·수의사 연락 기준을 적용했습니다."
+          gh release delete dondonhae-flutter-v1.1.6 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.1.6 dondonhae-flutter-1.1.6.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.6" --notes "설정의 글자 크기 조절과 공식 시계열·공식기관 발표 기반 돈가·곡물·환율·유가 자동 분석을 적용했습니다."

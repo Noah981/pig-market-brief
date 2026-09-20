@@ -1,4 +1,5 @@
 import 'package:dondonhae/app.dart';
+import 'package:dondonhae/settings/display_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,5 +91,16 @@ void main() {
     expect(find.text('국제정세 해석'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
     expect(find.byType(Image),findsWidgets);expect(tester.takeException(),isNull);
+  });
+  testWidgets('설정에서 글자 크기를 변경하고 저장한다',(tester)async{
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('nav_4')));await tester.pumpAndSettle();
+    await tester.tap(find.text('글자 크기'));await tester.pumpAndSettle();
+    await tester.tap(find.text('크게'));await tester.pumpAndSettle();
+    expect(DisplaySettings.instance.textScale,1.15);
+    expect((await SharedPreferences.getInstance()).getDouble('display_text_scale'),1.15);
+    await DisplaySettings.instance.setTextScale(1);
+    expect(tester.takeException(),isNull);
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
+import '../settings/display_settings.dart';
 import 'market_detail_pages.dart';
 
 class PageShell extends StatelessWidget {
@@ -112,21 +113,28 @@ class MorePage extends StatelessWidget {
     ('인증 정보', '깨끗한 축산농장 · 저탄소 · HACCP 등', Icons.health_and_safety_outlined),
     ('정부·지자체 지원사업', '내 지역 맞춤 지원사업 확인', Icons.account_balance_outlined),
     ('알림 설정', '돈가 · 질병 · 주문 · 지원사업 등', Icons.notifications_outlined),
+    ('글자 크기', '작게 · 기본 · 크게 · 매우 크게', Icons.text_fields),
     ('지역 설정', '내 지역: 대구 달성군', Icons.location_on_outlined),
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.1.5', Icons.info),
+    ('앱 정보', '버전 1.1.6', Icons.info),
   ];
   @override
   Widget build(BuildContext context) => PageShell(
     title: '', subtitle: '',
     child: Column(children: [
-      const ListTile(contentPadding: EdgeInsets.zero, leading: CircleAvatar(radius: 24, backgroundColor: AppColors.lightCoral, child: Icon(Icons.person, color: Color(0xFF4B5A70))), title: Text('돈돈해님', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)), subtitle: Text('항상 감사합니다.', style: TextStyle(fontSize: 10)), trailing: Icon(Icons.settings_outlined)),
+      ListTile(contentPadding:EdgeInsets.zero,leading:const CircleAvatar(radius:24,backgroundColor:AppColors.lightCoral,child:Icon(Icons.person,color:Color(0xFF4B5A70))),title:const Text('돈돈해님',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),subtitle:const Text('항상 감사합니다.',style:TextStyle(fontSize:10)),trailing:const Icon(Icons.settings_outlined),onTap:()=>_textSize(context)),
       const Divider(),
-      ...items.map((x) => ListTile(minTileHeight: 57, contentPadding: EdgeInsets.zero, leading: Icon(x.$3, color: const Color(0xFF4B5A70), size: 21), title: Text(x.$1, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)), subtitle: x.$2.isEmpty ? null : Text(x.$2, style: const TextStyle(fontSize: 9, color: AppColors.secondary)), trailing: const Icon(Icons.chevron_right, size: 18))),
+      ...items.map((x) => ListTile(minTileHeight:57,contentPadding:EdgeInsets.zero,leading:Icon(x.$3,color:const Color(0xFF4B5A70),size:21),title:Text(x.$1,style:const TextStyle(fontSize:12,fontWeight:FontWeight.w800)),subtitle:x.$2.isEmpty?null:Text(x.$2,style:const TextStyle(fontSize:9,color:AppColors.secondary)),trailing:const Icon(Icons.chevron_right,size:18),onTap:x.$1=='글자 크기'?()=>_textSize(context):null)),
     ]),
   );
+
+  Future<void> _textSize(BuildContext context)async{
+    final settings=DisplaySettings.instance;
+    const choices=[(.85,'작게'),(1.0,'기본'),(1.15,'크게'),(1.3,'매우 크게')];
+    await showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[const ListTile(title:Text('글자 크기',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('선택하면 앱 전체 글자에 바로 적용됩니다.')),...choices.map((x)=>RadioListTile<double>(value:x.$1,groupValue:settings.textScale,title:Text(x.$2,style:TextStyle(fontSize:14*x.$1,fontWeight:FontWeight.w800)),onChanged:(value)async{if(value==null)return;await settings.setTextScale(value);if(context.mounted)Navigator.pop(context);})),const SizedBox(height:8)])));
+  }
 }
 
 class _SummaryRow extends StatelessWidget {

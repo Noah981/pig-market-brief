@@ -26,6 +26,13 @@ void main() {
             {'date': '2026-06-01', 'value': 195.78},
             {'date': '2026-07-01', 'value': 213.19},
           ],
+          'analysis':{
+            'summary':'공식 시계열과 발표를 교차 확인했습니다.',
+            'updatedAt':'2026-09-20T10:00:00+09:00',
+            'confidence':'보통',
+            'factors':[{'title':'최근 추세','status':'계산','detail':'최근 3개 발표 흐름입니다.'}],
+            'sources':[{'name':'미국 농무부(USDA)','label':'공식 발표','url':'https://www.usda.gov/'}],
+          },
         }
       ]
     };
@@ -39,5 +46,8 @@ void main() {
     expect(corn.frequency, 'monthly');
     expect(corn.history.length, 2);
     expect(corn.source, contains('IMF'));
+    expect(corn.analysisConfidence,'보통');
+    expect(corn.analysisFactors.single.title,'최근 추세');
+    expect(corn.analysisSources.single.name,contains('USDA'));
   });
 }
