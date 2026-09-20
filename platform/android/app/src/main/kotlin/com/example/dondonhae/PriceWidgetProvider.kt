@@ -18,6 +18,14 @@ private const val PREFS="dondonhae_price_widget"
 
 object PriceWidgetStore{
  private fun prefs(c:Context)=c.getSharedPreferences(PREFS,Context.MODE_PRIVATE)
+ private fun ensureSeed(c:Context){
+  val p=prefs(c);if(p.getInt("price",0)>0)return
+  try{
+   val json=JSONObject(c.resources.openRawResource(R.raw.dondonhae_price_seed).bufferedReader().use{it.readText()})
+   val price=json.optInt("price",0);val previous=json.optInt("previousPrice",0);val date=json.optString("date","")
+   if(price>0&&previous>0&&date.length==8)p.edit().putInt("price",price).putInt("previousPrice",previous).putInt("change",json.optInt("change",price-previous)).putString("date",date).putString("price_key","$date|$price").apply()
+  }catch(_:Exception){}
+ }
  fun saveAndRender(c:Context,args:Map<*,*>?){
   val price=(args?.get("price") as? Number)?.toInt()?:return
   if(price<=0)return
@@ -38,7 +46,7 @@ object PriceWidgetStore{
   }catch(_:Exception){}
  }
  fun render(c:Context){
-  val p=prefs(c);val price=p.getInt("price",0);if(price<=0)return
+  ensureSeed(c);val p=prefs(c);val price=p.getInt("price",0);if(price<=0)return
   val change=p.getInt("change",0);val date=p.getString("date","")?:"";val manager=AppWidgetManager.getInstance(c)
   val small=manager.getAppWidgetIds(ComponentName(c,PriceWidgetSmallProvider::class.java));if(small.isNotEmpty())manager.updateAppWidget(small,views(c,R.layout.widget_price_small,price,change,date,false))
   val wide=manager.getAppWidgetIds(ComponentName(c,PriceWidgetWideProvider::class.java));if(wide.isNotEmpty())manager.updateAppWidget(wide,views(c,R.layout.widget_price_wide,price,change,date,true))

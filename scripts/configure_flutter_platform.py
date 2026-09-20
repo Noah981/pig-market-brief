@@ -7,6 +7,9 @@ root=Path(__file__).resolve().parents[1]/"flutter_app"
 manifest=root/"android/app/src/main/AndroidManifest.xml"
 text=manifest.read_text(encoding="utf-8")
 text=text.replace('android:label="dondonhae"','android:label="돈돈해"')
+internet='<uses-permission android:name="android.permission.INTERNET" />'
+if internet not in text:
+    text=text.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">',f'<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    {internet}')
 permission='<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />'
 if permission not in text:
     text=text.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">',f'<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    {permission}\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />')
