@@ -16,20 +16,29 @@ class PageShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 430),
-        child: CustomScrollView(slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 18),
-            sliver: SliverList.list(children: [
-              if (title.isNotEmpty) Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
-              if (subtitle.isNotEmpty) Text(subtitle, style: const TextStyle(fontSize: 11, color: AppColors.secondary)),
-              if (title.isNotEmpty) const SizedBox(height: 14),
-              child,
+    return Material(
+      color: AppColors.background,
+      child: SafeArea(
+        bottom: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 430),
+            child: CustomScrollView(slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 28),
+                sliver: SliverList.list(children: [
+                  if (title.isNotEmpty) Text(title, style: const TextStyle(fontSize: 22, height: 1.18, fontWeight: FontWeight.w900)),
+                  if (subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: const TextStyle(fontSize: 11, height: 1.35, color: AppColors.secondary)),
+                  ],
+                  if (title.isNotEmpty) const SizedBox(height: 16),
+                  child,
+                ]),
+              ),
             ]),
           ),
-        ]),
+        ),
       ),
     );
   }
@@ -124,7 +133,7 @@ class _MorePageState extends State<MorePage>{
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.3.0', Icons.info),
+    ('앱 정보', '버전 1.3.1', Icons.info),
   ];
   @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_changed);FarmLocationSettings.instance.load();}
   @override void dispose(){FarmLocationSettings.instance.removeListener(_changed);super.dispose();}
