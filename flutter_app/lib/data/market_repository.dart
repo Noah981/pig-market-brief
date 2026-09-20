@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/dashboard_models.dart';
+import '../services/price_widget_bridge.dart';
 
 class MarketSnapshot {
   const MarketSnapshot({required this.price,required this.previousPrice,required this.change,required this.changePct,required this.date,required this.updatedAt,required this.source,required this.scope,required this.history,required this.fromCache});
@@ -73,7 +74,7 @@ class MarketRepository {
     final responses=await Future.wait([_client.get(Uri.parse('$_priceUrl?v=$stamp')).timeout(const Duration(seconds:12)),_client.get(Uri.parse('$_historyUrl?v=$stamp')).timeout(const Duration(seconds:12))]);
     if(responses.any((r)=>r.statusCode!=200))throw Exception('Official data unavailable');
     final combined=<String,dynamic>{'price':jsonDecode(utf8.decode(responses[0].bodyBytes)),'history':jsonDecode(utf8.decode(responses[1].bodyBytes))};
-    final value=_decode(combined);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(combined));return value;
+    final value=_decode(combined);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(combined));await PriceWidgetBridge.update(price:value.price,previousPrice:value.previousPrice,change:value.change,changePct:value.changePct,date:value.date,updatedAt:value.updatedAt);return value;
   }
   MarketSnapshot _decode(Map<String,dynamic> combined,{bool fromCache=false}){
     final price=((combined['price'] as Map?)?.cast<String,dynamic>())??combined;
