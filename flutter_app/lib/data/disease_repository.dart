@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/disease_models.dart';
+import '../settings/farm_location_settings.dart';
 
 class DiseaseRepository {
   DiseaseRepository({http.Client? client}):_client=client??http.Client();
@@ -25,13 +26,10 @@ class DiseaseRepository {
     for(final x in (json['items'] as List? ?? const []).whereType<Map<String,dynamic>>()){
       final code=x['countryCode']?.toString()??'';if(code.isEmpty)continue;
       final summary=x['summary']?.toString()??'';final disease=x['disease']?.toString()??'';
-      final place=_place(summary);final key='$disease|$summary';if(disease.isEmpty||summary.isEmpty||!seen.add(key))continue;
-      items.add(DiseaseAlert(disease:disease,source:x['source']?.toString()??'',countryCode:code,scope:code=='KR'?'국내':'국외',evidenceLevel:x['evidenceLevel']?.toString()??'PUBLIC_UNCONFIRMED',level:x['level']?.toString()??'확인 중',summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',publishedAt:x['publishedAt']?.toString()??x['detectedAt']?.toString()??'',region:place?.$1,latitude:place?.$2,longitude:place?.$3));
+      final structuredRegion=x['region']?.toString();final lat=(x['latitude'] as num?)?.toDouble(),lng=(x['longitude'] as num?)?.toDouble();
+      final place=(structuredRegion==null?null:FarmLocationSettings.find(structuredRegion))??FarmLocationSettings.find(summary);final key='$disease|$summary';if(disease.isEmpty||summary.isEmpty||!seen.add(key))continue;
+      items.add(DiseaseAlert(disease:disease,source:x['source']?.toString()??'',countryCode:code,scope:code=='KR'?'국내':'국외',evidenceLevel:x['evidenceLevel']?.toString()??'PUBLIC_UNCONFIRMED',level:x['level']?.toString()??'확인 중',summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',publishedAt:x['publishedAt']?.toString()??x['detectedAt']?.toString()??'',region:structuredRegion??place?.cityCounty,latitude:lat??place?.latitude,longitude:lng??place?.longitude));
     }
     return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache);
-  }
-  (String,double,double)? _place(String text){
-    const places=<String,(double,double)>{'강화':(37.746,126.488),'예천':(36.657,128.452),'창녕':(35.544,128.492),'순천':(34.950,127.487),'영주':(36.805,128.624),'상주':(36.410,128.159),'문경':(36.586,128.186),'김천':(36.139,128.114),'경주':(35.856,129.224)};
-    for(final entry in places.entries){if(text.contains(entry.key))return(entry.key,entry.value.$1,entry.value.$2);}return null;
   }
 }

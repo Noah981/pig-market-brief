@@ -5,10 +5,12 @@ import '../data/weather_farm_repository.dart';
 import '../models/weather_farm_models.dart';
 import '../theme/app_theme.dart';
 import 'section_pages.dart';
+import '../settings/farm_location_settings.dart';
+import '../widgets/farm_location_picker.dart';
 
 class TodayCarePage extends StatefulWidget{
-  const TodayCarePage({super.key,required this.guide,required this.onRefresh,required this.onRegionChanged});
-  final WeatherFarmGuide guide;final Future<void> Function() onRefresh;final Future<void> Function(String) onRegionChanged;
+  const TodayCarePage({super.key,required this.guide,required this.onRefresh});
+  final WeatherFarmGuide guide;final Future<void> Function() onRefresh;
   @override State<TodayCarePage> createState()=>_TodayCarePageState();
 }
 class _TodayCarePageState extends State<TodayCarePage>{
@@ -32,7 +34,7 @@ class _TodayCarePageState extends State<TodayCarePage>{
     ]));
   }
   Widget _weather(WeatherFarmGuide w)=>Container(padding:const EdgeInsets.all(14),decoration:appCard(color:AppColors.lightBlue,radius:18),child:Column(children:[
-    Row(children:[const Text('🌤️',style:TextStyle(fontSize:30)),const SizedBox(width:8),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[InkWell(onTap:_pickRegion,child:Row(children:[Flexible(child:Text(w.region,style:const TextStyle(fontSize:11,color:AppColors.secondary))),const Icon(Icons.expand_more,size:15,color:AppColors.secondary)])),Text('${w.tempMax.toStringAsFixed(0)}°C · ${w.condition}',style:const TextStyle(fontSize:23,fontWeight:FontWeight.w900))])),IconButton(onPressed:widget.onRefresh,icon:const Icon(Icons.refresh,color:AppColors.blue))]),
+    Row(children:[const Text('🌤️',style:TextStyle(fontSize:30)),const SizedBox(width:8),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[InkWell(onTap:_pickRegion,child:Row(children:[Flexible(child:Text(FarmLocationSettings.instance.location.label,style:const TextStyle(fontSize:11,color:AppColors.secondary))),const Icon(Icons.expand_more,size:15,color:AppColors.secondary)])),Text('${w.tempMax.toStringAsFixed(0)}°C · ${w.condition}',style:const TextStyle(fontSize:23,fontWeight:FontWeight.w900))])),IconButton(onPressed:widget.onRefresh,icon:const Icon(Icons.refresh,color:AppColors.blue))]),
     const SizedBox(height:8),Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[_fact('최저','${w.tempMin.toStringAsFixed(0)}°'),_fact('일교차','${w.diurnalRange.toStringAsFixed(0)}°'),_fact('최고습도','${w.humidity.toStringAsFixed(0)}%'),_fact('강수','${w.rainProbability.toStringAsFixed(0)}%')]),
     const SizedBox(height:8),Align(alignment:Alignment.centerLeft,child:Text('출처: ${w.source}${w.fromCache?' · 마지막 저장 데이터':''}',style:const TextStyle(fontSize:8,color:AppColors.secondary))),
   ]));
@@ -49,8 +51,5 @@ class _TodayCarePageState extends State<TodayCarePage>{
     final name=TextEditingController(text:_vetName=='담당 수의사'?'':_vetName),phone=TextEditingController(text:_vetPhone);
     await showDialog(context:context,builder:(context)=>AlertDialog(title:const Text('담당 수의사 등록'),content:Column(mainAxisSize:MainAxisSize.min,children:[TextField(controller:name,decoration:const InputDecoration(labelText:'이름 또는 동물병원')),TextField(controller:phone,keyboardType:TextInputType.phone,decoration:const InputDecoration(labelText:'전화번호'))]),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('취소')),FilledButton(onPressed:()async{final p=await SharedPreferences.getInstance();await p.setString('farm_vet_name',name.text.trim());await p.setString('farm_vet_phone',phone.text.trim());if(context.mounted)Navigator.pop(context);if(mounted)setState((){_vetName=name.text.trim().isEmpty?'담당 수의사':name.text.trim();_vetPhone=phone.text.trim();});},child:const Text('저장'))]));
   }
-  Future<void> _pickRegion()async{
-    const regions=['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','세종특별자치시','경기도','강원특별자치도','충청북도','충청남도','전북특별자치도','전라남도','경상북도','경상남도','제주특별자치도'];
-    await showModalBottomSheet(context:context,showDragHandle:true,builder:(context)=>SafeArea(child:ListView(shrinkWrap:true,children:[const ListTile(title:Text('농장 소재지',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('한 번 선택하면 다음 실행부터 자동으로 이 지역 날씨를 사용합니다.')),...regions.map((region)=>ListTile(title:Text(region),trailing:region==widget.guide.region?const Icon(Icons.check,color:AppColors.coral):null,onTap:()async{Navigator.pop(context);await widget.onRegionChanged(region);})),])));
-  }
+  Future<void> _pickRegion()async{await showFarmLocationPicker(context);if(mounted)setState((){});}
 }

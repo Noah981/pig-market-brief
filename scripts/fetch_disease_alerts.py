@@ -20,6 +20,12 @@ COUNTRIES=[
  ("VN",("베트남","vietnam","까마우","ca mau")),("CN",("중국","china","chinese")),
  ("JP",("일본","japan")),("US",("미국","united states","usa")),
  ("KR",("대한민국","한국","korea","경기","강원","충북","충남","전북","전남","경북","경남","제주","창녕","예천","순천"))]
+PLACES={
+ "강화군":(37.746,126.488),"예천군":(36.657,128.452),"창녕군":(35.544,128.492),"순천시":(34.950,127.487),
+ "영주시":(36.805,128.624),"상주시":(36.410,128.159),"문경시":(36.586,128.186),"김천시":(36.139,128.114),
+ "경주시":(35.856,129.224),"포천시":(37.895,127.200),"연천군":(38.096,127.075),"철원군":(38.146,127.313),
+ "화천군":(38.106,127.708),"양구군":(38.110,127.990),"인제군":(38.069,128.170),"고성군":(38.380,128.467)
+}
 
 def country_code(text,expected_scope=None):
  lower=text.lower()
@@ -36,6 +42,11 @@ def fetch(url):
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def diseases(text):return sorted({v for k,v in DISEASES.items() if k.lower() in text.lower()})
+def region_fields(text):
+ for name,(lat,lng) in PLACES.items():
+  stem=re.sub(r'[시군구]$','',name)
+  if name in text or stem in text:return {"region":name,"latitude":lat,"longitude":lng}
+ return {}
 
 def official_page(source,url,scope="국내",default_country=None):
  out=[]
@@ -46,7 +57,7 @@ def official_page(source,url,scope="국내",default_country=None):
    if len(title)<8 or not ds or not EVENT.search(title):continue
    link=urllib.parse.urljoin(url,href)
    code=country_code(title,scope) or default_country
-   for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat()})
+   for disease in ds:out.append({"disease":disease,"source":source,"countryCode":code,"scope":classify(code),"evidenceLevel":"OFFICIAL","level":"공식 발생 확인","summary":title[:260],"sourceUrl":link,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
  except Exception as e:print("official source skipped",source,e)
  return out
 
@@ -61,7 +72,7 @@ def public_news(scope="국내"):
     title=clean(item.findtext("title") or "");ds=diseases(title)
     if not ds or not EVENT.search(title):continue
     code=country_code(title,scope)
-    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":item.findtext("pubDate"),"detectedAt":datetime.now(KST).isoformat()})
+    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","level":"공개정보 · 확인중","summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":item.findtext("pubDate"),"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
   except Exception as e:print("public source skipped",term,e)
  return out
 

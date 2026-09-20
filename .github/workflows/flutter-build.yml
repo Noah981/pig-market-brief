@@ -1,6 +1,8 @@
 name: Flutter UI build
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
     paths: ['flutter_app/**', '.github/workflows/flutter-build.yml']
@@ -47,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.1.7.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.2.0.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.1.7 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.1.7 dondonhae-flutter-1.1.7.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.1.7" --notes "홈 상단 원터치 큰글씨 모드와 155% 고령자용 글자 확대, 확대 화면 반응형 보정을 적용했습니다."
+          gh release delete dondonhae-flutter-v1.2.0 --cleanup-tag --yes || true
+          gh release create dondonhae-flutter-v1.2.0 dondonhae-flutter-1.2.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.2.0" --notes "공식 질병 신호와 국내 지도를 연결하고, 농장 소재지를 시·도·시군구까지 저장해 날씨·질병·지원사업이 같은 지역을 사용하도록 통합했습니다."

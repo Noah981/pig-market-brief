@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data/mock_data.dart';
 import '../data/commodity_repository.dart';
 import '../data/market_repository.dart';
@@ -9,6 +8,7 @@ import '../data/weather_farm_repository.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
 import '../settings/display_settings.dart';
+import '../settings/farm_location_settings.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bottom_navigation.dart';
 import '../widgets/commodity_trend_card.dart';
@@ -33,8 +33,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);_loadMarket();_loadAnalysis();_loadCommodities();_loadWeather();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();_refreshWeather();});}
-  @override void dispose(){_timer?.cancel();WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadMarket();_loadAnalysis();_loadCommodities();_loadWeather();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();_refreshWeather();});}
+  @override void dispose(){_timer?.cancel();FarmLocationSettings.instance.removeListener(_locationChanged);WidgetsBinding.instance.removeObserver(this);super.dispose();}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_refreshMarket();}
   Future<void> _loadMarket()async{try{final cached=await _marketRepository.cached();if(mounted&&cached!=null)setState(()=>_market=cached);}catch(_){}await _refreshMarket();}
   Future<void> _refreshMarket()async{try{final value=await _marketRepository.refresh();if(mounted)setState(()=>_market=value);}catch(_){}}
@@ -42,16 +42,16 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _refreshAnalysis()async{try{final value=await _analysisRepository.refresh();if(mounted)setState(()=>_analysis=value);}catch(_){}}
   Future<void> _loadCommodities()async{try{final cached=await _commodityRepository.cached();if(mounted&&cached.isNotEmpty)setState(()=>_commodities=cached);}catch(_){}await _refreshCommodities();}
   Future<void> _refreshCommodities()async{try{final value=await _commodityRepository.refresh();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}catch(_){}}
-  Future<void> _loadWeather()async{try{final prefs=await SharedPreferences.getInstance();_weatherRegion=prefs.getString('farm_weather_region')??'대구광역시';final cached=await _weatherRepository.cached();if(mounted)setState(()=>_weather=cached.region==_weatherRegion?cached:_weather);}catch(_){}await _refreshWeather();}
+  Future<void> _loadWeather()async{try{await FarmLocationSettings.instance.load();_weatherRegion=FarmLocationSettings.instance.location.province;final cached=await _weatherRepository.cached();if(mounted)setState(()=>_weather=cached.region==_weatherRegion?cached:_weather);}catch(_){}await _refreshWeather();}
   Future<void> _refreshWeather()async{try{final value=await _weatherRepository.refresh(region:_weatherRegion);if(mounted)setState(()=>_weather=value);}catch(_){}}
-  Future<void> _changeWeatherRegion(String region)async{_weatherRegion=region;await (await SharedPreferences.getInstance()).setString('farm_weather_region',region);await _refreshWeather();}
+  void _locationChanged(){final region=FarmLocationSettings.instance.location.province;if(region!=_weatherRegion){_weatherRegion=region;_refreshWeather();}else if(mounted){setState((){});}}
   Future<void> _pullToRefresh()async{
     await Future.wait([_refreshMarket(),_refreshAnalysis(),_refreshCommodities(),_refreshWeather()]);
     if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('최신 시황을 확인했습니다.'),duration:Duration(seconds:1)));
   }
   @override Widget build(BuildContext context)=>Scaffold(
     bottomNavigationBar:BottomNavigation(index:_nav,onSelected:(i)=>setState(()=>_nav=i)),
-    body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis),const DiseasePage(),TodayCarePage(guide:_weather,onRefresh:_refreshWeather,onRegionChanged:_changeWeatherRegion),const MorePage()])),
+    body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis),const DiseasePage(),TodayCarePage(guide:_weather,onRefresh:_refreshWeather),const MorePage()])),
   );
   Widget _home()=>Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:430),child:RefreshIndicator(color:AppColors.coral,onRefresh:_pullToRefresh,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),key:const PageStorageKey('home'),slivers:[
     const SliverToBoxAdapter(child:FarmHeroSection()),
