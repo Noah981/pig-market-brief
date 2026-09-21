@@ -5,14 +5,19 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/dashboard_models.dart';
+import '../config/api_config.dart';
+import '../services/api/ecos_api_client.dart';
 
 class CommodityRepository {
-  CommodityRepository({http.Client? client}) : _client = client ?? http.Client();
+  CommodityRepository({http.Client? client, EcosApiClient? ecosClient})
+      : _client = client ?? http.Client(),
+        _ecosClient = ecosClient ?? EcosApiClient(client: client);
 
   static const _url =
       'https://noah981.github.io/pig-market-brief/data/platform.json';
   static const _cacheKey = 'verified_commodity_market_v1';
   final http.Client _client;
+  final EcosApiClient _ecosClient;
   static const bundledSnapshot = [
     Commodity('옥수수','213.19',r'$/톤',8.89,Icons.grass,id:'corn',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 옥수수 벤치마크 월평균',history:[CommodityPoint('2026-06-01',195.78),CommodityPoint('2026-07-01',213.19)]),
     Commodity('대두박','329.43',r'$/톤',11.24,Icons.eco,id:'soybean_meal',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 대두박 벤치마크 월평균',history:[CommodityPoint('2026-06-01',296.16),CommodityPoint('2026-07-01',329.43)]),
@@ -39,10 +44,30 @@ class CommodityRepository {
     if (response.statusCode != 200) throw Exception('Market data unavailable');
     final raw = utf8.decode(response.bodyBytes);
     final json = jsonDecode(raw) as Map<String, dynamic>;
-    final values = _parse(json);
-    await (await SharedPreferences.getInstance()).setString(_cacheKey, raw);
+    var values = _parse(json);
+    if (ApiConfig.hasEcos) {
+      try {
+        final points = await _ecosClient.usdKrw();
+        final latest = points.last, previous = points.length > 1 ? points[points.length - 2] : latest;
+        final changePct = previous.value == 0 ? 0.0 : (latest.value - previous.value) / previous.value * 100;
+        final official = Commodity('환율\n(USD/KRW)', latest.value.toStringAsFixed(1), '원/USD', changePct, Icons.attach_money,
+            id: 'usd_krw', source: '한국은행 ECOS', asOf: latest.date, frequency: 'daily',
+            basis: '원/미국달러 매매기준율',
+            history: points.map((x) => CommodityPoint(x.date, x.value)).toList());
+        values = values.map((x) => x.id == 'usd_krw' ? official : x).toList();
+      } catch (_) {
+        // ECOS 실패 시 검증된 마지막 플랫폼 값과 캐시를 유지한다.
+      }
+    }
+    await (await SharedPreferences.getInstance()).setString(_cacheKey, jsonEncode(_cacheJson(values)));
     return values;
   }
+
+  Map<String, dynamic> _cacheJson(List<Commodity> values) => {'markets': values.map((x) => {
+    'name': x.id, 'value': double.tryParse(x.value), 'unit': x.unit, 'changePct': x.change,
+    'source': x.source, 'date': x.asOf, 'frequency': x.frequency, 'basis': x.basis,
+    'history': x.history.map((p) => {'date': p.date, 'value': p.value}).toList(),
+  }).toList()};
 
   List<Commodity> _parse(Map<String, dynamic> json) {
     final rows = (json['markets'] as List? ?? const [])

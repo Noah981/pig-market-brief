@@ -23,10 +23,19 @@ jobs:
         run: |
           flutter create --platforms=android,ios .
           python ../scripts/configure_flutter_platform.py
+          dart run flutter_launcher_icons
           rm -f test/widget_test.dart
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Verify official API connectivity
+        if: github.event_name != 'pull_request'
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+          KAPE_API_KEY: ${{ secrets.KAPE_API_KEY }}
+          KMA_API_KEY: ${{ secrets.KMA_API_KEY }}
+          MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
+        run: python scripts/validate_official_apis.py
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
@@ -34,10 +43,16 @@ jobs:
           flutter test test/commodity_repository_test.dart
           flutter test test/disease_repository_test.dart
           flutter test test/weather_farm_repository_test.dart
+          flutter test test/official_api_clients_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         working-directory: flutter_app
-        run: flutter build apk --release
+        run: >-
+          flutter build apk --release
+          --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
+          --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY }}
+          --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY }}
+          --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -49,7 +64,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-flutter-1.4.0.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-WORK3-release.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-flutter-v1.4.0 --cleanup-tag --yes || true
-          gh release create dondonhae-flutter-v1.4.0 dondonhae-flutter-1.4.0.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 Flutter 1.4.0" --notes "질병 자동수집의 오분류를 차단하고 국내·해외·지역 검증을 강화했으며 신규 국내 공식 질병 알림을 적용했습니다."
+          gh release delete dondonhae-work3 --cleanup-tag --yes || true
+          gh release create dondonhae-work3 dondonhae-WORK3-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 WORK 3" --notes "실제 대한민국 행정경계 벡터 지도와 공식 질병정보 연동을 적용한 검증 빌드입니다."

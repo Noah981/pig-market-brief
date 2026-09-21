@@ -2,12 +2,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/weather_farm_models.dart';
+import '../config/api_config.dart';
+import '../services/api/kma_api_client.dart';
+import '../settings/farm_location_settings.dart';
 
 class WeatherFarmRepository {
-  WeatherFarmRepository({http.Client? client}):_client=client??http.Client();
+  WeatherFarmRepository({http.Client? client,KmaApiClient? kmaClient}):_client=client??http.Client(),_kmaClient=kmaClient??KmaApiClient(client:client);
   static const _url='https://noah981.github.io/pig-market-brief/data/briefing.json';
   static const _cacheKey='weather_farm_guide_v1';
   final http.Client _client;
+  final KmaApiClient _kmaClient;
   static const fallback=WeatherFarmGuide(region:'대구·경북',tempMin:16,tempMax:28,humidity:95,rainProbability:0,riskFactors:['큰 일교차','고습'],checks:['야간 최소환기와 입기구 방향을 확인하세요.','기침이 늘면 온도·일교차·암모니아를 확인하세요.','자돈이 뭉치면 외풍과 보온구역을 확인하세요.'],updatedAt:'2026-09-20T07:53:12+09:00',source:'기상청 단기예보 조회서비스',fromCache:true);
 
   Future<WeatherFarmGuide> cached()async{
@@ -16,6 +20,13 @@ class WeatherFarmRepository {
     try{return _decode(jsonDecode(raw) as Map<String,dynamic>,true);}catch(_){return fallback;}
   }
   Future<WeatherFarmGuide> refresh({String region='대구광역시'})async{
+    if(ApiConfig.hasKma){
+      final location=FarmLocationSettings.instance.location;
+      final forecast=await _kmaApi(location.latitude,location.longitude);
+      final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
+      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
+      return value;
+    }
     final response=await _client.get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
     if(response.statusCode!=200)throw Exception('Weather briefing unavailable');
     final raw=utf8.decode(response.bodyBytes),json=jsonDecode(raw) as Map<String,dynamic>;
@@ -23,6 +34,9 @@ class WeatherFarmRepository {
     await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':json['updatedAt'],'weatherSource':json['weatherSource'],'regions':[...((json['regions'] as List? ?? const []).whereType<Map<String,dynamic>>().where((x)=>x['region']==value.region))]}));
     return value;
   }
+  Future<KmaForecast> _kmaApi(double lat,double lng)=>_kmaClient.forecast(lat,lng);
+  List<String> _riskLabels(double min,double max,double humidity)=>[if(max-min>=8)'큰 일교차',if(humidity>=80)'고습',if(max>=30)'열스트레스'];
+  List<String> _checks(double min,double max,double humidity)=>[if(max-min>=8)'야간 최소환기와 입기구 방향을 확인하세요.',if(humidity>=80)'결로와 바닥 습윤, 암모니아를 확인하세요.',if(max>=30)'음수량과 쿨링·환기 상태를 확인하세요.',if(max-min<8&&humidity<80&&max<30)'기본 환기와 돈군 상태를 확인하세요.'];
   WeatherFarmGuide _decode(Map<String,dynamic> json,bool fromCache,{String preferredRegion='대구광역시'}){
     final regions=(json['regions'] as List? ?? const []).whereType<Map<String,dynamic>>().toList();
     if(regions.isEmpty)throw const FormatException('No weather region');

@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../models/dashboard_models.dart';
+import '../config/api_config.dart';
+import '../services/api/kape_api_client.dart';
 
 class MarketSnapshot {
   const MarketSnapshot({required this.price,required this.previousPrice,required this.change,required this.changePct,required this.date,required this.updatedAt,required this.source,required this.scope,required this.history,required this.fromCache});
@@ -56,7 +58,8 @@ class MarketRepository {
     PricePoint('20260909',5800),PricePoint('20260910',6200),PricePoint('20260911',6700),PricePoint('20260914',6850),PricePoint('20260915',7000),PricePoint('20260916',6900),PricePoint('20260917',6740),PricePoint('20260918',6442),
   ],fromCache:true);
   static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json',_historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json',_cacheKey='official_dabom_producer_pig_price_v3';
-  final http.Client _client; MarketRepository({http.Client? client}):_client=client??http.Client();
+  final http.Client _client; final KapeApiClient _kapeClient;
+  MarketRepository({http.Client? client,KapeApiClient? kapeClient}):_client=client??http.Client(),_kapeClient=kapeClient??KapeApiClient(client:client);
   Future<MarketSnapshot?> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey);
     if(raw==null){
@@ -69,6 +72,14 @@ class MarketRepository {
     try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return bundledSnapshot;}
   }
   Future<MarketSnapshot> refresh()async{
+    if(ApiConfig.hasKape){
+      final official=await _kapeClient.latest();
+      final latest=official.last,previous=official.length>1?official[official.length-2]:latest;
+      final cachedValue=await cached()??bundledSnapshot;
+      final rows=<PricePoint>[...cachedValue.history.where((x)=>!official.any((o)=>o.date==x.date)),...official.map((x)=>PricePoint(x.date,x.price.toDouble()))]..sort((a,b)=>a.date.compareTo(b.date));
+      final json={'price':{'price':latest.price,'previousPrice':previous.price,'change':latest.price-previous.price,'changePct':previous.price==0?0:(latest.price-previous.price)/previous.price*100,'date':latest.date,'previousDate':previous.date,'updatedAt':DateTime.now().toIso8601String(),'source':'축산물품질평가원','scope':'전국·탕박·등외제외·제주제외'},'history':{'rows':rows.map((x)=>{'date':x.date,'price':x.value,'resolution':x.resolution}).toList()}};
+      final value=_decode(json);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(json));return value;
+    }
     final stamp=DateTime.now().millisecondsSinceEpoch;
     final responses=await Future.wait([_client.get(Uri.parse('$_priceUrl?v=$stamp')).timeout(const Duration(seconds:12)),_client.get(Uri.parse('$_historyUrl?v=$stamp')).timeout(const Duration(seconds:12))]);
     if(responses.any((r)=>r.statusCode!=200))throw Exception('Official data unavailable');
