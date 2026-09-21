@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-09-22T01:58:51.532071+09:00",
+  "updatedAt": "2026-09-22T05:59:27.681350+09:00",
   "items": [
     {
       "disease": "ASF",
@@ -12,7 +12,7 @@
       "summary": "창녕서 경남 첫 아프리카돼지열병 발생…3천900마리 살처분 - 매일경제 마켓",
       "sourceUrl": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1zclV0alRNXzhhWjZ4eDZiSUxPa1hTN2FIeTZJZk9rV3JsRXIteW1oSy1fbm9odmxUVGwyMmh2TmVpT092MURjcVJ4OGcweTE5?oc=5",
       "publishedAt": "Sat, 12 Sep 2026 23:09:27 GMT",
-      "detectedAt": "2026-09-22T01:58:49.016137+09:00",
+      "detectedAt": "2026-09-22T05:59:25.647757+09:00",
       "region": "창녕군",
       "latitude": 35.544,
       "longitude": 128.492
@@ -27,7 +27,7 @@
       "summary": "경북 예천서 구제역 발생…중수본, 긴급방역 조치 - 전업농신문",
       "sourceUrl": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5ZSF9SUGE5NTgxdWFGRWZReng2bTQzdDBiSm5uMUVXNHV0R29UR1NaYXZJc0NOdGNQWmhwcE9LUGlpTDVJei0zem5aMkNtZXM2QXhMazk0Mk5BMkdEUVdxeUJDNk91b3VOSTE2Xw?oc=5",
       "publishedAt": "Mon, 06 Jul 2026 07:00:00 GMT",
-      "detectedAt": "2026-09-22T01:58:49.578823+09:00",
+      "detectedAt": "2026-09-22T05:59:26.149594+09:00",
       "region": "예천군",
       "latitude": 36.657,
       "longitude": 128.452
