@@ -32,8 +32,8 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
-          KAPE_API_KEY: ${{ secrets.KAPE_API_KEY }}
-          KMA_API_KEY: ${{ secrets.KMA_API_KEY }}
+          KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+          KMA_API_KEY: ${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: python scripts/validate_official_apis.py
       - name: Render 360, 390, 412 screenshots
@@ -50,8 +50,8 @@ jobs:
         run: >-
           flutter build apk --release
           --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
-          --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY }}
-          --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY }}
+          --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+          --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - uses: actions/upload-artifact@v4
         if: always()
