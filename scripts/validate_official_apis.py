@@ -4,23 +4,29 @@ import os
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+import time
 from datetime import datetime, timedelta, timezone
 
 KST = timezone(timedelta(hours=9))
 
 def get(name, url, *, json_response=False, xml_response=False):
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "dondonhae-ci/1.0"}), timeout=20) as response:
-            raw = response.read()
-            if response.status != 200:
-                raise RuntimeError(f"HTTP {response.status}")
-        if json_response:
-            return json.loads(raw.decode("utf-8"))
-        if xml_response:
-            return ET.fromstring(raw)
-        return raw
-    except Exception as exc:
-        raise RuntimeError(f"{name} connectivity/parse failed: {type(exc).__name__}") from None
+    last_error = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "dondonhae-ci/1.0"}), timeout=20) as response:
+                raw = response.read()
+                if response.status != 200:
+                    raise RuntimeError(f"HTTP {response.status}")
+            if json_response:
+                return json.loads(raw.decode("utf-8"))
+            if xml_response:
+                return ET.fromstring(raw)
+            return raw
+        except Exception as exc:
+            last_error = exc
+            if attempt < 2:
+                time.sleep(2 ** attempt)
+    raise RuntimeError(f"{name} connectivity/parse failed after retries: {type(last_error).__name__}") from None
 
 def key(name):
     value = os.environ.get(name, "").strip()
