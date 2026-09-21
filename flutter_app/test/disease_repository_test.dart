@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 void main(){
   setUp(()=>SharedPreferences.setMockInitialValues({}));
@@ -17,5 +19,17 @@ void main(){
     expect(feed.items.where((x)=>x.scope=='국외').length,1);
     expect(feed.items.first.region,'예천군');
     expect(feed.items.first.hasMapPoint,isTrue);
+  });
+  testWidgets('실제 대한민국 GeoJSON에 제주 울릉도 독도 좌표가 포함된다',(tester)async{
+    final bytes=await rootBundle.load('assets/data/korea_provinces.geojson.gz');
+    final raw=utf8.decode(gzip.decode(bytes.buffer.asUint8List()));
+    final root=jsonDecode(raw) as Map<String,dynamic>;
+    final features=(root['features'] as List).cast<Map<String,dynamic>>();
+    expect(features.length,17);
+    final names=features.map((x)=>(x['properties'] as Map)['name']).toSet();
+    expect(names,containsAll(['서울특별시','부산광역시','대구광역시','제주특별자치도','경상북도']));
+    final text=raw;
+    expect(text,contains('130.9'));
+    expect(text,contains('131.8'));
   });
 }
