@@ -11,6 +11,8 @@ if permission not in text:
 notification='<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />'
 if notification not in text:
     text=text.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">',f'<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    {notification}')
+if 'android:usesCleartextTraffic="true"' not in text:
+    text=text.replace('<application', '<application android:usesCleartextTraffic="true"')
 manifest.write_text(text,encoding="utf-8")
 
 gradle=root/"android/app/build.gradle"
