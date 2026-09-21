@@ -77,7 +77,9 @@ class _Shape{
       }
     }
     if(geometry['type']=='Polygon')polygon(coordinates);
-    if(geometry['type']=='MultiPolygon')for(final item in coordinates.whereType<List>())polygon(item);
+    if(geometry['type']=='MultiPolygon'){
+      for(final item in coordinates.whereType<List>()){polygon(item);}
+    }
     return _Shape(rings);
   }
 }
@@ -96,17 +98,17 @@ class _MapPainter extends CustomPainter{
   const _MapPainter({required this.shapes,required this.items,required this.userLatitude,required this.userLongitude,required this.projection});
   final List<_Shape> shapes;final List<DiseaseAlert> items;final double? userLatitude,userLongitude;final _Projection projection;
   @override void paint(Canvas canvas,Size size){
-    canvas.drawColor(Colors.white);
+    canvas.drawColor(Colors.white,BlendMode.srcOver);
     final fill=Paint()..color=const Color(0xFFE5E7EB);
     final border=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.1;
     for(final shape in shapes){for(final ring in shape.rings){final first=projection.point(ring.first.dx,ring.first.dy);final path=Path()..moveTo(first.dx,first.dy);for(final coordinate in ring.skip(1)){final p=projection.point(coordinate.dx,coordinate.dy);path.lineTo(p.dx,p.dy);}path.close();canvas.drawPath(path,fill);canvas.drawPath(path,border);}}
     for(final item in items.where((x)=>x.hasMapPoint&&x.isOfficial)){
       final p=projection.point(item.longitude!,item.latitude!);
-      canvas.drawCircle(p,8,Paint()..color=AppColors.coral.withOpacity(.2));
+      canvas.drawCircle(p,8,Paint()..color=AppColors.coral.withValues(alpha:.2));
       canvas.drawCircle(p,4.5,Paint()..color=AppColors.coral);
       canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);
     }
-    if(userLatitude!=null&&userLongitude!=null){final p=projection.point(userLongitude!,userLatitude!);canvas.drawCircle(p,8,Paint()..color=AppColors.blue.withOpacity(.2));canvas.drawCircle(p,4.5,Paint()..color=AppColors.blue);canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);}
+    if(userLatitude!=null&&userLongitude!=null){final p=projection.point(userLongitude!,userLatitude!);canvas.drawCircle(p,8,Paint()..color=AppColors.blue.withValues(alpha:.2));canvas.drawCircle(p,4.5,Paint()..color=AppColors.blue);canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);}
     const label=TextSpan(text:'● 공식 확인   ● 내 위치',style:TextStyle(fontSize:7.5,color:AppColors.secondary));final painter=TextPainter(text:label,textDirection:TextDirection.ltr)..layout();painter.paint(canvas,Offset(size.width-painter.width-8,size.height-painter.height-5));
   }
   @override bool shouldRepaint(covariant _MapPainter old)=>old.items!=items||old.userLatitude!=userLatitude||old.userLongitude!=userLongitude||old.shapes!=shapes;
