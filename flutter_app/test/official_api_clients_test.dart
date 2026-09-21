@@ -27,14 +27,14 @@ void main() {
       {'category': 'TMP', 'fcstValue': '18'}, {'category': 'TMP', 'fcstValue': '27'},
       {'category': 'REH', 'fcstValue': '85'}, {'category': 'POP', 'fcstValue': '40'}
     ]}}}};
-    final client = KmaApiClient(apiKey: 'test', client: MockClient((_) async => http.Response(jsonEncode(body), 200)));
+    final client = KmaApiClient(apiKey: 'test', client: MockClient((_) async => http.Response.bytes(utf8.encode(jsonEncode(body)), 200)));
     final result = await client.forecast(35.87, 128.60);
     expect(result.tempMin, 18); expect(result.tempMax, 27); expect(result.humidityMax, 85);
   });
 
   test('MAFRA 공식 Grid 행을 파싱한다', () async {
     final body = {'Grid_20151204000000000316_1': {'totalCnt': 1, 'RESULT': {'CODE': 'INFO-000'}, 'row': [{'LKNTS_NM': '아프리카돼지열병'}]}};
-    final client = MafraApiClient(apiKey: 'test', client: MockClient((_) async => http.Response(jsonEncode(body), 200)));
+    final client = MafraApiClient(apiKey: 'test', client: MockClient((_) async => http.Response.bytes(utf8.encode(jsonEncode(body)), 200)));
     final result = await client.fetch();
     expect(result.single.pick(['LKNTS_NM']), '아프리카돼지열병');
   });
