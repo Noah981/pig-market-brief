@@ -64,7 +64,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:52.288443+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "제한적",
         "summary": "원/달러 환율은 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -141,7 +141,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:51.694486+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "보통",
         "summary": "국제유가는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -151,12 +151,12 @@
             "detail": "최근 3개 발표 기준 +5.7% 흐름입니다. 단기 하루 변동과 더 긴 방향이 같은지 확인한 결과입니다."
           },
           {
-            "title": "United States on track for record crude oil production in 2026",
+            "title": "Public companies produce most U.S. crude oil and natural gas",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA) 최신 발표입니다. 현재 가격과 시점·방향이 맞는지 추가 확인해야 하며 제목만으로 원인을 확정하지 않습니다."
           },
           {
-            "title": "Elevated crack spreads and crude oil prices contribute to higher prices at the pump",
+            "title": "United States on track for record crude oil production in 2026",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA) 최신 발표입니다. 현재 가격과 시점·방향이 맞는지 추가 확인해야 하며 제목만으로 원인을 확정하지 않습니다."
           }
@@ -164,13 +164,13 @@
         "sources": [
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "United States on track for record crude oil production in 2026",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68125"
+            "label": "Public companies produce most U.S. crude oil and natural gas",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68184"
           },
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Elevated crack spreads and crude oil prices contribute to higher prices at the pump",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68104"
+            "label": "United States on track for record crude oil production in 2026",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68125"
           }
         ]
       }
@@ -239,7 +239,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:51.288245+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "제한적",
         "summary": "옥수수는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -326,7 +326,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:50.852451+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "제한적",
         "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -413,7 +413,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:51.291468+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "제한적",
         "summary": "대두는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -500,7 +500,7 @@
       ],
       "updatedAt": "2026-09-20T04:32:51.690568+09:00",
       "analysis": {
-        "updatedAt": "2026-09-22T18:51:41.556544+09:00",
+        "updatedAt": "2026-09-22T23:40:29.894915+09:00",
         "confidence": "제한적",
         "summary": "소맥는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -525,7 +525,7 @@
     }
   ],
   "benefits": [],
-  "checkedAt": "2026-09-22T18:51:33.053120+09:00",
+  "checkedAt": "2026-09-22T23:40:20.596493+09:00",
   "sourceStatus": [
     {
       "id": "fred-public-series",
