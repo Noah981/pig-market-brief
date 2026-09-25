@@ -3,9 +3,11 @@ import 'package:dondonhae/services/api/ecos_api_client.dart';
 import 'package:dondonhae/services/api/kape_api_client.dart';
 import 'package:dondonhae/services/api/kma_api_client.dart';
 import 'package:dondonhae/services/api/mafra_api_client.dart';
+import 'package:dondonhae/services/api/kamis_api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   test('ECOS 원달러 시계열을 파싱한다', () async {
@@ -37,5 +39,13 @@ void main() {
     final client = MafraApiClient(apiKey: 'test', client: MockClient((_) async => http.Response.bytes(utf8.encode(jsonEncode(body)), 200)));
     final result = await client.fetch();
     expect(result.single.pick(['LKNTS_NM']), '아프리카돼지열병');
+  });
+
+  test('KAMIS 공식 응답을 저장 가능한 형태로 파싱한다',()async{
+    SharedPreferences.setMockInitialValues({});
+    final body={'error_code':'000','data':[{'regday':'2026-09-25','item_name':'쌀'}]};
+    final client=KamisApiClient(apiKey:'test',certId:'tester',client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(body)),200)));
+    final result=await client.fetchLatest();
+    expect((result['data'] as List).single['regday'],'2026-09-25');
   });
 }
