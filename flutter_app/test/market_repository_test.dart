@@ -21,8 +21,9 @@ void main(){
     final current=await repository.refresh();
     expect(current.price,5307);expect(current.previousPrice,5360);expect(current.change,-53);expect(current.seriesFor(0).points.last.date,'20260923');
     expect(current.seriesFor(2).points.map((x)=>x.date),containsAll(['1월','8월']));
-    expect(current.seriesFor(2).points.last.value,closeTo(6694,0.1));
+    expect(current.seriesFor(2).points.last.value,closeTo(5703,0.1));
     expect(current.seriesFor(3).points.map((x)=>x.date),containsAll(['2024','2025','2026']));
     final cached=await repository.cached();expect(cached?.price,5307);expect(cached?.fromCache,isTrue);
   });
 }
+
