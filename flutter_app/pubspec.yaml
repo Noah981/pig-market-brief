@@ -28,6 +28,10 @@ flutter_launcher_icons:
   adaptive_icon_foreground: assets/images/dondonhae_symbol.png
 flutter:
   uses-material-design: true
+  fonts:
+    - family: NotoSansKR
+      fonts:
+        - asset: assets/fonts/NotoSansKR.ttf
   assets:
     - assets/images/pig_hero.jpg
     - assets/data/pig-price.json

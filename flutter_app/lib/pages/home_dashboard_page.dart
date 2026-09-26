@@ -36,8 +36,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   final _gradeRepository=PigGradeRepository();PigGradeSnapshot? _grades;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();}
-  @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);DisplaySettings.instance.addListener(_displayChanged);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();}
+  @override void dispose(){DisplaySettings.instance.removeListener(_displayChanged);FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  void _displayChanged(){if(mounted)setState((){});}
   void _openDiseaseNotification(){if(NotificationService.instance.selectedDiseaseEvent.value!=null&&mounted)setState(()=>_nav=2);}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
   Future<void> _resumeRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}}
@@ -63,10 +64,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
     body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis,onRefresh:_pullToRefresh),const DiseasePage(),TodayCarePage(guide:_weather,onRefresh:_refreshWeather),const MorePage()])),
   );
   Widget _home()=>Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:430),child:RefreshIndicator(color:AppColors.coral,onRefresh:_pullToRefresh,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),key:const PageStorageKey('home'),slivers:[
-    const SliverToBoxAdapter(child:FarmHeroSection()),
-    SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,8,AppSpacing.page,14),sliver:SliverList.list(children:[
+    SliverToBoxAdapter(child:FarmHeroSection()),
+    SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,0,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
-      SizedBox(height:DisplaySettings.instance.largeTextMode?310:DisplaySettings.instance.textScale>=1.3?255:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openPigPrice)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
+      SizedBox(height:DisplaySettings.instance.largeTextMode?310:DisplaySettings.instance.textScale>=1.3?255:205,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:_analysis,onTap:_openMarketDrivers)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
       const SizedBox(height:10),
       HomeGradeAuctionCard(snapshot:_grades,onTap:_openPigPrice),
       const SizedBox(height:10),
@@ -75,5 +76,6 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
     ]))
   ]))));
   void _openPigPrice()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:_market,analysis:_analysis)));
+  void _openMarketDrivers()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>MarketDriverDetailPage(analysis:_analysis)));
   void _openCommodity(Commodity item)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item)));
 }

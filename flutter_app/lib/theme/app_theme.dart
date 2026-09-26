@@ -25,7 +25,9 @@ abstract final class AppTheme {
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.background,
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.coral),
+        fontFamily: 'NotoSansKR',
         textTheme: Typography.material2021(platform: TargetPlatform.android).black.apply(
+          fontFamily: 'NotoSansKR',
           bodyColor: AppColors.text,
           displayColor: AppColors.text,
         ),
