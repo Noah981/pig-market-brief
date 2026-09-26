@@ -71,7 +71,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-disease-final-release.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-market-final-release.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-disease-final --cleanup-tag --yes || true
-          gh release create dondonhae-disease-final dondonhae-disease-final-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 질병 WORK 최종" --notes "공식 질병 데이터 정규화, 최근 30일, 정밀 GPS, 10·30·50km 방역 LEVEL, 신규 공식 발생 중복방지 알림을 적용한 검증 빌드입니다."
+          gh release delete dondonhae-market-final --cleanup-tag --yes || true
+          gh release create dondonhae-market-final dondonhae-market-final-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 시황 WORK 최종" --notes "실제 전국 돈가·등급별 돈가·옥수수·대두박·환율·WTI, 기간별 차트와 출처 검증형 시장요인을 적용한 빌드입니다."

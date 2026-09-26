@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../theme/app_theme.dart';
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
@@ -64,6 +65,8 @@ class MarketOverviewPage extends StatelessWidget {
     return PageShell(
       title: '시황', subtitle: '지금, 시장의 흐름을 한눈에',
       child: Column(children: [
+        const _MarketPeriodTabs(),
+        const SizedBox(height:10),
         GridView.count(
           crossAxisCount: 2, shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -76,10 +79,7 @@ class MarketOverviewPage extends StatelessWidget {
         const _SectionTitle('시황 요약 (오늘)'),
         ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3)),
         const SizedBox(height:18),
-        const _SectionTitle('국제정세 해석'),
-        const SizedBox(height:7),
-        ...commodities.map((x)=>InkWell(onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:x))),child:Container(margin:const EdgeInsets.only(bottom:8),padding:const EdgeInsets.all(12),decoration:appCard(radius:14),child:Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Icon(x.change==null?Icons.schedule:x.change!>=0?Icons.north_east:Icons.south_east,color:x.change==null?AppColors.secondary:x.change!>=0?AppColors.coral:AppColors.blue,size:19),const SizedBox(width:8),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(x.name.replaceAll('\n',' '),style:const TextStyle(fontSize:11.5,fontWeight:FontWeight.w900)),const SizedBox(height:3),Text(_brief(x),style:const TextStyle(fontSize:9.5,height:1.45,color:AppColors.secondary))])),const Icon(Icons.chevron_right,size:17,color:AppColors.secondary)])))),
-        const Text('자동 해석은 공식 시계열의 방향과 일반적인 영향 변수를 정리한 것으로, 특정 사건이 가격을 움직였다고 단정하지 않습니다.',style:TextStyle(fontSize:8.5,height:1.4,color:AppColors.secondary)),
+        _MarketRecentTrend(snapshot:snapshot,commodities:commodities),
       ]),
     );
   }
@@ -88,14 +88,13 @@ class MarketOverviewPage extends StatelessWidget {
   Commodity? _find(String id){for(final item in commodities){if(item.id==id)return item;}return null;}
   Widget _commodityTile(String emoji,String id,BuildContext context,{bool wide=false}){final item=_find(id);final label={'corn':'옥수수','soybean_meal':'대두박','usd_krw':'달러 환율','wti':'국제 유가 (WTI)'}[id]!;return _MarketTile(emoji,label,item?.value??'연결 대기',item?.unit??'',item?.change==null?'공식 데이터 확인 중':'${item!.change!>=0?'▲':'▼'} ${item.change!.abs().toStringAsFixed(1)}%',(item?.change??0)>=0,wide:wide,onTap:item==null?null:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));}
   void _openPig(BuildContext context)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:snapshot,analysis:analysis)));
-  String _brief(Commodity x){
-    if(x.change==null)return '공식 발표값을 확인하고 있습니다.';
-    final direction=x.change!>=0?'상승':'하락';
-    if(x.id=='usd_krw')return '원/달러 환율이 직전 발표 대비 $direction했습니다. 수입 곡물의 원화 환산비용과 함께 확인하세요.';
-    if(x.id=='wti')return 'WTI가 직전 발표 대비 $direction했습니다. 운송비·에너지비 영향과 EIA 재고, 산유국 공급을 함께 봅니다.';
-    return '${x.frequency=='monthly'?'전월':'직전 발표'} 대비 $direction했습니다. 작황·재고·수출입, 환율과 해상운임을 함께 확인하세요.';
-  }
 }
+
+class _MarketPeriodTabs extends StatefulWidget{const _MarketPeriodTabs();@override State<_MarketPeriodTabs> createState()=>_MarketPeriodTabsState();}
+class _MarketPeriodTabsState extends State<_MarketPeriodTabs>{int selected=0;@override Widget build(BuildContext context)=>Container(height:38,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:const Color(0xFFF1F2F5),borderRadius:BorderRadius.circular(12)),child:Row(children:List.generate(4,(i)=>Expanded(child:InkWell(onTap:()=>setState(()=>selected=i),child:Container(alignment:Alignment.center,decoration:BoxDecoration(color:selected==i?AppColors.coral:Colors.transparent,borderRadius:BorderRadius.circular(9)),child:Text(const ['오늘','주간','월간','3년 비교'][i],style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:selected==i?Colors.white:AppColors.secondary))))))));}
+
+class _MarketRecentTrend extends StatefulWidget{const _MarketRecentTrend({this.snapshot,required this.commodities});final MarketSnapshot? snapshot;final List<Commodity> commodities;@override State<_MarketRecentTrend> createState()=>_MarketRecentTrendState();}
+class _MarketRecentTrendState extends State<_MarketRecentTrend>{String selected='pig';@override Widget build(BuildContext context){final choices=[('pig','전국 돈가'),('corn','옥수수'),('soybean_meal','대두박'),('wti','WTI'),('usd_krw','환율')];final points=selected=='pig'?(widget.snapshot?.history.where((x)=>x.resolution!='month').map((x)=>(x.date,x.value)).toList()??[]):(widget.commodities.where((x)=>x.id==selected).firstOrNull?.history.map((x)=>(x.date,x.value)).toList()??[]);final data=points.length>7?points.sublist(points.length-7):points;return Column(crossAxisAlignment:CrossAxisAlignment.start,children:[const _SectionTitle('최근 7일 추이'),const SizedBox(height:7),SingleChildScrollView(scrollDirection:Axis.horizontal,child:Row(children:choices.map((x)=>Padding(padding:const EdgeInsets.only(right:5),child:ChoiceChip(label:Text(x.$2),selected:selected==x.$1,onSelected:(_)=>setState(()=>selected=x.$1),selectedColor:AppColors.coral,labelStyle:TextStyle(fontSize:8,color:selected==x.$1?Colors.white:AppColors.secondary)))).toList())),const SizedBox(height:8),Container(height:150,padding:const EdgeInsets.fromLTRB(8,14,8,6),decoration:appCard(radius:16),child:data.length<2?const Center(child:Text('해당 기간의 실제 데이터가 없습니다.',style:TextStyle(fontSize:9,color:AppColors.secondary))):LineChart(LineChartData(borderData:FlBorderData(show:false),gridData:FlGridData(show:true,drawVerticalLine:false,getDrawingHorizontalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:1)),titlesData:const FlTitlesData(topTitles:AxisTitles(),rightTitles:AxisTitles(),leftTitles:AxisTitles(),bottomTitles:AxisTitles()),lineTouchData:const LineTouchData(enabled:true),lineBarsData:[LineChartBarData(spots:List.generate(data.length,(i)=>FlSpot(i.toDouble(),data[i].$2)),color:AppColors.coral,barWidth:2.5,isCurved:true,dotData:const FlDotData(show:true),belowBarData:BarAreaData(show:true,color:AppColors.lightCoral.withValues(alpha:.45)))])))]);}}
 
 class _MarketTile extends StatelessWidget {
   const _MarketTile(this.emoji, this.name, this.value, this.unit, this.change, this.up, {this.wide = false,this.onTap});

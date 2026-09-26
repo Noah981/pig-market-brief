@@ -3,14 +3,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/market_repository.dart';
+import '../data/pig_grade_repository.dart';
 import '../models/dashboard_models.dart';
 import '../theme/app_theme.dart';
+import '../widgets/price_line_chart.dart';
 
-class PigPriceDetailPage extends StatelessWidget {
+class PigPriceDetailPage extends StatefulWidget {
   const PigPriceDetailPage({super.key, required this.snapshot, required this.analysis});
   final MarketSnapshot? snapshot;
   final MarketAnalysis? analysis;
+  @override State<PigPriceDetailPage> createState()=>_PigPriceDetailPageState();
+}
 
+class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
+  int period=0;PigGradeSnapshot? grades;String? gradeError;
+  MarketSnapshot? get snapshot=>widget.snapshot;MarketAnalysis? get analysis=>widget.analysis;
+  @override void initState(){super.initState();_loadGrades();}
+  Future<void> _loadGrades()async{final repo=PigGradeRepository();final cached=await repo.cached();if(mounted&&cached!=null)setState(()=>grades=cached);if(snapshot==null)return;try{final value=await repo.refresh(snapshot!.date);if(mounted)setState((){grades=value;gradeError=null;});}catch(_){if(mounted)setState(()=>gradeError='공식 등급별 가격을 확인할 수 없습니다.');}}
   @override
   Widget build(BuildContext context) => _DetailScaffold(
         title: '전국 돈가 상세',
@@ -21,8 +30,12 @@ class PigPriceDetailPage extends StatelessWidget {
             change: snapshot == null ? '' : '${snapshot!.change >= 0 ? '▲' : '▼'} ${_number(snapshot!.change.abs())}원 (${snapshot!.changePct.toStringAsFixed(2)}%)',
             up: (snapshot?.change ?? 0) >= 0,
           ),
+          const SizedBox(height:12),
+          _PeriodTabs(labels:const ['7일','1개월','1년','3년'],selected:period,onChanged:(i)=>setState(()=>period=i)),
+          const SizedBox(height:8),
+          if(snapshot!=null)Container(padding:const EdgeInsets.all(10),decoration:appCard(radius:16),child:PriceLineChart(series:snapshot!.seriesFor([0,0,3,2][period]))),
           const SizedBox(height: 16),
-          const Text('왜 움직였나요?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+          const Text('오늘 가격이 움직인 주요 요인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
           const SizedBox(height: 8),
           if (analysis == null || analysis!.factors.isEmpty)
             const _InfoBox('공식 가격과 수급 자료를 확인하고 있습니다.')
@@ -31,6 +44,11 @@ class PigPriceDetailPage extends StatelessWidget {
             const SizedBox(height: 10),
             ...analysis!.factors.map((x) => _FactorTile(x)),
           ],
+          const SizedBox(height:16),
+          const Text('등급별 경락가격',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),
+          const SizedBox(height:8),
+          if(grades==null||grades!.grades.isEmpty)_InfoBox(gradeError??'축산물품질평가원 등급별 가격을 확인하고 있습니다.')
+          else Container(padding:const EdgeInsets.all(12),decoration:appCard(radius:16),child:Column(children:grades!.grades.map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:7),child:Row(children:[SizedBox(width:42,child:Text(x.grade,style:const TextStyle(fontWeight:FontWeight.w900))),Expanded(child:LinearProgressIndicator(value:(x.price/10000).clamp(0,1),color:AppColors.coral,backgroundColor:AppColors.lightBlue)),const SizedBox(width:10),Text('${_number(x.price)}원/kg',style:const TextStyle(fontSize:11,fontWeight:FontWeight.w900))]))).toList())),
           const SizedBox(height: 12),
           _InfoBox(snapshot == null
               ? '출처: 축산물품질평가원 축산유통정보 다봄'
@@ -64,15 +82,14 @@ class CommodityDetailPage extends StatelessWidget {
         ),
         if (item.history.length >= 2) ...[
           const SizedBox(height: 14),
-          _CommodityChart(points: item.history),
+          _PeriodCommodityChart(points: item.history),
         ],
         const SizedBox(height: 16),
-        const Text('왜 오르내리나요?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+        const Text('가격 움직임 주요 요인', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
         const SizedBox(height: 5),
         Text(item.analysisSummary.isEmpty?'가격·최근 추세·공식기관 발표를 함께 확인합니다. 직접 인과관계가 확인되지 않으면 원인으로 단정하지 않습니다.':item.analysisSummary,style:const TextStyle(fontSize:11,height:1.5,color:AppColors.secondary)),
         const SizedBox(height: 10),
-        _FactorTile(MarketFactor('현재 변동 확인', '확인', item.change==null?'공식 발표값을 기다리고 있습니다.':'직전 공식 발표 대비 ${item.change!>=0?'상승':'하락'}했습니다. 아래 항목은 함께 확인할 변수이며 단일 원인으로 단정하지 않습니다.')),
-        if(drivers.isEmpty)..._drivers(item.id).map((x)=>_FactorTile(MarketFactor(x.$1,'분석 변수',x.$2))) else ...drivers.map(_FactorTile.new),
+        if(drivers.isEmpty)const _InfoBox('확인 가능한 출처와 기준일을 가진 주요 요인 데이터가 부족합니다.') else ...drivers.map(_FactorTile.new),
         if(item.analysisConfidence.isNotEmpty)_InfoBox('자동 분석 신뢰도: ${item.analysisConfidence}\n분석 시점: ${item.analysisUpdatedAt}\n공식 시계열과 공식기관 발표 제목을 이용한 자동 요약이며, 직접 인과관계를 확정하지 않습니다.'),
         const SizedBox(height: 12),
         _InfoBox(item.source.isEmpty
@@ -84,40 +101,17 @@ class CommodityDetailPage extends StatelessWidget {
     );
   }
 
-  List<(String, String)> _drivers(String id) {
-    switch (id) {
-      case 'corn':
-      case 'soybean_meal':
-      case 'soybean':
-      case 'wheat':
-        return const [
-          ('미국 선물시장', 'CBOT 선물가격과 거래 흐름을 확인합니다.'),
-          ('작황과 공급', 'USDA 작황·재고·수출입 전망과 주요 산지 날씨를 확인합니다.'),
-          ('원/달러 환율', '수입 원료의 원화 환산 비용에 영향을 줍니다.'),
-          ('운임과 에너지', '해상운임과 유가 변화가 국내 도입 비용에 반영될 수 있습니다.'),
-        ];
-      case 'wti':
-        return const [
-          ('원유 재고', '미국 EIA 원유·휘발유 재고 변화를 확인합니다.'),
-          ('산유국 공급', 'OPEC+ 감산·증산 발표와 실제 생산량을 확인합니다.'),
-          ('지정학 상황', '주요 산유국과 수송로의 공급 차질 가능성을 확인합니다.'),
-          ('세계 수요', '경기와 석유 수요 전망 변화를 함께 봅니다.'),
-        ];
-      default:
-        return const [
-          ('한국·미국 금리', '한국은행과 미국 연준의 기준금리 및 전망 차이를 확인합니다.'),
-          ('달러 강도', '주요 통화 대비 달러 흐름을 확인합니다.'),
-          ('무역과 위험선호', '수출입, 외국인 자금 흐름과 국제 금융시장 변동을 확인합니다.'),
-          ('공식 고시환율', '공식 기준시점과 적용 환율 종류를 확인합니다.'),
-        ];
-    }
-  }
 }
 
 class _SourceButton extends StatelessWidget{
   const _SourceButton({required this.source});final MarketSource source;
   @override Widget build(BuildContext context)=>Padding(padding:const EdgeInsets.only(bottom:7),child:OutlinedButton.icon(onPressed:()async{final uri=Uri.tryParse(source.url);if(uri!=null)await launchUrl(uri,mode:LaunchMode.externalApplication);},icon:const Icon(Icons.open_in_new,size:16),label:Align(alignment:Alignment.centerLeft,child:Text('${source.name} · ${source.label}',maxLines:2)),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(46),foregroundColor:AppColors.coral,side:const BorderSide(color:AppColors.divider))));
 }
+
+class _PeriodTabs extends StatelessWidget{const _PeriodTabs({required this.labels,required this.selected,required this.onChanged});final List<String> labels;final int selected;final ValueChanged<int> onChanged;@override Widget build(BuildContext context)=>Container(height:38,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:const Color(0xFFF1F2F5),borderRadius:BorderRadius.circular(11)),child:Row(children:List.generate(labels.length,(i)=>Expanded(child:InkWell(onTap:()=>onChanged(i),child:Container(alignment:Alignment.center,decoration:BoxDecoration(color:selected==i?AppColors.coral:Colors.transparent,borderRadius:BorderRadius.circular(8)),child:Text(labels[i],style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:selected==i?Colors.white:AppColors.secondary))))))));}
+
+class _PeriodCommodityChart extends StatefulWidget{const _PeriodCommodityChart({required this.points});final List<CommodityPoint> points;@override State<_PeriodCommodityChart> createState()=>_PeriodCommodityChartState();}
+class _PeriodCommodityChartState extends State<_PeriodCommodityChart>{int selected=0;@override Widget build(BuildContext context){final limits=[7,30,90,365],take=limits[selected],points=widget.points.length>take?widget.points.sublist(widget.points.length-take):widget.points;return Column(children:[_PeriodTabs(labels:const ['7일','1개월','3개월','1년'],selected:selected,onChanged:(i)=>setState(()=>selected=i)),const SizedBox(height:8),_CommodityChart(points:points)]);}}
 
 class _CommodityChart extends StatelessWidget {
   const _CommodityChart({required this.points});
