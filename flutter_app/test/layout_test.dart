@@ -5,8 +5,8 @@ import 'package:dondonhae/pages/market_detail_pages.dart';
 import 'package:dondonhae/pages/today_care_page.dart';
 import 'package:dondonhae/pages/disease_page.dart';
 import 'package:dondonhae/data/market_repository.dart';
-import 'package:dondonhae/data/commodity_repository.dart';
 import 'package:dondonhae/data/weather_farm_repository.dart';
+import 'package:dondonhae/models/dashboard_models.dart';
 import 'package:dondonhae/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,6 +32,10 @@ Future<void> renderPage(WidgetTester tester, Widget page, String name) async {
   await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/$name.png'));
 }
 
+MarketSnapshot fixtureMarket()=>MarketSnapshot(price:5307,previousPrice:5360,change:-53,changePct:-.99,date:'20260923',updatedAt:'2026-09-26T19:10:00+09:00',source:'축산물품질평가원',scope:'전국·탕박·등외제외·제주제외',fromCache:true,history:const [PricePoint('20260917',6400),PricePoint('20260918',6200),PricePoint('20260919',6000),PricePoint('20260920',6300),PricePoint('20260921',6200),PricePoint('20260922',5360),PricePoint('20260923',5307)]);
+
+Commodity fixtureCommodity(String id){final data=switch(id){'corn'=>('옥수수',213.19,r'$/톤',8.9),'soybean_meal'=>('대두박',329.43,r'$/톤',11.2),'usd_krw'=>('달러 환율',1360.0,'원/USD',-1.8),_=>('국제 유가 (WTI)',107.02,r'$/bbl',4.5)};return Commodity(data.$1,data.$2.toString(),data.$3,data.$4,Icons.show_chart,id:id,source:'공식 데이터 테스트 Fixture',asOf:'2026-09-26',frequency:'daily',basis:'화면 렌더 검증 전용',history:List.generate(7,(i)=>CommodityPoint('2026-09-${(20+i).toString().padLeft(2,'0')}',data.$2*(.94+i*.01))));}
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
@@ -53,11 +57,11 @@ void main() {
   testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');
   });
-  testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{final market=await MarketRepository().cached();expect(market,isNotNull);await renderPage(tester,PigPriceDetailPage(snapshot:market,analysis:null,loadGrades:false),'pig_detail_390');});
+  testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,PigPriceDetailPage(snapshot:fixtureMarket(),analysis:null,loadGrades:false),'pig_detail_390');});
   for(final id in const ['corn','soybean_meal','usd_krw','wti']){
-    testWidgets('$id 상세 390dp 시안 비교 이미지',(tester)async{final items=await CommodityRepository().cached();await renderPage(tester,CommodityDetailPage(item:items.firstWhere((x)=>x.id==id)),'${id}_detail_390');});
+    testWidgets('$id 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,CommodityDetailPage(item:fixtureCommodity(id)),'${id}_detail_390');});
   }
-  testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{final market=await MarketRepository().cached();expect(market,isNotNull);await renderPage(tester,ThreeYearPigPricePage(snapshot:market!),'three_year_390');});
+  testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:fixtureMarket()),'three_year_390');});
   testWidgets('가짜 0값 없이 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -108,8 +112,8 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    final commodityCard = find.text('옥수수').first;
-    await tester.scrollUntilVisible(commodityCard,300,scrollable:find.byType(Scrollable).first);
+    final commodityCard = find.byKey(const ValueKey('market_corn'));
+    await tester.ensureVisible(commodityCard);
     await tester.pumpAndSettle();
     await tester.tap(commodityCard);
     await tester.pumpAndSettle();
