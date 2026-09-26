@@ -138,9 +138,13 @@ void main() {
   testWidgets('설정에서 글자 크기를 변경하고 저장한다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull,reason:'initial app');
     await tester.tap(find.byKey(const ValueKey('nav_4')));await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull,reason:'more page');
     await tester.tap(find.text('글자 크기'));await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull,reason:'text size sheet');
     await tester.tap(find.text('크게'));await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull,reason:'scale change');
     expect(DisplaySettings.instance.textScale,1.15);
     expect((await SharedPreferences.getInstance()).getDouble('display_text_scale'),1.15);
     await DisplaySettings.instance.setTextScale(1);
