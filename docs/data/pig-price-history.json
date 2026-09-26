@@ -1,12 +1,7 @@
 {
-  "source": "축산물품질평가원",
-  "scope": "생산자 돼지 경락가격·전국·탕박·등외제외·제주제외",
-  "formulaVersion": "kape-dabom-published-v1",
-  "coverage": {
-    "from": "20230901",
-    "to": "20260918",
-    "minimumMonths": 36
-  },
+  "source": "축산물품질평가원 축산유통정보 다봄",
+  "scope": "전국·탕박·등외제외·제주제외",
+  "formulaVersion": "dabom-headline-v1-no-recalculation",
   "rows": [
     {
       "date": "20230901",
@@ -387,6 +382,17 @@
       "date": "20260918",
       "price": 6442,
       "count": null
+    },
+    {
+      "date": "20260922",
+      "price": 5360,
+      "count": null,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20260923",
+      "price": 5307,
+      "sourceType": "dabom-headline"
     }
   ]
 }
