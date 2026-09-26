@@ -41,9 +41,9 @@ Future<void> renderPage(WidgetTester tester, Widget page, String name) async {
   await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/$name.png'));
 }
 
-MarketSnapshot fixtureMarket()=>MarketSnapshot(price:5307,previousPrice:5360,change:-53,changePct:-.99,date:'20260923',updatedAt:'2026-09-26T19:10:00+09:00',source:'축산물품질평가원',scope:'전국·탕박·등외제외·제주제외',fromCache:true,history:const [PricePoint('20260917',6400),PricePoint('20260918',6200),PricePoint('20260919',6000),PricePoint('20260920',6300),PricePoint('20260921',6200),PricePoint('20260922',5360),PricePoint('20260923',5307)]);
+MarketSnapshot actualMarketFixture(){final price=(jsonDecode(File('../docs/data/pig-price.json').readAsStringSync()) as Map).cast<String,dynamic>();final source=(jsonDecode(File('../docs/data/pig-price-history.json').readAsStringSync()) as Map).cast<String,dynamic>();final rows=(source['rows'] as List).whereType<Map<String,dynamic>>().map((x)=>PricePoint(x['date'].toString(),(x['price'] as num).toDouble(),resolution:x['resolution']?.toString()??'day')).toList();return MarketSnapshot.fromJson(price,fromCache:true,history:rows);}
 
-Commodity fixtureCommodity(String id){final data=switch(id){'corn'=>('옥수수',213.19,r'$/톤',8.9),'soybean_meal'=>('대두박',329.43,r'$/톤',11.2),'usd_krw'=>('달러 환율',1360.0,'원/USD',-1.8),_=>('국제 유가 (WTI)',107.02,r'$/bbl',4.5)};return Commodity(data.$1,data.$2.toString(),data.$3,data.$4,Icons.show_chart,id:id,source:'공식 데이터 테스트 Fixture',asOf:'2026-09-26',frequency:'daily',basis:'화면 렌더 검증 전용',history:List.generate(7,(i)=>CommodityPoint('2026-09-${(20+i).toString().padLeft(2,'0')}',data.$2*(.94+i*.01))));}
+Commodity actualCommodity(String id){final platform=(jsonDecode(File('../docs/data/platform.json').readAsStringSync()) as Map).cast<String,dynamic>();final row=(platform['markets'] as List).whereType<Map<String,dynamic>>().firstWhere((x)=>x['name']==id);final names={'corn':'옥수수','soybean_meal':'대두박','usd_krw':'달러 환율','wti':'국제 유가 (WTI)'};final value=(row['value'] as num).toDouble();return Commodity(names[id]!,value.toStringAsFixed(value>=1000?1:2),row['unit'].toString(),(row['changePct'] as num?)?.toDouble(),Icons.show_chart,id:id,source:row['source']?.toString()??'',asOf:row['date']?.toString()??'',frequency:row['frequency']?.toString()??'',basis:row['basis']?.toString()??'',history:(row['history'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>CommodityPoint(x['date'].toString(),(x['value'] as num).toDouble())).toList());}
 PigGradeSnapshot fixtureGrades()=>PigGradeSnapshot(date:'20260926',fromCache:true,grades:const [KapeGradePrice(grade:'1+',price:5880,count:4300,date:'20260926'),KapeGradePrice(grade:'1',price:5600,count:6100,date:'20260926'),KapeGradePrice(grade:'2',price:5180,count:3900,date:'20260926'),KapeGradePrice(grade:'등외',price:4280,count:400,date:'20260926')],history:const [KapeGradePrice(grade:'1+',price:5800,count:4200,date:'20260925'),KapeGradePrice(grade:'1+',price:5880,count:4300,date:'20260926'),KapeGradePrice(grade:'1',price:5520,count:6000,date:'20260925'),KapeGradePrice(grade:'1',price:5600,count:6100,date:'20260926'),KapeGradePrice(grade:'2',price:5200,count:3800,date:'20260925'),KapeGradePrice(grade:'2',price:5180,count:3900,date:'20260926'),KapeGradePrice(grade:'등외',price:4300,count:410,date:'20260925'),KapeGradePrice(grade:'등외',price:4280,count:400,date:'20260926')]);
 const fixtureAnalysis=MarketAnalysis(summary:'공식 경락·공급 지표를 함께 확인한 결과입니다.',updatedAt:'2026-09-26',factors:[MarketFactor('경락두수 변화','확인','전 거래일 공식 경락두수와 비교합니다.',source:'축산물품질평가원',sourceDate:'2026-09-26')],sources:[MarketSource('축산물품질평가원','공식 축산유통정보','https://www.ekapepia.com')]);
 const fixtureDisease=DiseaseAlert(id:'visual-fmd',type:DiseaseType.fmd,source:'농림축산검역본부',countryCode:'KR',evidence:DiseaseEvidence.official,status:'발생',summary:'충청남도 보령시 천북면 공식 발생',sourceUrl:'https://www.mafra.go.kr',occurrenceDate:'2026-09-26',province:'충청남도',cityCounty:'보령시',town:'천북면',latitude:36.45,longitude:126.58);
@@ -86,14 +86,22 @@ void main() {
   testWidgets('질병 전체 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseasePage(),'disease_390');
   });
+  testWidgets('질병 선택 필터 390dp 시안 비교 이미지',(tester)async{
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:const DiseasePage()));
+    await tester.pump(const Duration(milliseconds:800));
+    await tester.tap(find.text('구제역').first);await tester.pumpAndSettle();
+    expect(find.text('구제역만 보기 ▼'),findsOneWidget);expect(tester.takeException(),isNull);
+    await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/disease_filter_390.png'));
+  });
   testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');
   });
-  testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,PigPriceDetailPage(snapshot:fixtureMarket(),analysis:null,loadGrades:false),'pig_detail_390');});
+  testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,PigPriceDetailPage(snapshot:actualMarketFixture(),analysis:null,loadGrades:false),'pig_detail_390');});
   for(final id in const ['corn','soybean_meal','usd_krw','wti']){
-    testWidgets('$id 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,CommodityDetailPage(item:fixtureCommodity(id)),'${id}_detail_390');});
+    testWidgets('$id 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,CommodityDetailPage(item:actualCommodity(id)),'${id}_detail_390');});
   }
-  testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:fixtureMarket()),'three_year_390');});
+  testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:actualMarketFixture()),'three_year_390');});
   testWidgets('가격 요인 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const MarketDriverDetailPage(analysis:fixtureAnalysis),'driver_detail_390');});
   testWidgets('등급별 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,GradePriceTrendPage(snapshot:fixtureGrades()),'grade_detail_390');});
   testWidgets('질병 발생 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const DiseaseEventDetailPage(event:fixtureDisease,distanceKm:8.4,userLatitude:36.52,userLongitude:127.0),'disease_detail_390');});
@@ -130,7 +138,15 @@ void main() {
     expect(find.text('약품·예방 정보'),findsOneWidget);
     expect(find.text('9월에 주의할 질환군'),findsOneWidget);
     expect(find.textContaining('PRRS'),findsWidgets);
+    final risk=find.text('호흡기 질환 관찰');await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();
+    expect(find.text('건강 신호 상세'),findsOneWidget);
     expect(tester.takeException(),isNull);
+  });
+  testWidgets('홈 가격 변동 카드가 근거 상세로 이동한다',(tester)async{
+    tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();await tester.pump(const Duration(milliseconds:800));
+    await tester.tap(find.text('돈가 변동 이유'));await tester.pumpAndSettle();
+    expect(find.text('가격 요인 상세'),findsOneWidget);expect(tester.takeException(),isNull);
   });
   testWidgets('돈가와 원료 카드가 상세 화면으로 이동한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
