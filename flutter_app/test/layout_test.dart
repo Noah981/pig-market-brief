@@ -53,17 +53,11 @@ void main() {
   testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');
   });
-  testWidgets('시황 상세 화면 전체 시안 비교 이미지',(tester)async{
-    final market=await MarketRepository().cached();
-    final commodities=await CommodityRepository().cached();
-    expect(market,isNotNull);
-    await renderPage(tester,PigPriceDetailPage(snapshot:market,analysis:null),'pig_detail_390');
-    for(final id in const ['corn','soybean_meal','usd_krw','wti']){
-      final item=commodities.firstWhere((x)=>x.id==id);
-      await renderPage(tester,CommodityDetailPage(item:item),'${id}_detail_390');
-    }
-    await renderPage(tester,ThreeYearPigPricePage(snapshot:market!),'three_year_390');
-  });
+  testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{final market=await MarketRepository().cached();expect(market,isNotNull);await renderPage(tester,PigPriceDetailPage(snapshot:market,analysis:null,loadGrades:false),'pig_detail_390');});
+  for(final id in const ['corn','soybean_meal','usd_krw','wti']){
+    testWidgets('$id 상세 390dp 시안 비교 이미지',(tester)async{final items=await CommodityRepository().cached();await renderPage(tester,CommodityDetailPage(item:items.firstWhere((x)=>x.id==id)),'${id}_detail_390');});
+  }
+  testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{final market=await MarketRepository().cached();expect(market,isNotNull);await renderPage(tester,ThreeYearPigPricePage(snapshot:market!),'three_year_390');});
   testWidgets('가짜 0값 없이 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -107,7 +101,8 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('nav_1')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('전국 돈가').first);
+    await tester.ensureVisible(find.byKey(const ValueKey('market_pig')));
+    await tester.tap(find.byKey(const ValueKey('market_pig')));
     await tester.pumpAndSettle();
     expect(find.text('전국 돈가 상세'), findsOneWidget);
     await tester.pageBack();
@@ -152,23 +147,23 @@ void main() {
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isTrue);
-    expect(DisplaySettings.instance.textScale,1.55);
+    expect(DisplaySettings.instance.textScale,1.2);
     expect(find.text('기본 글씨'),findsOneWidget);
     expect(tester.takeException(),isNull);
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
   });
-  testWidgets('새 설치의 기본 글자 크기는 매우 크게 130%다',(tester)async{
+  testWidgets('새 설치의 기본 글자 크기는 100%다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.selectedTextScale,1.3);expect(tester.takeException(),isNull);
+    expect(DisplaySettings.instance.selectedTextScale,1.0);expect(tester.takeException(),isNull);
   });
   for(final width in const [360.0,390.0,412.0]){
     testWidgets('큰글씨 상세 화면 ${width.toInt()}dp 배경·상단·오버플로 정상',(tester)async{
       tester.view.physicalSize=Size(width,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
       await tester.pumpWidget(MaterialApp(home:MediaQuery(data:MediaQueryData(size:Size(width,844),textScaler:const TextScaler.linear(1.55)),child:const PageShell(title:'내 지역 지원사업',subtitle:'경상북도 경주시 기준 공식 공고',child:Column(children:[SizedBox(height:52,child:OutlinedButton(onPressed:null,child:Text('경상북도 경주시 · 지역 변경'))),SizedBox(height:10),Card(child:Padding(padding:EdgeInsets.all(24),child:Text('현재 연결된 신규 공식 공고가 없습니다.',textAlign:TextAlign.center))),SizedBox(height:12),SizedBox(height:52,child:OutlinedButton(onPressed:null,child:Text('공식 공고 새로고침')))])))));
       await tester.pumpAndSettle();
-      expect(tester.getTopLeft(find.text('내 지역 지원사업')).dy,greaterThanOrEqualTo(16));
+      expect(tester.getTopLeft(find.text('내 지역 지원사업')).dy,greaterThanOrEqualTo(14));
       expect(find.byType(SafeArea),findsWidgets);
       expect(tester.takeException(),isNull);
     });

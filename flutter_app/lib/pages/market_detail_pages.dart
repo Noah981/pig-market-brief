@@ -9,16 +9,17 @@ import '../theme/app_theme.dart';
 import '../widgets/price_line_chart.dart';
 
 class PigPriceDetailPage extends StatefulWidget {
-  const PigPriceDetailPage({super.key, required this.snapshot, required this.analysis});
+  const PigPriceDetailPage({super.key, required this.snapshot, required this.analysis,this.loadGrades=true});
   final MarketSnapshot? snapshot;
   final MarketAnalysis? analysis;
+  final bool loadGrades;
   @override State<PigPriceDetailPage> createState()=>_PigPriceDetailPageState();
 }
 
 class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
   int period=0;PigGradeSnapshot? grades;String? gradeError;
   MarketSnapshot? get snapshot=>widget.snapshot;MarketAnalysis? get analysis=>widget.analysis;
-  @override void initState(){super.initState();_loadGrades();}
+  @override void initState(){super.initState();if(widget.loadGrades)_loadGrades();}
   Future<void> _loadGrades()async{final repo=PigGradeRepository();final cached=await repo.cached();if(mounted&&cached!=null)setState(()=>grades=cached);if(snapshot==null)return;try{final value=await repo.refresh(snapshot!.date);if(mounted)setState((){grades=value;gradeError=null;});}catch(_){if(mounted)setState(()=>gradeError='공식 등급별 가격을 확인할 수 없습니다.');}}
   @override
   Widget build(BuildContext context) => _DetailScaffold(
