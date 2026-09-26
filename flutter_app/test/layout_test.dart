@@ -21,6 +21,7 @@ Future<void> renderAt(WidgetTester tester, double width, String name) async {
   addTearDown(tester.view.reset);
   await tester.pumpWidget(const DondonhaeApp());
   await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds:800));
   expect(tester.takeException(), isNull);
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/home_$name.png'));
 }
@@ -43,6 +44,14 @@ void main() {
   setUpAll(() async {
     final bytes=await File('assets/fonts/NotoSansKR.ttf').readAsBytes();
     await (FontLoader('NotoSansKR')..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+    final flutterRoot=Platform.environment['FLUTTER_ROOT'];
+    if(flutterRoot!=null){
+      final iconFile=File('$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
+      if(await iconFile.exists()){
+        final iconBytes=await iconFile.readAsBytes();
+        await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(iconBytes)))).load();
+      }
+    }
   });
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
