@@ -28,7 +28,9 @@ void main() {
       '<item><gradeNm>2</gradeNm><avgPrc>5217</avgPrc><totCnt>30</totCnt></item>'
       '<item><gradeNm>등외</gradeNm><avgPrc>4326</avgPrc><totCnt>5</totCnt></item>'
       '</items></body></response>';
-    final client=KapeApiClient(apiKey:'test',client:MockClient((_)async=>http.Response.bytes(utf8.encode(xml),200)));
+    final client=KapeApiClient(apiKey:'test',client:MockClient((_)async=>http.Response.bytes(
+      utf8.encode(xml),200,headers:{'content-type':'application/xml; charset=utf-8'},
+    )));
     final rows=await client.gradePricesFor('20260926');
     expect(rows.map((x)=>x.grade),['1+','1','2','등외']);
     expect(rows.first.price,5892);expect(rows.last.price,4326);
