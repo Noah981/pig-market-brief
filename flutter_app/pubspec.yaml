@@ -1,7 +1,7 @@
 name: dondonhae
 description: 돈돈해 모바일 대시보드
 publish_to: none
-version: 1.5.0+14
+version: 1.6.0+15
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
@@ -11,6 +11,7 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.3.5
   geolocator: ^13.0.2
+  geocoding: ^3.0.0
   url_launcher: ^6.3.1
   flutter_local_notifications: ^18.0.1
   workmanager: ^0.5.2

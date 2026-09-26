@@ -4,6 +4,7 @@ import '../data/disease_repository.dart';
 import '../data/market_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../settings/farm_location_settings.dart';
+import 'disease_notification_coordinator.dart';
 
 class DataRefreshService {
   DataRefreshService._();
@@ -19,7 +20,7 @@ class DataRefreshService {
       _isolated(()async{await MarketRepository().refresh();}),
       _isolated(()async{await CommodityRepository().refresh();}),
       _isolated(()async{await WeatherFarmRepository().refresh(region:FarmLocationSettings.instance.location.province);}),
-      _isolated(()async{await DiseaseRepository().refresh();}),
+      _isolated(()async{final feed=await DiseaseRepository().refresh();await DiseaseNotificationCoordinator.process(feed);}),
     ]);
     await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
     return true;

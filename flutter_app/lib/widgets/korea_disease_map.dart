@@ -9,10 +9,11 @@ import '../models/disease_models.dart';
 import '../theme/app_theme.dart';
 
 class KoreaDiseaseMap extends StatefulWidget {
-  const KoreaDiseaseMap({super.key,required this.items,required this.onTap,this.userLatitude,this.userLongitude});
+  const KoreaDiseaseMap({super.key,required this.items,required this.onTap,this.userLatitude,this.userLongitude,this.showRadii=false,this.focusedEventId});
   final List<DiseaseAlert> items;
   final ValueChanged<DiseaseAlert> onTap;
   final double? userLatitude,userLongitude;
+  final bool showRadii;final String? focusedEventId;
 
   @override State<KoreaDiseaseMap> createState()=>_KoreaDiseaseMapState();
 }
@@ -43,7 +44,7 @@ class _KoreaDiseaseMapState extends State<KoreaDiseaseMap>{
               onTapUp:(detail)=>_tap(detail.localPosition,projection),
               child:CustomPaint(
                 size:box.biggest,
-                painter:_MapPainter(shapes:snapshot.data!,items:widget.items,userLatitude:widget.userLatitude,userLongitude:widget.userLongitude,projection:projection),
+                painter:_MapPainter(shapes:snapshot.data!,items:widget.items,userLatitude:widget.userLatitude,userLongitude:widget.userLongitude,projection:projection,showRadii:widget.showRadii,focusedEventId:widget.focusedEventId),
               ),
             );
           });
@@ -54,7 +55,7 @@ class _KoreaDiseaseMapState extends State<KoreaDiseaseMap>{
 
   void _tap(Offset point,_Projection projection){
     DiseaseAlert? target;var shortest=double.infinity;
-    for(final item in widget.items.where((x)=>x.hasMapPoint&&x.isOfficial)){
+    for(final item in widget.items.where((x)=>x.hasMapPoint)){
       final marker=projection.point(item.longitude!,item.latitude!);
       final distance=(marker-point).distance;
       if(distance<24&&distance<shortest){target=item;shortest=distance;}
@@ -95,21 +96,23 @@ class _Projection{
 }
 
 class _MapPainter extends CustomPainter{
-  const _MapPainter({required this.shapes,required this.items,required this.userLatitude,required this.userLongitude,required this.projection});
-  final List<_Shape> shapes;final List<DiseaseAlert> items;final double? userLatitude,userLongitude;final _Projection projection;
+  const _MapPainter({required this.shapes,required this.items,required this.userLatitude,required this.userLongitude,required this.projection,required this.showRadii,this.focusedEventId});
+  final List<_Shape> shapes;final List<DiseaseAlert> items;final double? userLatitude,userLongitude;final _Projection projection;final bool showRadii;final String? focusedEventId;
   @override void paint(Canvas canvas,Size size){
     canvas.drawColor(Colors.white,BlendMode.srcOver);
     final fill=Paint()..color=const Color(0xFFE5E7EB);
     final border=Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.1;
     for(final shape in shapes){for(final ring in shape.rings){final first=projection.point(ring.first.dx,ring.first.dy);final path=Path()..moveTo(first.dx,first.dy);for(final coordinate in ring.skip(1)){final p=projection.point(coordinate.dx,coordinate.dy);path.lineTo(p.dx,p.dy);}path.close();canvas.drawPath(path,fill);canvas.drawPath(path,border);}}
-    for(final item in items.where((x)=>x.hasMapPoint&&x.isOfficial)){
+    if(showRadii&&userLatitude!=null&&userLongitude!=null){final c=projection.point(userLongitude!,userLatitude!);for(final ring in const [(50.0,Color(0xFFFFD54F)),(30.0,Color(0xFFFF9800)),(10.0,Color(0xFFE53935))]){final edge=projection.point(userLongitude!,userLatitude!+ring.$1/111.0),radius=(edge-c).distance;canvas.drawCircle(c,radius,Paint()..color=ring.$2.withValues(alpha:.10));canvas.drawCircle(c,radius,Paint()..color=ring.$2.withValues(alpha:.65)..style=PaintingStyle.stroke..strokeWidth=.8);}}
+    for(final item in items.where((x)=>x.hasMapPoint)){
       final p=projection.point(item.longitude!,item.latitude!);
-      canvas.drawCircle(p,8,Paint()..color=AppColors.coral.withValues(alpha:.2));
-      canvas.drawCircle(p,4.5,Paint()..color=AppColors.coral);
-      canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);
+      final color=item.isOfficial?AppColors.coral:const Color(0xFFF6A8BD),selected=item.stableKey==focusedEventId;
+      canvas.drawCircle(p,selected?11:8,Paint()..color=color.withValues(alpha:.22));
+      canvas.drawCircle(p,selected?6:4.5,Paint()..color=color);
+      canvas.drawCircle(p,selected?6:4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);
     }
     if(userLatitude!=null&&userLongitude!=null){final p=projection.point(userLongitude!,userLatitude!);canvas.drawCircle(p,8,Paint()..color=AppColors.blue.withValues(alpha:.2));canvas.drawCircle(p,4.5,Paint()..color=AppColors.blue);canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);}
-    const label=TextSpan(text:'● 공식 확인   ● 내 위치',style:TextStyle(fontSize:7.5,color:AppColors.secondary));final painter=TextPainter(text:label,textDirection:TextDirection.ltr)..layout();painter.paint(canvas,Offset(size.width-painter.width-8,size.height-painter.height-5));
+    const label=TextSpan(text:'● 공식 발생   ● 공개정보   ● 내 위치',style:TextStyle(fontSize:7.2,color:AppColors.secondary));final painter=TextPainter(text:label,textDirection:TextDirection.ltr)..layout();painter.paint(canvas,Offset(size.width-painter.width-8,size.height-painter.height-5));
   }
-  @override bool shouldRepaint(covariant _MapPainter old)=>old.items!=items||old.userLatitude!=userLatitude||old.userLongitude!=userLongitude||old.shapes!=shapes;
+  @override bool shouldRepaint(covariant _MapPainter old)=>old.items!=items||old.userLatitude!=userLatitude||old.userLongitude!=userLongitude||old.shapes!=shapes||old.showRadii!=showRadii||old.focusedEventId!=focusedEventId;
 }
