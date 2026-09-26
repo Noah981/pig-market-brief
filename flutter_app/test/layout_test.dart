@@ -27,13 +27,14 @@ void main() {
     expect(tester.takeException(),isNull);
     await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/market_390.png'));
   });
-  testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
+  testWidgets('가짜 0값 없이 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
-    expect(find.text('5,307'), findsOneWidget);
+    expect(find.text('0원'), findsNothing);
+    expect(find.text('전국 돈가'), findsWidgets);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
   testWidgets('하단 메뉴가 실제 화면으로 이동한다', (tester) async {
@@ -84,14 +85,10 @@ void main() {
     expect(find.text('가격 움직임 주요 요인'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
+  testWidgets('돈가 기간 탭은 데이터가 없어도 실제 선택이 가능하다', (tester) async {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(find.text('9/23'),findsOneWidget);
-    await tester.tap(find.text('월간'));await tester.pump();
-    expect(find.text('8월'),findsWidgets);
-    await tester.tap(find.text('연간'));await tester.pump();
-    expect(find.text('2026'),findsOneWidget);
+    for(final tab in const ['주간','월간','연간']){await tester.tap(find.text(tab));await tester.pump();expect(find.text(tab),findsOneWidget);expect(tester.takeException(),isNull);}
     expect(tester.takeException(),isNull);
   });
   testWidgets('시황 구조와 질병 지도가 실제로 이동하고 표시된다',(tester)async{

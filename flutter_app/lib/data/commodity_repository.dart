@@ -19,17 +19,24 @@ class CommodityRepository {
   static const _cacheKey = 'verified_commodity_market_v1';
   final http.Client _client;
   final EcosApiClient _ecosClient;
-  static const List<Commodity> bundledSnapshot = [];
+  static const bundledSnapshot = [
+    Commodity('옥수수','확인 중','',null,Icons.grass,id:'corn'),
+    Commodity('대두박','확인 중','',null,Icons.eco,id:'soybean_meal'),
+    Commodity('소맥','확인 중','',null,Icons.grain,id:'wheat'),
+    Commodity('대두','확인 중','',null,Icons.spa,id:'soybean'),
+    Commodity('국제유가\n(WTI)','확인 중','',null,Icons.local_gas_station,id:'wti'),
+    Commodity('환율\n(USD/KRW)','확인 중','',null,Icons.attach_money,id:'usd_krw'),
+  ];
 
   Future<List<Commodity>> cached() async {
     final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
     if(raw==null){
-      try{return _parse(jsonDecode(await rootBundle.loadString('assets/data/platform.json')) as Map<String,dynamic>);}catch(_){return const [];}
+      try{return _parse(jsonDecode(await rootBundle.loadString('assets/data/platform.json')) as Map<String,dynamic>);}catch(_){return bundledSnapshot;}
     }
     try {
       return _parse(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
-      return const [];
+      return bundledSnapshot;
     }
   }
 
