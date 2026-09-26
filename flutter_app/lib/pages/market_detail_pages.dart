@@ -53,6 +53,7 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
             const SizedBox(height:16),const Text('오늘 경락 현황',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),const SizedBox(height:8),
             _InfoBox('경락두수: ${_number(grades!.grades.fold(0,(sum,x)=>sum+x.count))}두\n평균 도체중: 정보 없음\n성별 데이터: 정보 없음\n※ 공식 응답에 포함된 항목만 표시합니다.'),
           ],
+          if(snapshot!=null)...[const SizedBox(height:12),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>ThreeYearPigPricePage(snapshot:snapshot!))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(46),foregroundColor:AppColors.coral),child:const Text('3개년 월별 돈가 비교 보기  >'))],
           const SizedBox(height: 12),
           _InfoBox(snapshot == null
               ? '출처: 축산물품질평가원 축산유통정보 다봄'
@@ -67,6 +68,10 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
   String _number(int value) => value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',');
   String _date(String value) => value.length == 8 ? '${value.substring(0, 4)}.${value.substring(4, 6)}.${value.substring(6, 8)}' : value;
 }
+
+class ThreeYearPigPricePage extends StatelessWidget{
+  const ThreeYearPigPricePage({super.key,required this.snapshot});final MarketSnapshot snapshot;
+  @override Widget build(BuildContext context){final series=snapshot.detailSeries(3),values=series.points.map((x)=>x.value).toList(),avg=values.isEmpty?0:values.reduce((a,b)=>a+b)/values.length,high=values.isEmpty?0:values.reduce((a,b)=>a>b?a:b),low=values.isEmpty?0:values.reduce((a,b)=>a<b?a:b);return _DetailScaffold(title:'3개년 월별 돈가 비교',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Container(padding:const EdgeInsets.all(10),decoration:appCard(radius:16),child:PriceLineChart(series:series)),const SizedBox(height:12),_InfoBox('3개년 월평균: ${avg.toStringAsFixed(0)}원/kg\n기간 최고: ${high.toStringAsFixed(0)}원/kg\n기간 최저: ${low.toStringAsFixed(0)}원/kg\n※ 실제 제공된 월만 표시하며 누락 월을 0으로 채우지 않습니다.'),const SizedBox(height:10),_InfoBox('출처: ${snapshot.source}\n기준: ${snapshot.scope}')])) ;}}
 
 class GradePriceTrendPage extends StatefulWidget{
   const GradePriceTrendPage({super.key,required this.snapshot});final PigGradeSnapshot snapshot;
@@ -101,10 +106,11 @@ class CommodityDetailPage extends StatelessWidget {
         const SizedBox(height: 10),
         if(drivers.isEmpty)const _InfoBox('확인 가능한 출처와 기준일을 가진 주요 요인 데이터가 부족합니다.') else ...drivers.map(_FactorTile.new),
         if(item.analysisConfidence.isNotEmpty)_InfoBox('자동 분석 신뢰도: ${item.analysisConfidence}\n분석 시점: ${item.analysisUpdatedAt}\n공식 시계열과 공식기관 발표 제목을 이용한 자동 요약이며, 직접 인과관계를 확정하지 않습니다.'),
+        if(item.history.isNotEmpty)...[const SizedBox(height:16),const Text('주요 지표',style:TextStyle(fontSize:18,fontWeight:FontWeight.w900)),const SizedBox(height:8),_CommodityIndicators(item:item)],
         const SizedBox(height: 12),
         _InfoBox(item.source.isEmpty
             ? '데이터 출처 연결 검증 중\n값과 변동 이유가 공식 자료로 확인되면 자동 표시합니다.'
-            : '출처: ${item.source}${item.asOf.isEmpty ? '' : '\n기준일: ${item.asOf}'}${item.basis.isEmpty ? '' : '\n기준: ${item.basis}'}\n갱신주기: ${item.frequency == 'monthly' ? '월간' : '일간'}'),
+            : '출처: ${item.source}${item.asOf.isEmpty ? '' : '\n기준일: ${item.asOf}'}${item.updatedAt.isEmpty?'':'\n업데이트: ${item.updatedAt}'}${item.basis.isEmpty ? '' : '\n기준: ${item.basis}'}\n갱신주기: ${item.frequency == 'monthly' ? '월간' : '일간'}'),
         if(item.url.isNotEmpty)...[const SizedBox(height:10),_SourceButton(source:MarketSource(item.source,'공식 원자료 확인',item.url))],
         ...item.analysisSources.map((x)=>_SourceButton(source:x)),
       ]),
@@ -112,6 +118,8 @@ class CommodityDetailPage extends StatelessWidget {
   }
 
 }
+
+class _CommodityIndicators extends StatelessWidget{const _CommodityIndicators({required this.item});final Commodity item;@override Widget build(BuildContext context){final rows=item.history,values=rows.map((x)=>x.value).toList(),prior=rows.length>1?rows[rows.length-2]:null,month=rows.length>4?rows[rows.length-5]:null,quarter=rows.length>8?rows[rows.length-9]:null,high=values.reduce((a,b)=>a>b?a:b),low=values.reduce((a,b)=>a<b?a:b);String v(double x)=>'${x.toStringAsFixed(x>=1000?1:2)} ${item.unit}';final items=[('현재가','${item.value} ${item.unit}'),if(prior!=null)('직전 발표',v(prior.value)),if(month!=null)('이전 구간',v(month.value)),if(quarter!=null)('장기 비교',v(quarter.value)),('최근 고가',v(high)),('최근 저가',v(low))];return Container(padding:const EdgeInsets.all(13),decoration:appCard(radius:16),child:Column(children:items.map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:6),child:Row(children:[Expanded(child:Text(x.$1,style:const TextStyle(fontSize:11,color:AppColors.secondary))),Text(x.$2,style:const TextStyle(fontSize:11,fontWeight:FontWeight.w900))]))).toList()));}}
 
 class _SourceButton extends StatelessWidget{
   const _SourceButton({required this.source});final MarketSource source;
@@ -192,7 +200,7 @@ class _FactorTile extends StatelessWidget {
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4), decoration: BoxDecoration(color: AppColors.lightCoral, borderRadius: BorderRadius.circular(20)), child: Text(factor.status, style: const TextStyle(fontSize: 8, color: AppColors.coral, fontWeight: FontWeight.w800))),
           const SizedBox(width: 9),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(factor.title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)), const SizedBox(height: 3), Text(factor.detail, style: const TextStyle(fontSize: 10.5, height: 1.5, color: AppColors.secondary))])),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(factor.title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)), const SizedBox(height: 3), Text(factor.detail, style: const TextStyle(fontSize: 10.5, height: 1.5, color: AppColors.secondary)),if(factor.source.isNotEmpty)...[const SizedBox(height:4),Text('${factor.source}${factor.sourceDate.isEmpty?'':' · ${factor.sourceDate}'}',style:const TextStyle(fontSize:8.5,color:AppColors.secondary))]])),
         ]),
       );
 }
