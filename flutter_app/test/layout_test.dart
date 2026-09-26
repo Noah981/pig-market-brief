@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:dondonhae/app.dart';
 import 'package:dondonhae/settings/display_settings.dart';
@@ -53,7 +54,14 @@ void main() {
       }
     }
   });
-  setUp(() => SharedPreferences.setMockInitialValues({}));
+  setUp(() {
+    final price=jsonDecode(File('../docs/data/pig-price.json').readAsStringSync());
+    final history=jsonDecode(File('../docs/data/pig-price-history.json').readAsStringSync());
+    SharedPreferences.setMockInitialValues({
+      'official_dabom_producer_pig_price_v4':jsonEncode({'price':price,'history':history}),
+      'verified_commodity_market_v1':File('../docs/data/platform.json').readAsStringSync(),
+    });
+  });
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
