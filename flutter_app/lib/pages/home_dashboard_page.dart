@@ -30,9 +30,9 @@ class HomeDashboardPage extends StatefulWidget {
 }
 class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindingObserver{
   int _nav=0; int _period=0;
-  final _marketRepository=MarketRepository();MarketSnapshot? _market=MarketRepository.bundledSnapshot;
+  final _marketRepository=MarketRepository();MarketSnapshot? _market;
   final _analysisRepository=MarketAnalysisRepository();MarketAnalysis? _analysis=MarketAnalysisRepository.bundledSnapshot;
-  final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
+  final _commodityRepository=CommodityRepository();List<Commodity> _commodities=const [];
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   final _gradeRepository=PigGradeRepository();PigGradeSnapshot? _grades;
   String _weatherRegion='대구광역시';

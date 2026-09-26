@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../models/dashboard_models.dart';
 import '../config/api_config.dart';
@@ -18,22 +19,17 @@ class CommodityRepository {
   static const _cacheKey = 'verified_commodity_market_v1';
   final http.Client _client;
   final EcosApiClient _ecosClient;
-  static const bundledSnapshot = [
-    Commodity('옥수수','213.19',r'$/톤',8.89,Icons.grass,id:'corn',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 옥수수 벤치마크 월평균',history:[CommodityPoint('2026-06-01',195.78),CommodityPoint('2026-07-01',213.19)]),
-    Commodity('대두박','329.43',r'$/톤',11.24,Icons.eco,id:'soybean_meal',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 대두박 벤치마크 월평균',history:[CommodityPoint('2026-06-01',296.16),CommodityPoint('2026-07-01',329.43)]),
-    Commodity('소맥','228.74',r'$/톤',14.57,Icons.grain,id:'wheat',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 소맥 벤치마크 월평균',history:[CommodityPoint('2026-06-01',199.65),CommodityPoint('2026-07-01',228.74)]),
-    Commodity('대두','442.45',r'$/톤',6.73,Icons.spa,id:'soybean',source:'국제통화기금(IMF)·FRED',asOf:'2026-07-01',frequency:'monthly',basis:'세계 대두 벤치마크 월평균',history:[CommodityPoint('2026-06-01',414.54),CommodityPoint('2026-07-01',442.45)]),
-    Commodity('국제유가\n(WTI)','107.02',r'$/bbl',4.49,Icons.local_gas_station,id:'wti',source:'미국 에너지정보청(EIA)·FRED',asOf:'2026-09-15',frequency:'daily',basis:'WTI Cushing 현물가격',history:[CommodityPoint('2026-09-14',102.42),CommodityPoint('2026-09-15',107.02)]),
-    Commodity('환율\n(USD/KRW)','1340.3','원/USD',-0.40,Icons.attach_money,id:'usd_krw',source:'미국 연방준비제도 이사회·FRED',asOf:'2026-09-11',frequency:'daily',basis:'뉴욕 정오 원/달러 현물환율',history:[CommodityPoint('2026-09-10',1345.63),CommodityPoint('2026-09-11',1340.3)]),
-  ];
+  static const List<Commodity> bundledSnapshot = [];
 
   Future<List<Commodity>> cached() async {
     final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
-    if(raw==null)return bundledSnapshot;
+    if(raw==null){
+      try{return _parse(jsonDecode(await rootBundle.loadString('assets/data/platform.json')) as Map<String,dynamic>);}catch(_){return const [];}
+    }
     try {
       return _parse(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
-      return bundledSnapshot;
+      return const [];
     }
   }
 
