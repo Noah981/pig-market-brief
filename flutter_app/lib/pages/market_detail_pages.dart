@@ -45,6 +45,8 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
             const SizedBox(height: 10),
             ...analysis!.factors.map((x) => _FactorTile(x)),
           ],
+          const SizedBox(height:8),
+          OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>MarketDriverDetailPage(analysis:analysis))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(42),foregroundColor:AppColors.coral),child:const Text('가격 요인 자세히 보기  >')),
           const SizedBox(height:16),
           const Text('등급별 경락가격',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),
           const SizedBox(height:8),
@@ -82,6 +84,21 @@ class GradePriceTrendPage extends StatefulWidget{
   @override State<GradePriceTrendPage> createState()=>_GradePriceTrendPageState();
 }
 class _GradePriceTrendPageState extends State<GradePriceTrendPage>{String grade='1+';@override Widget build(BuildContext context){final rows=widget.snapshot.history.where((x)=>x.grade==grade).map((x)=>CommodityPoint(x.date,x.price.toDouble())).toList();return _DetailScaffold(title:'등급별 가격 추이',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[_PeriodTabs(labels:const ['1+','1','2','등외'],selected:const ['1+','1','2','등외'].indexOf(grade),onChanged:(i)=>setState(()=>grade=const ['1+','1','2','등외'][i])),const SizedBox(height:10),if(rows.length>=2)_CommodityChart(points:rows)else const _InfoBox('선택한 등급의 실제 기간 데이터가 충분하지 않습니다.'),const SizedBox(height:12),_InfoBox('출처: 축산물품질평가원 축산유통정보\n기준일: ${widget.snapshot.date}\n대표 돈가와 별도로 조회한 등급별 공식 경락가격입니다.')])) ;}}
+
+class MarketDriverDetailPage extends StatelessWidget{
+  const MarketDriverDetailPage({super.key,required this.analysis});
+  final MarketAnalysis? analysis;
+  @override Widget build(BuildContext context)=>_DetailScaffold(title:'가격 요인 상세',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+    const Text('가격 움직임과 함께 확인할 주요 지표',style:TextStyle(fontSize:18,fontWeight:FontWeight.w900)),
+    const SizedBox(height:8),
+    if(analysis==null||analysis!.factors.isEmpty)const _InfoBox('현재 확보된 공식 데이터만으로 가격 변동 원인을 명확하게 판단하기 어렵습니다.') else ...[
+      Text(analysis!.summary,style:const TextStyle(fontSize:11,height:1.55,color:AppColors.secondary)),const SizedBox(height:10),
+      ...analysis!.factors.map(_FactorTile.new),
+    ],
+    const SizedBox(height:10),
+    if(analysis!=null&&analysis!.sources.isNotEmpty)...analysis!.sources.map((x)=>_SourceButton(source:x)) else const _InfoBox('출처와 기준일이 확인되는 항목만 표시합니다.'),
+  ]));
+}
 
 class CommodityDetailPage extends StatelessWidget {
   const CommodityDetailPage({super.key, required this.item});
