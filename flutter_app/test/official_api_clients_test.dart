@@ -33,7 +33,7 @@ void main() {
     )));
     final rows=await client.gradePricesFor('20260926');
     expect(rows.map((x)=>x.grade),['1+','1','2','등외']);
-    expect(rows.first.price,5892);expect(rows.last.price,4326);
+    expect(rows.first.price,5892);expect(rows.last.price,4326);expect(rows.last.date,'20260926');
   });
 
   test('KMA 예보 필수 항목을 파싱한다', () async {

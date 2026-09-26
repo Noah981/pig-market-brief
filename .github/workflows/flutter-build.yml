@@ -47,6 +47,7 @@ jobs:
           flutter test test/official_api_clients_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
+        if: github.event_name != 'pull_request'
         working-directory: flutter_app
         run: >-
           flutter build apk --release
@@ -55,6 +56,7 @@ jobs:
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - name: Verify release network permission
+        if: github.event_name != 'pull_request'
         working-directory: flutter_app
         run: |
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"

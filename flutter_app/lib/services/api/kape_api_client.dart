@@ -10,8 +10,8 @@ class KapePigPrice {
 }
 
 class KapeGradePrice {
-  const KapeGradePrice({required this.grade,required this.price,required this.count});
-  final String grade;final int price,count;
+  const KapeGradePrice({required this.grade,required this.price,required this.count,required this.date});
+  final String grade,date;final int price,count;
 }
 
 class KapeApiClient {
@@ -79,7 +79,19 @@ class KapeApiClient {
       if(grade==null||price==null||price<=0)continue;
       final weight=count>0?count:1,old=totals[grade];totals[grade]=(old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight));
     }
-    return ['1+','1','2','등외'].where(totals.containsKey).map((grade){final x=totals[grade]!;return KapeGradePrice(grade:grade,price:(x.$1/x.$2).round(),count:x.$2);}).toList();
+    return ['1+','1','2','등외'].where(totals.containsKey).map((grade){final x=totals[grade]!;return KapeGradePrice(grade:grade,price:(x.$1/x.$2).round(),count:x.$2,date:ymd);}).toList();
+  }
+
+  Future<List<KapeGradePrice>> gradeHistory(String endYmd,{int lookbackDays=35,int maxTradingDays=8})async{
+    final end=DateTime.parse('${endYmd.substring(0,4)}-${endYmd.substring(4,6)}-${endYmd.substring(6,8)}');
+    final rows=<KapeGradePrice>[];var tradingDays=0;
+    for(var ago=0;ago<lookbackDays&&tradingDays<maxTradingDays;ago++){
+      final day=end.subtract(Duration(days:ago));
+      final ymd='${day.year.toString().padLeft(4,'0')}${day.month.toString().padLeft(2,'0')}${day.day.toString().padLeft(2,'0')}';
+      final values=await gradePricesFor(ymd);
+      if(values.isNotEmpty){rows.addAll(values);tradingDays++;}
+    }
+    rows.sort((a,b)=>a.date.compareTo(b.date));return rows;
   }
 
   String? _normalizeGrade(String raw){final x=raw.replaceAll('등급','').trim().toUpperCase();if(x=='1+'||x.contains('1PLUS'))return '1+';if(x=='1')return '1';if(x=='2')return '2';if(x.contains('등외')||x=='E')return '등외';return null;}

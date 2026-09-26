@@ -33,7 +33,7 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
           const SizedBox(height:12),
           _PeriodTabs(labels:const ['7일','1개월','1년','3년'],selected:period,onChanged:(i)=>setState(()=>period=i)),
           const SizedBox(height:8),
-          if(snapshot!=null)Container(padding:const EdgeInsets.all(10),decoration:appCard(radius:16),child:PriceLineChart(series:snapshot!.seriesFor([0,0,3,2][period]))),
+          if(snapshot!=null)Container(padding:const EdgeInsets.all(10),decoration:appCard(radius:16),child:PriceLineChart(series:snapshot!.detailSeries(period))),
           const SizedBox(height: 16),
           const Text('오늘 가격이 움직인 주요 요인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
           const SizedBox(height: 8),
@@ -48,7 +48,11 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
           const Text('등급별 경락가격',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),
           const SizedBox(height:8),
           if(grades==null||grades!.grades.isEmpty)_InfoBox(gradeError??'축산물품질평가원 등급별 가격을 확인하고 있습니다.')
-          else Container(padding:const EdgeInsets.all(12),decoration:appCard(radius:16),child:Column(children:grades!.grades.map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:7),child:Row(children:[SizedBox(width:42,child:Text(x.grade,style:const TextStyle(fontWeight:FontWeight.w900))),Expanded(child:LinearProgressIndicator(value:(x.price/10000).clamp(0,1),color:AppColors.coral,backgroundColor:AppColors.lightBlue)),const SizedBox(width:10),Text('${_number(x.price)}원/kg',style:const TextStyle(fontSize:11,fontWeight:FontWeight.w900))]))).toList())),
+          else Container(padding:const EdgeInsets.all(12),decoration:appCard(radius:16),child:Column(children:[...grades!.grades.map((x){final old=grades!.previous(x.grade),change=old==null?null:x.price-old.price,pct=old==null||old.price==0?null:change!*100/old.price;return Padding(padding:const EdgeInsets.symmetric(vertical:7),child:Row(children:[SizedBox(width:34,child:Text(x.grade,style:const TextStyle(fontWeight:FontWeight.w900))),Expanded(child:LinearProgressIndicator(value:(x.price/10000).clamp(0,1),color:AppColors.coral,backgroundColor:AppColors.lightBlue)),const SizedBox(width:8),SizedBox(width:80,child:Text('${_number(x.price)}원/kg',textAlign:TextAlign.right,style:const TextStyle(fontSize:10,fontWeight:FontWeight.w900))),const SizedBox(width:7),SizedBox(width:56,child:Text(change==null?'정보 없음':'${change>=0?'▲':'▼'} ${pct!.abs().toStringAsFixed(1)}%',textAlign:TextAlign.right,style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:change==null?AppColors.secondary:change>=0?AppColors.coral:AppColors.blue))) ]));}),const SizedBox(height:8),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradePriceTrendPage(snapshot:grades!))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(44),foregroundColor:AppColors.coral),child:const Text('등급별 가격 추이 보기  >'))])),
+          if(grades!=null&&grades!.grades.isNotEmpty)...[
+            const SizedBox(height:16),const Text('오늘 경락 현황',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),const SizedBox(height:8),
+            _InfoBox('경락두수: ${_number(grades!.grades.fold(0,(sum,x)=>sum+x.count))}두\n평균 도체중: 정보 없음\n성별 데이터: 정보 없음\n※ 공식 응답에 포함된 항목만 표시합니다.'),
+          ],
           const SizedBox(height: 12),
           _InfoBox(snapshot == null
               ? '출처: 축산물품질평가원 축산유통정보 다봄'
@@ -63,6 +67,12 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
   String _number(int value) => value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',');
   String _date(String value) => value.length == 8 ? '${value.substring(0, 4)}.${value.substring(4, 6)}.${value.substring(6, 8)}' : value;
 }
+
+class GradePriceTrendPage extends StatefulWidget{
+  const GradePriceTrendPage({super.key,required this.snapshot});final PigGradeSnapshot snapshot;
+  @override State<GradePriceTrendPage> createState()=>_GradePriceTrendPageState();
+}
+class _GradePriceTrendPageState extends State<GradePriceTrendPage>{String grade='1+';@override Widget build(BuildContext context){final rows=widget.snapshot.history.where((x)=>x.grade==grade).map((x)=>CommodityPoint(x.date,x.price.toDouble())).toList();return _DetailScaffold(title:'등급별 가격 추이',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[_PeriodTabs(labels:const ['1+','1','2','등외'],selected:const ['1+','1','2','등외'].indexOf(grade),onChanged:(i)=>setState(()=>grade=const ['1+','1','2','등외'][i])),const SizedBox(height:10),if(rows.length>=2)_CommodityChart(points:rows)else const _InfoBox('선택한 등급의 실제 기간 데이터가 충분하지 않습니다.'),const SizedBox(height:12),_InfoBox('출처: 축산물품질평가원 축산유통정보\n기준일: ${widget.snapshot.date}\n대표 돈가와 별도로 조회한 등급별 공식 경락가격입니다.')])) ;}}
 
 class CommodityDetailPage extends StatelessWidget {
   const CommodityDetailPage({super.key, required this.item});
