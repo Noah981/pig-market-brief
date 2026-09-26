@@ -53,6 +53,11 @@ jobs:
           --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
+      - name: Verify release network permission
+        working-directory: flutter_app
+        run: |
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
+          "$AAPT" dump permissions build/app/outputs/flutter-apk/app-release.apk | grep -q 'android.permission.INTERNET'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
