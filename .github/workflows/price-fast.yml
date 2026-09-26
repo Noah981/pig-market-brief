@@ -22,18 +22,18 @@ jobs:
         with:
           python-version: "3.12"
       - name: Fetch KAPE pig auction price
-        env:
-          KAPE_SERVICE_KEY: ${{ secrets.KAPE_SERVICE_KEY }}
-        run: python scripts/fetch_pig_price.py
+        run: |
+          python -m unittest scripts/test_fetch_pig_price.py
+          python scripts/fetch_pig_price.py
       - name: Commit price data safely
         run: |
           mkdir -p /tmp/price-data
-          cp docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json /tmp/price-data/
+          cp docs/data/pig-price.json docs/data/pig-price-history.json /tmp/price-data/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
           cp /tmp/price-data/* docs/data/
-          git add docs/data/pig-price.json docs/data/pig-price-history.json docs/data/pig-grade-detail.json
+          git add docs/data/pig-price.json docs/data/pig-price-history.json
           git diff --cached --quiet || git commit -m "Update KAPE price"
           git push origin HEAD:main
