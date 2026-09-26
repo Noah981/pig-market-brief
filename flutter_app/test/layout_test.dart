@@ -157,7 +157,7 @@ void main() {
     await DisplaySettings.instance.setTextScale(1);
     expect(tester.takeException(),isNull);
   });
-  testWidgets('홈 큰글씨 모드는 155%로 확대되고 다시 꺼진다',(tester)async{
+  testWidgets('홈 큰글씨 모드는 120%로 확대되고 다시 꺼진다',(tester)async{
     tester.view.physicalSize=const Size(360,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
