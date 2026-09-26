@@ -43,13 +43,17 @@ def main():
         raise RuntimeError("ECOS empty/service error")
     print("ECOS: authenticated response and required rows OK")
 
-    day = now.strftime("%Y%m%d")
-    kape_query = urllib.parse.urlencode({"serviceKey": key("KAPE_API_KEY"), "startYmd": day, "endYmd": day, "skinYn": "Y", "sexCd": "025001", "egradeExceptYn": "Y"})
-    kape = get("KAPE", "http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade?" + kape_query, xml_response=True)
-    code = (kape.findtext(".//resultCode") or "00").strip()
-    if code != "00":
-        raise RuntimeError("KAPE authentication/service error")
-    print("KAPE: authenticated XML response OK")
+    kape_ok = False
+    for ago in range(14):
+        day = (now - timedelta(days=ago)).strftime("%Y%m%d")
+        kape_query = urllib.parse.urlencode({"serviceKey": key("KAPE_API_KEY"), "startYmd": day, "endYmd": day, "skinYn": "Y", "sexCd": "025001", "egradeExceptYn": "Y"})
+        kape = get("KAPE", "http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade?" + kape_query, xml_response=True)
+        code = (kape.findtext(".//resultCode") or "00").strip()
+        if code != "00": raise RuntimeError("KAPE authentication/service error")
+        if kape.findall(".//item"):
+            kape_ok = True; break
+    if not kape_ok: raise RuntimeError("KAPE no recent official rows")
+    print(f"KAPE: latest official row OK dataDate={day}")
 
     # Fixed official KMA grid/time only verifies auth and response schema; app requests its actual GPS grid.
     candidate = now - timedelta(minutes=15)
@@ -70,18 +74,10 @@ def main():
         raise RuntimeError("MAFRA authentication/schema error")
     print("MAFRA: authenticated JSON response and schema OK")
 
-    kamis_query = urllib.parse.urlencode({
-        "action": "periodProductList", "p_cert_key": key("KAMIS_API_KEY"),
-        "p_cert_id": key("KAMIS_CERT_ID"), "p_returntype": "json",
-        "p_startday": (now - timedelta(days=14)).strftime("%Y-%m-%d"),
-        "p_endday": now.strftime("%Y-%m-%d"), "p_productclscode": "01",
-        "p_itemcategorycode": "100", "p_productrankcode": "04",
-        "p_countrycode": "1101", "p_convert_kg_yn": "N",
-    })
-    kamis = get("KAMIS", "https://www.kamis.or.kr/service/price/xml.do?" + kamis_query, json_response=True)
-    if str(kamis.get("error_code", "000")) != "000" or not kamis.get("data"):
-        raise RuntimeError("KAMIS authentication/schema/empty error")
-    print("KAMIS: authenticated JSON response and required rows OK")
+    fred = get("FRED", "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO")
+    if b"observation_date" not in fred or len(fred.splitlines()) < 3:
+        raise RuntimeError("FRED official series empty/schema error")
+    print("FRED: official market series response OK")
 
 if __name__ == "__main__":
     main()

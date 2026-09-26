@@ -73,12 +73,17 @@ class MarketRepository {
   }
   Future<MarketSnapshot> refresh()async{
     if(ApiConfig.hasKape){
-      final official=await _kapeClient.latest();
-      final latest=official.last,previous=official.length>1?official[official.length-2]:latest;
-      final cachedValue=await cached()??bundledSnapshot;
-      final rows=<PricePoint>[...cachedValue.history.where((x)=>!official.any((o)=>o.date==x.date)),...official.map((x)=>PricePoint(x.date,x.price.toDouble()))]..sort((a,b)=>a.date.compareTo(b.date));
-      final json={'price':{'price':latest.price,'previousPrice':previous.price,'change':latest.price-previous.price,'changePct':previous.price==0?0:(latest.price-previous.price)/previous.price*100,'date':latest.date,'previousDate':previous.date,'updatedAt':DateTime.now().toIso8601String(),'source':'축산물품질평가원','scope':'전국·탕박·등외제외·제주제외'},'history':{'rows':rows.map((x)=>{'date':x.date,'price':x.value,'resolution':x.resolution}).toList()}};
-      final value=_decode(json);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(json));return value;
+      try{
+        final official=await _kapeClient.latest();
+        final latest=official.last,previous=official.length>1?official[official.length-2]:latest;
+        final cachedValue=await cached()??bundledSnapshot;
+        final rows=<PricePoint>[...cachedValue.history.where((x)=>!official.any((o)=>o.date==x.date)),...official.map((x)=>PricePoint(x.date,x.price.toDouble()))]..sort((a,b)=>a.date.compareTo(b.date));
+        final json={'price':{'price':latest.price,'previousPrice':previous.price,'change':latest.price-previous.price,'changePct':previous.price==0?0:(latest.price-previous.price)/previous.price*100,'date':latest.date,'previousDate':previous.date,'updatedAt':DateTime.now().toIso8601String(),'source':'축산물품질평가원','scope':'전국·탕박·등외제외·제주제외'},'history':{'rows':rows.map((x)=>{'date':x.date,'price':x.value,'resolution':x.resolution}).toList()}};
+        final value=_decode(json);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(json));return value;
+      }catch(_){
+        // 기기에서 공공 API가 일시 차단되면 같은 공식 API를 Actions가 수집한
+        // 검증 캐시로 즉시 대체한다. 마지막 정상값은 절대 삭제하지 않는다.
+      }
     }
     final stamp=DateTime.now().millisecondsSinceEpoch;
     final responses=await Future.wait([_client.get(Uri.parse('$_priceUrl?v=$stamp')).timeout(const Duration(seconds:12)),_client.get(Uri.parse('$_historyUrl?v=$stamp')).timeout(const Duration(seconds:12))]);
