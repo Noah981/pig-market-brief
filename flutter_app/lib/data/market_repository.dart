@@ -60,10 +60,6 @@ class MarketSnapshot {
 }
 
 class MarketRepository {
-  static const bundledSnapshot=MarketSnapshot(price:5307,previousPrice:5360,change:-53,changePct:-0.99,date:'20260923',updatedAt:'2026-09-26T13:30:00+09:00',source:'축산물품질평가원',scope:'전국·탕박·등외제외·제주제외',history:[
-    PricePoint('20230901',5166,resolution:'month'),PricePoint('20240101',4163,resolution:'month'),PricePoint('20240901',5464,resolution:'month'),PricePoint('20250101',4731,resolution:'month'),PricePoint('20250901',5906,resolution:'month'),PricePoint('20260101',4852,resolution:'month'),PricePoint('20260801',5816,resolution:'month'),
-    PricePoint('20260909',5800),PricePoint('20260910',6200),PricePoint('20260911',6700),PricePoint('20260914',6850),PricePoint('20260915',7000),PricePoint('20260916',6900),PricePoint('20260917',6740),PricePoint('20260918',6442),PricePoint('20260922',5360),PricePoint('20260923',5307),
-  ],fromCache:true);
   static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json',_historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json',_cacheKey='official_dabom_producer_pig_price_v4';
   final http.Client _client;
   MarketRepository({http.Client? client}):_client=client??http.Client();
@@ -74,9 +70,9 @@ class MarketRepository {
         final price=jsonDecode(await rootBundle.loadString('assets/data/pig-price.json'));
         final history=jsonDecode(await rootBundle.loadString('assets/data/pig-price-history.json'));
         return _decode({'price':price,'history':history},fromCache:true);
-      }catch(_){return bundledSnapshot;}
+      }catch(_){return null;}
     }
-    try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return bundledSnapshot;}
+    try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
   }
   Future<MarketSnapshot> refresh()async{
     // 대표 돈가는 raw pigGrade를 기기에서 재계산하지 않는다. Actions가
@@ -91,6 +87,6 @@ class MarketRepository {
     final price=((combined['price'] as Map?)?.cast<String,dynamic>())??combined;
     final history=((combined['history'] as Map?)?.cast<String,dynamic>())??const <String,dynamic>{};
     final rows=(history['rows'] as List? ?? const []).whereType<Map<String,dynamic>>().where((x)=>x['price'] is num&&x['date']?.toString().length==8).map((x)=>PricePoint(x['date'].toString(),(x['price'] as num).toDouble(),resolution:x['resolution']?.toString()??'day')).toList()..sort((a,b)=>a.date.compareTo(b.date));
-    return MarketSnapshot.fromJson(price,fromCache:fromCache,history:rows.isEmpty?bundledSnapshot.history:rows);
+    return MarketSnapshot.fromJson(price,fromCache:fromCache,history:rows);
   }
 }
