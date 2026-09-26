@@ -1,160 +1,101 @@
-import os, json, re, urllib.parse, urllib.request, xml.etree.ElementTree as ET
+"""Collect the exact KAPE Dabom producer pig-price headline."""
+
+import json
+import re
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/"docs/data/pig-price.json"
-DETAIL=ROOT/"docs/data/pig-grade-detail.json"
-HIST=ROOT/"docs/data/pig-price-history.json"
-KST=timezone(timedelta(hours=9))
-BASE="http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "docs/data/pig-price.json"
+HIST = ROOT / "docs/data/pig-price-history.json"
+KST = timezone(timedelta(hours=9))
+URL = "https://www.ekapepia.com/v3/web/main.do?userGroup=common"
 
-def request(key, day, sex, end_day=None):
-    # egradeExceptYn=Y is the API's explicit "등외 제외" selector.  The old
-    # implementation used N while labelling the result as 등외 제외.
-    params={"startYmd":day,"endYmd":end_day or day,"skinYn":"Y","sexCd":sex,"egradeExceptYn":"Y"}
-    q=urllib.parse.urlencode(params)
-    encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
-    with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r:
-        root=ET.fromstring(r.read())
-    code=(root.findtext(".//resultCode") or "").strip()
-    if code and code!="00":
-        raise RuntimeError("KAPE "+code+" "+(root.findtext(".//resultMsg") or ""))
-    total_value=0.0; total_count=0
-    for x in root.findall(".//item"):
-        amt=(x.findtext("c_1101eTotAmt") or "").replace(",","").strip()
-        cnt=(x.findtext("c_1101eTotCnt") or "").replace(",","").strip()
-        if amt and cnt:
-            a=float(amt); n=int(float(cnt))
-            if a>0 and n>0:
-                total_value += a*n; total_count += n
-    return total_value,total_count
 
-def day_price(key, day):
-    # 전국 돼지 경락가격: 탕박, 등외 제외, 제주 제외. 암+거세를 두수 가중평균.
-    value=count=0
-    for sex in ("025001","025003"):
-        v,n=request(key,day,sex); value+=v; count+=n
-    return (round(value/count) if count else None),count
+def fetch_html() -> str:
+    request = urllib.request.Request(URL, headers={
+        "User-Agent": "Mozilla/5.0 (compatible; dondonhae-price-watch/1.0)",
+        "Accept-Language": "ko-KR,ko;q=0.9",
+    })
+    with urllib.request.urlopen(request, timeout=30) as response:
+        if response.status != 200:
+            raise RuntimeError(f"Dabom HTTP {response.status}")
+        return response.read().decode("utf-8")
 
-def grade_detail(key,day):
-    # Grade detail must include the out-of-grade bucket so it can be shown
-    # separately.  Never infer a missing grade from unrelated numeric fields.
-    params={"startYmd":day,"endYmd":day,"skinYn":"Y","egradeExceptYn":"N"}
-    q=urllib.parse.urlencode(params);encoded=urllib.parse.quote(urllib.parse.unquote(key),safe="")
-    with urllib.request.urlopen(BASE+"?serviceKey="+encoded+"&"+q,timeout=15) as r: root=ET.fromstring(r.read())
-    # KAPE 응답 태그를 등급별로 분류. 숫자가 실제 응답에 존재할 때만 표시한다.
-    groups={"1+":[],"1":[],"2":[],"등외":[]}
-    for x in root.findall(".//item"):
-        for ch in list(x):
-            tag=ch.tag.lower(); t=(ch.text or "").replace(",","").strip()
-            try: val=float(t)
-            except: continue
-            if val<=0 or not ("amt" in tag or "price" in tag): continue
-            if "1p" in tag or "1plus" in tag or "1+" in tag: groups["1+"].append(val)
-            elif re.search(r"(^|_)1(g|grade|amt|price)",tag): groups["1"].append(val)
-            elif re.search(r"(^|_)2(g|grade|amt|price)",tag): groups["2"].append(val)
-            elif "egrade" in tag or "out" in tag: groups["등외"].append(val)
-    prices={g:round(sum(v)/len(v)) for g,v in groups.items() if v}
-    now=datetime.now(KST)
-    latest_day=datetime.strptime(day,"%Y%m%d").date()
-    today=now.date()
-    if latest_day==today:
-        state="당일 경락가격 반영"
-    elif now.hour<18:
-        state="금일 경락 진행 중 · 최근 확정 "+latest_day.strftime("%m/%d")
-    else:
-        state="오늘 확정가격 대기 · 최근 확정 "+latest_day.strftime("%m/%d")
-    return {"date":day,"source":"축산물품질평가원","status":state,"prices":prices,"updatedAt":now.isoformat()}
 
-def main():
-    key=os.environ["KAPE_SERVICE_KEY"]; now=datetime.now(KST)
-    # API 요청 제한을 피하기 위해 기존 이력을 재사용하고 최근 10일만 갱신한다.
-    cached_rows=[]
-    if HIST.exists():
-        try: cached_rows=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
-        except Exception: pass
-    merged0={r["date"]:r for r in cached_rows}
-    # 최근 영업일을 역순으로 조회한다. 달력 날짜가 아니라 API에 실제 등록된
-    # 최신 두 건을 기준으로 신규 데이터와 전일 대비를 결정한다.
-    poll_now = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" or (now.hour==17 and now.minute>=30) or now.hour in (18,19)
-    if poll_now:
-        found=0
-        for ago in range(0,14):
-            day=(now-timedelta(days=ago)).strftime("%Y%m%d")
-            if day in merged0:
-                found+=1
-                if found>=2: break
-                continue
-            try:
-                price,count=day_price(key,day)
-                if price:
-                    merged0[day]={"date":day,"price":price,"count":count};found+=1
-                    if found>=2: break
-            except Exception as e:
-                print("KAPE recent fetch skipped",day,type(e).__name__)
-    else:
-        print("KAPE price poll idle outside release window")
-    rows=sorted(merged0.values(),key=lambda r:r["date"])
-    if not rows:
-        # 최초 설치 시에만 최근 45일을 순차 조회
-        for ago in range(44,-1,-1):
-            day=(now-timedelta(days=ago)).strftime("%Y%m%d")
-            try:
-                price,count=day_price(key,day)
-                if price: rows.append({"date":day,"price":price,"count":count})
-            except Exception: break
-    if not rows: raise RuntimeError("No KAPE pigGrade national rows")
+def parse_headline(html: str) -> tuple[str, int]:
+    # Lock onto the exact official card so no raw pigGrade-derived value can
+    # be substituted for the Dabom headline.
+    card = re.search(
+        r'<div class="main-menu-wrap">(?:(?!<div class="main-menu-wrap">).)*?'
+        r'<h3>.*?alt="돼지".*?</h3>.*?경락가격.*?'
+        r'<a[^>]+data-card="auctPig"[^>]*>\s*'
+        r'<b>전국\(등외,\s*제주 제외\)</b>.*?'
+        r'<em[^>]*>\s*([0-9,]+)\s*</em>.*?'
+        r'<div class="main-menu-bottom">\s*<div><b>'
+        r'(\d{2})년\s*(\d{2})월\s*(\d{2})일</b>',
+        html,
+        re.S,
+    )
+    if not card:
+        raise RuntimeError("Dabom official pig headline not found")
+    price = int(card.group(1).replace(",", ""))
+    date = f"20{card.group(2)}{card.group(3)}{card.group(4)}"
+    if price < 1000 or price > 20000:
+        raise RuntimeError("Dabom official pig headline out of range")
+    return date, price
 
-    # Maintain a minimum three-calendar-year comparison set.  One official
-    # month-range aggregate is stored as YYYYMM01 when daily history is absent;
-    # current daily rows remain authoritative for the headline and day chart.
-    first_month=(now.replace(day=1)-timedelta(days=31*35)).replace(day=1)
-    cursor=first_month
-    existing_months={r["date"][:6] for r in rows}
-    while cursor<=now.replace(day=1):
-        prefix=cursor.strftime("%Y%m")
-        if prefix not in existing_months:
-            try:
-                y,m=cursor.year,cursor.month
-                nextm=(cursor+timedelta(days=32)).replace(day=1)
-                end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
-                value=count=0
-                for sex in ("025001","025003"):
-                    v,n=request(key,cursor.strftime("%Y%m%d"),sex,end);value+=v;count+=n
-                if count: rows.append({"date":prefix+"01","price":round(value/count),"count":count,"resolution":"month"})
-            except Exception as e: print("KAPE 3-year backfill skipped",prefix,e)
-        cursor=(cursor+timedelta(days=32)).replace(day=1)
-    rows=sorted(rows,key=lambda r:r["date"])
-    latest=rows[-1]; prev=rows[-2] if len(rows)>1 else latest
-    diff=latest["price"]-prev["price"]; pct=round(diff/prev["price"]*100,2) if prev["price"] else 0
-    month=latest["date"][:6]; prev_month=(now.replace(day=1)-timedelta(days=1)).strftime("%Y%m"); last_year=str(int(month[:4])-1)+month[4:6]
-    # 월별 비교값은 일별 캐시가 부족하면 KAPE에 월 범위로 직접 조회해 보강한다.
-    def month_api(prefix):
-        y=int(prefix[:4]);m=int(prefix[4:6]);start=f"{y:04d}{m:02d}01"; nextm=(datetime(y,m,28)+timedelta(days=4)).replace(day=1); end=(nextm-timedelta(days=1)).strftime("%Y%m%d")
-        value=count=0
-        for sex in ("025001","025003"):
-            v,n=request(key,start,sex,end);value+=v;count+=n
-        return round(value/count) if count else 0
-    def avg(prefix):
-        a=[r["price"] for r in rows if r["date"].startswith(prefix)]
-        return round(sum(a)/len(a)) if a else 0
-    def safe_month(prefix):
-        try: return month_api(prefix)
-        except Exception as e: print("KAPE month comparison skipped",prefix,e); return 0
-    month_avg=avg(month) or safe_month(month); prev_month_avg=avg(prev_month) or safe_month(prev_month); last_year_avg=avg(last_year) or safe_month(last_year)
-    payload={"source":"축산물품질평가원","operation":"auct/pigGrade","label":"축산유통정보 공지 돈가","scope":"전국·탕박·등외제외·제주제외","formula":"암+거세 성별 응답의 거래두수 가중평균","filters":{"skinYn":"Y","egradeExceptYn":"Y","sexCd":["025001","025003"],"jeju":"excluded_by_official_national_series"},"date":latest["date"],"price":latest["price"],"previousDate":prev["date"],"previousPrice":prev["price"],"change":diff,"changePct":pct,"monthAverage":month_avg or None,"previousMonthAverage":prev_month_avg or None,"previousMonthChange":month_avg-prev_month_avg if prev_month_avg else None,"lastYearMonthAverage":last_year_avg or None,"lastYearChange":month_avg-last_year_avg if last_year_avg else None,"count":latest["count"],"unit":"원/kg","updatedAt":now.isoformat(),"status":"ok","displayStatus":"확정"}
-    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
-    DETAIL.write_text(json.dumps(grade_detail(key,latest["date"]),ensure_ascii=False,indent=2),encoding="utf-8")
-    old=[]
-    if HIST.exists():
-        try:
-            cached=json.loads(HIST.read_text(encoding="utf-8"))
-            old=cached.get("rows",[]) if cached.get("scope")==payload["scope"] else []
-        except Exception: pass
-    merged={r["date"]:r for r in old}
-    for r in rows: merged[r["date"]]=r
-    coverage=sorted(merged.values(),key=lambda r:r["date"])
-    HIST.write_text(json.dumps({"source":"축산물품질평가원","scope":"탕박·등외제외·제주제외·암+거세 두수가중","formulaVersion":"kape-pig-grade-v2","coverage":{"from":coverage[0]["date"] if coverage else None,"to":coverage[-1]["date"] if coverage else None,"minimumMonths":36},"rows":coverage},ensure_ascii=False,indent=2),encoding="utf-8")
 
-if __name__=="__main__": main()
+def load_history() -> dict:
+    try:
+        data = json.loads(HIST.read_text(encoding="utf-8"))
+        return {row["date"]: row for row in data.get("rows", [])}
+    except Exception:
+        return {}
+
+
+def main() -> None:
+    date, price = parse_headline(fetch_html())
+    rows = load_history()
+    rows[date] = {"date": date, "price": price, "sourceType": "dabom-headline"}
+    ordered = sorted(rows.values(), key=lambda row: row["date"])
+    previous_rows = [row for row in ordered if row["date"] < date and row.get("price")]
+    if not previous_rows:
+        raise RuntimeError("Previous verified price missing; keeping existing cache")
+    previous = previous_rows[-1]
+    change = price - int(previous["price"])
+    change_pct = round(change / int(previous["price"]) * 100, 2)
+    now = datetime.now(KST).isoformat()
+
+    payload = {
+        "source": "축산물품질평가원",
+        "sourceUrl": URL,
+        "operation": "dabom/producer-pig-auction-price",
+        "label": "생산자 돼지 경락가격",
+        "scope": "전국·탕박·등외제외·제주제외",
+        "formula": "축산유통정보 다봄 공표 대표값(재계산 없음)",
+        "date": date,
+        "price": price,
+        "previousDate": previous["date"],
+        "previousPrice": int(previous["price"]),
+        "change": change,
+        "changePct": change_pct,
+        "count": None,
+        "unit": "원/kg",
+        "updatedAt": now,
+        "status": "ok",
+        "displayStatus": "축산유통정보 다봄 공표값",
+    }
+    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    HIST.write_text(json.dumps({
+        "source": "축산물품질평가원 축산유통정보 다봄",
+        "scope": "전국·탕박·등외제외·제주제외",
+        "formulaVersion": "dabom-headline-v1-no-recalculation",
+        "rows": ordered,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[DONPRICE] dataDate={date} price={price} source=dabom-headline")
+
+
+if __name__ == "__main__":
+    main()
