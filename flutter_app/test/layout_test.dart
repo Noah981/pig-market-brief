@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dondonhae/app.dart';
 import 'package:dondonhae/settings/display_settings.dart';
 import 'package:dondonhae/pages/section_pages.dart';
@@ -182,5 +184,3 @@ void main() {
     });
   }
 }
-import 'dart:io';
-import 'dart:typed_data';
