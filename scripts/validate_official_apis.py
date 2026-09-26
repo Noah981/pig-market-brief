@@ -70,5 +70,18 @@ def main():
         raise RuntimeError("MAFRA authentication/schema error")
     print("MAFRA: authenticated JSON response and schema OK")
 
+    kamis_query = urllib.parse.urlencode({
+        "action": "periodProductList", "p_cert_key": key("KAMIS_API_KEY"),
+        "p_cert_id": key("KAMIS_CERT_ID"), "p_returntype": "json",
+        "p_startday": (now - timedelta(days=14)).strftime("%Y-%m-%d"),
+        "p_endday": now.strftime("%Y-%m-%d"), "p_productclscode": "01",
+        "p_itemcategorycode": "100", "p_productrankcode": "04",
+        "p_countrycode": "1101", "p_convert_kg_yn": "N",
+    })
+    kamis = get("KAMIS", "https://www.kamis.or.kr/service/price/xml.do?" + kamis_query, json_response=True)
+    if str(kamis.get("error_code", "000")) != "000" or not kamis.get("data"):
+        raise RuntimeError("KAMIS authentication/schema/empty error")
+    print("KAMIS: authenticated JSON response and required rows OK")
+
 if __name__ == "__main__":
     main()

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import '../data/mock_data.dart';
 import '../data/commodity_repository.dart';
@@ -6,6 +5,7 @@ import '../data/market_repository.dart';
 import '../data/market_analysis_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../data/benefit_repository.dart';
+import '../services/data_refresh_service.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
 import '../settings/display_settings.dart';
@@ -29,26 +29,29 @@ class HomeDashboardPage extends StatefulWidget {
 }
 class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindingObserver{
   int _nav=0; int _period=0;
-  final _marketRepository=MarketRepository();MarketSnapshot? _market=MarketRepository.bundledSnapshot;Timer? _timer;
+  final _marketRepository=MarketRepository();MarketSnapshot? _market=MarketRepository.bundledSnapshot;
   final _analysisRepository=MarketAnalysisRepository();MarketAnalysis? _analysis=MarketAnalysisRepository.bundledSnapshot;
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadMarket();_loadAnalysis();_loadCommodities();_loadWeather();_refreshBenefits();_timer=Timer.periodic(const Duration(minutes:30),(_){_refreshMarket();_refreshAnalysis();_refreshCommodities();_refreshWeather();_refreshBenefits();});}
-  @override void dispose(){_timer?.cancel();FarmLocationSettings.instance.removeListener(_locationChanged);WidgetsBinding.instance.removeObserver(this);super.dispose();}
-  @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_refreshMarket();}
-  Future<void> _loadMarket()async{try{final cached=await _marketRepository.cached();if(mounted&&cached!=null)setState(()=>_market=cached);}catch(_){}await _refreshMarket();}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();}
+  @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
+  Future<void> _resumeRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}}
+  Future<void> _reloadMarketCache()async{final value=await _marketRepository.cached();if(mounted&&value!=null)setState(()=>_market=value);}
+  Future<void> _reloadCommodityCache()async{final value=await _commodityRepository.cached();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}
+  Future<void> _reloadWeatherCache()async{final value=await _weatherRepository.cached();if(mounted)setState(()=>_weather=value);}
+  Future<void> _loadCachedData()async{try{await FarmLocationSettings.instance.load();_weatherRegion=FarmLocationSettings.instance.location.province;}catch(_){}await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}
+  Future<void> _startupRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}}
   Future<void> _refreshMarket()async{try{final value=await _marketRepository.refresh();if(mounted)setState(()=>_market=value);}catch(_){}}
   Future<void> _loadAnalysis()async{try{final cached=await _analysisRepository.cached();if(mounted&&cached!=null)setState(()=>_analysis=cached);}catch(_){}await _refreshAnalysis();}
   Future<void> _refreshAnalysis()async{try{final value=await _analysisRepository.refresh();if(mounted)setState(()=>_analysis=value);}catch(_){}}
-  Future<void> _loadCommodities()async{try{final cached=await _commodityRepository.cached();if(mounted&&cached.isNotEmpty)setState(()=>_commodities=cached);}catch(_){}await _refreshCommodities();}
-  Future<void> _refreshCommodities()async{try{final value=await _commodityRepository.refresh();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}catch(_){}}
-  Future<void> _loadWeather()async{try{await FarmLocationSettings.instance.load();_weatherRegion=FarmLocationSettings.instance.location.province;final cached=await _weatherRepository.cached();if(mounted)setState(()=>_weather=cached.region==_weatherRegion?cached:_weather);}catch(_){}await _refreshWeather();}
   Future<void> _refreshWeather()async{try{final value=await _weatherRepository.refresh(region:_weatherRegion);if(mounted)setState(()=>_weather=value);}catch(_){}}
   Future<void> _refreshBenefits()async{try{await FarmLocationSettings.instance.load();await BenefitRepository().refresh();}catch(_){}}
   void _locationChanged(){final region=FarmLocationSettings.instance.location.province;if(region!=_weatherRegion){_weatherRegion=region;_refreshWeather();}else if(mounted){setState((){});}}
   Future<void> _pullToRefresh()async{
-    await Future.wait([_refreshMarket(),_refreshAnalysis(),_refreshCommodities(),_refreshWeather(),_refreshBenefits()]);
+    await Future.wait([DataRefreshService.refreshAll(force:true),_refreshAnalysis(),_refreshBenefits()]);
+    await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);
     if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('최신 시황을 확인했습니다.'),duration:Duration(seconds:1)));
   }
   @override Widget build(BuildContext context)=>Scaffold(
