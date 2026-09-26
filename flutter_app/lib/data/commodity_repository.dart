@@ -65,8 +65,12 @@ class CommodityRepository {
 
   Map<String, dynamic> _cacheJson(List<Commodity> values) => {'markets': values.map((x) => {
     'name': x.id, 'value': double.tryParse(x.value), 'unit': x.unit, 'changePct': x.change,
-    'source': x.source, 'date': x.asOf, 'frequency': x.frequency, 'basis': x.basis,
+    'previousValue':x.previousValue,'previousDate':x.previousDate,'updatedAt':x.updatedAt,'status':x.status,
+    'source': x.source, 'date': x.asOf, 'frequency': x.frequency, 'basis': x.basis,'url':x.url,
     'history': x.history.map((p) => {'date': p.date, 'value': p.value}).toList(),
+    'analysis':{'summary':x.analysisSummary,'updatedAt':x.analysisUpdatedAt,'confidence':x.analysisConfidence,
+      'factors':x.analysisFactors.map((f)=>{'title':f.title,'status':f.status,'detail':f.detail,'source':f.source,'sourceDate':f.sourceDate,'direction':f.direction}).toList(),
+      'sources':x.analysisSources.map((s)=>{'name':s.name,'label':s.label,'url':s.url}).toList()},
   }).toList()};
 
   List<Commodity> _parse(Map<String, dynamic> json) {
@@ -103,7 +107,7 @@ class CommodityRepository {
         .map((x) => CommodityPoint(x['date']?.toString() ?? '', (x['value'] as num).toDouble()))
         .toList();
     final analysis=row['analysis'] is Map<String,dynamic>?row['analysis'] as Map<String,dynamic>:const <String,dynamic>{};
-    final factors=(analysis['factors'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketFactor(x['title']?.toString()??'',x['status']?.toString()??'추정',x['detail']?.toString()??'')).where((x)=>x.title.isNotEmpty&&x.detail.isNotEmpty).toList();
+    final factors=(analysis['factors'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketFactor(x['title']?.toString()??'',x['status']?.toString()??'확인',x['detail']?.toString()??'',source:x['source']?.toString()??'',sourceDate:x['sourceDate']?.toString()??'',direction:x['direction']?.toString()??'neutral')).where((x)=>x.title.isNotEmpty&&x.detail.isNotEmpty&&x.source.isNotEmpty).toList();
     final sources=(analysis['sources'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketSource(x['name']?.toString()??'',x['label']?.toString()??'',x['url']?.toString()??'')).where((x)=>x.url.isNotEmpty).toList();
     return Commodity(label, text, row['unit']?.toString() ?? '', change, icon,
         id: row['name']?.toString() ?? _idForLabel(label),
@@ -117,7 +121,11 @@ class CommodityRepository {
         analysisUpdatedAt:analysis['updatedAt']?.toString()??'',
         analysisConfidence:analysis['confidence']?.toString()??'',
         analysisFactors:factors,
-        analysisSources:sources);
+        analysisSources:sources,
+        previousValue:(row['previousValue'] as num?)?.toDouble(),
+        previousDate:row['previousDate']?.toString()??'',
+        updatedAt:row['updatedAt']?.toString()??'',
+        status:row['status']?.toString()??'LIVE');
   }
 
   String _idForLabel(String label) {

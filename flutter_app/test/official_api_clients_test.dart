@@ -21,6 +21,20 @@ void main() {
     final result = await client.priceFor('20260918');
     expect(result?.price, 6000); expect(result?.count, 20);
   });
+  test('KAPE 등급별 가격을 대표 돈가와 분리해 파싱한다',()async{
+    final xml='<response><header><resultCode>00</resultCode></header><body><items>'
+      '<item><gradeNm>1+</gradeNm><avgPrc>5892</avgPrc><totCnt>10</totCnt></item>'
+      '<item><gradeNm>1</gradeNm><avgPrc>5614</avgPrc><totCnt>20</totCnt></item>'
+      '<item><gradeNm>2</gradeNm><avgPrc>5217</avgPrc><totCnt>30</totCnt></item>'
+      '<item><gradeNm>등외</gradeNm><avgPrc>4326</avgPrc><totCnt>5</totCnt></item>'
+      '</items></body></response>';
+    final client=KapeApiClient(apiKey:'test',client:MockClient((_)async=>http.Response.bytes(
+      utf8.encode(xml),200,headers:{'content-type':'application/xml; charset=utf-8'},
+    )));
+    final rows=await client.gradePricesFor('20260926');
+    expect(rows.map((x)=>x.grade),['1+','1','2','등외']);
+    expect(rows.first.price,5892);expect(rows.last.price,4326);expect(rows.last.date,'20260926');
+  });
 
   test('KMA 예보 필수 항목을 파싱한다', () async {
     final body = {'response': {'header': {'resultCode': '00'}, 'body': {'items': {'item': [

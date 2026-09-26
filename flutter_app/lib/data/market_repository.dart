@@ -21,6 +21,15 @@ class MarketSnapshot {
     if(period==3)return PriceSeries('연간',_annual());
     return PriceSeries('일간',daily.length>8?daily.sublist(daily.length-8):daily);
   }
+  PriceSeries detailSeries(int period){
+    final daily=history.where((x)=>x.resolution!='month').toList();
+    final monthly=_monthly();
+    List<PricePoint> tail(List<PricePoint> rows,int count)=>rows.length>count?rows.sublist(rows.length-count):rows;
+    if(period==0)return PriceSeries('7일',tail(daily,7));
+    if(period==1)return PriceSeries('1개월',tail(daily,30));
+    if(period==2)return PriceSeries('1년',tail(monthly,12));
+    return PriceSeries('3년',tail(monthly,36));
+  }
   List<PricePoint> _monthly(){
     final grouped=<String,List<double>>{};
     final official=history.where((x)=>x.resolution=='month').toList();

@@ -20,6 +20,13 @@ void main() {
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
+  testWidgets('시황 390dp 시안 비교 이미지', (tester) async {
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull);
+    await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/market_390.png'));
+  });
   testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -60,19 +67,21 @@ void main() {
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('돈가 변동 이유'));
+    await tester.tap(find.byKey(const ValueKey('nav_1')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('전국 돈가').first);
     await tester.pumpAndSettle();
     expect(find.text('전국 돈가 상세'), findsOneWidget);
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    final commodityCard = find.byKey(const ValueKey('commodity_corn'));
+    final commodityCard = find.text('옥수수').first;
     await tester.scrollUntilVisible(commodityCard,300,scrollable:find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await tester.tap(commodityCard);
     await tester.pumpAndSettle();
     expect(find.text('옥수수 상세'), findsOneWidget);
-    expect(find.text('왜 오르내리나요?'), findsOneWidget);
+    expect(find.text('가격 움직임 주요 요인'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
@@ -85,11 +94,11 @@ void main() {
     expect(find.text('2026'),findsOneWidget);
     expect(tester.takeException(),isNull);
   });
-  testWidgets('국제정세 제목과 질병 지도가 실제로 이동하고 표시된다',(tester)async{
+  testWidgets('시황 구조와 질병 지도가 실제로 이동하고 표시된다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    final header=find.byKey(const ValueKey('international_market_header'));await tester.scrollUntilVisible(header,300,scrollable:find.byType(Scrollable).first);await tester.tap(header);await tester.pumpAndSettle();
-    expect(find.text('국제정세 해석'),findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
+    expect(find.text('시황'),findsWidgets);expect(find.text('최근 7일 추이'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
     expect(find.byType(CustomPaint),findsWidgets);expect(tester.takeException(),isNull);
   });

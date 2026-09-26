@@ -29,7 +29,7 @@ jobs:
         working-directory: flutter_app
         run: flutter analyze
       - name: Verify official API connectivity
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
           KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
@@ -47,6 +47,7 @@ jobs:
           flutter test test/official_api_clients_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
+        if: github.event_name != 'pull_request'
         working-directory: flutter_app
         run: >-
           flutter build apk --release
@@ -55,6 +56,7 @@ jobs:
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - name: Verify release network permission
+        if: github.event_name != 'pull_request'
         working-directory: flutter_app
         run: |
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
@@ -71,7 +73,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-disease-final-release.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-market-final-release.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-disease-final --cleanup-tag --yes || true
-          gh release create dondonhae-disease-final dondonhae-disease-final-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 질병 WORK 최종" --notes "공식 질병 데이터 정규화, 최근 30일, 정밀 GPS, 10·30·50km 방역 LEVEL, 신규 공식 발생 중복방지 알림을 적용한 검증 빌드입니다."
+          gh release delete dondonhae-market-final --cleanup-tag --yes || true
+          gh release create dondonhae-market-final dondonhae-market-final-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 시황 WORK 최종" --notes "실제 전국 돈가·등급별 돈가·옥수수·대두박·환율·WTI, 기간별 차트와 출처 검증형 시장요인을 적용한 빌드입니다."
