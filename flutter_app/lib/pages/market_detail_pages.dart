@@ -53,6 +53,9 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
           if(grades!=null&&grades!.grades.isNotEmpty)...[
             const SizedBox(height:16),const Text('오늘 경락 현황',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),const SizedBox(height:8),
             _InfoBox('경락두수: ${_number(grades!.grades.fold(0,(sum,x)=>sum+x.count))}두\n평균 도체중: 정보 없음\n성별 데이터: 정보 없음\n※ 공식 응답에 포함된 항목만 표시합니다.'),
+          ] else ...[
+            const SizedBox(height:16),const Text('오늘 경락 현황',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),const SizedBox(height:8),
+            const _InfoBox('현재 공식 응답에서 경락두수·평균 도체중·성별 데이터를 확인할 수 없습니다.'),
           ],
           if(snapshot!=null)...[const SizedBox(height:12),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>ThreeYearPigPricePage(snapshot:snapshot!))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(46),foregroundColor:AppColors.coral),child:const Text('3개년 월별 돈가 비교 보기  >'))],
           const SizedBox(height: 12),
@@ -170,7 +173,7 @@ class _DetailScaffold extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900))),
+        appBar: AppBar(title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),actions:[IconButton(onPressed:()=>showModalBottomSheet(context:context,showDragHandle:true,builder:(_)=>const SafeArea(child:Padding(padding:EdgeInsets.all(20),child:Text('가격·변동률·그래프는 각 공식 데이터의 기준일과 발표 주기를 따릅니다. 데이터가 없는 구간은 임의 값으로 채우지 않습니다.',style:TextStyle(height:1.6))))),icon:const Icon(Icons.help_outline),tooltip:'도움말')]),
         body: SafeArea(child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 430), child: ListView(padding: const EdgeInsets.all(20), children: [child])))),
       );
 }
