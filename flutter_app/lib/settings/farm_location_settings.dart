@@ -2,17 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FarmLocation {
-  const FarmLocation({required this.province, required this.cityCounty, required this.latitude, required this.longitude,this.gpsVerified=false});
-  final String province, cityCounty;
+  const FarmLocation({required this.province, required this.cityCounty, required this.latitude, required this.longitude,this.town='',this.gpsVerified=false,this.accuracy});
+  final String province, cityCounty,town;
   final double latitude, longitude;
   final bool gpsVerified;
-  String get label => cityCounty.isEmpty ? province : '$province $cityCounty';
+  final double? accuracy;
+  String get label => [province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
 }
 
 class FarmLocationSettings extends ChangeNotifier {
   FarmLocationSettings._();
   static final instance = FarmLocationSettings._();
-  static const _provinceKey='farm_location_province', _cityKey='farm_location_city_county', _latKey='farm_location_latitude', _lngKey='farm_location_longitude',_gpsKey='farm_location_gps_verified';
+  static const _provinceKey='farm_location_province', _cityKey='farm_location_city_county', _latKey='farm_location_latitude', _lngKey='farm_location_longitude',_gpsKey='farm_location_gps_verified',_townKey='farm_location_town',_accuracyKey='farm_location_accuracy';
   FarmLocation _location=locations['대구광역시']!.first;
   bool _loaded=false;
   FarmLocation get location=>_location;
@@ -25,16 +26,15 @@ class FarmLocationSettings extends ChangeNotifier {
     final candidates=locations[province]??locations['대구광역시']!;
     _location=candidates.where((x)=>x.cityCounty==city).firstOrNull??candidates.first;
     final lat=p.getDouble(_latKey),lng=p.getDouble(_lngKey);
-    if(lat!=null&&lng!=null)_location=FarmLocation(province:_location.province,cityCounty:_location.cityCounty,latitude:lat,longitude:lng,gpsVerified:p.getBool(_gpsKey)??false);
+    if(lat!=null&&lng!=null)_location=FarmLocation(province:_location.province,cityCounty:_location.cityCounty,town:p.getString(_townKey)??'',latitude:lat,longitude:lng,gpsVerified:p.getBool(_gpsKey)??false,accuracy:p.getDouble(_accuracyKey));
     _loaded=true;notifyListeners();
   }
   Future<void> setLocation(FarmLocation value)async{
     _location=value;_loaded=true;final p=await SharedPreferences.getInstance();
-    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setDouble(_latKey,value.latitude),p.setDouble(_lngKey,value.longitude),p.setBool(_gpsKey,value.gpsVerified),p.setString('farm_weather_region',value.province)]);notifyListeners();
+    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setString(_townKey,value.town),p.setDouble(_latKey,value.latitude),p.setDouble(_lngKey,value.longitude),p.setBool(_gpsKey,value.gpsVerified),if(value.accuracy!=null)p.setDouble(_accuracyKey,value.accuracy!),p.setString('farm_weather_region',value.province)]);notifyListeners();
   }
-  Future<void> setGps(double lat,double lng)async{
-    final nearest=all.reduce((a,b)=>_distance2(lat,lng,a)<_distance2(lat,lng,b)?a:b);
-    await setLocation(FarmLocation(province:nearest.province,cityCounty:nearest.cityCounty,latitude:lat,longitude:lng,gpsVerified:true));
+  Future<void> setGps(double lat,double lng,{required String province,required String cityCounty,String town='',double? accuracy})async{
+    await setLocation(FarmLocation(province:province,cityCounty:cityCounty,town:town,latitude:lat,longitude:lng,gpsVerified:true,accuracy:accuracy));
   }
   static double _distance2(double lat,double lng,FarmLocation x){final a=lat-x.latitude,b=lng-x.longitude;return a*a+b*b;}
   static List<FarmLocation> get all=>locations.values.expand((x)=>x).toList(growable:false);

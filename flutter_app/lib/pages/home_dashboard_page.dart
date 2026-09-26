@@ -6,6 +6,7 @@ import '../data/market_analysis_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../data/benefit_repository.dart';
 import '../services/data_refresh_service.dart';
+import '../services/notification_service.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
 import '../settings/display_settings.dart';
@@ -34,8 +35,9 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();}
-  @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();}
+  @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
+  void _openDiseaseNotification(){if(NotificationService.instance.selectedDiseaseEvent.value!=null&&mounted)setState(()=>_nav=2);}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
   Future<void> _resumeRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}}
   Future<void> _reloadMarketCache()async{final value=await _marketRepository.cached();if(mounted&&value!=null)setState(()=>_market=value);}
