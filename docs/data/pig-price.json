@@ -1,9 +1,9 @@
 {
   "source": "축산물품질평가원",
-  "operation": "auct/pigGrade",
-  "label": "축산유통정보 공지 돈가",
+  "operation": "dabom/producer-pig-auction-price",
+  "label": "생산자 돼지 경락가격",
   "scope": "전국·탕박·등외제외·제주제외",
-  "formula": "암+거세 성별 응답의 거래두수 가중평균",
+  "formula": "축산유통정보 다봄 공표 대표값",
   "filters": {
     "skinYn": "Y",
     "egradeExceptYn": "Y",
@@ -19,14 +19,14 @@
   "previousPrice": 6740,
   "change": -298,
   "changePct": -4.42,
-  "monthAverage": 6172,
+  "monthAverage": 6067,
   "previousMonthAverage": 5719,
-  "previousMonthChange": 453,
+  "previousMonthChange": 348,
   "lastYearMonthAverage": 5906,
-  "lastYearChange": 266,
+  "lastYearChange": 161,
   "count": null,
   "unit": "원/kg",
-  "updatedAt": "2026-09-26T09:32:18.386197+09:00",
+  "updatedAt": "2026-09-19T07:00:30.270277+09:00",
   "status": "ok",
-  "displayStatus": "확정"
+  "displayStatus": "축산유통정보 다봄 공표값"
 }
