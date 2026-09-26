@@ -73,7 +73,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-market-final-release.apk
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-final-ui-release.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
-          gh release delete dondonhae-market-final --cleanup-tag --yes || true
-          gh release create dondonhae-market-final dondonhae-market-final-release.apk dondonhae-home-390.png --target "${{ github.sha }}" --title "돈돈해 시황 WORK 최종" --notes "실제 전국 돈가·등급별 돈가·옥수수·대두박·환율·WTI, 기간별 차트와 출처 검증형 시장요인을 적용한 빌드입니다."
+          cp flutter_app/test/goldens/market_390.png dondonhae-market-390.png
+          gh release delete dondonhae-final-ui --cleanup-tag --yes || true
+          gh release create dondonhae-final-ui dondonhae-final-ui-release.apk dondonhae-home-390.png dondonhae-market-390.png --target "${{ github.sha }}" --title "돈돈해 전체 UI 최종" --notes "첨부된 최종 UI 기준 홈·시황·상세·오늘관리·질병 화면과 실제 API·캐시·GPS·Vector 지도·알림을 연결한 Release APK입니다."
