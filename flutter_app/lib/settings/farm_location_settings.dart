@@ -36,7 +36,6 @@ class FarmLocationSettings extends ChangeNotifier {
   Future<void> setGps(double lat,double lng,{required String province,required String cityCounty,String town='',double? accuracy})async{
     await setLocation(FarmLocation(province:province,cityCounty:cityCounty,town:town,latitude:lat,longitude:lng,gpsVerified:true,accuracy:accuracy));
   }
-  static double _distance2(double lat,double lng,FarmLocation x){final a=lat-x.latitude,b=lng-x.longitude;return a*a+b*b;}
   static List<FarmLocation> get all=>locations.values.expand((x)=>x).toList(growable:false);
   static FarmLocation? find(String text){
     final ordered=[...all]..sort((a,b)=>b.cityCounty.length.compareTo(a.cityCounty.length));
