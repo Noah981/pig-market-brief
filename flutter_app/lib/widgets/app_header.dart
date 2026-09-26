@@ -38,8 +38,8 @@ class _AppHeaderState extends State<AppHeader> {
         '${twoDigits(now.hour)}:${twoDigits(now.minute)}';
   }
   @override
-  Widget build(BuildContext context) {final settings=DisplaySettings.instance;return SizedBox(
-        height: settings.largeTextMode?116:settings.textScale>1?104:84,
+  Widget build(BuildContext context) {final settings=DisplaySettings.instance;return ConstrainedBox(
+        constraints:BoxConstraints(minHeight:settings.largeTextMode?108:settings.textScale>1?96:84),
         child: Row(children: [
           ClipRRect(borderRadius:BorderRadius.circular(12),child:Image.asset('assets/images/dondonhae_symbol.png',width:44,height:44,fit:BoxFit.cover)),
           const SizedBox(width: 9),
