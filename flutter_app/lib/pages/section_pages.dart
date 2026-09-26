@@ -10,10 +10,12 @@ import '../widgets/farm_location_picker.dart';
 import 'benefit_page.dart';
 
 class PageShell extends StatelessWidget {
-  const PageShell({super.key, required this.title, required this.subtitle, required this.child});
+  const PageShell({super.key, required this.title, required this.subtitle, required this.child,this.help,this.onRefresh});
   final String title;
   final String subtitle;
   final Widget child;
+  final VoidCallback? help;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +26,11 @@ class PageShell extends StatelessWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 430),
-            child: CustomScrollView(slivers: [
+            child: RefreshIndicator(color:AppColors.coral,onRefresh:onRefresh??()async{},notificationPredicate:(_)=>onRefresh!=null,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),slivers: [
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(18, 16, 18, 28),
                 sliver: SliverList.list(children: [
-                  if (title.isNotEmpty) Text(title, style: const TextStyle(fontSize: 22, height: 1.18, fontWeight: FontWeight.w900)),
+                  if (title.isNotEmpty) Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Text(title, style: const TextStyle(fontSize: 22, height: 1.18, fontWeight: FontWeight.w900))),if(help!=null)IconButton(onPressed:help,icon:const Icon(Icons.help_outline,size:21),tooltip:'도움말',visualDensity:VisualDensity.compact)]),
                   if (subtitle.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(subtitle, style: const TextStyle(fontSize: 11, height: 1.35, color: AppColors.secondary)),
@@ -37,7 +39,7 @@ class PageShell extends StatelessWidget {
                   child,
                 ]),
               ),
-            ]),
+            ])),
           ),
         ),
       ),
@@ -46,10 +48,11 @@ class PageShell extends StatelessWidget {
 }
 
 class MarketOverviewPage extends StatelessWidget {
-  const MarketOverviewPage({super.key,this.snapshot,this.commodities=const [],this.analysis});
+  const MarketOverviewPage({super.key,this.snapshot,this.commodities=const [],this.analysis,this.onRefresh});
   final MarketSnapshot? snapshot;
   final List<Commodity> commodities;
   final MarketAnalysis? analysis;
+  final Future<void> Function()? onRefresh;
   @override
   Widget build(BuildContext context) {
     final tiles = [
@@ -63,7 +66,7 @@ class MarketOverviewPage extends StatelessWidget {
       ...commodities.map((x)=>(x.name.replaceAll('\n',' '),x.change==null?'확인 중':(x.change!>=0?'상승':'하락'),x.change==null?'공식 데이터 연결 대기':'전일 대비 ${x.change!.abs().toStringAsFixed(1)}%')),
     ];
     return PageShell(
-      title: '시황', subtitle: '지금, 시장의 흐름을 한눈에',
+      title: '시황', subtitle: '지금, 시장의 흐름을 한눈에 확인하세요',onRefresh:onRefresh,help:()=>showDialog(context:context,builder:(context)=>AlertDialog(title:const Text('시황 도움말'),content:const Text('각 가격은 표시된 공식 기준일의 값입니다. 주말·공휴일·미발표일에는 마지막 정상 발표값을 유지합니다. 상승은 분홍색, 하락은 파란색이며 데이터 기준일과 앱 조회 시각은 서로 다를 수 있습니다.'),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('확인'))])),
       child: Column(children: [
         const _MarketPeriodTabs(),
         const SizedBox(height:10),

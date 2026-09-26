@@ -58,7 +58,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   }
   @override Widget build(BuildContext context)=>Scaffold(
     bottomNavigationBar:BottomNavigation(index:_nav,onSelected:(i)=>setState(()=>_nav=i)),
-    body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis),const DiseasePage(),TodayCarePage(guide:_weather,onRefresh:_refreshWeather),const MorePage()])),
+    body:SafeArea(bottom:false,child:IndexedStack(index:_nav,children:[_home(),MarketOverviewPage(snapshot:_market,commodities:_commodities,analysis:_analysis,onRefresh:_pullToRefresh),const DiseasePage(),TodayCarePage(guide:_weather,onRefresh:_refreshWeather),const MorePage()])),
   );
   Widget _home()=>Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:430),child:RefreshIndicator(color:AppColors.coral,onRefresh:_pullToRefresh,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),key:const PageStorageKey('home'),slivers:[
     const SliverToBoxAdapter(child:FarmHeroSection()),
