@@ -35,7 +35,13 @@ jobs:
           KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
           KMA_API_KEY: ${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
-        run: python scripts/validate_official_apis.py
+        run: |
+          for attempt in 1 2 3; do
+            python scripts/validate_official_apis.py && exit 0
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            echo "Official API check failed transiently; retrying ($attempt/3)"
+            sleep $((attempt * 10))
+          done
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
