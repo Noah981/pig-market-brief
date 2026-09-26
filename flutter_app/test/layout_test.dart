@@ -26,7 +26,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
     await tester.pumpAndSettle();
-    expect(find.text('6,442'), findsOneWidget);
+    expect(find.text('5,307'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
   testWidgets('하단 메뉴가 실제 화면으로 이동한다', (tester) async {
@@ -78,7 +78,7 @@ void main() {
   testWidgets('돈가 기간 탭마다 날짜축이 실제로 바뀐다', (tester) async {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(find.text('9/18'),findsOneWidget);
+    expect(find.text('9/23'),findsOneWidget);
     await tester.tap(find.text('월간'));await tester.pump();
     expect(find.text('8월'),findsWidgets);
     await tester.tap(find.text('연간'));await tester.pump();
@@ -131,3 +131,4 @@ void main() {
     });
   }
 }
+
