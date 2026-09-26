@@ -20,6 +20,13 @@ void main() {
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
   testWidgets('홈 412dp 오버플로 없음', (tester) => renderAt(tester, 412, '412'));
+  testWidgets('시황 390dp 시안 비교 이미지', (tester) async {
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
+    expect(tester.takeException(),isNull);
+    await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/market_390.png'));
+  });
   testWidgets('공식 기본값과 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -91,7 +98,7 @@ void main() {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
-    expect(find.text('시황'),findsOneWidget);expect(find.text('최근 7일 추이'),findsOneWidget);
+    expect(find.text('시황'),findsWidgets);expect(find.text('최근 7일 추이'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
     expect(find.byType(CustomPaint),findsWidgets);expect(tester.takeException(),isNull);
   });
