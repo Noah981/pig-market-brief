@@ -9,6 +9,7 @@ import 'package:dondonhae/data/weather_farm_repository.dart';
 import 'package:dondonhae/models/dashboard_models.dart';
 import 'package:dondonhae/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,6 +38,10 @@ MarketSnapshot fixtureMarket()=>MarketSnapshot(price:5307,previousPrice:5360,cha
 Commodity fixtureCommodity(String id){final data=switch(id){'corn'=>('옥수수',213.19,r'$/톤',8.9),'soybean_meal'=>('대두박',329.43,r'$/톤',11.2),'usd_krw'=>('달러 환율',1360.0,'원/USD',-1.8),_=>('국제 유가 (WTI)',107.02,r'$/bbl',4.5)};return Commodity(data.$1,data.$2.toString(),data.$3,data.$4,Icons.show_chart,id:id,source:'공식 데이터 테스트 Fixture',asOf:'2026-09-26',frequency:'daily',basis:'화면 렌더 검증 전용',history:List.generate(7,(i)=>CommodityPoint('2026-09-${(20+i).toString().padLeft(2,'0')}',data.$2*(.94+i*.01))));}
 
 void main() {
+  setUpAll(() async {
+    final bytes=await File('assets/fonts/NotoSansKR.ttf').readAsBytes();
+    await (FontLoader('NotoSansKR')..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+  });
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
   testWidgets('홈 390dp 오버플로 없음', (tester) => renderAt(tester, 390, '390'));
@@ -177,3 +182,5 @@ void main() {
     });
   }
 }
+import 'dart:io';
+import 'dart:typed_data';
