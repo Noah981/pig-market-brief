@@ -75,16 +75,24 @@ def main():
         try: cached_rows=json.loads(HIST.read_text(encoding="utf-8")).get("rows",[])
         except Exception: pass
     merged0={r["date"]:r for r in cached_rows}
-    # 발표 감시는 API 한도를 보호하기 위해 오늘 1회만 조회한다. 실패하면 기존 확정값 유지.
-    day=now.strftime("%Y%m%d")
-    # KAPE 공식 돼지 경락가격 알림은 매일 18시. 17:30~19:30에만 촘촘히 조회해 불필요한 API 소모를 막는다.
-    poll_now = (now.hour==17 and now.minute>=30) or now.hour in (18,19)
+    # 최근 영업일을 역순으로 조회한다. 달력 날짜가 아니라 API에 실제 등록된
+    # 최신 두 건을 기준으로 신규 데이터와 전일 대비를 결정한다.
+    poll_now = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" or (now.hour==17 and now.minute>=30) or now.hour in (18,19)
     if poll_now:
-        try:
-            price,count=day_price(key,day)
-            if price: merged0[day]={"date":day,"price":price,"count":count}
-        except Exception as e:
-            print("KAPE current fetch skipped",day,e)
+        found=0
+        for ago in range(0,14):
+            day=(now-timedelta(days=ago)).strftime("%Y%m%d")
+            if day in merged0:
+                found+=1
+                if found>=2: break
+                continue
+            try:
+                price,count=day_price(key,day)
+                if price:
+                    merged0[day]={"date":day,"price":price,"count":count};found+=1
+                    if found>=2: break
+            except Exception as e:
+                print("KAPE recent fetch skipped",day,type(e).__name__)
     else:
         print("KAPE price poll idle outside release window")
     rows=sorted(merged0.values(),key=lambda r:r["date"])

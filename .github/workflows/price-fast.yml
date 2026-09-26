@@ -1,8 +1,13 @@
 name: Fast KAPE price watch
 on:
-  # 기존 pigGrade 자체 가중평균은 다봄의 생산자 돼지 경락가격과 다른
-  # 값을 만들 수 있어 자동 실행을 중지한다. 다봄 공표값 수집기로만 교체한다.
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/fetch_pig_price.py', '.github/workflows/price-fast.yml']
+  schedule:
+    # 평일 KST 17:30~19:45, 15분 간격으로 신규 확정값을 확인한다.
+    - cron: '30,45 8-10 * * 1-5'
+    - cron: '0,15 9-10 * * 1-5'
 permissions:
   contents: write
 concurrency:

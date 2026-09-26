@@ -1,11 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../config/api_config.dart';
 import '../data/commodity_repository.dart';
 import '../data/disease_repository.dart';
 import '../data/market_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../settings/farm_location_settings.dart';
-import 'api/kamis_api_client.dart';
 
 class DataRefreshService {
   DataRefreshService._();
@@ -22,7 +20,6 @@ class DataRefreshService {
       _isolated(()async{await CommodityRepository().refresh();}),
       _isolated(()async{await WeatherFarmRepository().refresh(region:FarmLocationSettings.instance.location.province);}),
       _isolated(()async{await DiseaseRepository().refresh();}),
-      if(ApiConfig.hasKamis)_isolated(()async{await KamisApiClient().fetchLatest();}),
     ]);
     await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
     return true;
