@@ -35,8 +35,9 @@ class MarketAnalysisRepository {
       final factors = (json['factors'] as List? ?? const [])
           .whereType<Map<String, dynamic>>()
           .map((x) => MarketFactor(x['title']?.toString() ?? '',
-              x['status']?.toString() ?? '', x['detail']?.toString() ?? ''))
-          .where((x) => x.title.isNotEmpty && x.detail.isNotEmpty)
+              x['status']?.toString() ?? '', x['detail']?.toString() ?? '',
+              source:x['source']?.toString()??'',sourceDate:x['sourceDate']?.toString()??'',direction:x['direction']?.toString()??'neutral'))
+          .where((x) => x.title.isNotEmpty && x.detail.isNotEmpty && x.source.isNotEmpty)
           .toList();
       final sources=(json['sources'] as List? ?? const []).whereType<Map<String,dynamic>>().map((x)=>MarketSource(x['name']?.toString()??'',x['label']?.toString()??'',x['url']?.toString()??'')).where((x)=>x.name.isNotEmpty).toList();
       return MarketAnalysis(

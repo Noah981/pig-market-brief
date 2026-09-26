@@ -28,12 +28,12 @@ class PageShell extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 430),
             child: RefreshIndicator(color:AppColors.coral,onRefresh:onRefresh??()async{},notificationPredicate:(_)=>onRefresh!=null,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),slivers: [
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(18, 16, 18, 28),
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
                 sliver: SliverList.list(children: [
-                  if (title.isNotEmpty) Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Text(title, style: const TextStyle(fontSize: 22, height: 1.18, fontWeight: FontWeight.w900))),if(help!=null)IconButton(onPressed:help,icon:const Icon(Icons.help_outline,size:21),tooltip:'도움말',visualDensity:VisualDensity.compact)]),
+                  if (title.isNotEmpty) Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Text(title, style: const TextStyle(fontSize: 27, height: 1.12, fontWeight: FontWeight.w900,letterSpacing:-1.2))),if(help!=null)IconButton(onPressed:help,icon:const Icon(Icons.help_outline,size:24),tooltip:'도움말',visualDensity:VisualDensity.compact)]),
                   if (subtitle.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(subtitle, style: const TextStyle(fontSize: 11, height: 1.35, color: AppColors.secondary)),
+                    Text(subtitle, style: const TextStyle(fontSize: 13, height: 1.35, color: AppColors.secondary)),
                   ],
                   if (title.isNotEmpty) const SizedBox(height: 16),
                   child,
@@ -73,14 +73,17 @@ class MarketOverviewPage extends StatelessWidget {
         GridView.count(
           crossAxisCount: 2, shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 1.38,
+          mainAxisSpacing: 8, crossAxisSpacing: 8, childAspectRatio: 1.43,
           children: tiles,
         ),
         const SizedBox(height: 10),
-        SizedBox(height:104,child:_commodityTile('🛢️','wti',context,wide:true)),
+        SizedBox(height:88,child:_commodityTile('🛢️','wti',context,wide:true)),
         const SizedBox(height: 18),
-        const _SectionTitle('시황 요약 (오늘)'),
-        ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3)),
+        Container(padding:const EdgeInsets.fromLTRB(12,12,12,6),decoration:appCard(radius:18),child:Column(children:[
+          const Row(children:[Expanded(child:_SectionTitle('시황 요약 (오늘)')),Text('전체 보기  ›',style:TextStyle(fontSize:10,fontWeight:FontWeight.w800,color:AppColors.coral))]),
+          const SizedBox(height:4),
+          ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3)),
+        ])),
         const SizedBox(height:18),
         _MarketRecentTrend(snapshot:snapshot,commodities:commodities),
       ]),
@@ -105,19 +108,28 @@ class _MarketTile extends StatelessWidget {
   final bool up, wide;
   final VoidCallback? onTap;
   @override
-  Widget build(BuildContext context) => InkWell(borderRadius:BorderRadius.circular(15),onTap:onTap,child:Container(
-    padding: const EdgeInsets.all(13), decoration: appCard(radius: 15),
+  Widget build(BuildContext context) => InkWell(borderRadius:BorderRadius.circular(18),onTap:onTap,child:Container(
+    padding: const EdgeInsets.all(12), decoration: appCard(color:_background(),radius: 18),
     child: Row(children: [
-      Text(emoji, style: TextStyle(fontSize: wide ? 30 : 25)),
+      Container(width:wide?44:42,height:wide?44:42,decoration:BoxDecoration(color:Colors.white.withValues(alpha:.72),shape:BoxShape.circle),child:Icon(_icon(),color:_iconColor(),size:wide?29:27)),
       const SizedBox(width: 9),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(name, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
-        FittedBox(child: Text('$value $unit', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900))),
-        Text(change, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: up ? AppColors.coral : AppColors.blue)),
+        Text('$name  ›', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+        FittedBox(child: Text('$value $unit', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900,letterSpacing:-.5))),
+        Text(change, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: up ? AppColors.coral : AppColors.blue)),
       ])),
-      const Icon(Icons.chevron_right, color: AppColors.coral, size: 17),
+      SizedBox(width:wide?92:34,height:36,child:CustomPaint(painter:_MiniSparkline(up?AppColors.coral:AppColors.blue))),
     ]),
   ));
+  Color _background()=>switch(emoji){'🌽'=>const Color(0xFFFFFEF2),'＄'=>const Color(0xFFF0FAFF),'🛢️'=>const Color(0xFFFFF5FC),_=>const Color(0xFFFFF8FB)};
+  IconData _icon()=>switch(emoji){'🌽'=>Icons.eco_rounded,'🫘'=>Icons.grain_rounded,'＄'=>Icons.attach_money_rounded,'🛢️'=>Icons.oil_barrel_rounded,_=>Icons.savings_rounded};
+  Color _iconColor()=>switch(emoji){'🌽'=>const Color(0xFFE9A600),'＄'=>AppColors.blue,'🛢️'=>const Color(0xFF3292D0),_=>AppColors.coral};
+}
+
+class _MiniSparkline extends CustomPainter{
+  const _MiniSparkline(this.color);final Color color;
+  @override void paint(Canvas canvas,Size size){final p=Path()..moveTo(0,size.height*.7)..cubicTo(size.width*.18,size.height*.15,size.width*.32,size.height*.92,size.width*.5,size.height*.5)..cubicTo(size.width*.68,size.height*.12,size.width*.78,size.height*.7,size.width,size.height*.22);canvas.drawPath(p,Paint()..color=color..style=PaintingStyle.stroke..strokeWidth=2.3..strokeCap=StrokeCap.round);}
+  @override bool shouldRepaint(covariant _MiniSparkline old)=>old.color!=color;
 }
 
 class MorePage extends StatefulWidget {

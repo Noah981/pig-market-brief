@@ -1,6 +1,13 @@
 import 'package:dondonhae/app.dart';
 import 'package:dondonhae/settings/display_settings.dart';
 import 'package:dondonhae/pages/section_pages.dart';
+import 'package:dondonhae/pages/market_detail_pages.dart';
+import 'package:dondonhae/pages/today_care_page.dart';
+import 'package:dondonhae/pages/disease_page.dart';
+import 'package:dondonhae/data/market_repository.dart';
+import 'package:dondonhae/data/commodity_repository.dart';
+import 'package:dondonhae/data/weather_farm_repository.dart';
+import 'package:dondonhae/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +22,16 @@ Future<void> renderAt(WidgetTester tester, double width, String name) async {
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/home_$name.png'));
 }
 
+Future<void> renderPage(WidgetTester tester, Widget page, String name) async {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = const Size(390, 844);
+  addTearDown(tester.view.reset);
+  await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:page));
+  await tester.pump(const Duration(milliseconds:800));
+  expect(tester.takeException(), isNull);
+  await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/$name.png'));
+}
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
@@ -26,6 +43,26 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
     expect(tester.takeException(),isNull);
     await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/market_390.png'));
+  });
+  testWidgets('오늘관리 390dp 시안 비교 이미지',(tester)async{
+    await renderPage(tester,TodayCarePage(guide:WeatherFarmRepository.fallback,onRefresh:()async{}),'today_390');
+  });
+  testWidgets('질병 전체 390dp 시안 비교 이미지',(tester)async{
+    await renderPage(tester,const DiseasePage(),'disease_390');
+  });
+  testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
+    await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');
+  });
+  testWidgets('시황 상세 화면 전체 시안 비교 이미지',(tester)async{
+    final market=await MarketRepository().cached();
+    final commodities=await CommodityRepository().cached();
+    expect(market,isNotNull);
+    await renderPage(tester,PigPriceDetailPage(snapshot:market,analysis:null),'pig_detail_390');
+    for(final id in const ['corn','soybean_meal','usd_krw','wti']){
+      final item=commodities.firstWhere((x)=>x.id==id);
+      await renderPage(tester,CommodityDetailPage(item:item),'${id}_detail_390');
+    }
+    await renderPage(tester,ThreeYearPigPricePage(snapshot:market!),'three_year_390');
   });
   testWidgets('가짜 0값 없이 아래로 당겨 새로고침을 제공한다', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
