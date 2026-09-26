@@ -54,6 +54,9 @@ def main():
             kape_ok = True; break
     if not kape_ok: raise RuntimeError("KAPE no recent official rows")
     print(f"KAPE: latest official row OK dataDate={day}")
+    first = kape.find(".//item")
+    if first is not None:
+        print("KAPE_SCHEMA:", ",".join(sorted(child.tag for child in first)))
 
     # Fixed official KMA grid/time only verifies auth and response schema; app requests its actual GPS grid.
     candidate = now - timedelta(minutes=15)
