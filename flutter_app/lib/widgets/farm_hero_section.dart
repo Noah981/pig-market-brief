@@ -7,7 +7,7 @@ class FarmHeroSection extends StatelessWidget {
   const FarmHeroSection({super.key});
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: DisplaySettings.instance.largeTextMode?148:132,
+        height: DisplaySettings.instance.largeTextMode?140:132,
         child: Stack(fit: StackFit.expand, children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
