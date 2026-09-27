@@ -2,6 +2,7 @@ enum DiseaseType { asf, fmd, ped, prrs }
 
 extension DiseaseTypeLabel on DiseaseType {
   String get label => switch (this) { DiseaseType.asf => 'ASF', DiseaseType.fmd => '구제역', DiseaseType.ped => 'PED', DiseaseType.prrs => 'PRRS' };
+  String get legalGroup=>switch(this){DiseaseType.asf||DiseaseType.fmd=>'제1종',DiseaseType.ped||DiseaseType.prrs=>'제3종'};
 }
 
 DiseaseType? normalizeDiseaseType(String value) {
