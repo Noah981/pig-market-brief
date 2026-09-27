@@ -53,7 +53,7 @@ jobs:
           flutter test test/disease_repository_test.dart
           flutter test test/disease_notification_test.dart
           flutter test test/weather_farm_repository_test.dart
-          flutter test test/official_api_clients_test.dart
+          flutter test test/official_api_clients_test.dart\n          flutter test test/live_market_driver_builder_test.dart
           flutter test --update-goldens test/layout_test.dart
       - name: Build release APK
         if: github.event_name != 'pull_request'
