@@ -1,7 +1,25 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-09-27T22:52:43.866758+09:00",
-  "items": [],
+  "updatedAt": "2026-09-28T03:02:57.182723+09:00",
+  "items": [
+    {
+      "disease": "ASF",
+      "source": "공개뉴스",
+      "countryCode": "KR",
+      "scope": "국내",
+      "evidenceLevel": "PUBLIC_UNCONFIRMED",
+      "status": "공개정보 · 확인 중",
+      "level": "공개정보 · 확인 중",
+      "summary": "창녕서 경남 첫 아프리카돼지열병 발생…3천900마리 살처분 - 매일경제 마켓",
+      "sourceUrl": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1zclV0alRNXzhhWjZ4eDZiSUxPa1hTN2FIeTZJZk9rV3JsRXIteW1oSy1fbm9odmxUVGwyMmh2TmVpT092MURjcVJ4OGcweTE5?oc=5",
+      "occurrenceDate": "2026-09-13",
+      "publishedAt": "Sat, 12 Sep 2026 23:09:27 GMT",
+      "detectedAt": "2026-09-28T03:02:54.292464+09:00",
+      "region": "창녕군",
+      "latitude": 35.544,
+      "longitude": 128.492
+    }
+  ],
   "evidencePolicy": {
     "OFFICIAL": "정부·방역기관 원문에서 발생·확진·양성이 확인된 항목",
     "PUBLIC_UNCONFIRMED": "공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목",
