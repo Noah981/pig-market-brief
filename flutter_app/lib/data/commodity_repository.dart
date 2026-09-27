@@ -48,6 +48,11 @@ class CommodityRepository {
     final raw = utf8.decode(response.bodyBytes);
     final json = jsonDecode(raw) as Map<String, dynamic>;
     var values = _parse(json);
+    final refreshed=<String,Commodity>{};
+    await Future.wait({
+      'corn':'PMAIZMTUSDM','soybean_meal':'PSMEAUSDM','wti':'DCOILWTICO'
+    }.entries.map((entry)async{try{refreshed[entry.key]=await _fred(entry.key,entry.value);}catch(_){}}));
+    if(refreshed.isNotEmpty)values=values.map((x)=>refreshed[x.id]??x).toList();
     if (ApiConfig.hasEcos) {
       try {
         final points = await _ecosClient.usdKrw();
@@ -64,6 +69,24 @@ class CommodityRepository {
     }
     await (await SharedPreferences.getInstance()).setString(_cacheKey, jsonEncode(_cacheJson(values)));
     return values;
+  }
+
+  Future<Commodity> _fred(String id,String series)async{
+    final response=await _client.get(Uri.https('fred.stlouisfed.org','/graph/fredgraph.csv',{'id':series})).timeout(const Duration(seconds:15));
+    if(response.statusCode!=200)throw Exception('FRED unavailable');
+    final points=<CommodityPoint>[];
+    for(final line in utf8.decode(response.bodyBytes).split(RegExp(r'\r?\n')).skip(1)){
+      final cells=line.split(',');if(cells.length<2)continue;
+      final value=double.tryParse(cells[1].trim());if(value!=null&&value>0)points.add(CommodityPoint(cells[0].trim(),value));
+    }
+    if(points.length<2)throw const FormatException('FRED series empty');
+    final latest=points.last,previous=points[points.length-2],change=(latest.value-previous.value)/previous.value*100;
+    final meta={
+      'corn':('옥수수','$/톤','세계 옥수수 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
+      'soybean_meal':('대두박','$/톤','세계 대두박 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
+      'wti':('국제유가\n(WTI)','$/bbl','WTI Cushing 현물가격','미국 에너지정보청(EIA)·FRED','daily'),
+    }[id]!;
+    return Commodity(meta.$1,latest.value.toStringAsFixed(latest.value>=1000?1:2),meta.$2,change,id=='wti'?Icons.local_gas_station:Icons.eco,id:id,source:meta.$4,asOf:latest.date,frequency:meta.$5,basis:meta.$3,url:'https://fred.stlouisfed.org/series/$series',history:points.length>366?points.sublist(points.length-366):points,previousValue:previous.value,previousDate:previous.date,updatedAt:DateTime.now().toIso8601String(),status:'LIVE');
   }
 
   Map<String, dynamic> _cacheJson(List<Commodity> values) => {'markets': values.map((x) => {

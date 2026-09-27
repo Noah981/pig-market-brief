@@ -60,7 +60,7 @@ class MarketSnapshot {
 }
 
 class MarketRepository {
-  static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json',_historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json',_cacheKey='official_dabom_producer_pig_price_v4';
+  static const _priceUrl='https://noah981.github.io/pig-market-brief/data/pig-price.json',_historyUrl='https://noah981.github.io/pig-market-brief/data/pig-price-history.json',_dabomUrl='https://www.ekapepia.com/v3/web/main.do?userGroup=common',_cacheKey='official_dabom_producer_pig_price_v4';
   final http.Client _client;
   MarketRepository({http.Client? client}):_client=client??http.Client();
   Future<MarketSnapshot?> cached()async{
@@ -75,13 +75,40 @@ class MarketRepository {
     try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
   }
   Future<MarketSnapshot> refresh()async{
-    // 대표 돈가는 raw pigGrade를 기기에서 재계산하지 않는다. Actions가
-    // 다봄 메인의 공표 카드를 검증·수집한 JSON만 사용한다.
     final stamp=DateTime.now().millisecondsSinceEpoch;
     final responses=await Future.wait([_client.get(Uri.parse('$_priceUrl?v=$stamp')).timeout(const Duration(seconds:12)),_client.get(Uri.parse('$_historyUrl?v=$stamp')).timeout(const Duration(seconds:12))]);
     if(responses.any((r)=>r.statusCode!=200))throw Exception('Official data unavailable');
     final combined=<String,dynamic>{'price':jsonDecode(utf8.decode(responses[0].bodyBytes)),'history':jsonDecode(utf8.decode(responses[1].bodyBytes))};
+    // GitHub snapshot보다 다봄 공식 카드가 최신이면 즉시 교체한다.
+    // 대표 돈가는 raw 등급 API를 재계산하지 않고 다봄의 전국(등외·제주 제외)
+    // 공표값을 그대로 사용한다.
+    try{
+      final official=await _fetchDabomHeadline();
+      final current=((combined['price'] as Map)['date']??'').toString();
+      if(official['date'].toString().compareTo(current)>=0){
+        final rows=((combined['history'] as Map)['rows'] as List? ?? <dynamic>[]).whereType<Map>().map((x)=>x.cast<String,dynamic>()).toList();
+        rows.removeWhere((x)=>x['date']==official['date']);
+        rows.add({'date':official['date'],'price':official['price'],'resolution':'day','sourceType':'dabom-headline'});
+        rows.sort((a,b)=>a['date'].toString().compareTo(b['date'].toString()));
+        final previous=rows.where((x)=>x['date'].toString().compareTo(official['date'].toString())<0&&x['price'] is num).lastOrNull;
+        final previousPrice=(previous?['price'] as num?)?.round()??official['price'] as int;
+        final price=official['price'] as int,change=price-previousPrice;
+        combined['price']={...official,'previousPrice':previousPrice,'previousDate':previous?['date']??official['date'],'change':change,'changePct':previousPrice==0?0:change/previousPrice*100};
+        combined['history']={'rows':rows};
+      }
+    }catch(_){/* 검증된 원격 snapshot 유지 */}
     final value=_decode(combined);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(combined));return value;
+  }
+  Future<Map<String,dynamic>> _fetchDabomHeadline()async{
+    final response=await _client.get(Uri.parse(_dabomUrl),headers:{'User-Agent':'Mozilla/5.0 Dondonhae/1.0','Accept-Language':'ko-KR,ko;q=0.9'}).timeout(const Duration(seconds:15));
+    if(response.statusCode!=200)throw Exception('Dabom unavailable');
+    final html=utf8.decode(response.bodyBytes,allowMalformed:true);
+    final block=RegExp(r'<div class="main-menu-wrap">[\s\S]*?data-card="auctPig"[\s\S]*?<b>전국\(등외,\s*제주 제외\)</b>[\s\S]*?<em[^>]*>\s*([0-9,]+)\s*</em>[\s\S]*?<div class="main-menu-bottom">\s*<div><b>(\d{2})년\s*(\d{2})월\s*(\d{2})일</b>',caseSensitive:false).firstMatch(html);
+    if(block==null)throw const FormatException('Dabom headline missing');
+    final price=int.parse(block.group(1)!.replaceAll(',',''));
+    if(price<1000||price>20000)throw const FormatException('Dabom price range');
+    final date='20${block.group(2)}${block.group(3)}${block.group(4)}';
+    return {'source':'축산물품질평가원','sourceUrl':_dabomUrl,'scope':'전국·탕박·등외제외·제주제외','formula':'축산유통정보 다봄 공표 대표값','date':date,'price':price,'updatedAt':DateTime.now().toIso8601String(),'status':'LIVE'};
   }
   MarketSnapshot _decode(Map<String,dynamic> combined,{bool fromCache=false}){
     final price=((combined['price'] as Map?)?.cast<String,dynamic>())??combined;
