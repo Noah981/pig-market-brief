@@ -129,7 +129,7 @@ class _MarketTile extends StatelessWidget {
 
 class _MiniSparkline extends CustomPainter{
   const _MiniSparkline(this.color,this.values);final Color color;final List<double> values;
-  @override void paint(Canvas canvas,Size size){if(values.length<2)return;final data=values.length>10?values.sublist(values.length-10):values,min=data.reduce((a,b)=>a<b?a:b),max=data.reduce((a,b)=>a>b?a:b),range=(max-min).abs()<.0001?1:max-min;final p=Path();for(var i=0;i<data.length;i++){final x=i/(data.length-1)*size.width,y=size.height-4-(data[i]-min)/range*(size.height-8);if(i==0)p.moveTo(x,y);else p.lineTo(x,y);}canvas.drawPath(p,Paint()..color=color..style=PaintingStyle.stroke..strokeWidth=2.3..strokeCap=StrokeCap.round..strokeJoin=StrokeJoin.round);}
+  @override void paint(Canvas canvas,Size size){if(values.length<2){return;}final data=values.length>10?values.sublist(values.length-10):values,min=data.reduce((a,b)=>a<b?a:b),max=data.reduce((a,b)=>a>b?a:b),range=(max-min).abs()<.0001?1:max-min;final p=Path();for(var i=0;i<data.length;i++){final x=i/(data.length-1)*size.width,y=size.height-4-(data[i]-min)/range*(size.height-8);if(i==0){p.moveTo(x,y);}else{p.lineTo(x,y);}}canvas.drawPath(p,Paint()..color=color..style=PaintingStyle.stroke..strokeWidth=2.3..strokeCap=StrokeCap.round..strokeJoin=StrokeJoin.round);}
   @override bool shouldRepaint(covariant _MiniSparkline old)=>old.color!=color||old.values!=values;
 }
 
