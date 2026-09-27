@@ -39,7 +39,7 @@ class DiseaseAlert {
 DateTime? _parseDate(String value){
   final iso=DateTime.tryParse(value);if(iso!=null)return iso;
   final digits=value.replaceAll(RegExp(r'[^0-9]'),'');
-  if(RegExp(r'^\d{8}').hasMatch(digits))return DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');
+  if(RegExp(r'^(?:19|20)\d{6}').hasMatch(digits))return DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');
   final rfc=RegExp(r'\b(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})\b',caseSensitive:false).firstMatch(value);
   if(rfc==null)return null;
   const months={'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12};
