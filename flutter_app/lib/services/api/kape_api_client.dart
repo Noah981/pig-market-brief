@@ -116,7 +116,7 @@ class KapeApiClient {
         if(avg!=null&&avg>0&&count>0){totalWeight+=avg*count;weightCount+=count;}
         else if(sum!=null&&sum>0&&count>0){totalWeight+=sum;weightCount+=count;}
       }
-      if(entry.$2)female=sexCount;else castrated=sexCount;
+      if(entry.$2){female=sexCount;}else{castrated=sexCount;}
     }
     final total=female+castrated;
     return KapeAuctionStatus(date:ymd,totalCount:total,castratedCount:castrated,femaleCount:female,averageCarcassWeight:weightCount>0?totalWeight/weightCount:null);
