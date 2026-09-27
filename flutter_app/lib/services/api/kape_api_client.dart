@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
 import 'api_exception.dart';
@@ -39,7 +40,7 @@ class KapeApiClient {
       });
       final response = await _client.get(uri).timeout(const Duration(seconds: 12));
       if (response.statusCode != 200) throw OfficialApiException('KAPE', 'http', response.statusCode);
-      final xml = response.body;
+      final xml = utf8.decode(response.bodyBytes,allowMalformed:true);
       final code = RegExp(r'<resultCode>(.*?)</resultCode>').firstMatch(xml)?.group(1)?.trim();
       if (code != null && code != '00') throw const OfficialApiException('KAPE', 'service-error');
       final items = RegExp(r'<item>([\s\S]*?)</item>').allMatches(xml);
@@ -73,10 +74,11 @@ class KapeApiClient {
     });
     final response=await _client.get(uri).timeout(const Duration(seconds:12));
     if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
-    final code=RegExp(r'<resultCode>(.*?)</resultCode>').firstMatch(response.body)?.group(1)?.trim();
+    final xml=utf8.decode(response.bodyBytes,allowMalformed:true);
+    final code=RegExp(r'<resultCode>(.*?)</resultCode>').firstMatch(xml)?.group(1)?.trim();
     if(code!=null&&code!='00')throw const OfficialApiException('KAPE','service-error');
     final parsed=<Map<String,String>>[];
-    for(final match in RegExp(r'<item>([\s\S]*?)</item>').allMatches(response.body)){
+    for(final match in RegExp(r'<item>([\s\S]*?)</item>').allMatches(xml)){
       final body=match.group(1)!;final fields=<String,String>{};
       for(final f in RegExp(r'<([^/>]+)>(.*?)</\1>').allMatches(body)){fields[f.group(1)!.toLowerCase()]=f.group(2)!.trim();}
       parsed.add(fields);
@@ -92,6 +94,24 @@ class KapeApiClient {
       if(grade==null||price==null||price<=0)continue;
       final weight=count>0?count:1,old=totals[grade];totals[grade]=(old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight));
     }
+    if(totals.isEmpty){
+      const columns=<String,List<String>>{
+        '1+':['c_1101ptotamt','c_1101plustotamt','grade1plustotamt'],
+        '1':['c_1101totamt','grade1totamt'],
+        '2':['c_1102totamt','grade2totamt'],
+        '등외':['c_1104totamt','c_1103totamt','cegradetotamt','outgradetotamt'],
+      };
+      for(final fields in source){
+        for(final entry in columns.entries){
+          String? amountKey;for(final key in entry.value){if(fields.containsKey(key)){amountKey=key;break;}}
+          if(amountKey==null)continue;
+          final price=double.tryParse((fields[amountKey]??'').replaceAll(',',''));if(price==null||price<=0)continue;
+          final countKey=amountKey.replaceFirst(RegExp('totamt\$',caseSensitive:false),'totcnt');
+          final count=double.tryParse((fields[countKey]??'').replaceAll(',',''))?.round()??0,weight=count>0?count:1;
+          final old=totals[entry.key];totals[entry.key]=old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight);
+        }
+      }
+    }
     return ['1+','1','2','등외'].where(totals.containsKey).map((grade){final x=totals[grade]!;return KapeGradePrice(grade:grade,price:(x.$1/x.$2).round(),count:x.$2,date:ymd);}).toList();
   }
 
@@ -105,7 +125,8 @@ class KapeApiClient {
       final response=await _client.get(uri).timeout(const Duration(seconds:12));
       if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
       var sexCount=0;
-      final items=RegExp(r'<item>([\s\S]*?)</item>').allMatches(response.body).map((m)=>m.group(1)!).toList();
+      final xml=utf8.decode(response.bodyBytes,allowMalformed:true);
+      final items=RegExp(r'<item>([\s\S]*?)</item>').allMatches(xml).map((m)=>m.group(1)!).toList();
       final nationwide=items.where((body)=>body.contains('전국')).toList();
       for(final body in nationwide.isNotEmpty?nationwide:items){
         double? value(Iterable<String> tags){for(final tag in tags){final m=RegExp('<$tag>(.*?)</$tag>',caseSensitive:false).firstMatch(body);final n=double.tryParse((m?.group(1)??'').replaceAll(',',''));if(n!=null)return n;}return null;}
