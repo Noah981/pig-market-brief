@@ -136,7 +136,7 @@ void main() {
     expect(find.text('오늘의 환기·점검 포인트'),findsOneWidget);
     expect(find.text('수의사 연결'),findsOneWidget);
     expect(find.text('약품·예방 정보'),findsOneWidget);
-    expect(find.text('9월에 주의할 질환군'),findsOneWidget);
+    expect(find.text('9월 주의 질환'),findsOneWidget);
     expect(find.textContaining('PRRS'),findsWidgets);
     final risk=find.textContaining('호흡기 질환').last;await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();
     expect(find.text('건강 신호 상세'),findsOneWidget);
