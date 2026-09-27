@@ -10,7 +10,7 @@ class MarketReasonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final factors = analysis?.factors.take(2).toList() ?? const <MarketFactor>[];
+    final factors = analysis?.factors.take(4).toList() ?? const <MarketFactor>[];
     return Material(
       color: const Color(0xFFFFF0F4),
       borderRadius: BorderRadius.circular(18),
@@ -18,7 +18,7 @@ class MarketReasonCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(11),
+          padding: const EdgeInsets.fromLTRB(10,10,10,9),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Row(children: [
               Icon(Icons.trending_down_rounded, color: AppColors.coral, size: 22),
@@ -33,26 +33,29 @@ class MarketReasonCard extends StatelessWidget {
               SizedBox(width: 2),
               Icon(Icons.chevron_right, color: AppColors.coral, size: 18),
             ]),
-            const SizedBox(height: 10),
+            const SizedBox(height: 7),
             if (factors.isEmpty)
               const Expanded(child: Center(child: Text('공식 자료를 확인하고 있습니다.', textAlign: TextAlign.center, style: TextStyle(fontSize: 9.5, color: AppColors.secondary))))
             else
               ...factors.map((x) => Padding(
-                    padding: const EdgeInsets.only(bottom: 9),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Container(margin: const EdgeInsets.only(top: 3), width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.coral, shape: BoxShape.circle)),
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      Container(width:27,height:27,decoration:BoxDecoration(color:Colors.white.withValues(alpha:.78),borderRadius:BorderRadius.circular(8)),child:Icon(_icon(x.title),size:17,color:_color(x))),
                       const SizedBox(width: 6),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text(x.title, maxLines: 1, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800))),
-                        Text(x.detail, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 8, height: 1.35, color: AppColors.secondary)),
+                        FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text(x.title, maxLines: 1, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w900))),
+                        Text(x.detail, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 7.4, height: 1.25, color: AppColors.secondary)),
                       ])),
+                      const SizedBox(width:3),Icon(x.direction=='up'?Icons.arrow_upward_rounded:x.direction=='down'?Icons.arrow_downward_rounded:Icons.arrow_forward_rounded,size:16,color:_color(x)),
                     ]),
                   )),
             const Spacer(),
-            const Text('근거와 출처 자세히 보기', style: TextStyle(fontSize: 8.5, color: AppColors.coral, fontWeight: FontWeight.w800)),
+            Container(height:30,alignment:Alignment.center,decoration:BoxDecoration(border:Border.all(color:AppColors.coral.withValues(alpha:.55)),borderRadius:BorderRadius.circular(9)),child:const Text('근거와 출처 자세히 보기  ›',style:TextStyle(fontSize:8.5,color:AppColors.coral,fontWeight:FontWeight.w900))),
           ]),
         ),
       ),
     );
   }
+  static Color _color(MarketFactor x)=>x.direction=='down'?AppColors.blue:x.direction=='up'?AppColors.coral:AppColors.secondary;
+  static IconData _icon(String title){if(title.contains('경락두수'))return Icons.local_shipping_rounded;if(title.contains('도체중'))return Icons.scale_rounded;if(title.contains('총중량'))return Icons.inventory_2_rounded;return Icons.analytics_rounded;}
 }
