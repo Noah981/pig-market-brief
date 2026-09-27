@@ -74,24 +74,26 @@ recent_counts=[x.get("count",0) for x in rows[-8:-1] if x.get("count",0)>0]
 avg_count=round(sum(recent_counts)/len(recent_counts)) if recent_counts else 0
 
 factors=[]
+def factor(title,status,detail,direction='neutral',source='축산유통정보 다봄',source_date=None):
+    return {'title':title,'status':status,'detail':detail,'direction':direction,'source':source,'sourceDate':source_date or p.get('date','')}
 if change<0:
-    factors.append({"title":"당일 경락가격 하락","status":"확인","detail":f"전 거래일 대비 {abs(change):,}원/kg 하락했습니다. 이는 가격 변화 자체를 설명하는 사실이며 단독으로 원인을 확정하지 않습니다."})
+    factors.append(factor('당일 경락가격 하락','확인',f'전 거래일 대비 {abs(change):,}원/kg 하락했습니다. 이는 가격 변화 자체를 설명하는 사실이며 단독으로 원인을 확정하지 않습니다.','down'))
 elif change>0:
-    factors.append({"title":"당일 경락가격 상승","status":"확인","detail":f"전 거래일 대비 {change:,}원/kg 상승했습니다."})
+    factors.append(factor('당일 경락가격 상승','확인',f'전 거래일 대비 {change:,}원/kg 상승했습니다.','up'))
 if avg7:
-    factors.append({"title":"최근 7거래일 흐름","status":"체크","detail":f"최근 7거래일 평균은 {avg7:,}원/kg이며 오늘 가격은 평균 대비 {latest-avg7:+,}원입니다."})
+    factors.append(factor('최근 7거래일 흐름','체크',f'최근 7거래일 평균은 {avg7:,}원/kg이며 오늘 가격은 평균 대비 {latest-avg7:+,}원입니다.','up' if latest>avg7 else 'down' if latest<avg7 else 'neutral'))
 if count and avg_count:
     pct=(count-avg_count)/avg_count*100
-    factors.append({"title":"경매 두수 변화","status":"체크","detail":f"오늘 집계 두수 {count:,}두, 직전 거래일 평균 대비 {pct:+.1f}%입니다. 경매 물량 변화는 가격 변동과 함께 볼 요인입니다."})
-factors.append({"title":"하반기 공급 여건","status":"배경","detail":"KREI 2026 전망은 하반기 돼지 도축 마릿수가 전년보다 증가하고 연평균 도매가격은 전년보다 낮을 가능성을 제시했습니다. 당일 하락의 단일 원인으로 단정할 수는 없습니다."})
-factors.append({"title":"공식 월간 확인","status":"배경","detail":"축산물품질평가원 2026년 7월 통계는 돼지 경락가격 6,236원/kg(제주 제외), 전월 대비 1.7% 하락을 발표했습니다."})
+    factors.append(factor('경매 두수 변화','체크',f'오늘 집계 두수 {count:,}두, 직전 거래일 평균 대비 {pct:+.1f}%입니다. 경매 물량 변화는 가격 변동과 함께 볼 요인입니다.','up' if pct>0 else 'down' if pct<0 else 'neutral'))
+factors.append(factor('하반기 공급 여건','배경','KREI 2026 전망은 하반기 돼지 도축 마릿수가 전년보다 증가하고 연평균 도매가격은 전년보다 낮을 가능성을 제시했습니다. 당일 하락의 단일 원인으로 단정할 수는 없습니다.','neutral','KREI 농업관측센터'))
+factors.append(factor('공식 월간 확인','배경','축산물품질평가원 2026년 7월 통계는 돼지 경락가격 6,236원/kg(제주 제외), 전월 대비 1.7% 하락을 발표했습니다.','down','축산물품질평가원','202607'))
 
 summary=("오늘 돈가는 전 거래일보다 낮습니다. " if change<0 else "오늘 돈가는 전 거래일보다 높습니다. " if change>0 else "오늘 돈가는 전 거래일과 같습니다. ")
 summary+="당일 가격은 경매 물량·출하 흐름·수요 등 여러 요인의 결과이므로 앱은 확인 가능한 지표와 중기 수급 배경을 분리해 보여줍니다."
 
 updated=datetime.now(KST).isoformat()
 pig_news=related(headlines,['pork','hog','swine'])
-for news in pig_news:factors.append({'title':news['title'],'status':'공식 발표','detail':f"{news['agency']} 최신 발표입니다. 국내 당일 돈가와 직접 연결된 원인인지는 추가 확인이 필요합니다."})
+for news in pig_news:factors.append({'title':news['title'],'status':'공식 발표','detail':f"{news['agency']} 최신 발표입니다. 국내 당일 돈가와 직접 연결된 원인인지는 추가 확인이 필요합니다.",'source':news['agency'],'sourceDate':updated[:10].replace('-',''),'direction':'neutral'})
 out={"updatedAt":updated,"headline":"오늘 돈가, 왜 움직였나","summary":summary,"factors":factors,
 "sources":[
 {"name":"축산물품질평가원","label":"돼지 경락가격·등급판정 통계","url":"https://www.ekape.or.kr/"},
