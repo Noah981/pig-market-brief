@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['scripts/fetch_disease_alerts.py', '.github/workflows/disease-fast.yml']
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
 permissions:
   contents: write
 concurrency:
