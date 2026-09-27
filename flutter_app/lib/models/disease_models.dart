@@ -24,11 +24,16 @@ class DiseaseAlert {
   String get disease=>type.label;
   String get scope=>countryCode=='KR'?'국내':'국외';
   bool get isOfficial=>evidence==DiseaseEvidence.official;
+  bool get isSuspected=>status.contains('의심')||status.contains('확인 중');
+  bool get isNegative=>status.contains('음성')||status.contains('해제')||status.contains('불검출');
+  bool get isConfirmed=>isOfficial&&!isSuspected&&!isNegative;
   bool get hasMapPoint=>countryCode=='KR'&&latitude!=null&&longitude!=null;
   String get region=>[province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
   String get stableKey=>id.isNotEmpty?id:'${type.name}|$occurrenceDate|$countryCode|$province|$cityCounty|$town|$summary';
+  String get incidentKey=>'${type.name}|$countryCode|$province|$cityCounty|$town';
   DateTime? get eventDate=>_parseDate(occurrenceDate);
-  bool isActiveAt(DateTime now){final d=eventDate;if(d==null)return false;final today=DateTime(now.year,now.month,now.day),day=DateTime(d.year,d.month,d.day);return !day.isAfter(today)&&!day.isBefore(today.subtract(const Duration(days:30)));}
+  bool isRecentAt(DateTime now){final d=eventDate;if(d==null)return false;final today=DateTime(now.year,now.month,now.day),day=DateTime(d.year,d.month,d.day);return !day.isAfter(today)&&!day.isBefore(today.subtract(const Duration(days:30)));}
+  bool isActiveAt(DateTime now)=>!isNegative&&isRecentAt(now);
 }
 
 DateTime? _parseDate(String value){final digits=value.replaceAll(RegExp(r'[^0-9]'),'');if(digits.length>=8)return DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');return DateTime.tryParse(value);}
