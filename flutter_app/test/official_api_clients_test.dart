@@ -36,6 +36,21 @@ void main() {
     expect(rows.first.price,5892);expect(rows.last.price,4326);expect(rows.last.date,'20260926');
   });
 
+  test('KAPE 다봄 경락현황은 암·거세 두수와 도체중을 분리한다',()async{
+    final client=KapeApiClient(apiKey:'test',client:MockClient((request)async{
+      final female=request.url.queryParameters['sexCd']=='025001';
+      final count=female?30:70,weight=female?'87.0':'88.0';
+      final xml = '<response><header><resultCode>00</resultCode></header><body><items><item><regionNm>전국(제주 제외)</regionNm><c_1101eTotCnt>$count</c_1101eTotCnt><c_1101eAvgWgt>$weight</c_1101eAvgWgt></item></items></body></response>';
+      return http.Response.bytes(
+        utf8.encode(xml),
+        200,
+        headers: const {'content-type': 'application/xml; charset=utf-8'},
+      );
+    }));
+    final status=await client.auctionStatusFor('20260926');
+    expect(status.totalCount,100);expect(status.femaleCount,30);expect(status.castratedCount,70);expect(status.averageCarcassWeight,closeTo(87.7,.01));
+  });
+
   test('KMA 예보 필수 항목을 파싱한다', () async {
     final body = {'response': {'header': {'resultCode': '00'}, 'body': {'items': {'item': [
       {'category': 'TMP', 'fcstValue': '18'}, {'category': 'TMP', 'fcstValue': '27'},

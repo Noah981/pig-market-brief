@@ -14,6 +14,13 @@ class KapeGradePrice {
   final String grade,date;final int price,count;
 }
 
+class KapeAuctionStatus {
+  const KapeAuctionStatus({required this.date,required this.totalCount,required this.castratedCount,required this.femaleCount,this.averageCarcassWeight});
+  final String date;
+  final int totalCount,castratedCount,femaleCount;
+  final double? averageCarcassWeight;
+}
+
 class KapeApiClient {
   KapeApiClient({http.Client? client, String? apiKey})
       : _client = client ?? http.Client(), _apiKey = apiKey ?? ApiConfig.kapeApiKey;
@@ -68,10 +75,16 @@ class KapeApiClient {
     if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
     final code=RegExp(r'<resultCode>(.*?)</resultCode>').firstMatch(response.body)?.group(1)?.trim();
     if(code!=null&&code!='00')throw const OfficialApiException('KAPE','service-error');
-    final totals=<String,(double,int)>{};
+    final parsed=<Map<String,String>>[];
     for(final match in RegExp(r'<item>([\s\S]*?)</item>').allMatches(response.body)){
       final body=match.group(1)!;final fields=<String,String>{};
       for(final f in RegExp(r'<([^/>]+)>(.*?)</\1>').allMatches(body)){fields[f.group(1)!.toLowerCase()]=f.group(2)!.trim();}
+      parsed.add(fields);
+    }
+    final nationwide=parsed.where((fields)=>fields.values.any((v)=>v.contains('전국')&&(v.contains('제주')||v=='전국'))).toList();
+    final source=nationwide.isNotEmpty?nationwide:parsed;
+    final totals=<String,(double,int)>{};
+    for(final fields in source){
       String pick(Iterable<String> names){for(final entry in fields.entries){if(names.any((x)=>entry.key.contains(x))&&entry.value.isNotEmpty)return entry.value;}return '';}
       final grade=_normalizeGrade(pick(const ['gradenm','grade_nm','judgradenm','grade']));
       final price=double.tryParse(pick(const ['totamt','avgprc','avgprice','auctionprice']).replaceAll(',',''));
@@ -80,6 +93,33 @@ class KapeApiClient {
       final weight=count>0?count:1,old=totals[grade];totals[grade]=(old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight));
     }
     return ['1+','1','2','등외'].where(totals.containsKey).map((grade){final x=totals[grade]!;return KapeGradePrice(grade:grade,price:(x.$1/x.$2).round(),count:x.$2,date:ymd);}).toList();
+  }
+
+  Future<KapeAuctionStatus> auctionStatusFor(String ymd)async{
+    if(_apiKey.isEmpty)throw const OfficialApiException('KAPE','missing-key');
+    var female=0,castrated=0;double totalWeight=0;var weightCount=0;
+    for(final entry in const [('025001',true),('025003',false)]){
+      final uri=Uri.http(_base,'/openapi-data/service/user/grade/auct/pigGrade',{
+        'serviceKey':Uri.decodeComponent(_apiKey),'startYmd':ymd,'endYmd':ymd,'skinYn':'Y','sexCd':entry.$1,'egradeExceptYn':'N',
+      });
+      final response=await _client.get(uri).timeout(const Duration(seconds:12));
+      if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
+      var sexCount=0;
+      final items=RegExp(r'<item>([\s\S]*?)</item>').allMatches(response.body).map((m)=>m.group(1)!).toList();
+      final nationwide=items.where((body)=>body.contains('전국')).toList();
+      for(final body in nationwide.isNotEmpty?nationwide:items){
+        double? value(Iterable<String> tags){for(final tag in tags){final m=RegExp('<$tag>(.*?)</$tag>',caseSensitive:false).firstMatch(body);final n=double.tryParse((m?.group(1)??'').replaceAll(',',''));if(n!=null)return n;}return null;}
+        final count=value(const ['c_1101eTotCnt','totCnt','headCnt'])?.round()??0;
+        sexCount+=count;
+        final avg=value(const ['c_1101eAvgWgt','avgWgt','avgWeight','carcassWeight']);
+        final sum=value(const ['c_1101eTotWgt','totWgt','totalWeight']);
+        if(avg!=null&&avg>0&&count>0){totalWeight+=avg*count;weightCount+=count;}
+        else if(sum!=null&&sum>0&&count>0){totalWeight+=sum;weightCount+=count;}
+      }
+      if(entry.$2){female=sexCount;}else{castrated=sexCount;}
+    }
+    final total=female+castrated;
+    return KapeAuctionStatus(date:ymd,totalCount:total,castratedCount:castrated,femaleCount:female,averageCarcassWeight:weightCount>0?totalWeight/weightCount:null);
   }
 
   Future<List<KapeGradePrice>> gradeHistory(String endYmd,{int lookbackDays=35,int maxTradingDays=8})async{
