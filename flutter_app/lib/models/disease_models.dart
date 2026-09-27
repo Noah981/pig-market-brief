@@ -31,10 +31,29 @@ class DiseaseAlert {
   String get region=>[province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
   String get stableKey=>id.isNotEmpty?id:'${type.name}|$occurrenceDate|$countryCode|$province|$cityCounty|$town|$summary';
   String get incidentKey=>'${type.name}|$countryCode|$province|$cityCounty|$town';
-  DateTime? get eventDate=>_parseDate(occurrenceDate);
+  DateTime? get eventDate{
+    final declared=_parseDate(occurrenceDate);
+    if(declared==null)return null;
+    // Also protect already cached feeds that used the article publication
+    // date: an explicit date/month in the headline is stronger evidence.
+    return _dateMention(summary,declared)??declared;
+  }
   bool isRecentAt(DateTime now){final d=eventDate;if(d==null)return false;final today=DateTime(now.year,now.month,now.day),day=DateTime(d.year,d.month,d.day);return !day.isAfter(today)&&!day.isBefore(today.subtract(const Duration(days:30)));}
   bool isActiveAt(DateTime now)=>!isNegative&&isRecentAt(now);
 }
+
+DateTime? _dateMention(String text,DateTime reference){
+  final full=RegExp(r'((?:19|20)\d{2})\s*[년./-]\s*(\d{1,2})\s*[월./-]\s*(\d{1,2})\s*일?').firstMatch(text);
+  if(full!=null)return _safeDate(int.parse(full.group(1)!),int.parse(full.group(2)!),int.parse(full.group(3)!));
+  final monthDay=RegExp(r'(\d{1,2})\s*월\s*(\d{1,2})\s*일').firstMatch(text);
+  final monthOnly=RegExp(r'(?:지난|올해|금년)?\s*(\d{1,2})\s*월(?:\s*(?:발생|확진|의심|사례|건))').firstMatch(text);
+  final match=monthDay??monthOnly;if(match==null)return null;
+  final month=int.parse(match.group(1)!),day=monthDay==null?1:int.parse(match.group(2)!);
+  var result=_safeDate(reference.year,month,day);if(result==null)return null;
+  if(result.isAfter(reference.add(const Duration(days:31))))result=_safeDate(reference.year-1,month,day)!;
+  return result;
+}
+DateTime? _safeDate(int year,int month,int day){try{final value=DateTime(year,month,day);return value.year==year&&value.month==month&&value.day==day?value:null;}catch(_){return null;}}
 
 DateTime? _parseDate(String value){
   final iso=DateTime.tryParse(value);if(iso!=null)return iso;
