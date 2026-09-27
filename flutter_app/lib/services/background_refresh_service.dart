@@ -16,6 +16,6 @@ void backgroundCallbackDispatcher(){
 Future<void> initializeBackgroundRefresh()async{
   await Workmanager().initialize(backgroundCallbackDispatcher);
   await Workmanager().registerPeriodicTask('official-data-refresh-v1',officialDataRefreshTask,
-    frequency:const Duration(hours:6),existingWorkPolicy:ExistingWorkPolicy.keep,
+    frequency:const Duration(minutes:15),existingWorkPolicy:ExistingWorkPolicy.update,
     constraints:Constraints(networkType:NetworkType.connected));
 }
