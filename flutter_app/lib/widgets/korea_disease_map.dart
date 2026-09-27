@@ -31,7 +31,7 @@ class _KoreaDiseaseMapState extends State<KoreaDiseaseMap>{
   @override Widget build(BuildContext context)=>AspectRatio(
     // The design uses a compact nationwide viewport. The old portrait ratio
     // pushed the risk and recent-event cards below the first screen.
-    aspectRatio:1.16,
+    aspectRatio:1.30,
     child:ClipRRect(
       borderRadius:BorderRadius.circular(12),
       child:FutureBuilder<List<_Shape>>(

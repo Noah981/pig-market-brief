@@ -86,6 +86,14 @@ void main() {
   testWidgets('질병 전체 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseasePage(),'disease_390');
   });
+  for(final width in const [360.0,412.0]){
+    testWidgets('질병 메인 ${width.toInt()}dp 오버플로 없음',(tester)async{
+      tester.view.devicePixelRatio=1;tester.view.physicalSize=Size(width,844);addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:const DiseasePage()));
+      await tester.pump(const Duration(milliseconds:800));
+      expect(tester.takeException(),isNull);
+    });
+  }
   testWidgets('질병 선택 필터 390dp 시안 비교 이미지',(tester)async{
     tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:const DiseasePage()));
