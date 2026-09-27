@@ -10,7 +10,8 @@ class HomeGradeAuctionCard extends StatelessWidget {
 
   @override Widget build(BuildContext context){
     final rows={for(final row in snapshot?.grades??const <KapeGradePrice>[])_normal(row.grade):row};
-    final count=rows.values.fold<int>(0,(sum,row)=>sum+row.count);
+    final status=snapshot?.auctionStatus;
+    final count=status?.totalCount??rows.values.fold<int>(0,(sum,row)=>sum+row.count);
     return Material(color:Colors.white,borderRadius:BorderRadius.circular(18),child:InkWell(
       key:const ValueKey('home_grade_auction'),onTap:onTap,borderRadius:BorderRadius.circular(18),
       child:Padding(padding:const EdgeInsets.fromLTRB(12,12,12,13),child:Column(children:[
@@ -22,9 +23,9 @@ class HomeGradeAuctionCard extends StatelessWidget {
         const SizedBox(height:10),
         Row(children:[
           Expanded(child:_StatusCell(icon:Icons.savings_rounded,label:'경락두수',value:count>0?'${_number(count)}두':'정보 없음')),
-          const Expanded(child:_StatusCell(icon:Icons.scale_rounded,label:'평균 도체중',value:'정보 없음')),
-          const Expanded(child:_StatusCell(icon:Icons.male_rounded,label:'거세',value:'정보 없음')),
-          const Expanded(child:_StatusCell(icon:Icons.female_rounded,label:'암퇘지',value:'정보 없음')),
+          Expanded(child:_StatusCell(icon:Icons.scale_rounded,label:'평균 도체중',value:status?.averageCarcassWeight==null?'정보 없음':'${status!.averageCarcassWeight!.toStringAsFixed(1)}kg')),
+          Expanded(child:_StatusCell(icon:Icons.male_rounded,label:'거세',value:status==null||status.castratedCount==0?'정보 없음':'${_number(status.castratedCount)}두')),
+          Expanded(child:_StatusCell(icon:Icons.female_rounded,label:'암퇘지',value:status==null||status.femaleCount==0?'정보 없음':'${_number(status.femaleCount)}두')),
         ]),
       ])),
     ));
