@@ -28,13 +28,24 @@ void main(){
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:30))).isActiveAt(now),isTrue);
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:31))).isActiveAt(now),isFalse);
   });
+  test('방역반경 밖이거나 좌표가 없어도 최근 30일이면 활성 목록에 포함',(){
+    final now=DateTime(2026,9,27);
+    final far=event(DiseaseType.asf,180,date:now.subtract(const Duration(days:4)));
+    const noPoint=DiseaseAlert(type:DiseaseType.ped,source:'공개뉴스',countryCode:'KR',evidence:DiseaseEvidence.publicInfo,status:'공개정보 · 확인 중',summary:'충청남도 PED 발생 정보',sourceUrl:'',occurrenceDate:'2026-09-20');
+    expect([far,noPoint].where((x)=>x.isActiveAt(now)).length,2);
+  });
+  test('최근 게시됐어도 제목의 2월 발생 정보는 최근 30일에서 제외',(){
+    const alert=DiseaseAlert(type:DiseaseType.asf,source:'공개뉴스',countryCode:'KR',evidence:DiseaseEvidence.publicInfo,status:'공개정보 · 확인 중',summary:'지난 2월 발생한 양평 ASF 사례 재조명',sourceUrl:'',occurrenceDate:'2026-09-27');
+    expect(alert.eventDate,DateTime(2026,2,1));
+    expect(alert.isActiveAt(DateTime(2026,9,27)),isFalse);
+  });
   test('공개뉴스 RFC 2822 발표일도 최근 발생일로 판정한다',(){
     const alert=DiseaseAlert(type:DiseaseType.asf,source:'공개뉴스',countryCode:'KR',evidence:DiseaseEvidence.publicInfo,status:'의심 · 정밀검사 중',summary:'양평군 ASF 의심 신고',sourceUrl:'',occurrenceDate:'Sun, 27 Sep 2026 03:20:00 GMT');
     expect(alert.isRecentAt(DateTime(2026,9,27)),isTrue);
   });
   test('의심은 공개정보로 표시하고 음성 전환 시 활성 목록에서 제거한다',()async{
     final payload={'updatedAt':'2026-09-27','items':[
-      {'disease':'ASF','source':'공개뉴스','countryCode':'KR','evidenceLevel':'PUBLIC_UNCONFIRMED','status':'의심 · 정밀검사 중','summary':'경기 양평군 ASF 의심 신고','sourceUrl':'','publishedAt':'2026-09-27','region':'양평군','latitude':37.491,'longitude':127.488}
+      {'disease':'ASF','source':'공개뉴스','countryCode':'KR','evidenceLevel':'PUBLIC_UNCONFIRMED','status':'의심 · 정밀검사 중','summary':'경기 양평군 ASF 의심 신고','sourceUrl':'','occurrenceDate':'2026-09-27','publishedAt':'2026-09-27','region':'양평군','latitude':37.491,'longitude':127.488}
     ]};
     final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)),clock:()=>DateTime(2026,9,27));
     final suspected=(await repo.refresh()).items.single;
