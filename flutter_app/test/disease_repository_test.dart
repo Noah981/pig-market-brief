@@ -28,6 +28,16 @@ void main(){
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:30))).isActiveAt(now),isTrue);
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:31))).isActiveAt(now),isFalse);
   });
+  test('의심은 공개정보로 표시하고 음성 전환 시 활성 목록에서 제거한다',()async{
+    final payload={'updatedAt':'2026-09-27','items':[
+      {'disease':'ASF','source':'공개뉴스','countryCode':'KR','evidenceLevel':'PUBLIC_UNCONFIRMED','status':'의심 · 정밀검사 중','summary':'경기 양평군 ASF 의심 신고','sourceUrl':'','publishedAt':'2026-09-27','region':'양평군','latitude':37.491,'longitude':127.488}
+    ]};
+    final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)),clock:()=>DateTime(2026,9,27));
+    final suspected=(await repo.refresh()).items.single;
+    expect(suspected.isSuspected,isTrue);expect(suspected.isActiveAt(DateTime(2026,9,27)),isTrue);
+    final negative=DiseaseAlert(id:suspected.id,type:suspected.type,source:suspected.source,countryCode:'KR',evidence:DiseaseEvidence.publicInfo,status:'음성 · 의심 해제',summary:suspected.summary,sourceUrl:'',occurrenceDate:'2026-09-27',cityCounty:'양평군');
+    expect(negative.isNegative,isTrue);expect(negative.isActiveAt(DateTime(2026,9,27)),isFalse);
+  });
   test('질병별 거리 LEVEL과 누적 건수는 독립',(){
     final events=[event(DiseaseType.asf,8),event(DiseaseType.asf,22),event(DiseaseType.asf,43),event(DiseaseType.fmd,70)];
     final asf=DiseaseRiskEngine.summarize(events,latitude:36.8,longitude:127.1,type:DiseaseType.asf);

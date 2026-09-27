@@ -19,7 +19,8 @@ class DiseaseRepository {
   }
   Future<DiseaseFeed> refresh()async{
     try{
-      final feed=ApiConfig.hasMafra?await _fromMafra():await _fromHosted();
+      final hosted=await _fromHosted();
+      final feed=ApiConfig.hasMafra?await _fromMafra(hosted):hosted;
       await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(_feedJson(feed)));
       return feed;
     }catch(error){
@@ -27,7 +28,7 @@ class DiseaseRepository {
       catch(_){return DiseaseFeed(items:const [],updatedAt:'',fromCache:true,state:DiseaseDataState.error,errorMessage:'질병 데이터를 확인할 수 없습니다.');}
     }
   }
-  Future<DiseaseFeed> _fromMafra()async{
+  Future<DiseaseFeed> _fromMafra(DiseaseFeed hosted)async{
     final rows=await _mafraClient.fetch(),items=<DiseaseAlert>[],seen=<String>{};
     for(final row in rows){
       final rawDisease=row.pick(const ['LKNTS_NM','DISEASE_NM','DISS_NM']),type=normalizeDiseaseType(rawDisease);
@@ -40,8 +41,10 @@ class DiseaseRepository {
       final alert=DiseaseAlert(id:id.isEmpty?'MAFRA|${type.name}|$occurrence|$address':id,type:type,source:'농림축산검역본부 가축질병발생정보',countryCode:'KR',evidence:DiseaseEvidence.official,status:row.pick(const ['CESSATION_DE']).isEmpty?'발생':'종식',summary:'$address ${type.label}',sourceUrl:'https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20151204000000000316',occurrenceDate:occurrence,announcementDate:row.pick(const ['PBLANC_DE','REGIST_DE']),updatedAt:row.pick(const ['UPDT_DE']),livestockType:livestock,districtCode:row.pick(const ['FARM_LOCPLC_LEGALDONG_CODE']),province:_province(address),cityCounty:_cityCounty(address),town:_town(address),latitude:coordinate?.$1,longitude:coordinate?.$2);
       if(seen.add(alert.stableKey))items.add(alert);
     }
-    final previous=await cached(),overseas=previous.items.where((x)=>x.countryCode!='KR');
-    return DiseaseFeed(items:[...items,...overseas],updatedAt:_clock().toIso8601String(),fromCache:false,state:DiseaseDataState.live);
+    final merged=<String,DiseaseAlert>{};
+    for(final x in hosted.items){merged[x.incidentKey]=x;}
+    for(final x in items){merged[x.incidentKey]=x;}
+    return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,state:DiseaseDataState.live);
   }
   Future<DiseaseFeed> _fromHosted()async{
     final response=await _client.get(Uri.parse('$_url?v=${_clock().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
@@ -58,11 +61,14 @@ class DiseaseRepository {
       final summary=x['summary']?.toString()??'';if(occurrence.isEmpty||summary.isEmpty)continue;
       final evidence=(x['evidenceLevel']?.toString().toUpperCase()=='OFFICIAL'||x['verificationLevel']?.toString().toUpperCase()=='OFFICIAL')?DiseaseEvidence.official:DiseaseEvidence.publicInfo;
       final address=x['region']?.toString()??summary;
-      final alert=DiseaseAlert(id:x['id']?.toString()??'',type:type,source:x['source']?.toString()??'',countryCode:code,evidence:evidence,status:x['status']?.toString()??x['level']?.toString()??'확인 중',summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',occurrenceDate:occurrence,announcementDate:x['announcementDate']?.toString()??x['publishedAt']?.toString()??'',updatedAt:x['updatedAt']?.toString()??'',livestockType:x['livestockType']?.toString()??'',districtCode:x['districtCode']?.toString()??'',province:x['province']?.toString()??_province(address),cityCounty:x['cityCounty']?.toString()??_cityCounty(address),town:x['town']?.toString()??'',latitude:(x['latitude'] as num?)?.toDouble(),longitude:(x['longitude'] as num?)?.toDouble());
+      final rawStatus=x['status']?.toString()??x['level']?.toString()??'확인 중';
+      final status=_status(rawStatus,summary,evidence);
+      final alert=DiseaseAlert(id:x['id']?.toString()??'',type:type,source:x['source']?.toString()??'',countryCode:code,evidence:evidence,status:status,summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',occurrenceDate:occurrence,announcementDate:x['announcementDate']?.toString()??x['publishedAt']?.toString()??'',updatedAt:x['updatedAt']?.toString()??x['detectedAt']?.toString()??'',livestockType:x['livestockType']?.toString()??'',districtCode:x['districtCode']?.toString()??'',province:x['province']?.toString()??_province(address),cityCounty:x['cityCounty']?.toString()??_cityCounty(address),town:x['town']?.toString()??'',latitude:(x['latitude'] as num?)?.toDouble(),longitude:(x['longitude'] as num?)?.toDouble());
       if(seen.add(alert.stableKey))items.add(alert);
     }
     return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,state:fromCache?DiseaseDataState.stale:DiseaseDataState.live);
   }
+  String _status(String raw,String summary,DiseaseEvidence evidence){final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
   bool _isPigRelevant(DiseaseType type,String livestock)=>type!=DiseaseType.fmd||livestock.isEmpty||livestock.contains('돼지')||livestock.toUpperCase().contains('SWINE');
   double? _number(MafraDiseaseRow row,List<String> keys)=>double.tryParse(row.pick(keys));
   Future<(double,double)?> _coordinate(MafraDiseaseRow row,String address,String occurrence)async{

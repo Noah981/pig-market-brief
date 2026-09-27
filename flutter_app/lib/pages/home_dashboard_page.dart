@@ -41,12 +41,12 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   void _displayChanged(){if(mounted)setState((){});}
   void _openDiseaseNotification(){if(NotificationService.instance.selectedDiseaseEvent.value!=null&&mounted)setState(()=>_nav=2);}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
-  Future<void> _resumeRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}}
+  Future<void> _resumeRefresh()async{await _refreshMarket();if(await DataRefreshService.refreshAll()){await Future.wait([_reloadCommodityCache(),_reloadWeatherCache()]);}}
   Future<void> _reloadMarketCache()async{final value=await _marketRepository.cached();if(mounted&&value!=null){setState(()=>_market=value);await _loadGrades(value.date);}}
   Future<void> _reloadCommodityCache()async{final value=await _commodityRepository.cached();if(mounted&&value.isNotEmpty)setState(()=>_commodities=value);}
   Future<void> _reloadWeatherCache()async{final value=await _weatherRepository.cached();if(mounted)setState(()=>_weather=value);}
   Future<void> _loadCachedData()async{try{await FarmLocationSettings.instance.load();_weatherRegion=FarmLocationSettings.instance.location.province;}catch(_){}await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}
-  Future<void> _startupRefresh()async{if(await DataRefreshService.refreshAll()){await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);}else if(_market!=null){await _loadGrades(_market!.date);}}
+  Future<void> _startupRefresh()async{await _refreshMarket();if(await DataRefreshService.refreshAll()){await Future.wait([_reloadCommodityCache(),_reloadWeatherCache()]);}}
   Future<void> _loadGrades(String date)async{try{final cached=await _gradeRepository.cached();if(mounted&&cached!=null)setState(()=>_grades=cached);final value=await _gradeRepository.refresh(date);if(mounted)setState(()=>_grades=value);}catch(_){}}
   Future<void> _refreshMarket()async{try{final value=await _marketRepository.refresh();if(mounted)setState(()=>_market=value);await _loadGrades(value.date);}catch(_){}}
   Future<void> _loadAnalysis()async{try{final cached=await _analysisRepository.cached();if(mounted&&cached!=null)setState(()=>_analysis=cached);}catch(_){}await _refreshAnalysis();}

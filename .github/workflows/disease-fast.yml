@@ -1,0 +1,36 @@
+name: Fast disease signal watch
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/fetch_disease_alerts.py', '.github/workflows/disease-fast.yml']
+  schedule:
+    - cron: '*/10 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: fast-disease-watch
+  cancel-in-progress: true
+jobs:
+  disease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collect suspected, confirmed and negative signals
+        run: |
+          python -m unittest scripts/test_disease_classifier.py
+          python scripts/fetch_disease_alerts.py
+      - name: Publish changed disease feed
+        run: |
+          cp docs/data/disease-alerts.json /tmp/disease-alerts.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/disease-alerts.json docs/data/disease-alerts.json
+          git add docs/data/disease-alerts.json
+          git diff --cached --quiet || git commit -m 'Update disease signals'
+          git push origin HEAD:main

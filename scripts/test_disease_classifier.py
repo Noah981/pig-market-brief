@@ -1,5 +1,5 @@
 import unittest
-from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code
+from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code,event_status
 
 class DiseaseClassifierTest(unittest.TestCase):
  def test_asf_is_not_classical_swine_fever(self):
@@ -11,6 +11,12 @@ class DiseaseClassifierTest(unittest.TestCase):
  def test_real_regions(self):
   self.assertEqual(region_fields('경남 창녕서 ASF 발생')['region'],'창녕군')
   self.assertEqual(region_fields('전남 순천시 ASF 발생')['region'],'순천시')
+  self.assertEqual(region_fields('경기 양평군 ASF 의심 신고')['region'],'양평군')
+ def test_suspect_and_result_are_events(self):
+  self.assertTrue(event_title('양평군 아프리카돼지열병 의심 신고'))
+  self.assertTrue(event_title('양평군 아프리카돼지열병 정밀검사 결과 음성'))
+  self.assertEqual(event_status('ASF 의심 신고','PUBLIC_UNCONFIRMED'),'의심 · 정밀검사 중')
+  self.assertEqual(event_status('ASF 정밀검사 결과 음성','PUBLIC_UNCONFIRMED'),'음성 · 의심 해제')
  def test_unknown_domestic_title_is_not_forced_to_korea(self):
   self.assertIsNone(country_code('돼지 질병 발생 소식','국내'))
  def test_named_domestic_region_is_korea(self):
