@@ -21,7 +21,7 @@ class _TodayCarePageState extends State<TodayCarePage>{
     final w=widget.guide,repository=WeatherFarmRepository(),risks=repository.risks(w),seasonal=repository.seasonalDiseases(DateTime.now(),w);
     return PageShell(title:'오늘 관리',subtitle:'날씨와 질병 신호를 한눈에 확인하세요',help:()=>showDialog(context:context,builder:(context)=>AlertDialog(title:const Text('오늘 관리 도움말'),content:const Text('기상청 예보와 계절성 건강 관찰 정보를 함께 제공합니다. 진단과 처방은 담당 수의사와 상의하세요.'),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('확인'))])),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
       _weather(w),const SizedBox(height:14),_sectionHeader('${DateTime.now().month}월 주의 질환',Icons.notifications_active_rounded),
-      const SizedBox(height:8),SizedBox(height:126,child:Row(children:[for(var i=0;i<seasonal.take(3).length;i++)...[if(i>0)const SizedBox(width:7),Expanded(child:_seasonalCard(seasonal[i]))]])),
+      const SizedBox(height:8),SizedBox(height:142,child:Row(children:[for(var i=0;i<seasonal.take(3).length;i++)...[if(i>0)const SizedBox(width:7),Expanded(child:_seasonalCard(seasonal[i]))]])),
       const SizedBox(height:18),_sectionHeader('오늘 주의할 건강 신호',Icons.health_and_safety_rounded),
       ...risks.take(3).map(_risk),const SizedBox(height:12),_title('오늘의 환기·점검 포인트',Icons.air),
       ...w.checks.take(6).toList().asMap().entries.map((x)=>_check(x.key+1,x.value)),
