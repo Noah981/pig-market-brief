@@ -111,15 +111,15 @@ class _MarketTile extends StatelessWidget {
   final Key? tileKey;
   @override
   Widget build(BuildContext context) => InkWell(key:tileKey,borderRadius:BorderRadius.circular(18),onTap:onTap,child:Container(
-    padding: EdgeInsets.symmetric(horizontal:wide?14:10,vertical:8), decoration: appCard(color:_background(),radius: 18),
+    padding: EdgeInsets.symmetric(horizontal:wide?14:10,vertical:4), decoration: appCard(color:_background(),radius: 18),
     child: Row(children: [
       Container(width:wide?42:38,height:wide?42:38,decoration:BoxDecoration(color:Colors.white.withValues(alpha:.78),shape:BoxShape.circle),child:Icon(icon,color:_iconColor(),size:wide?28:25)),
       const SizedBox(width: 8),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+      Expanded(child: FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child:Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
         Text('$name  ›',maxLines:1, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
         FittedBox(child: Text('$value $unit', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900,letterSpacing:-.6))),
         Text(change,maxLines:1, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: up ? AppColors.coral : AppColors.blue)),
-      ])),
+      ]))),
       SizedBox(width:wide?118:38,height:38,child:CustomPaint(painter:_MiniSparkline(up?AppColors.coral:AppColors.blue,points))),
     ]),
   ));
