@@ -48,7 +48,33 @@ def fetch(url):
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def event_date(value):
  try:return parsedate_to_datetime(value).astimezone(KST).date().isoformat()
- except Exception:return datetime.now(KST).date().isoformat()
+ except Exception:return ""
+
+def occurrence_date(text,published=""):
+ """Prefer the incident date written in the article title.
+
+ A news publication date is only a last-resort proxy for a genuinely new
+ signal.  This prevents a recently republished article about a February
+ incident from appearing as a new outbreak in September.
+ """
+ reference=event_date(published)
+ ref=datetime.fromisoformat(reference).date() if reference else datetime.now(KST).date()
+ full=re.search(r'((?:19|20)\d{2})\s*[년./-]\s*(\d{1,2})\s*[월./-]\s*(\d{1,2})\s*일?',text)
+ if full:
+  try:return datetime(int(full.group(1)),int(full.group(2)),int(full.group(3))).date().isoformat()
+  except ValueError:return ""
+ month_day=re.search(r'(\d{1,2})\s*월\s*(\d{1,2})\s*일',text)
+ month_only=re.search(r'(?:지난|올해|금년)?\s*(\d{1,2})\s*월(?:\s*(?:발생|확진|의심|사례|건))',text)
+ match=month_day or month_only
+ if match:
+  month=int(match.group(1));day=int(match.group(2)) if match.lastindex and match.lastindex>=2 else 1
+  year=ref.year
+  try:
+   candidate=datetime(year,month,day).date()
+   if candidate>ref+timedelta(days=31):candidate=datetime(year-1,month,day).date()
+   return candidate.isoformat()
+  except ValueError:return ""
+ return reference
 def diseases(text):
  lower=text.lower();found=[];occupied=[]
  for alias,value in sorted(DISEASES.items(),key=lambda x:len(x[0]),reverse=True):
@@ -107,7 +133,9 @@ def public_news(scope="국내"):
     if not ds or not event_title(title) or not recent(published):continue
     code=country_code(title,scope)
     if not code:continue
-    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","status":event_status(title,"PUBLIC_UNCONFIRMED"),"level":event_status(title,"PUBLIC_UNCONFIRMED"),"summary":title[:260],"sourceUrl":item.findtext("link") or url,"occurrenceDate":event_date(published),"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
+    occurred=occurrence_date(title,published)
+    if not occurred:continue
+    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","status":event_status(title,"PUBLIC_UNCONFIRMED"),"level":event_status(title,"PUBLIC_UNCONFIRMED"),"summary":title[:260],"sourceUrl":item.findtext("link") or url,"occurrenceDate":occurred,"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
   except Exception as e:print("public source skipped",term,e)
  return out
 
