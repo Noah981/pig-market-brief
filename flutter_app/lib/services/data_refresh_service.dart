@@ -26,5 +26,14 @@ class DataRefreshService {
     return true;
   }
 
+  /// Disease signals are checked independently so reopening the app is not
+  /// blocked by the slower common-data refresh throttle.
+  static Future<int> refreshDisease()async{
+    try{
+      final feed=await DiseaseRepository().refresh();
+      return DiseaseNotificationCoordinator.process(feed);
+    }catch(_){return 0;}
+  }
+
   static Future<void> _isolated(Future<void> Function() action)async{try{await action();}catch(_){}}
 }
