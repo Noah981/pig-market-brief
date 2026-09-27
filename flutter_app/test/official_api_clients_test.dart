@@ -22,33 +22,37 @@ void main() {
     expect(result?.price, 6000); expect(result?.count, 20);
   });
   test('KAPE 등급별 가격을 대표 돈가와 분리해 파싱한다',()async{
-    final xml='<response><header><resultCode>00</resultCode></header><body><items>'
-      '<item><gradeNm>1+</gradeNm><avgPrc>5892</avgPrc><totCnt>10</totCnt></item>'
-      '<item><gradeNm>1</gradeNm><avgPrc>5614</avgPrc><totCnt>20</totCnt></item>'
-      '<item><gradeNm>2</gradeNm><avgPrc>5217</avgPrc><totCnt>30</totCnt></item>'
-      '<item><gradeNm>등외</gradeNm><avgPrc>4326</avgPrc><totCnt>5</totCnt></item>'
-      '</items></body></response>';
-    final client=KapeApiClient(apiKey:'test',client:MockClient((_)async=>http.Response.bytes(
-      utf8.encode(xml),200,headers:{'content-type':'application/xml; charset=utf-8'},
+    final client=KapeApiClient(apiKey:'test',client:MockClient((request)async=>http.Response.bytes(
+      utf8.encode(_dabomHtml()),200,headers:{'content-type':'text/html; charset=utf-8'},
     )));
     final rows=await client.gradePricesFor('20260926');
     expect(rows.map((x)=>x.grade),['1+','1','2','등외']);
-    expect(rows.first.price,5892);expect(rows.last.price,4326);expect(rows.last.date,'20260926');
+    expect(rows.first.price,5977);expect(rows.last.price,3269);expect(rows.last.date,'20260923');
+    expect(rows.first.count,57);
   });
 
   test('KAPE 다봄 경락현황은 암·거세 두수와 도체중을 분리한다',()async{
     final client=KapeApiClient(apiKey:'test',client:MockClient((request)async{
-      final female=request.url.queryParameters['sexCd']=='025001';
-      final count=female?30:70,weight=female?'87.0':'88.0';
-      final xml = '<response><header><resultCode>00</resultCode></header><body><items><item><regionNm>전국(제주 제외)</regionNm><c_1101eTotCnt>$count</c_1101eTotCnt><c_1101eAvgWgt>$weight</c_1101eAvgWgt></item></items></body></response>';
+      final sex=request.url.queryParameters['searchCondition2']??'';
+      final count=sex=='1'?520:sex=='3'?344:883;
+      final weight=sex=='1'?'108.4':sex=='3'?'64.9':'91.3';
       return http.Response.bytes(
-        utf8.encode(xml),
+        utf8.encode(_dabomHtml(total:count,weight:weight)),
         200,
-        headers: const {'content-type': 'application/xml; charset=utf-8'},
+        headers: const {'content-type': 'text/html; charset=utf-8'},
       );
     }));
     final status=await client.auctionStatusFor('20260926');
-    expect(status.totalCount,100);expect(status.femaleCount,30);expect(status.castratedCount,70);expect(status.averageCarcassWeight,closeTo(87.7,.01));
+    expect(status.date,'20260923');expect(status.totalCount,883);expect(status.femaleCount,520);expect(status.castratedCount,344);expect(status.averageCarcassWeight,91.3);
+  });
+
+  test('다봄 요청은 전국 제주제외·탕박 필터를 강제한다',()async{
+    late Uri requested;
+    final client=KapeApiClient(apiKey:'',client:MockClient((request)async{requested=request.url;return http.Response.bytes(utf8.encode(_dabomHtml()),200);}));
+    await client.gradePricesFor('20260923');
+    expect(requested.queryParameters['searchCondition'],'057016');
+    expect(requested.queryParameters['searchCondition1'],'Y');
+    expect(requested.queryParameters['searchCondition2'],'');
   });
 
   test('KMA 예보 필수 항목을 파싱한다', () async {
@@ -69,3 +73,16 @@ void main() {
   });
 
 }
+
+String _dabomHtml({int total=883,String weight='91.3'})=>'''<!doctype html><html><body>
+<form id="searchForm"><input name="searchStartDate" value="2026-09-23"></form>
+<table id="table-type1"><tbody>
+<tr><th>구 분</th><th>등 급</th><th>경락두수</th><th>평균가격</th><th>평균 도체중</th></tr>
+<tr><td rowspan="4">등급</td><td>1+</td><td>57</td><td>5,977</td><td>86.1</td></tr>
+<tr><td>1</td><td>81</td><td>5,737</td><td>85</td></tr>
+<tr><td>2</td><td>286</td><td>5,009</td><td>73.2</td></tr>
+<tr><td>등외</td><td>459</td><td>3,269</td><td>104.3</td></tr>
+<tr><td>등외제외</td><td>424</td><td>5,307</td><td>77.2</td></tr>
+<tr><td>모돈</td><td>191</td><td>3,276</td><td>172.6</td></tr>
+<tr><td>평균</td><td>$total</td><td>4,097</td><td>$weight</td></tr>
+</tbody></table></body></html>''';

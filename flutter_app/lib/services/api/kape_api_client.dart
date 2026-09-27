@@ -22,12 +22,22 @@ class KapeAuctionStatus {
   final double? averageCarcassWeight;
 }
 
+class KapeDabomSnapshot {
+  const KapeDabomSnapshot({required this.date, required this.grades, required this.auctionStatus});
+  final String date;
+  final List<KapeGradePrice> grades;
+  final KapeAuctionStatus auctionStatus;
+}
+
 class KapeApiClient {
   KapeApiClient({http.Client? client, String? apiKey})
       : _client = client ?? http.Client(), _apiKey = apiKey ?? ApiConfig.kapeApiKey;
   final http.Client _client;
   final String _apiKey;
   static const _base = 'data.ekape.or.kr';
+  static const _dabomBase = 'www.ekapepia.com';
+  static const _dabomPath = '/v3/price/auction/period/pig/detail.do';
+  static const _nationwideExcludingJeju = '057016';
 
   Future<KapePigPrice?> priceFor(String ymd) async {
     if (_apiKey.isEmpty) throw const OfficialApiException('KAPE', 'missing-key');
@@ -68,79 +78,44 @@ class KapeApiClient {
   }
 
   Future<List<KapeGradePrice>> gradePricesFor(String ymd)async{
-    if(_apiKey.isEmpty)throw const OfficialApiException('KAPE','missing-key');
-    final uri=Uri.http(_base,'/openapi-data/service/user/grade/auct/pigGrade',{
-      'serviceKey':Uri.decodeComponent(_apiKey),'startYmd':ymd,'endYmd':ymd,'skinYn':'Y','egradeExceptYn':'N',
-    });
-    final response=await _client.get(uri).timeout(const Duration(seconds:12));
-    if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
-    final xml=utf8.decode(response.bodyBytes,allowMalformed:true);
-    final code=RegExp(r'<resultCode>(.*?)</resultCode>').firstMatch(xml)?.group(1)?.trim();
-    if(code!=null&&code!='00')throw const OfficialApiException('KAPE','service-error');
-    final parsed=<Map<String,String>>[];
-    for(final match in RegExp(r'<item>([\s\S]*?)</item>').allMatches(xml)){
-      final body=match.group(1)!;final fields=<String,String>{};
-      for(final f in RegExp(r'<([^/>]+)>(.*?)</\1>').allMatches(body)){fields[f.group(1)!.toLowerCase()]=f.group(2)!.trim();}
-      parsed.add(fields);
-    }
-    final nationwide=parsed.where((fields)=>fields.values.any((v)=>v.contains('전국')&&(v.contains('제주')||v=='전국'))).toList();
-    final source=nationwide.isNotEmpty?nationwide:parsed;
-    final totals=<String,(double,int)>{};
-    for(final fields in source){
-      String pick(Iterable<String> names){for(final entry in fields.entries){if(names.any((x)=>entry.key.contains(x))&&entry.value.isNotEmpty)return entry.value;}return '';}
-      final grade=_normalizeGrade(pick(const ['gradenm','grade_nm','judgradenm','grade']));
-      final price=double.tryParse(pick(const ['totamt','avgprc','avgprice','auctionprice']).replaceAll(',',''));
-      final count=double.tryParse(pick(const ['totcnt','count','headcnt']).replaceAll(',',''))?.round()??0;
-      if(grade==null||price==null||price<=0)continue;
-      final weight=count>0?count:1,old=totals[grade];totals[grade]=(old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight));
-    }
-    if(totals.isEmpty){
-      const columns=<String,List<String>>{
-        '1+':['c_1101ptotamt','c_1101plustotamt','grade1plustotamt'],
-        '1':['c_1101totamt','grade1totamt'],
-        '2':['c_1102totamt','grade2totamt'],
-        '등외':['c_1104totamt','c_1103totamt','cegradetotamt','outgradetotamt'],
-      };
-      for(final fields in source){
-        for(final entry in columns.entries){
-          String? amountKey;for(final key in entry.value){if(fields.containsKey(key)){amountKey=key;break;}}
-          if(amountKey==null)continue;
-          final price=double.tryParse((fields[amountKey]??'').replaceAll(',',''));if(price==null||price<=0)continue;
-          final countKey=amountKey.replaceFirst(RegExp('totamt\$',caseSensitive:false),'totcnt');
-          final count=double.tryParse((fields[countKey]??'').replaceAll(',',''))?.round()??0,weight=count>0?count:1;
-          final old=totals[entry.key];totals[entry.key]=old==null?(price*weight,weight):(old.$1+price*weight,old.$2+weight);
-        }
-      }
-    }
-    return ['1+','1','2','등외'].where(totals.containsKey).map((grade){final x=totals[grade]!;return KapeGradePrice(grade:grade,price:(x.$1/x.$2).round(),count:x.$2,date:ymd);}).toList();
+    final table=await _dabomTable(ymd:ymd);
+    return _gradeRows(table);
   }
 
   Future<KapeAuctionStatus> auctionStatusFor(String ymd)async{
-    if(_apiKey.isEmpty)throw const OfficialApiException('KAPE','missing-key');
-    var female=0,castrated=0;double totalWeight=0;var weightCount=0;
-    for(final entry in const [('025001',true),('025003',false)]){
-      final uri=Uri.http(_base,'/openapi-data/service/user/grade/auct/pigGrade',{
-        'serviceKey':Uri.decodeComponent(_apiKey),'startYmd':ymd,'endYmd':ymd,'skinYn':'Y','sexCd':entry.$1,'egradeExceptYn':'N',
-      });
-      final response=await _client.get(uri).timeout(const Duration(seconds:12));
-      if(response.statusCode!=200)throw OfficialApiException('KAPE','http',response.statusCode);
-      var sexCount=0;
-      final xml=utf8.decode(response.bodyBytes,allowMalformed:true);
-      final items=RegExp(r'<item>([\s\S]*?)</item>').allMatches(xml).map((m)=>m.group(1)!).toList();
-      final nationwide=items.where((body)=>body.contains('전국')).toList();
-      for(final body in nationwide.isNotEmpty?nationwide:items){
-        double? value(Iterable<String> tags){for(final tag in tags){final m=RegExp('<$tag>(.*?)</$tag>',caseSensitive:false).firstMatch(body);final n=double.tryParse((m?.group(1)??'').replaceAll(',',''));if(n!=null)return n;}return null;}
-        final count=value(const ['c_1101eTotCnt','totCnt','headCnt'])?.round()??0;
-        sexCount+=count;
-        final avg=value(const ['c_1101eAvgWgt','avgWgt','avgWeight','carcassWeight']);
-        final sum=value(const ['c_1101eTotWgt','totWgt','totalWeight']);
-        if(avg!=null&&avg>0&&count>0){totalWeight+=avg*count;weightCount+=count;}
-        else if(sum!=null&&sum>0&&count>0){totalWeight+=sum;weightCount+=count;}
-      }
-      if(entry.$2){female=sexCount;}else{castrated=sexCount;}
+    final all=await _dabomTable(ymd:ymd);
+    final female=await _dabomTable(ymd:all.date,sex:'1');
+    final castrated=await _dabomTable(ymd:all.date,sex:'3');
+    final overall=_summaryRow(all);
+    return KapeAuctionStatus(
+      date:all.date,
+      totalCount:_integer(overall,1),
+      femaleCount:_integer(_summaryRow(female),1),
+      castratedCount:_integer(_summaryRow(castrated),1),
+      averageCarcassWeight:_decimal(overall,3),
+    );
+  }
+
+  Future<KapeDabomSnapshot> latestDabom({String? endYmd,int lookbackDays=14})async{
+    final now=DateTime.now().toUtc().add(const Duration(hours:9));
+    final end=endYmd==null?now:DateTime.parse('${endYmd.substring(0,4)}-${endYmd.substring(4,6)}-${endYmd.substring(6,8)}');
+    OfficialApiException? lastError;
+    for(var ago=0;ago<lookbackDays;ago++){
+      final day=end.subtract(Duration(days:ago));
+      final ymd='${day.year.toString().padLeft(4,'0')}${day.month.toString().padLeft(2,'0')}${day.day.toString().padLeft(2,'0')}';
+      try{
+        final all=await _dabomTable(ymd:ymd);
+        final grades=_gradeRows(all);
+        if(grades.length!=4)continue;
+        final female=await _dabomTable(ymd:all.date,sex:'1');
+        final castrated=await _dabomTable(ymd:all.date,sex:'3');
+        final overall=_summaryRow(all);
+        return KapeDabomSnapshot(date:all.date,grades:grades,auctionStatus:KapeAuctionStatus(
+          date:all.date,totalCount:_integer(overall,1),femaleCount:_integer(_summaryRow(female),1),castratedCount:_integer(_summaryRow(castrated),1),averageCarcassWeight:_decimal(overall,3),
+        ));
+      }on OfficialApiException catch(e){lastError=e;}
     }
-    final total=female+castrated;
-    return KapeAuctionStatus(date:ymd,totalCount:total,castratedCount:castrated,femaleCount:female,averageCarcassWeight:weightCount>0?totalWeight/weightCount:null);
+    throw lastError??const OfficialApiException('KAPE_DABOM','empty-result');
   }
 
   Future<List<KapeGradePrice>> gradeHistory(String endYmd,{int lookbackDays=35,int maxTradingDays=8})async{
@@ -155,5 +130,43 @@ class KapeApiClient {
     rows.sort((a,b)=>a.date.compareTo(b.date));return rows;
   }
 
-  String? _normalizeGrade(String raw){final x=raw.replaceAll('등급','').trim().toUpperCase();if(x=='1+'||x.contains('1PLUS'))return '1+';if(x=='1')return '1';if(x=='2')return '2';if(x.contains('등외')||x=='E')return '등외';return null;}
+  Future<_DabomTable> _dabomTable({required String ymd,String sex=''})async{
+    final dashed='${ymd.substring(0,4)}-${ymd.substring(4,6)}-${ymd.substring(6,8)}';
+    final uri=Uri.https(_dabomBase,_dabomPath,{
+      'searchStartDate':dashed,'searchEndDate':dashed,'searchCondition':_nationwideExcludingJeju,'searchCondition1':'Y','searchCondition2':sex,
+    });
+    final response=await _client.get(uri,headers:const {'Accept':'text/html','User-Agent':'DonDonHae/1.0'}).timeout(const Duration(seconds:15));
+    if(response.statusCode!=200)throw OfficialApiException('KAPE_DABOM','http',response.statusCode);
+    final html=utf8.decode(response.bodyBytes,allowMalformed:true);
+    final table=RegExp(r'''<table[^>]*id=["']table-type1["'][^>]*>([\s\S]*?)</table>''',caseSensitive:false).firstMatch(html)?.group(1);
+    if(table==null)throw const OfficialApiException('KAPE_DABOM','table-missing');
+    final rows=<List<String>>[];
+    for(final tr in RegExp(r'<tr[^>]*>([\s\S]*?)</tr>',caseSensitive:false).allMatches(table)){
+      final cells=RegExp(r'<t[hd][^>]*>([\s\S]*?)</t[hd]>',caseSensitive:false).allMatches(tr.group(1)!).map((m)=>_plainText(m.group(1)!)).toList();
+      if(cells.length>1&&cells.first=='등급')cells.removeAt(0);
+      if(cells.isNotEmpty)rows.add(cells);
+    }
+    final actualDate=RegExp(r'''name=["']searchStartDate["'][^>]*value=["'](\d{4})-(\d{2})-(\d{2})["']''',caseSensitive:false).firstMatch(html);
+    final date=actualDate==null?ymd:'${actualDate.group(1)}${actualDate.group(2)}${actualDate.group(3)}';
+    if(!rows.any((r)=>r.isNotEmpty&&r.first=='평균'))throw const OfficialApiException('KAPE_DABOM','empty-result');
+    return _DabomTable(date,rows);
+  }
+
+  List<KapeGradePrice> _gradeRows(_DabomTable table){
+    final out=<KapeGradePrice>[];
+    for(final grade in const ['1+','1','2','등외']){
+      final matches=table.rows.where((r)=>r.isNotEmpty&&r.first==grade);
+      if(matches.isEmpty)continue;final row=matches.first;
+      final price=_integer(row,2),count=_integer(row,1);
+      if(price>0&&count>0)out.add(KapeGradePrice(grade:grade,price:price,count:count,date:table.date));
+    }
+    return out;
+  }
+  List<String> _summaryRow(_DabomTable table)=>table.rows.firstWhere((r)=>r.isNotEmpty&&r.first=='평균',orElse:()=>const []);
+  int _integer(List<String> row,int index)=>row.length>index?double.tryParse(row[index].replaceAll(',',''))?.round()??0:0;
+  double? _decimal(List<String> row,int index)=>row.length>index?double.tryParse(row[index].replaceAll(',','')):null;
+  String _plainText(String html)=>html.replaceAll(RegExp(r'<br\s*/?>',caseSensitive:false),' ').replaceAll(RegExp(r'<[^>]+>'),'').replaceAll('&nbsp;',' ').replaceAll('&amp;','&').trim();
+
 }
+
+class _DabomTable{const _DabomTable(this.date,this.rows);final String date;final List<List<String>> rows;}

@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/commodity_repository.dart';
 import '../data/disease_repository.dart';
 import '../data/market_repository.dart';
+import '../data/pig_grade_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../settings/farm_location_settings.dart';
 import 'disease_notification_coordinator.dart';
@@ -17,7 +18,7 @@ class DataRefreshService {
     if(!force&&last!=null&&DateTime.now().difference(last)<minInterval)return false;
     await FarmLocationSettings.instance.load();
     await Future.wait<void>([
-      _isolated(()async{await MarketRepository().refresh();}),
+      _isolated(()async{final market=await MarketRepository().refresh();await PigGradeRepository().refresh(market.date);}),
       _isolated(()async{await CommodityRepository().refresh();}),
       _isolated(()async{await WeatherFarmRepository().refresh(region:FarmLocationSettings.instance.location.province);}),
       _isolated(()async{final feed=await DiseaseRepository().refresh();await DiseaseNotificationCoordinator.process(feed);}),
