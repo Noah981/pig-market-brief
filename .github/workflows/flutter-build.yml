@@ -35,7 +35,13 @@ jobs:
           KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
           KMA_API_KEY: ${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
-        run: python scripts/validate_official_apis.py
+        run: |
+          for attempt in 1 2 3; do
+            python scripts/validate_official_apis.py && exit 0
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            echo "Official API check failed transiently; retrying ($attempt/3)"
+            sleep $((attempt * 10))
+          done
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
@@ -76,5 +82,8 @@ jobs:
           cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dondonhae-final-ui-release.apk
           cp flutter_app/test/goldens/home_390.png dondonhae-home-390.png
           cp flutter_app/test/goldens/market_390.png dondonhae-market-390.png
+          mkdir -p visual-screenshots
+          cp flutter_app/test/goldens/*.png visual-screenshots/
+          zip -r dondonhae-visual-screenshots.zip visual-screenshots
           gh release delete dondonhae-final-ui --cleanup-tag --yes || true
-          gh release create dondonhae-final-ui dondonhae-final-ui-release.apk dondonhae-home-390.png dondonhae-market-390.png --target "${{ github.sha }}" --title "돈돈해 전체 UI 최종" --notes "첨부된 최종 UI 기준 홈·시황·상세·오늘관리·질병 화면과 실제 API·캐시·GPS·Vector 지도·알림을 연결한 Release APK입니다."
+          gh release create dondonhae-final-ui dondonhae-final-ui-release.apk dondonhae-home-390.png dondonhae-market-390.png dondonhae-visual-screenshots.zip --target "${{ github.sha }}" --title "돈돈해 전체 UI 최종" --notes "첨부된 최종 UI 기준 홈·시황·상세·오늘관리·질병 화면과 실제 API·캐시·GPS·Vector 지도·알림을 연결한 Release APK입니다."

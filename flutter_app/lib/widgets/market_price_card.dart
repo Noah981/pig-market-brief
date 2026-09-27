@@ -15,9 +15,9 @@ class MarketPriceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => InkWell(
     borderRadius: BorderRadius.circular(18), onTap:onTap,
-    child:Container(padding: const EdgeInsets.fromLTRB(12, 11, 12, 9), decoration: appCard(radius:18),
+    child:Container(padding: const EdgeInsets.fromLTRB(12, 8, 12, 6), decoration: appCard(radius:18),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Wrap(crossAxisAlignment:WrapCrossAlignment.center,children:const [Text('전국 돈가',style:TextStyle(fontSize:17,fontWeight:FontWeight.w900)),Text(' (제주 제외)',style:TextStyle(fontSize:9,fontWeight:FontWeight.w700))]),const Text('단위: 원/kg',style:TextStyle(fontSize:7.5,color:AppColors.secondary))])),IconButton(onPressed:onRefresh,constraints:const BoxConstraints(minWidth:36,minHeight:36),padding:EdgeInsets.zero,icon:const Icon(Icons.refresh,size:18,color:AppColors.secondary))]),
+      Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Image.asset('assets/images/dondonhae_symbol.png',width:27,height:27),const SizedBox(width:7),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Wrap(crossAxisAlignment:WrapCrossAlignment.center,children:const [Text('전국 돈가',style:TextStyle(fontSize:17,fontWeight:FontWeight.w900)),Text(' (제주 제외)',style:TextStyle(fontSize:9,fontWeight:FontWeight.w700))]),const Text('단위: 원/kg',style:TextStyle(fontSize:7.5,color:AppColors.secondary))])),IconButton(onPressed:onRefresh,constraints:const BoxConstraints(minWidth:36,minHeight:36),padding:EdgeInsets.zero,icon:const Icon(Icons.refresh,size:18,color:AppColors.secondary))]),
       LayoutBuilder(builder: (context, box) { final narrow=box.maxWidth<350; return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child:Row(crossAxisAlignment: CrossAxisAlignment.end, children: [Text(snapshot==null?'—':_number(snapshot!.price), style:const TextStyle(fontSize:42,height:1,fontWeight:FontWeight.w900,letterSpacing:-1.8)),const Padding(padding:EdgeInsets.only(bottom:5),child:Text(' 원/kg',style:TextStyle(fontSize:13,fontWeight:FontWeight.w800)))])),
@@ -25,7 +25,7 @@ class MarketPriceCard extends StatelessWidget {
         ])),
         SizedBox(width: narrow?6:8), Container(width: narrow?105:114, padding: const EdgeInsets.all(9), decoration: BoxDecoration(color: AppColors.lightBlue,borderRadius: BorderRadius.circular(13)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Row(children:[Icon((snapshot?.change??0)>=0?Icons.trending_up:Icons.bar_chart,color:(snapshot?.change??0)>=0?AppColors.coral:AppColors.blue,size:18),const SizedBox(width:5),Flexible(child:Text(snapshot==null?'가격 확인 중':(snapshot!.change>=0?'전일 대비\n상승':'전일 대비\n하락'),style:TextStyle(fontSize:11,fontWeight:FontWeight.w900,color:(snapshot?.change??0)>=0?AppColors.coral:AppColors.blue)))]),const SizedBox(height:5),Text(snapshot==null?'공식 가격을 불러오고 있습니다.':'가격 변동 근거를 눌러 확인하세요.',style:const TextStyle(fontSize:8.5,height:1.35))])),
       ]);}),
-      const SizedBox(height:7),PriceLineChart(series:snapshot?.seriesFor(period)??const PriceSeries('loading',[])),const SizedBox(height:3),PeriodTabBar(selected:period,onChanged:onPeriodChanged),const SizedBox(height:6),
+      const SizedBox(height:4),PriceLineChart(height:80,series:snapshot?.seriesFor(period)??const PriceSeries('loading',[])),const SizedBox(height:1),PeriodTabBar(selected:period,onChanged:onPeriodChanged),const SizedBox(height:3),
       Text(_sourceText(),style:const TextStyle(fontSize:7.5,color:AppColors.secondary)),
     ]),
   ));
