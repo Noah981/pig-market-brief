@@ -109,7 +109,7 @@ class _MapPainter extends CustomPainter{
     for(final item in items.where((x)=>x.hasMapPoint)){
       final p=projection.point(item.longitude!,item.latitude!);
       final color=_diseaseColor(item.type),selected=item.stableKey==focusedEventId,radius=selected?11.0:9.0;
-      canvas.drawCircle(p,radius+4,Paint()..color=color.withValues(alpha:item.isOfficial?.24:.13));
+      canvas.drawCircle(p,radius+4,Paint()..color=color.withValues(alpha:item.isOfficial ? 0.24 : 0.13));
       canvas.drawCircle(p,radius,Paint()..color=item.isOfficial?color:Colors.white);
       canvas.drawCircle(p,radius,Paint()..color=color..style=PaintingStyle.stroke..strokeWidth=item.isOfficial?1.5:2.2);
       final glyph=TextPainter(text:TextSpan(text:_diseaseGlyph(item.type),style:TextStyle(color:item.isOfficial?Colors.white:color,fontSize:selected?10:8.5,fontWeight:FontWeight.w900,height:1)),textDirection:TextDirection.ltr)..layout();
