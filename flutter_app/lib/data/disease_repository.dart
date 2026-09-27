@@ -42,8 +42,8 @@ class DiseaseRepository {
       if(seen.add(alert.stableKey))items.add(alert);
     }
     final merged=<String,DiseaseAlert>{};
-    for(final x in hosted.items)merged[x.incidentKey]=x;
-    for(final x in items)merged[x.incidentKey]=x;
+    for(final x in hosted.items){merged[x.incidentKey]=x;}
+    for(final x in items){merged[x.incidentKey]=x;}
     return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,state:DiseaseDataState.live);
   }
   Future<DiseaseFeed> _fromHosted()async{
