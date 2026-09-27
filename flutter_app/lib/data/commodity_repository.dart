@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 import '../models/dashboard_models.dart';
 import '../config/api_config.dart';
@@ -30,9 +29,7 @@ class CommodityRepository {
 
   Future<List<Commodity>> cached() async {
     final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
-    if(raw==null){
-      try{return _parse(jsonDecode(await rootBundle.loadString('assets/data/platform.json')) as Map<String,dynamic>);}catch(_){return bundledSnapshot;}
-    }
+    if(raw==null)return bundledSnapshot;
     try {
       return _parse(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {

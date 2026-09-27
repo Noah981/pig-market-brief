@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import '../models/dashboard_models.dart';
 
 class MarketSnapshot {
@@ -65,13 +64,7 @@ class MarketRepository {
   MarketRepository({http.Client? client}):_client=client??http.Client();
   Future<MarketSnapshot?> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey);
-    if(raw==null){
-      try{
-        final price=jsonDecode(await rootBundle.loadString('assets/data/pig-price.json'));
-        final history=jsonDecode(await rootBundle.loadString('assets/data/pig-price-history.json'));
-        return _decode({'price':price,'history':history},fromCache:true);
-      }catch(_){return null;}
-    }
+    if(raw==null)return null;
     try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
   }
   Future<MarketSnapshot> refresh()async{
