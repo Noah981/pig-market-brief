@@ -94,7 +94,7 @@ def official_page(source,url,scope="국내",default_country=None):
 
 def public_news(scope="국내"):
  out=[]
- terms=["아프리카돼지열병 의심 신고","아프리카돼지열병 확진 음성","구제역 돼지 의심 확진","PED 돼지 발생","PRRS 돼지 발생"] if scope=="국내" else ["African swine fever outbreak","foot and mouth disease outbreak","PRRS outbreak","porcine epidemic diarrhea outbreak"]
+ terms=["ASF","아프리카돼지열병","구제역 돼지","PED 돼지","PRRS 돼지"] if scope=="국내" else ["African swine fever outbreak","foot and mouth disease outbreak","PRRS outbreak","porcine epidemic diarrhea outbreak"]
  for term in terms:
   try:
    url="https://news.google.com/rss/search?q="+urllib.parse.quote(term)+"&hl=ko&gl=KR&ceid=KR:ko"
