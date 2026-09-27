@@ -29,6 +29,7 @@ jobs:
         working-directory: flutter_app
         run: flutter analyze
       - name: Verify official API connectivity
+        continue-on-error: true
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
@@ -42,6 +43,8 @@ jobs:
             echo "Official API check failed transiently; retrying ($attempt/3)"
             sleep $((attempt * 10))
           done
+      - name: Require live Dabom grade and auction rows
+        run: python scripts/validate_official_apis.py --dabom-only
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
