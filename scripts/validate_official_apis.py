@@ -5,6 +5,7 @@ import urllib.parse
 import urllib.request
 import time
 import re
+import sys
 from html import unescape
 from datetime import datetime, timedelta, timezone
 
@@ -37,10 +38,12 @@ def main():
     now = datetime.now(KST)
     start = (now - timedelta(days=45)).strftime("%Y%m%d")
     end = now.strftime("%Y%m%d")
-    ecos = get("ECOS", f"https://ecos.bok.or.kr/api/StatisticSearch/{urllib.parse.quote(key('ECOS_API_KEY'), safe='')}/json/kr/1/5/731Y001/D/{start}/{end}/0000001", json_response=True)
-    if not ((ecos.get("StatisticSearch") or {}).get("row")):
-        raise RuntimeError("ECOS empty/service error")
-    print("ECOS: authenticated response and required rows OK")
+    dabom_only = "--dabom-only" in sys.argv
+    if not dabom_only:
+        ecos = get("ECOS", f"https://ecos.bok.or.kr/api/StatisticSearch/{urllib.parse.quote(key('ECOS_API_KEY'), safe='')}/json/kr/1/5/731Y001/D/{start}/{end}/0000001", json_response=True)
+        if not ((ecos.get("StatisticSearch") or {}).get("row")):
+            raise RuntimeError("ECOS empty/service error")
+        print("ECOS: authenticated response and required rows OK")
 
     kape_rows = None
     for ago in range(14):
@@ -66,6 +69,8 @@ def main():
             kape_rows = (grades,summary); break
     if not kape_rows: raise RuntimeError("KAPE Dabom nationwide-ex-Jeju rows missing")
     print(f"KAPE_DABOM: nationwide-ex-Jeju grade/status rows OK dataDate={day}")
+    if dabom_only:
+        return
 
     # Fixed official KMA grid/time only verifies auth and response schema; app requests its actual GPS grid.
     candidate = now - timedelta(minutes=15)
