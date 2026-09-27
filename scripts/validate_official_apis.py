@@ -3,13 +3,14 @@ import json
 import os
 import urllib.parse
 import urllib.request
-import xml.etree.ElementTree as ET
 import time
+import re
+from html import unescape
 from datetime import datetime, timedelta, timezone
 
 KST = timezone(timedelta(hours=9))
 
-def get(name, url, *, json_response=False, xml_response=False):
+def get(name, url, *, json_response=False):
     last_error = None
     for attempt in range(3):
         try:
@@ -19,8 +20,6 @@ def get(name, url, *, json_response=False, xml_response=False):
                     raise RuntimeError(f"HTTP {response.status}")
             if json_response:
                 return json.loads(raw.decode("utf-8"))
-            if xml_response:
-                return ET.fromstring(raw)
             return raw
         except Exception as exc:
             last_error = exc
@@ -43,21 +42,26 @@ def main():
         raise RuntimeError("ECOS empty/service error")
     print("ECOS: authenticated response and required rows OK")
 
-    kape_ok = False
+    kape_rows = None
     for ago in range(14):
-        day = (now - timedelta(days=ago)).strftime("%Y%m%d")
-        kape_query = urllib.parse.urlencode({"serviceKey": key("KAPE_API_KEY"), "startYmd": day, "endYmd": day, "skinYn": "Y", "sexCd": "025001", "egradeExceptYn": "Y"})
-        kape = get("KAPE", "http://data.ekape.or.kr/openapi-data/service/user/grade/auct/pigGrade?" + kape_query, xml_response=True)
-        code = (kape.findtext(".//resultCode") or "00").strip()
-        if code != "00": raise RuntimeError("KAPE authentication/service error")
-        if kape.findall(".//item"):
-            kape_ok = True; break
-    if not kape_ok: raise RuntimeError("KAPE no recent official rows")
-    print(f"KAPE: latest official row OK dataDate={day}")
-    sample = kape.find(".//item")
-    if sample is not None:
-        safe_fields = {child.tag: (child.text or "").strip() for child in sample if child.tag.lower().startswith("c_") or any(x in child.tag.lower() for x in ("grade", "cnt", "wgt", "amt"))}
-        print("KAPE_SCHEMA:", json.dumps(safe_fields, ensure_ascii=False, sort_keys=True))
+        day = (now - timedelta(days=ago)).strftime("%Y-%m-%d")
+        query = urllib.parse.urlencode({"searchStartDate":day,"searchEndDate":day,"searchCondition":"057016","searchCondition1":"Y","searchCondition2":""})
+        raw = get("KAPE_DABOM", "https://www.ekapepia.com/v3/price/auction/period/pig/detail.do?" + query)
+        html = raw.decode("utf-8", errors="replace")
+        match = re.search(r'<table[^>]*id=["\']table-type1["\'][^>]*>(.*?)</table>', html, re.I | re.S)
+        if not match:
+            continue
+        rows = []
+        for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', match.group(1), re.I | re.S):
+            cells = [re.sub(r'<[^>]+>', '', unescape(x)).strip().replace(',', '') for x in re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', tr, re.I | re.S)]
+            if len(cells)>1 and cells[0] == "등급": cells.pop(0)
+            if cells: rows.append(cells)
+        grades = {r[0]:r for r in rows if r and r[0] in ("1+","1","2","등외")}
+        summary = next((r for r in rows if r and r[0] == "평균"), None)
+        if len(grades)==4 and summary and int(summary[1])>0 and float(summary[3])>0:
+            kape_rows = (grades,summary); break
+    if not kape_rows: raise RuntimeError("KAPE Dabom nationwide-ex-Jeju rows missing")
+    print(f"KAPE_DABOM: nationwide-ex-Jeju grade/status rows OK dataDate={day}")
 
     # Fixed official KMA grid/time only verifies auth and response schema; app requests its actual GPS grid.
     candidate = now - timedelta(minutes=15)
