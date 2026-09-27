@@ -14,18 +14,22 @@ class DiseaseNotificationCoordinator {
       await prefs.setStringList(_notified,ids.toList());await prefs.setString(_evidence,_encodeMap(active));await prefs.setString(_status,_encodeStatus(recent));await prefs.setBool(_baseline,true);return 0;
     }
     final notified=(prefs.getStringList(_notified)??const <String>[]).toSet(),location=FarmLocationSettings.instance.location;
+    final enabled=prefs.getBool('disease_notifications_enabled')??true;
     var count=0;
     for(final event in recent){
+      if(!enabled||!(prefs.getBool('disease_type_${_typeIndex(event.type)}')??true))continue;
       final old=previousStatus[event.incidentKey],current=_phase(event);
       if(old==null&&current=='suspected'){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
       else if(old=='suspected'&&(current=='confirmed'||current=='negative')){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
     }
     if(location.gpsVerified){
       for(final event in active.where((x)=>x.isOfficial&&x.latitude!=null&&x.longitude!=null)){
+        if(!enabled||!(prefs.getBool('disease_type_${_typeIndex(event.type)}')??true))continue;
         final promoted=previousEvidence[event.stableKey]=='publicInfo';
         if((notified.contains(event.stableKey)&&!promoted))continue;
         final km=DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!);
-        if(km<=50){await NotificationService.instance.newDiseaseEvent(event,km);count++;}
+        final levelIndex=km<=10?0:km<=30?1:km<=50?2:-1;
+        if(levelIndex>=0&&(prefs.getBool('disease_level_$levelIndex')??true)){await NotificationService.instance.newDiseaseEvent(event,km);count++;}
         notified.add(event.stableKey);
       }
     }
@@ -35,4 +39,5 @@ class DiseaseNotificationCoordinator {
   static String _encodeMap(Iterable<DiseaseAlert> events)=>events.map((x)=>'${x.stableKey}\t${x.evidence.name}').join('\n');
   static String _encodeStatus(Iterable<DiseaseAlert> events)=>events.map((x)=>'${x.incidentKey}\t${_phase(x)}').join('\n');
   static String _phase(DiseaseAlert event)=>event.isNegative?'negative':event.isSuspected?'suspected':event.isConfirmed?'confirmed':'publicInfo';
+  static int _typeIndex(DiseaseType type)=>switch(type){DiseaseType.fmd=>0,DiseaseType.asf=>1,DiseaseType.ped=>2,DiseaseType.prrs=>3};
 }
