@@ -53,7 +53,7 @@ def main():
         if kape.findall(".//item"):
             kape_ok = True; break
     if not kape_ok: raise RuntimeError("KAPE no recent official rows")
-    print(f"KAPE: latest official row OK dataDate={day}")
+    print(f"KAPE: latest official row OK dataDate={day}")\n    sample = kape.find(".//item")\n    if sample is not None:\n        safe_fields = {child.tag: (child.text or "").strip() for child in sample if child.tag.lower().startswith("c_") or any(x in child.tag.lower() for x in ("grade", "cnt", "wgt", "amt"))}\n        print("KAPE_SCHEMA:", json.dumps(safe_fields, ensure_ascii=False, sort_keys=True))
 
     # Fixed official KMA grid/time only verifies auth and response schema; app requests its actual GPS grid.
     candidate = now - timedelta(minutes=15)
