@@ -40,7 +40,12 @@ void main() {
     final client=KapeApiClient(apiKey:'test',client:MockClient((request)async{
       final female=request.url.queryParameters['sexCd']=='025001';
       final count=female?30:70,weight=female?'87.0':'88.0';
-      return http.Response('<response><header><resultCode>00</resultCode></header><body><items><item><regionNm>전국(제주 제외)</regionNm><c_1101eTotCnt>$count</c_1101eTotCnt><c_1101eAvgWgt>$weight</c_1101eAvgWgt></item></items></body></response>',200);
+      final xml = '<response><header><resultCode>00</resultCode></header><body><items><item><regionNm>전국(제주 제외)</regionNm><c_1101eTotCnt>$count</c_1101eTotCnt><c_1101eAvgWgt>$weight</c_1101eAvgWgt></item></items></body></response>';
+      return http.Response.bytes(
+        utf8.encode(xml),
+        200,
+        headers: const {'content-type': 'application/xml; charset=utf-8'},
+      );
     }));
     final status=await client.auctionStatusFor('20260926');
     expect(status.totalCount,100);expect(status.femaleCount,30);expect(status.castratedCount,70);expect(status.averageCarcassWeight,closeTo(87.7,.01));
