@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/dashboard_models.dart';
 import '../theme/app_theme.dart';
-import '../settings/display_settings.dart';
 
 class CommodityTrendCard extends StatelessWidget {
   const CommodityTrendCard({super.key,required this.items,this.onTap,this.onHeaderTap});
