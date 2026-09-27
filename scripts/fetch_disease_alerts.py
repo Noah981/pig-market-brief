@@ -143,10 +143,8 @@ def main():
  items=[]
  items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do",default_country="KR")
  items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do",default_country="KR")
- # WOAH의 질병 소개 페이지는 개별 발생 공고가 아니므로 수집하지 않는다.
- # 해외는 국가가 제목에 명시된 최신 공개정보만 표시하고 공식 원문 여부를 구분한다.
- items+=public_news("국내")
- items+=public_news("국외")
+ # 공개뉴스의 게시일은 실제 발생일이 아니므로 법정질병 발생 피드에
+ # 포함하지 않는다. 앱의 국내 발생 현황은 공식 MAFRA API가 보강한다.
  seen=set();dedup=[]
  for x in items:
   key=(x["disease"],x["summary"])
