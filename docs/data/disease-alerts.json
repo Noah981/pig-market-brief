@@ -1,20 +1,7 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-09-27T10:19:01.715424+09:00",
-  "items": [
-    {
-      "disease": "ASF",
-      "source": "공개뉴스",
-      "countryCode": "KR",
-      "scope": "국내",
-      "evidenceLevel": "PUBLIC_UNCONFIRMED",
-      "level": "공개정보 · 공식 확인 필요",
-      "summary": "아프리카돼지열병 발생농가 가축처분 보상금 100% 지급 - 데일리한국",
-      "sourceUrl": "https://news.google.com/rss/articles/CBMib0FVX3lxTE91cUFKTmxXenpvLWJ5ajdvSWpuZGJPb1Q0b09PZVRpLUk1ak1Xc3ZVYTBLT1UxZE11YTVfb0p4c2ZsNHc2WkVfeGJfRzE0Qk84SUpWNk1xVTZQZmctdmg1aExZaHFqZVgzZjFZc0dtVdIBc0FVX3lxTFBLUk1NbzJxNUtIT2ktVHNPUzlaeU5HV0JBeWh0Mm5KZ0k2VUYybUpaOFFfUF9kNzM1ZGU2X3lKTE44NVJNdTByb1NmbENDSTBja1drbGJmempZcV9qVkVldHY2b01IREhGdzdmd3JwcHBSZUU?oc=5",
-      "publishedAt": "Fri, 04 Sep 2026 02:05:56 GMT",
-      "detectedAt": "2026-09-27T10:18:59.633305+09:00"
-    }
-  ],
+  "updatedAt": "2026-09-27T16:51:39.807316+09:00",
+  "items": [],
   "evidencePolicy": {
     "OFFICIAL": "정부·방역기관 원문에서 발생·확진·양성이 확인된 항목",
     "PUBLIC_UNCONFIRMED": "공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목",
