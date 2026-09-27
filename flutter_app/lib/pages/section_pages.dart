@@ -74,7 +74,7 @@ class MarketOverviewPage extends StatelessWidget {
         GridView.count(
           crossAxisCount: 2, shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 7, crossAxisSpacing: 7, childAspectRatio: 1.48,
+          mainAxisSpacing: 7, crossAxisSpacing: 7, childAspectRatio: 1.42,
           children: tiles,
         ),
         const SizedBox(height: 7),
