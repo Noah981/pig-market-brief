@@ -202,21 +202,22 @@ void main() {
     await DisplaySettings.instance.setTextScale(1);
     expect(tester.takeException(),isNull);
   });
-  testWidgets('홈 큰글씨 모드는 120%로 확대되고 다시 꺼진다',(tester)async{
+  testWidgets('홈 큰글씨 모드는 기본 활성이고 안전한 배율로 전환된다',(tester)async{
     tester.view.physicalSize=const Size(360,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isTrue);
-    expect(DisplaySettings.instance.textScale,1.2);
+    expect(DisplaySettings.instance.textScale,1.15);
     expect(find.text('기본 글씨'),findsOneWidget);
     expect(tester.takeException(),isNull);
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
+    await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
+    expect(DisplaySettings.instance.largeTextMode,isTrue);
   });
-  testWidgets('새 설치의 기본 글자 크기는 100%다',(tester)async{
+  testWidgets('새 설치의 기본 글자 크기는 가독성 기준이다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.selectedTextScale,1.0);expect(tester.takeException(),isNull);
+    expect(DisplaySettings.instance.selectedTextScale,1.08);expect(tester.takeException(),isNull);
   });
   for(final width in const [360.0,390.0,412.0]){
     testWidgets('큰글씨 상세 화면 ${width.toInt()}dp 배경·상단·오버플로 정상',(tester)async{
