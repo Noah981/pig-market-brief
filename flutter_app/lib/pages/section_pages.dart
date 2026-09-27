@@ -78,7 +78,7 @@ class MarketOverviewPage extends StatelessWidget {
           children: tiles,
         ),
         const SizedBox(height: 7),
-        SizedBox(height:84,child:_commodityTile('oil','wti',context,wide:true)),
+        SizedBox(height:92,child:_commodityTile('oil','wti',context,wide:true)),
         const SizedBox(height: 10),
         Container(padding:const EdgeInsets.fromLTRB(12,10,12,4),decoration:appCard(radius:18),child:Column(children:[
           const Row(children:[Expanded(child:_SectionTitle('시황 요약 (오늘)')),Text('전체 보기  ›',style:TextStyle(fontSize:12,fontWeight:FontWeight.w800,color:AppColors.coral))]),
