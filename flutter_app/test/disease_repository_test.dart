@@ -28,6 +28,10 @@ void main(){
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:30))).isActiveAt(now),isTrue);
     expect(event(DiseaseType.asf,8,date:now.subtract(const Duration(days:31))).isActiveAt(now),isFalse);
   });
+  test('공개뉴스 RFC 2822 발표일도 최근 발생일로 판정한다',(){
+    const alert=DiseaseAlert(type:DiseaseType.asf,source:'공개뉴스',countryCode:'KR',evidence:DiseaseEvidence.publicInfo,status:'의심 · 정밀검사 중',summary:'양평군 ASF 의심 신고',sourceUrl:'',occurrenceDate:'Sun, 27 Sep 2026 03:20:00 GMT');
+    expect(alert.isRecentAt(DateTime(2026,9,27)),isTrue);
+  });
   test('의심은 공개정보로 표시하고 음성 전환 시 활성 목록에서 제거한다',()async{
     final payload={'updatedAt':'2026-09-27','items':[
       {'disease':'ASF','source':'공개뉴스','countryCode':'KR','evidenceLevel':'PUBLIC_UNCONFIRMED','status':'의심 · 정밀검사 중','summary':'경기 양평군 ASF 의심 신고','sourceUrl':'','publishedAt':'2026-09-27','region':'양평군','latitude':37.491,'longitude':127.488}

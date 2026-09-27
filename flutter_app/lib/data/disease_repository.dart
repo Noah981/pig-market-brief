@@ -42,7 +42,8 @@ class DiseaseRepository {
       if(seen.add(alert.stableKey))items.add(alert);
     }
     final merged=<String,DiseaseAlert>{};
-    for(final x in hosted.items){merged[x.incidentKey]=x;}
+    for(final x in hosted.items){_putLatest(merged,x);}
+    // An official result always wins over a public signal for the same incident.
     for(final x in items){merged[x.incidentKey]=x;}
     return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,state:DiseaseDataState.live);
   }
@@ -69,6 +70,20 @@ class DiseaseRepository {
     return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,state:fromCache?DiseaseDataState.stale:DiseaseDataState.live);
   }
   String _status(String raw,String summary,DiseaseEvidence evidence){final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
+  void _putLatest(Map<String,DiseaseAlert> target,DiseaseAlert next){
+    final old=target[next.incidentKey];
+    if(old==null||_eventMoment(next).isAfter(_eventMoment(old))||(_eventMoment(next)==_eventMoment(old)&&_statusRank(next)>_statusRank(old))){target[next.incidentKey]=next;}
+  }
+  DateTime _eventMoment(DiseaseAlert event){
+    for(final value in [event.updatedAt,event.announcementDate,event.occurrenceDate]){
+      final parsed=DateTime.tryParse(value);
+      if(parsed!=null)return parsed;
+      final digits=value.replaceAll(RegExp(r'[^0-9]'),'');
+      if(digits.length>=8){final date=DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');if(date!=null)return date;}
+    }
+    return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+  int _statusRank(DiseaseAlert event)=>event.isNegative?4:event.isConfirmed?3:event.isSuspected?2:1;
   bool _isPigRelevant(DiseaseType type,String livestock)=>type!=DiseaseType.fmd||livestock.isEmpty||livestock.contains('돼지')||livestock.toUpperCase().contains('SWINE');
   double? _number(MafraDiseaseRow row,List<String> keys)=>double.tryParse(row.pick(keys));
   Future<(double,double)?> _coordinate(MafraDiseaseRow row,String address,String occurrence)async{
