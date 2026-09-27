@@ -58,7 +58,11 @@ def main():
             if cells: rows.append(cells)
         grades = {r[0]:r for r in rows if r and r[0] in ("1+","1","2","등외")}
         summary = next((r for r in rows if r and r[0] == "평균"), None)
-        if len(grades)==4 and summary and int(summary[1])>0 and float(summary[3])>0:
+        def number(value):
+            try: return float(value)
+            except (TypeError, ValueError): return 0
+        valid_grades = all(number(row[1]) > 0 and number(row[2]) > 0 for row in grades.values())
+        if len(grades)==4 and valid_grades and summary and number(summary[1])>0 and number(summary[3])>0:
             kape_rows = (grades,summary); break
     if not kape_rows: raise RuntimeError("KAPE Dabom nationwide-ex-Jeju rows missing")
     print(f"KAPE_DABOM: nationwide-ex-Jeju grade/status rows OK dataDate={day}")
