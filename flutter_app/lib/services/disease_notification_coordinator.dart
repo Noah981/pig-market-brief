@@ -8,8 +8,11 @@ class DiseaseNotificationCoordinator {
   static const _baseline='disease_notification_baseline_v1',_notified='notified_disease_event_ids_v1',_evidence='disease_event_evidence_v1',_status='disease_incident_status_v2';
   static Future<int> process(DiseaseFeed feed)async{
     final prefs=await SharedPreferences.getInstance(),now=DateTime.now();
-    final recent=_latestIncidents(feed.items.where((x)=>x.countryCode=='KR'&&x.isRecentAt(now)));
-    final active=recent.where((x)=>!x.isNegative).toList();
+    final allRecent=feed.items.where((x)=>x.countryCode=='KR'&&x.isRecentAt(now)).toList();
+    final recent=_latestIncidents(allRecent);
+    // Keep every distinct official event for distance alerts and the first-sync
+    // baseline; only status-transition checks are coalesced per incident.
+    final active=allRecent.where((x)=>!x.isNegative).toList();
     final ids=active.map((x)=>x.stableKey).toSet(),previousEvidence=_decodeMap(prefs.getString(_evidence));
     final previousStatus=_decodeMap(prefs.getString(_status));
     if(!(prefs.getBool(_baseline)??false)){
