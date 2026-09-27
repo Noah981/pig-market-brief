@@ -5,8 +5,8 @@ import '../../config/api_config.dart';
 import 'api_exception.dart';
 
 class KmaForecast {
-  const KmaForecast({required this.tempMin, required this.tempMax, required this.humidityMax, required this.rainProbabilityMax, required this.baseDate, required this.baseTime});
-  final double tempMin, tempMax, humidityMax, rainProbabilityMax;
+  const KmaForecast({required this.tempMin, required this.tempMax, required this.humidityMax, required this.rainProbabilityMax, required this.windSpeedMax, required this.baseDate, required this.baseTime});
+  final double tempMin, tempMax, humidityMax, rainProbabilityMax, windSpeedMax;
   final String baseDate, baseTime;
 }
 
@@ -39,12 +39,12 @@ class KmaApiClient {
     for (final raw in rows.whereType<Map>()) {
       final row = raw.cast<String, dynamic>(), category = row['category']?.toString() ?? '';
       final value = double.tryParse(row['fcstValue']?.toString() ?? '');
-      if (value != null && const ['TMP', 'TMN', 'TMX', 'REH', 'POP'].contains(category)) values.putIfAbsent(category, () => []).add(value);
+      if (value != null && const ['TMP', 'TMN', 'TMX', 'REH', 'POP', 'WSD'].contains(category)) values.putIfAbsent(category, () => []).add(value);
     }
     final temps = [...?values['TMP'], ...?values['TMN'], ...?values['TMX']];
     if (temps.isEmpty) throw const OfficialApiException('KMA', 'empty-result');
     double maxOf(String key) => values[key]?.reduce(math.max) ?? 0;
-    return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), baseDate: baseDate, baseTime: baseTime);
+    return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), windSpeedMax: maxOf('WSD'), baseDate: baseDate, baseTime: baseTime);
   }
 
   (int, int) _grid(double lat, double lon) {

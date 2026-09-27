@@ -23,8 +23,8 @@ class WeatherFarmRepository {
     if(ApiConfig.hasKma){
       final location=FarmLocationSettings.instance.location;
       final forecast=await _kmaApi(location.latitude,location.longitude);
-      final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
-      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
+      final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,windSpeed:forecast.windSpeedMax,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
+      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'windSpeedMax':value.windSpeed,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
       return value;
     }
     final response=await _client.get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
@@ -41,7 +41,7 @@ class WeatherFarmRepository {
     final regions=(json['regions'] as List? ?? const []).whereType<Map<String,dynamic>>().toList();
     if(regions.isEmpty)throw const FormatException('No weather region');
     final row=regions.firstWhere((x)=>x['region']==preferredRegion,orElse:()=>regions.first);
-    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache);
+    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,windSpeed:(row['windSpeedMax'] as num?)?.toDouble(),riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache);
   }
 
   List<FarmHealthRisk> risks(WeatherFarmGuide weather){

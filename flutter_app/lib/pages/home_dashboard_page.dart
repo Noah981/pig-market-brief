@@ -68,7 +68,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
     SliverToBoxAdapter(child:FarmHeroSection()),
     SliverPadding(padding:const EdgeInsets.fromLTRB(AppSpacing.page,0,AppSpacing.page,14),sliver:SliverList.list(children:[
       MarketPriceCard(period:_period,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
-      SizedBox(height:DisplaySettings.instance.largeTextMode?330:DisplaySettings.instance.textScale>=1.3?280:230,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:LiveMarketDriverBuilder.build(market:_market,grades:_grades,fallback:_analysis),onTap:_openMarketDrivers)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
+      SizedBox(height:244,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:LiveMarketDriverBuilder.build(market:_market,grades:_grades,fallback:_analysis),onTap:_openMarketDrivers)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
       const SizedBox(height:10),
       HomeGradeAuctionCard(snapshot:_grades,onTap:_openPigPrice),
       const SizedBox(height:10),

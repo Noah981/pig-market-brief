@@ -1,7 +1,8 @@
 class WeatherFarmGuide {
-  const WeatherFarmGuide({required this.region,required this.tempMin,required this.tempMax,required this.humidity,required this.rainProbability,required this.riskFactors,required this.checks,required this.updatedAt,required this.source,this.fromCache=false});
+  const WeatherFarmGuide({required this.region,required this.tempMin,required this.tempMax,required this.humidity,required this.rainProbability,required this.riskFactors,required this.checks,required this.updatedAt,required this.source,this.windSpeed,this.fromCache=false});
   final String region,updatedAt,source;
   final double tempMin,tempMax,humidity,rainProbability;
+  final double? windSpeed;
   final List<String> riskFactors,checks;
   final bool fromCache;
 
