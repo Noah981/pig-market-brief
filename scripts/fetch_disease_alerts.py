@@ -46,6 +46,9 @@ def fetch(url):
  return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
+def event_date(value):
+ try:return parsedate_to_datetime(value).astimezone(KST).date().isoformat()
+ except Exception:return datetime.now(KST).date().isoformat()
 def diseases(text):
  lower=text.lower();found=[];occupied=[]
  for alias,value in sorted(DISEASES.items(),key=lambda x:len(x[0]),reverse=True):
@@ -104,7 +107,7 @@ def public_news(scope="국내"):
     if not ds or not event_title(title) or not recent(published):continue
     code=country_code(title,scope)
     if not code:continue
-    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","status":event_status(title,"PUBLIC_UNCONFIRMED"),"level":event_status(title,"PUBLIC_UNCONFIRMED"),"summary":title[:260],"sourceUrl":item.findtext("link") or url,"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
+    for disease in ds:out.append({"disease":disease,"source":"공개뉴스","countryCode":code,"scope":classify(code),"evidenceLevel":"PUBLIC_UNCONFIRMED","status":event_status(title,"PUBLIC_UNCONFIRMED"),"level":event_status(title,"PUBLIC_UNCONFIRMED"),"summary":title[:260],"sourceUrl":item.findtext("link") or url,"occurrenceDate":event_date(published),"publishedAt":published,"detectedAt":datetime.now(KST).isoformat(),**region_fields(title)})
   except Exception as e:print("public source skipped",term,e)
  return out
 
