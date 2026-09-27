@@ -108,13 +108,17 @@ class _MapPainter extends CustomPainter{
     if(showRadii&&userLatitude!=null&&userLongitude!=null){final c=projection.point(userLongitude!,userLatitude!);for(final ring in const [(50.0,Color(0xFFFFD54F)),(30.0,Color(0xFFFF9800)),(10.0,Color(0xFFE53935))]){final edge=projection.point(userLongitude!,userLatitude!+ring.$1/111.0),radius=(edge-c).distance;canvas.drawCircle(c,radius,Paint()..color=ring.$2.withValues(alpha:.10));canvas.drawCircle(c,radius,Paint()..color=ring.$2.withValues(alpha:.65)..style=PaintingStyle.stroke..strokeWidth=.8);}}
     for(final item in items.where((x)=>x.hasMapPoint)){
       final p=projection.point(item.longitude!,item.latitude!);
-      final color=item.isOfficial?AppColors.coral:const Color(0xFFF6A8BD),selected=item.stableKey==focusedEventId;
-      canvas.drawCircle(p,selected?11:8,Paint()..color=color.withValues(alpha:.22));
-      canvas.drawCircle(p,selected?6:4.5,Paint()..color=color);
-      canvas.drawCircle(p,selected?6:4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);
+      final color=_diseaseColor(item.type),selected=item.stableKey==focusedEventId,radius=selected?11.0:9.0;
+      canvas.drawCircle(p,radius+4,Paint()..color=color.withValues(alpha:item.isOfficial ? 0.24 : 0.13));
+      canvas.drawCircle(p,radius,Paint()..color=item.isOfficial?color:Colors.white);
+      canvas.drawCircle(p,radius,Paint()..color=color..style=PaintingStyle.stroke..strokeWidth=item.isOfficial?1.5:2.2);
+      final glyph=TextPainter(text:TextSpan(text:_diseaseGlyph(item.type),style:TextStyle(color:item.isOfficial?Colors.white:color,fontSize:selected?10:8.5,fontWeight:FontWeight.w900,height:1)),textDirection:TextDirection.ltr)..layout();
+      glyph.paint(canvas,p-Offset(glyph.width/2,glyph.height/2));
     }
     if(userLatitude!=null&&userLongitude!=null){final p=projection.point(userLongitude!,userLatitude!);canvas.drawCircle(p,8,Paint()..color=AppColors.blue.withValues(alpha:.2));canvas.drawCircle(p,4.5,Paint()..color=AppColors.blue);canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);}
-    const label=TextSpan(text:'● 공식 발생   ● 공개정보   ● 내 위치',style:TextStyle(fontSize:7.2,color:AppColors.secondary));final painter=TextPainter(text:label,textDirection:TextDirection.ltr)..layout();painter.paint(canvas,Offset(size.width-painter.width-8,size.height-painter.height-5));
+    const label=TextSpan(text:'A ASF  F 구제역  P PED  R PRRS  ● 내 위치',style:TextStyle(fontSize:7.0,color:AppColors.secondary,fontWeight:FontWeight.w700));final painter=TextPainter(text:label,textDirection:TextDirection.ltr)..layout();painter.paint(canvas,Offset(size.width-painter.width-8,size.height-painter.height-5));
   }
+  Color _diseaseColor(DiseaseType type)=>switch(type){DiseaseType.asf=>const Color(0xFFE91E63),DiseaseType.fmd=>const Color(0xFFF57C00),DiseaseType.ped=>const Color(0xFFF9A825),DiseaseType.prrs=>const Color(0xFF9C4DCC)};
+  String _diseaseGlyph(DiseaseType type)=>switch(type){DiseaseType.asf=>'A',DiseaseType.fmd=>'F',DiseaseType.ped=>'P',DiseaseType.prrs=>'R'};
   @override bool shouldRepaint(covariant _MapPainter old)=>old.items!=items||old.userLatitude!=userLatitude||old.userLongitude!=userLongitude||old.shapes!=shapes||old.showRadii!=showRadii||old.focusedEventId!=focusedEventId;
 }

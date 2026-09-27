@@ -58,7 +58,9 @@ class DiseaseRepository {
       if(value is! Map)continue;final x=value.cast<String,dynamic>();
       final type=normalizeDiseaseType(x['diseaseType']?.toString()??x['disease']?.toString()??'');if(type==null)continue;
       final code=(x['countryCode']?.toString()??'').toUpperCase();if(code.isEmpty)continue;
-      final occurrence=x['occurrenceDate']?.toString()??x['eventDate']?.toString()??x['publishedAt']?.toString()??'';
+      // publishedAt is not an incident date. Old incidents are often
+      // republished, so using it here makes February events look current.
+      final occurrence=x['occurrenceDate']?.toString()??x['eventDate']?.toString()??'';
       final summary=x['summary']?.toString()??'';if(occurrence.isEmpty||summary.isEmpty)continue;
       final evidence=(x['evidenceLevel']?.toString().toUpperCase()=='OFFICIAL'||x['verificationLevel']?.toString().toUpperCase()=='OFFICIAL')?DiseaseEvidence.official:DiseaseEvidence.publicInfo;
       final address=x['region']?.toString()??summary;
