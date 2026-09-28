@@ -53,7 +53,6 @@ class _DiseasePageState extends State<DiseasePage>{
       final places=await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
-        localeIdentifier:'ko_KR',
       ).timeout(const Duration(seconds:10));
       final place=places.firstOrNull;
       if(place==null)throw StateError('reverse-geocoding-empty');
@@ -107,7 +106,7 @@ class _DiseasePageState extends State<DiseasePage>{
         break;
       }
     }
-    if(best!=null&&best.accuracy<=500)return best;
+    if(best!=null&&best.accuracy<=500){return best;}
 
     try{
       final last=await Geolocator.getLastKnownPosition();
