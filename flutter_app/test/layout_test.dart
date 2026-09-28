@@ -129,7 +129,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());
-    for (final item in const [(1, '시황'), (2, '질병'), (3, '오늘 관리'), (4, '돈돈해님')]) {
+    for (final item in const [(1, '시황'), (2, '질병'), (3, '오늘 관리'), (4, '돈돈해')]) {
       await tester.tap(find.byKey(ValueKey('nav_${item.$1}')));
       await tester.pumpAndSettle();
       expect(find.text(item.$2), findsWidgets);

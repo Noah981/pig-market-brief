@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
@@ -8,6 +9,7 @@ import 'market_detail_pages.dart';
 import '../settings/farm_location_settings.dart';
 import '../widgets/farm_location_picker.dart';
 import 'benefit_page.dart';
+import 'disease_page.dart' show DiseaseNotificationSettingsPage;
 
 class PageShell extends StatelessWidget {
   const PageShell({super.key, required this.title, required this.subtitle, required this.child,this.help,this.onRefresh});
@@ -150,13 +152,29 @@ class _MorePageState extends State<MorePage>{
   Widget build(BuildContext context) => PageShell(
     title: '', subtitle: '',
     child: Column(children: [
-      ListTile(contentPadding:EdgeInsets.zero,leading:const CircleAvatar(radius:24,backgroundColor:AppColors.lightCoral,child:Icon(Icons.person,color:Color(0xFF4B5A70))),title:const Text('돈돈해님',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),subtitle:const Text('항상 감사합니다.',style:TextStyle(fontSize:10)),trailing:const Icon(Icons.settings_outlined),onTap:()=>_textSize(context)),
-      const Divider(),
-      ...items.map((x){final subtitle=x.$1=='지역 설정'?'내 지역: ${FarmLocationSettings.instance.location.label}':x.$2;return ListTile(minTileHeight:57,contentPadding:EdgeInsets.zero,leading:Icon(x.$3,color:const Color(0xFF4B5A70),size:21),title:Text(x.$1,style:const TextStyle(fontSize:12,fontWeight:FontWeight.w800)),subtitle:subtitle.isEmpty?null:Text(subtitle,style:const TextStyle(fontSize:9,color:AppColors.secondary)),trailing:const Icon(Icons.chevron_right,size:18),onTap:()=>_open(context,x.$1));}),
+      const ListTile(contentPadding:EdgeInsets.zero,leading:CircleAvatar(radius:25,backgroundColor:AppColors.lightCoral,child:Icon(Icons.pets_rounded,color:AppColors.coral)),title:Text('돈돈해',style:TextStyle(fontSize:19,fontWeight:FontWeight.w900)),subtitle:Text('로그인 없이 누구나 사용할 수 있습니다.',style:TextStyle(fontSize:11,fontWeight:FontWeight.w600,color:AppColors.secondary))),
+      const Divider(height:22),
+      ...items.map((x){final subtitle=x.$1=='지역 설정'?'내 지역: ${FarmLocationSettings.instance.location.label}':x.$2;return InkWell(onTap:()=>_open(context,x.$1),borderRadius:BorderRadius.circular(12),child:Padding(padding:const EdgeInsets.symmetric(vertical:9),child:Row(children:[SizedBox(width:42,child:Icon(x.$3,color:const Color(0xFF52627A),size:23)),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(x.$1,style:const TextStyle(fontSize:14.5,fontWeight:FontWeight.w900,letterSpacing:-.2)),if(subtitle.isNotEmpty)Text(subtitle,maxLines:1,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:10.5,fontWeight:FontWeight.w600,color:AppColors.secondary))])),const Icon(Icons.chevron_right_rounded,size:21,color:AppColors.secondary)])));}),
+      const SizedBox(height:16),
+      const Text('© 2026 신보석. All rights reserved.',style:TextStyle(fontSize:9.5,fontWeight:FontWeight.w700,color:AppColors.secondary)),
     ]),
   );
 
-  void _open(BuildContext context,String item){if(item=='글자 크기'){_textSize(context);return;}if(item=='지역 설정'||item=='내 농장'){showFarmLocationPicker(context);return;}if(item=='정부·지자체 지원사업'){Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const BenefitPage()));return;}ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('$item 화면은 공식 데이터 연결을 준비하고 있습니다.')));}
+  void _open(BuildContext context,String item){
+    if(item=='글자 크기'){_textSize(context);return;}
+    if(item=='지역 설정'||item=='내 농장'){showFarmLocationPicker(context);return;}
+    if(item=='정부·지자체 지원사업'){Navigator.of(context).push(MaterialPageRoute(builder:(_)=>const BenefitPage()));return;}
+    final page=switch(item){
+      '인증 정보'=>const _CertificationSettingsPage(),
+      '알림 설정'=>const _NotificationHubPage(),
+      '데이터 출처'=>const _InfoListPage(title:'데이터 출처',rows:[('전국·등급별 돈가 및 경락 현황','축산물품질평가원 · 축산유통정보 다봄'),('법정가축전염병','농림축산식품 공공데이터 · 농림축산검역본부'),('날씨','기상청 단기예보 및 초단기실황'),('USD/KRW','한국은행 ECOS'),('국제 원료·유가','각 상세화면에 표시된 원자료 제공처')]),
+      '공지사항'=>const _InfoListPage(title:'공지사항',rows:[('질병 정보 기준 개선','기사 게시일을 발생일로 사용하지 않고 공식 API의 실제 발생일만 표시합니다.'),('데이터 원칙','예시값이나 임의 생성값 없이 마지막 정상 데이터와 상태를 구분합니다.')]),
+      '이용약관 / 개인정보처리방침'=>const _TermsPage(),
+      '앱 정보'=>const _InfoListPage(title:'앱 정보',rows:[('돈돈해','양돈의 오늘을 든든하게'),('소유자·개발 책임자','신보석'),('버전','1.4.0'),('이용 방식','회원가입·로그인 없이 이용')]),
+      _=>null,
+    };
+    if(page!=null)Navigator.of(context).push(MaterialPageRoute(builder:(_)=>page));
+  }
 
   Future<void> _textSize(BuildContext context)async{
     final settings=DisplaySettings.instance;
@@ -164,6 +182,24 @@ class _MorePageState extends State<MorePage>{
     await showModalBottomSheet(context:context,showDragHandle:true,isScrollControlled:true,builder:(context)=>SafeArea(child:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[const ListTile(title:Text('글자 크기',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('선택하면 앱 전체 글자에 바로 적용됩니다. 큰글씨 모드는 홈 상단에서 별도로 켤 수 있습니다.')),...choices.map((x)=>RadioListTile<double>(value:x.$1,groupValue:settings.selectedTextScale,title:Text(x.$2,style:TextStyle(fontSize:14*x.$1,fontWeight:FontWeight.w800)),onChanged:(value)async{if(value==null)return;Navigator.pop(context);await settings.setTextScale(value);})),const SizedBox(height:8)]))));
   }
 }
+
+class _PlainSettingsScaffold extends StatelessWidget{
+  const _PlainSettingsScaffold({required this.title,required this.child});final String title;final Widget child;
+  @override Widget build(BuildContext context)=>Scaffold(backgroundColor:AppColors.background,appBar:AppBar(backgroundColor:AppColors.background,surfaceTintColor:Colors.transparent,title:Text(title,style:const TextStyle(fontSize:21,fontWeight:FontWeight.w900))),body:SafeArea(child:ListView(padding:const EdgeInsets.fromLTRB(20,8,20,28),children:[child])));
+}
+
+class _InfoListPage extends StatelessWidget{
+  const _InfoListPage({required this.title,required this.rows});final String title;final List<(String,String)> rows;
+  @override Widget build(BuildContext context)=>_PlainSettingsScaffold(title:title,child:Column(children:rows.map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:14),child:Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(flex:4,child:Text(x.$1,style:const TextStyle(fontSize:13,fontWeight:FontWeight.w900))),const SizedBox(width:14),Expanded(flex:6,child:Text(x.$2,style:const TextStyle(fontSize:11.5,fontWeight:FontWeight.w600,height:1.55,color:AppColors.secondary)))]))).toList()));
+}
+
+class _CertificationSettingsPage extends StatefulWidget{const _CertificationSettingsPage();@override State<_CertificationSettingsPage> createState()=>_CertificationSettingsPageState();}
+class _CertificationSettingsPageState extends State<_CertificationSettingsPage>{final values=<String,bool>{};static const names=['깨끗한 축산농장','저탄소 축산물 인증','HACCP','무항생제','동물복지','유기축산'];@override void initState(){super.initState();_load();}Future<void> _load()async{final p=await SharedPreferences.getInstance();if(!mounted)return;setState((){for(final x in names){values[x]=p.getBool('cert_$x')??false;}});}Future<void> _set(String key,bool value)async{setState(()=>values[key]=value);await (await SharedPreferences.getInstance()).setBool('cert_$key',value);}@override Widget build(BuildContext context)=>_PlainSettingsScaffold(title:'인증 정보',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[const Text('내 농장에 해당하는 인증을 선택하세요.',style:TextStyle(fontSize:12,fontWeight:FontWeight.w700,color:AppColors.secondary)),const SizedBox(height:10),...names.map((x)=>SwitchListTile(contentPadding:EdgeInsets.zero,title:Text(x,style:const TextStyle(fontSize:14,fontWeight:FontWeight.w900)),value:values[x]??false,onChanged:(v)=>_set(x,v),activeColor:AppColors.coral))]));}
+
+class _NotificationHubPage extends StatefulWidget{const _NotificationHubPage();@override State<_NotificationHubPage> createState()=>_NotificationHubPageState();}
+class _NotificationHubPageState extends State<_NotificationHubPage>{bool market=true,weather=true,benefit=true;@override void initState(){super.initState();_load();}Future<void> _load()async{final p=await SharedPreferences.getInstance();if(!mounted)return;setState((){market=p.getBool('notify_market')??true;weather=p.getBool('notify_weather')??true;benefit=p.getBool('notify_benefit')??true;});}Future<void> _save(String key,bool value)async{await (await SharedPreferences.getInstance()).setBool(key,value);}@override Widget build(BuildContext context)=>_PlainSettingsScaffold(title:'알림 설정',child:Column(children:[_toggle('돈가·시황','공식 새 가격이 발표될 때',market,(v){setState(()=>market=v);_save('notify_market',v);}),_toggle('기상 위험','폭염·한파·호우 등 농장 관리 주의',weather,(v){setState(()=>weather=v);_save('notify_weather',v);}),_toggle('지원사업','설정 지역의 신규 지원사업',benefit,(v){setState(()=>benefit=v);_save('notify_benefit',v);}),ListTile(contentPadding:EdgeInsets.zero,title:const Text('질병 알림 상세',style:TextStyle(fontSize:14,fontWeight:FontWeight.w900)),subtitle:const Text('질병·거리 LEVEL별 알림 설정',style:TextStyle(fontSize:10.5,fontWeight:FontWeight.w600)),trailing:const Icon(Icons.chevron_right),onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const DiseaseNotificationSettingsPage()))) ]));Widget _toggle(String title,String sub,bool value,ValueChanged<bool> changed)=>SwitchListTile(contentPadding:EdgeInsets.zero,title:Text(title,style:const TextStyle(fontSize:14,fontWeight:FontWeight.w900)),subtitle:Text(sub,style:const TextStyle(fontSize:10.5,fontWeight:FontWeight.w600)),value:value,onChanged:changed,activeColor:AppColors.coral);}
+
+class _TermsPage extends StatelessWidget{const _TermsPage();@override Widget build(BuildContext context)=>const _PlainSettingsScaffold(title:'이용약관·개인정보',child:Text('''돈돈해 이용약관\n\n1. 소유권\n돈돈해의 자체 개발 소스코드, 화면 구성, 명칭, 로고 및 편집 저작물의 권리는 신보석에게 있습니다. 공공데이터, 오픈소스 및 제3자 자료의 권리는 각 원권리자에게 있습니다.\n\n2. 이용 허락\n이 앱은 로그인 없이 누구나 개인적인 정보 확인 목적으로 사용할 수 있습니다. 앱의 복제, 변조, 재배포, 역분석, 명칭·디자인 도용 또는 소유권 표시 제거는 사전 서면 허락 없이 허용되지 않습니다.\n\n3. 테스트·배포\n비공개 시험판의 설치·테스트·재배포는 소유자 신보석의 승인을 받은 경우에만 허용됩니다. 공식 배포본 여부는 소유자가 제공한 경로로 확인해야 합니다.\n\n4. 데이터와 책임\n시황·날씨·질병 정보는 각 제공기관의 발표 시차, 정정 또는 장애가 있을 수 있습니다. 질병 정보는 방역기관의 공식 발표와 현장 지침을 우선하며, 앱 정보만으로 진단하거나 방역조치를 결정해서는 안 됩니다.\n\n개인정보처리방침\n\n돈돈해는 회원가입과 로그인을 요구하지 않습니다. 서버에 사용자 계정정보를 수집하지 않으며, 지역·알림·농장 설정은 기능 제공을 위해 기기에 저장됩니다. GPS는 날씨·거리 계산을 위해 사용되며 별도 서버 계정에 저장하지 않습니다. Android 권한은 기기 설정에서 언제든 철회할 수 있습니다.\n\n시행일: 2026년 9월 28일\n소유자: 신보석\n© 2026 신보석. All rights reserved.''',style:TextStyle(fontSize:12,fontWeight:FontWeight.w600,height:1.7,color:AppColors.text)));}
 
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow(this.name, this.value, this.detail,this.up); final String name, value, detail;final bool up;
