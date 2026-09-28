@@ -46,7 +46,11 @@ abstract final class KoreanLocationResolver {
     String? province;
     for (final entry in _provinceAliases.entries) {
       final names = [entry.key, ...entry.value].map(_normalize);
-      if (fields.any((field) => names.any((name) => field == name || (name.length >= 5 && field.contains(name)))) {
+      final matchesProvince = fields.any((field) {
+        return names.any((name) =>
+            field == name || (name.length >= 5 && field.contains(name)));
+      });
+      if (matchesProvince) {
         province = entry.key;
         break;
       }
