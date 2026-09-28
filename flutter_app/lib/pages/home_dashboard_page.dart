@@ -43,10 +43,10 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   void _displayChanged(){if(mounted)setState((){});}
   Future<void> _consumeWidgetRoute()async{
     final route=await WidgetUpdateService.initialRoute();if(route==null||!mounted)return;
-    if(route.contains('/market/pig-price')){await _reloadMarketCache();if(mounted)WidgetsBinding.instance.addPostFrameCallback((_){if(mounted)_openPigPrice();});}
-    else if(route.contains('/weather'))setState(()=>_nav=3);
-    else if(route.contains('/tasks'))setState(()=>_nav=3);
-    else if(route.contains('/settings/farm-location'))setState(()=>_nav=4);
+    if(route.contains('/market/pig-price')){await _reloadMarketCache();if(mounted){WidgetsBinding.instance.addPostFrameCallback((_){if(mounted){_openPigPrice();}});}}
+    else if(route.contains('/weather')){setState(()=>_nav=3);}
+    else if(route.contains('/tasks')){setState(()=>_nav=3);}
+    else if(route.contains('/settings/farm-location')){setState(()=>_nav=4);}
   }
   void _openDiseaseNotification(){if(NotificationService.instance.selectedDiseaseEvent.value!=null&&mounted)setState(()=>_nav=2);}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
