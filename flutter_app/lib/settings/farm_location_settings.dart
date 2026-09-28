@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/widget_update_service.dart';
 
 class FarmLocation {
   const FarmLocation({required this.province, required this.cityCounty, required this.latitude, required this.longitude,this.town='',this.gpsVerified=false,this.accuracy});
@@ -31,7 +32,7 @@ class FarmLocationSettings extends ChangeNotifier {
   }
   Future<void> setLocation(FarmLocation value)async{
     _location=value;_loaded=true;final p=await SharedPreferences.getInstance();
-    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setString(_townKey,value.town),p.setDouble(_latKey,value.latitude),p.setDouble(_lngKey,value.longitude),p.setBool(_gpsKey,value.gpsVerified),if(value.accuracy!=null)p.setDouble(_accuracyKey,value.accuracy!),p.setString('farm_weather_region',value.province)]);notifyListeners();
+    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setString(_townKey,value.town),p.setDouble(_latKey,value.latitude),p.setDouble(_lngKey,value.longitude),p.setBool(_gpsKey,value.gpsVerified),if(value.accuracy!=null)p.setDouble(_accuracyKey,value.accuracy!),p.setString('farm_weather_region',value.province)]);notifyListeners();await WidgetUpdateService.updateAll();
   }
   Future<void> setGps(double lat,double lng,{required String province,required String cityCounty,String town='',double? accuracy})async{
     await setLocation(FarmLocation(province:province,cityCounty:cityCounty,town:town,latitude:lat,longitude:lng,gpsVerified:true,accuracy:accuracy));

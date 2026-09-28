@@ -6,6 +6,7 @@ import '../data/pig_grade_repository.dart';
 import '../data/weather_farm_repository.dart';
 import '../settings/farm_location_settings.dart';
 import 'disease_notification_coordinator.dart';
+import 'widget_update_service.dart';
 
 class DataRefreshService {
   DataRefreshService._();
@@ -15,7 +16,7 @@ class DataRefreshService {
   static Future<bool> refreshAll({bool force=false})async{
     final prefs=await SharedPreferences.getInstance();
     final last=DateTime.tryParse(prefs.getString(_lastCheckKey)??'');
-    if(!force&&last!=null&&DateTime.now().difference(last)<minInterval)return false;
+    if(!force&&last!=null&&DateTime.now().difference(last)<minInterval){await WidgetUpdateService.updateAll();return false;}
     await FarmLocationSettings.instance.load();
     await Future.wait<void>([
       _isolated(()async{final market=await MarketRepository().refresh();await PigGradeRepository().refresh(market.date);}),
@@ -24,6 +25,7 @@ class DataRefreshService {
       _isolated(()async{final feed=await DiseaseRepository().refresh();await DiseaseNotificationCoordinator.process(feed);}),
     ]);
     await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
+    await WidgetUpdateService.updateAll();
     return true;
   }
 

@@ -8,6 +8,7 @@ import '../data/pig_grade_repository.dart';
 import '../data/live_market_driver_builder.dart';
 import '../services/data_refresh_service.dart';
 import '../services/notification_service.dart';
+import '../services/widget_update_service.dart';
 import '../models/dashboard_models.dart';
 import '../models/weather_farm_models.dart';
 import '../settings/display_settings.dart';
@@ -37,9 +38,16 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   final _gradeRepository=PigGradeRepository();PigGradeSnapshot? _grades;
   String _weatherRegion='대구광역시';
-  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);DisplaySettings.instance.addListener(_displayChanged);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();}
+  @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);DisplaySettings.instance.addListener(_displayChanged);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();_consumeWidgetRoute();}
   @override void dispose(){DisplaySettings.instance.removeListener(_displayChanged);FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
   void _displayChanged(){if(mounted)setState((){});}
+  Future<void> _consumeWidgetRoute()async{
+    final route=await WidgetUpdateService.initialRoute();if(route==null||!mounted)return;
+    if(route.contains('/market/pig-price')){await _reloadMarketCache();if(mounted)WidgetsBinding.instance.addPostFrameCallback((_){if(mounted)_openPigPrice();});}
+    else if(route.contains('/weather'))setState(()=>_nav=3);
+    else if(route.contains('/tasks'))setState(()=>_nav=3);
+    else if(route.contains('/settings/farm-location'))setState(()=>_nav=4);
+  }
   void _openDiseaseNotification(){if(NotificationService.instance.selectedDiseaseEvent.value!=null&&mounted)setState(()=>_nav=2);}
   @override void didChangeAppLifecycleState(AppLifecycleState state){if(state==AppLifecycleState.resumed)_resumeRefresh();}
   Future<void> _resumeRefresh()async{await Future.wait([_refreshMarket(),DataRefreshService.refreshDisease()]);if(await DataRefreshService.refreshAll()){await Future.wait([_reloadCommodityCache(),_reloadWeatherCache()]);}}

@@ -71,6 +71,11 @@ jobs:
         run: |
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
           "$AAPT" dump permissions build/app/outputs/flutter-apk/app-release.apk | grep -q 'android.permission.INTERNET'
+          WIDGETS="$($AAPT dump xmltree build/app/outputs/flutter-apk/app-release.apk AndroidManifest.xml)"
+          for provider in PigPriceSmallWidget PigPriceDetailWidget PigGradeWidget WeatherTodoWidget TodayOverviewWidget; do
+            grep -q "$provider" <<< "$WIDGETS"
+          done
+          grep -q 'dondonhae' <<< "$WIDGETS"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

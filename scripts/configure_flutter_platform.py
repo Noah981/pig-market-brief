@@ -1,5 +1,6 @@
 """Apply platform permissions after `flutter create` in CI."""
 from pathlib import Path
+import shutil
 import plistlib
 
 root=Path(__file__).resolve().parents[1]/"flutter_app"
@@ -25,6 +26,54 @@ if "coreLibraryDesugaringEnabled true" not in gtext:
 if "desugar_jdk_libs" not in gtext:
     gtext += "\n\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
 gradle.write_text(gtext,encoding="utf-8")
+
+# Android Launcher widgets are kept as source templates because CI creates the
+# Flutter platform folders from scratch for every verified release build.
+widget_template=root/"android_widget"
+android_main=root/"android/app/src/main"
+if widget_template.exists():
+    shutil.copytree(widget_template,android_main,dirs_exist_ok=True)
+drawable=android_main/"res/drawable"
+drawable.mkdir(parents=True,exist_ok=True)
+shutil.copy2(root/"assets/images/dondonhae_symbol.png",drawable/"widget_pig.png")
+
+# Register all five real AppWidget providers and widget deep links.
+text=manifest.read_text(encoding="utf-8")
+providers="""
+        <receiver android:name=".PigPriceSmallWidget" android:exported="false">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_price_small_info" />
+        </receiver>
+        <receiver android:name=".PigPriceDetailWidget" android:exported="false">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_price_detail_info" />
+        </receiver>
+        <receiver android:name=".PigGradeWidget" android:exported="false">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_grade_info" />
+        </receiver>
+        <receiver android:name=".WeatherTodoWidget" android:exported="false">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_weather_todo_info" />
+        </receiver>
+        <receiver android:name=".TodayOverviewWidget" android:exported="false">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_today_info" />
+        </receiver>
+"""
+if 'PigPriceSmallWidget' not in text:
+    text=text.replace('</application>',providers+'\n    </application>')
+if 'android:scheme="dondonhae"' not in text:
+    deep_link='''
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="dondonhae" />
+            </intent-filter>
+'''
+    text=text.replace('</activity>',deep_link+'        </activity>',1)
+manifest.write_text(text,encoding="utf-8")
 
 plist=root/"ios/Runner/Info.plist"
 with plist.open("rb") as file:data=plistlib.load(file)
