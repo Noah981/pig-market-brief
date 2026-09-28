@@ -50,6 +50,7 @@ class _DiseasePageState extends State<DiseasePage>{
 
       final position=await _reliablePosition();
       if(position==null)throw StateError('reliable-position-unavailable');
+      await setLocaleIdentifier('ko_KR');
       final places=await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
