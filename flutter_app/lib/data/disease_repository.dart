@@ -10,7 +10,8 @@ import '../services/api/mafra_api_client.dart';
 class DiseaseRepository {
   DiseaseRepository({http.Client? client,MafraApiClient? mafraClient,DateTime Function()? clock}):_client=client??http.Client(),_mafraClient=mafraClient??MafraApiClient(client:client),_clock=clock??DateTime.now;
   static const _url='https://noah981.github.io/pig-market-brief/data/disease-alerts.json';
-  static const _cacheKey='verified_disease_feed_v3';
+  // v4: 기사 게시일 기반 공개뉴스 캐시를 폐기하고 공식 발생 자료만 사용.
+  static const _cacheKey='verified_disease_feed_v4';
   final http.Client _client;final MafraApiClient _mafraClient;final DateTime Function() _clock;
 
   Future<DiseaseFeed> cached()async{
