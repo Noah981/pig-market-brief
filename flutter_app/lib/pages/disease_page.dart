@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import '../services/korean_location_resolver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/disease_repository.dart';
@@ -20,35 +21,109 @@ class _DiseasePageState extends State<DiseasePage>{
   @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_syncLocation);NotificationService.instance.selectedDiseaseEvent.addListener(_notificationSelected);_loadLocation();_load();_liveTimer=Timer.periodic(const Duration(minutes:5),(_)=>_refresh());}
   @override void dispose(){_liveTimer?.cancel();FarmLocationSettings.instance.removeListener(_syncLocation);NotificationService.instance.selectedDiseaseEvent.removeListener(_notificationSelected);super.dispose();}
   Future<void> _loadLocation()async{await FarmLocationSettings.instance.load();_syncLocation();if(!_gpsVerified){try{await _updateGps(silent:true);}catch(_){}}}
-  void _syncLocation(){final x=FarmLocationSettings.instance.location;if(!mounted)return;setState((){_gpsVerified=x.gpsVerified;_lat=x.latitude;_lng=x.longitude;_location=x.label.isEmpty?'농장 위치를 설정해주세요.':x.label;});}
+  void _syncLocation(){final x=FarmLocationSettings.instance.location;if(!mounted)return;setState((){_gpsVerified=x.gpsVerified;_lat=x.gpsVerified?x.latitude:null;_lng=x.gpsVerified?x.longitude:null;_location=x.gpsVerified?x.label:(x.label.isEmpty?'농장 위치를 설정해주세요.':'기준 위치 · ${x.label}');});}
   void _notificationSelected(){final id=NotificationService.instance.selectedDiseaseEvent.value;if(id==null)return;final match=(_feed?.items??const <DiseaseAlert>[]).where((x)=>x.stableKey==id).firstOrNull;if(match!=null&&mounted)setState((){_tab=0;_selected=match.type;_focusedId=id;});}
   Future<void> _load()async{try{final cached=await _repository.cached();if(mounted)setState(()=>_feed=cached);}catch(_){}await _refresh();}
   Future<void> _refresh()async{final value=await _repository.refresh();await DiseaseNotificationCoordinator.process(value);if(mounted)setState((){_feed=value;_message=value.errorMessage;});_notificationSelected();}
   List<DiseaseAlert> get _active=>(_feed?.active(DateTime.now())??const []).where((x)=>_tab==0?x.countryCode=='KR':x.countryCode!='KR').toList();
   List<DiseaseAlert> get _visible=>_active.where((x)=>_selected==null||x.type==_selected).toList()..sort((a,b){final d=b.occurrenceDate.compareTo(a.occurrenceDate);if(d!=0)return d;return (b.isOfficial?1:0).compareTo(a.isOfficial?1:0);});
   Future<void> _updateGps({bool silent=false})async{
-    if(_locating)return;if(!await Geolocator.isLocationServiceEnabled()){if(!silent&&mounted)setState(()=>_message='휴대폰 위치 서비스가 꺼져 있습니다. GPS 설정을 켜주세요.');if(!silent)await Geolocator.openLocationSettings();return;}
-    var permission=await Geolocator.checkPermission();if(permission==LocationPermission.denied)permission=await Geolocator.requestPermission();
-    if(permission==LocationPermission.deniedForever){if(!silent&&mounted)setState(()=>_message='위치 권한이 차단되어 있습니다. 앱 설정에서 위치 권한을 허용해주세요.');if(!silent)await Geolocator.openAppSettings();return;}
-    if(permission==LocationPermission.denied){if(!silent&&mounted)setState(()=>_message='위치 권한이 필요합니다. GPS 버튼을 다시 눌러 허용해주세요.');return;}
+    if(_locating)return;
     if(mounted)setState((){_locating=true;_message='정확한 GPS 위치를 확인하고 있습니다.';});
     try{
-      Position? best;
-      try{for(var i=0;i<2;i++){final p=await Geolocator.getCurrentPosition(locationSettings:const LocationSettings(accuracy:LocationAccuracy.high,timeLimit:Duration(seconds:12)));if(best==null||p.accuracy<best.accuracy)best=p;if(p.accuracy<=100)break;}}catch(_){best=await Geolocator.getLastKnownPosition();}
-      final p=best;if(p==null)throw Exception('position-unavailable');
-      Placemark? place;try{place=(await placemarkFromCoordinates(p.latitude,p.longitude)).firstOrNull;}catch(_){}
-      final saved=FarmLocationSettings.instance.location;
-      final province=(place?.administrativeArea?.trim().isNotEmpty??false)?place!.administrativeArea!.trim():saved.province;
-      final resolvedCity=_cityLabel(place),city=resolvedCity.isNotEmpty?resolvedCity:saved.cityCounty;
-      final resolvedTown=(place?.subLocality?.trim().isNotEmpty??false)?place!.subLocality!.trim():(place?.thoroughfare?.trim()??'');
-      final town=resolvedTown.isNotEmpty?resolvedTown:saved.town;
-      if(province.isEmpty||city.isEmpty)throw Exception('region-unavailable');
-      await FarmLocationSettings.instance.setGps(p.latitude,p.longitude,province:province,cityCounty:city,town:town,accuracy:p.accuracy);
-      if(mounted)setState(()=>_message=p.accuracy<=100?'GPS 위치를 확인했습니다.':'GPS 위치를 확인했습니다. 오차 약 ${p.accuracy.round()}m');
-    }catch(_){if(mounted)setState(()=>_message='GPS 좌표를 받지 못했습니다. 야외에서 위치를 켠 뒤 다시 시도해주세요. 저장된 농장 위치를 기준으로 표시합니다.');}
-    finally{if(mounted)setState(()=>_locating=false);}
+      if(!await Geolocator.isLocationServiceEnabled()){
+        if(mounted)setState(()=>_message='휴대폰 위치 서비스를 켜야 GPS를 사용할 수 있습니다.');
+        if(!silent)await Geolocator.openLocationSettings();
+        return;
+      }
+      var permission=await Geolocator.checkPermission();
+      if(permission==LocationPermission.denied)permission=await Geolocator.requestPermission();
+      if(permission==LocationPermission.deniedForever){
+        if(mounted)setState(()=>_message='위치 권한이 차단되어 있습니다. 앱 설정에서 위치를 허용해주세요.');
+        if(!silent)await Geolocator.openAppSettings();
+        return;
+      }
+      if(permission!=LocationPermission.whileInUse&&permission!=LocationPermission.always){
+        if(mounted)setState(()=>_message='위치 권한이 필요합니다. GPS 버튼을 다시 눌러 허용해주세요.');
+        return;
+      }
+
+      final position=await _reliablePosition();
+      if(position==null)throw StateError('reliable-position-unavailable');
+      final places=await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+        localeIdentifier:'ko_KR',
+      ).timeout(const Duration(seconds:10));
+      final place=places.firstOrNull;
+      if(place==null)throw StateError('reverse-geocoding-empty');
+      if((place.isoCountryCode??'').isNotEmpty&&place.isoCountryCode!.toUpperCase()!='KR'){
+        throw StateError('outside-supported-region');
+      }
+      final address=KoreanLocationResolver.resolve(
+        administrativeArea:place.administrativeArea,
+        subAdministrativeArea:place.subAdministrativeArea,
+        locality:place.locality,
+        subLocality:place.subLocality,
+      );
+      if(address==null)throw StateError('korean-administrative-area-unresolved');
+
+      await FarmLocationSettings.instance.setGps(
+        position.latitude,
+        position.longitude,
+        province:address.province,
+        cityCounty:address.cityCounty,
+        town:address.town,
+        accuracy:position.accuracy,
+      );
+      if(mounted)setState(()=>_message=position.accuracy<=100
+          ?'GPS 위치를 확인했습니다.'
+          :'GPS 위치를 확인했습니다. 오차 약 ${position.accuracy.round()}m');
+    } on TimeoutException {
+      if(mounted)setState(()=>_message='GPS 응답이 늦습니다. 실외에서 위치를 켠 뒤 다시 시도해주세요.');
+    } catch (_) {
+      if(mounted)setState(()=>_message='GPS 주소를 확인하지 못했습니다. 위치 권한과 휴대폰 위치 서비스를 확인한 뒤 다시 시도해주세요.');
+    } finally {
+      if(mounted)setState(()=>_locating=false);
+    }
   }
-  String _cityLabel(Placemark? p){if(p==null)return '';final candidates=[p.subAdministrativeArea,p.locality,p.subLocality];return candidates.whereType<String>().map((x)=>x.trim()).firstWhere((x)=>x.endsWith('시')||x.endsWith('군')||x.endsWith('구'),orElse:()=>p.locality?.trim()??'');}
+
+  Future<Position?> _reliablePosition()async{
+    Position? best;
+    for(var attempt=0;attempt<2;attempt++){
+      try{
+        final candidate=await Geolocator.getCurrentPosition(
+          locationSettings:const LocationSettings(
+            accuracy:LocationAccuracy.best,
+            distanceFilter:0,
+            timeLimit:Duration(seconds:12),
+          ),
+        );
+        if(_validPosition(candidate)&&(best==null||candidate.accuracy<best.accuracy))best=candidate;
+        if(best!=null&&best.accuracy<=100)break;
+      } on TimeoutException {
+        break;
+      } catch (_) {
+        break;
+      }
+    }
+    if(best!=null&&best.accuracy<=500)return best;
+
+    try{
+      final last=await Geolocator.getLastKnownPosition();
+      if(last!=null&&_validPosition(last)&&last.accuracy<=250)return last;
+    } catch (_) {}
+    return best!=null&&_validPosition(best)?best:null;
+  }
+
+  bool _validPosition(Position position){
+    final age=DateTime.now().difference(position.timestamp).inSeconds;
+    return position.latitude.isFinite&&position.longitude.isFinite&&
+        position.latitude>=-90&&position.latitude<=90&&
+        position.longitude>=-180&&position.longitude<=180&&
+        position.accuracy.isFinite&&position.accuracy>=0&&position.accuracy<=1000&&
+        age>=-30&&age<=180&&!position.isMocked;
+  }
   @override Widget build(BuildContext context){final risk=DiseaseRiskEngine.summarize(_visible,latitude:_lat,longitude:_lng,type:_selected);return PageShell(title:'질병',subtitle:'내 농장 주변 질병 발생 현황을 확인하세요',help:_openHelp,child:Column(children:[
     _tabs(),const SizedBox(height:8),_summary(),const SizedBox(height:8),
     if(_message!=null)Container(margin:const EdgeInsets.only(bottom:7),padding:const EdgeInsets.symmetric(horizontal:10,vertical:7),decoration:BoxDecoration(color:AppColors.lightCoral,borderRadius:BorderRadius.circular(11)),child:Row(children:[const Icon(Icons.info_outline_rounded,size:15,color:AppColors.coral),const SizedBox(width:5),Expanded(child:Text(_message!,maxLines:2,overflow:TextOverflow.ellipsis,style:const TextStyle(fontSize:9,color:AppColors.coral)))])),
