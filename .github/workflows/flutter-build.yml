@@ -51,6 +51,7 @@ jobs:
           flutter test test/market_repository_test.dart
           flutter test test/commodity_repository_test.dart
           flutter test test/disease_repository_test.dart
+          flutter test test/korean_location_resolver_test.dart
           flutter test test/disease_notification_test.dart
           flutter test test/weather_farm_repository_test.dart
           flutter test test/official_api_clients_test.dart
