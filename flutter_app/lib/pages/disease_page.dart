@@ -76,9 +76,11 @@ class _DiseasePageState extends State<DiseasePage>{
         town:address.town,
         accuracy:position.accuracy,
       );
-      if(mounted)setState(()=>_message=position.accuracy<=100
-          ?'GPS 위치를 확인했습니다.'
-          :'GPS 위치를 확인했습니다. 오차 약 ${position.accuracy.round()}m');
+      if(mounted){
+        setState(()=>_message=position.accuracy<=100
+            ?'GPS 위치를 확인했습니다.'
+            :'GPS 위치를 확인했습니다. 오차 약 ${position.accuracy.round()}m');
+      }
     } on TimeoutException {
       if(mounted)setState(()=>_message='GPS 응답이 늦습니다. 실외에서 위치를 켠 뒤 다시 시도해주세요.');
     } catch (_) {
