@@ -1,0 +1,13 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal" android:padding="15dp" android:background="@drawable/widget_card_bg" android:weightSum="2">
+ <LinearLayout android:id="@+id/weather_section" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:paddingEnd="12dp">
+  <TextView android:id="@+id/weather_region" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="지역 확인 중" android:maxLines="1" android:ellipsize="end" android:textColor="#5B3D48" android:textSize="13sp" android:textStyle="bold"/>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical"><TextView android:id="@+id/weather_icon" android:layout_width="46dp" android:layout_height="wrap_content" android:gravity="center" android:text="☀" android:textSize="32sp"/><TextView android:id="@+id/weather_temp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-°" android:textColor="#0B1B3B" android:textSize="31sp" android:textStyle="bold"/></LinearLayout>
+  <TextView android:id="@+id/weather_condition" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="기상청 데이터 확인 중" android:textColor="#374151" android:textSize="11sp" android:maxLines="1" android:ellipsize="end"/>
+  <TextView android:id="@+id/weather_rain" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="강수확률 -" android:textColor="#2087D4" android:textSize="11sp" android:textStyle="bold"/>
+ </LinearLayout>
+ <View android:layout_width="1dp" android:layout_height="match_parent" android:background="@drawable/widget_divider"/>
+ <LinearLayout android:id="@+id/todo_section" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:paddingStart="12dp">
+  <TextView android:id="@+id/todo_count" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="오늘 할 일 0" android:textColor="#111827" android:textSize="14sp" android:textStyle="bold"/>
+  <TextView android:id="@+id/todo_1" style="@style/WidgetTodoText"/><TextView android:id="@+id/todo_2" style="@style/WidgetTodoText"/><TextView android:id="@+id/todo_3" style="@style/WidgetTodoText"/>
+ </LinearLayout>
+</LinearLayout>

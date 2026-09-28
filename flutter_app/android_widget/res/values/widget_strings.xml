@@ -1,0 +1,7 @@
+<resources>
+    <string name="widget_price_small_name">돈돈해 · 전국 돈가</string>
+    <string name="widget_price_detail_name">돈돈해 · 돈가 상세</string>
+    <string name="widget_grade_name">돈돈해 · 등급별 돈가</string>
+    <string name="widget_weather_todo_name">돈돈해 · 날씨와 할 일</string>
+    <string name="widget_today_name">돈돈해 · 오늘 한눈에</string>
+</resources>
