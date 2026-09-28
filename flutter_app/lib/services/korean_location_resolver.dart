@@ -14,7 +14,7 @@ abstract final class KoreanLocationResolver {
     '부산광역시': ['부산', '부산시', 'Busan'],
     '대구광역시': ['대구', '대구시', 'Daegu'],
     '인천광역시': ['인천', '인천시', 'Incheon'],
-    '광주광역시': ['광주', '광주시', 'Gwangju'],
+    '광주광역시': ['광주', 'Gwangju'],
     '대전광역시': ['대전', '대전시', 'Daejeon'],
     '울산광역시': ['울산', '울산시', 'Ulsan'],
     '세종특별자치시': ['세종', '세종시', 'Sejong'],
