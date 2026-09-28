@@ -28,6 +28,18 @@ void main() {
       expect(result?.cityCounty, '문경시');
     });
 
+    test('distinguishes Gwangju city in Gyeonggi from Gwangju metro', () {
+      final result = KoreanLocationResolver.resolve(
+        administrativeArea: '경기도',
+        subAdministrativeArea: '광주시',
+        locality: '광주시',
+        subLocality: '경안동',
+      );
+
+      expect(result?.province, '경기도');
+      expect(result?.cityCounty, '광주시');
+    });
+
     test('does not invent a region when reverse geocoding is ambiguous', () {
       final result = KoreanLocationResolver.resolve(
         administrativeArea: '충청남도',
