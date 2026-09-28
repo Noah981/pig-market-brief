@@ -1,17 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_root" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="18dp" android:background="@drawable/widget_card_bg">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_root" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="14dp" android:background="@drawable/widget_card_bg">
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-            <ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/widget_pig" android:contentDescription="@null"/>
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="7dp" android:text="돈돈해" android:textColor="#111827" android:textSize="16sp" android:textStyle="bold"/>
-            <TextView android:id="@+id/widget_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6B7280" android:textSize="11sp" android:maxLines="1"/>
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/widget_pig" android:contentDescription="@null"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="돈돈해" android:textColor="#111827" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/widget_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#6B7280" android:textSize="9sp" android:maxLines="1"/>
         </LinearLayout>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="전국 평균 돈가" android:textColor="#111827" android:textSize="14sp" android:textStyle="bold"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="전국 평균 돈가" android:textColor="#111827" android:textSize="12sp" android:textStyle="bold"/>
         <TextView android:id="@+id/widget_data_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#8B8F98" android:textSize="10sp"/>
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="bottom">
-            <TextView android:id="@+id/price_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textColor="#0B1B3B" android:textSize="34sp" android:textStyle="bold" android:maxLines="1"/>
+            <TextView android:id="@+id/price_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textColor="#0B1B3B" android:textSize="31sp" android:textStyle="bold" android:maxLines="1"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" android:layout_marginBottom="5dp" android:text="원/kg" android:textColor="#111827" android:textSize="13sp" android:textStyle="bold"/>
         </LinearLayout>
         <TextView android:id="@+id/price_change" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textColor="#6B7280" android:textSize="14sp" android:textStyle="bold" android:maxLines="1"/>
     </LinearLayout>
-    <ImageView android:id="@+id/pig_mascot" android:layout_width="74dp" android:layout_height="74dp" android:layout_gravity="bottom|end" android:alpha="0.92" android:src="@drawable/widget_pig" android:scaleType="centerInside" android:contentDescription="@null"/>
+    <ImageView android:id="@+id/pig_mascot" android:layout_width="58dp" android:layout_height="58dp" android:layout_gravity="bottom|end" android:alpha="0.92" android:src="@drawable/widget_pig" android:scaleType="centerInside" android:contentDescription="@null"/>
 </FrameLayout>
