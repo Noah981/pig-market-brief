@@ -7,6 +7,8 @@ import 'package:dondonhae/pages/section_pages.dart';
 import 'package:dondonhae/pages/market_detail_pages.dart';
 import 'package:dondonhae/pages/today_care_page.dart';
 import 'package:dondonhae/pages/disease_page.dart';
+import 'package:dondonhae/pages/benefit_page.dart';
+import 'package:dondonhae/widgets/farm_location_picker.dart';
 import 'package:dondonhae/data/market_repository.dart';
 import 'package:dondonhae/data/pig_grade_repository.dart';
 import 'package:dondonhae/services/api/kape_api_client.dart';
@@ -104,6 +106,16 @@ void main() {
   });
   testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');
+  });
+  testWidgets('지역 지원사업 390dp 시안 비교 이미지',(tester)async{
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(theme:AppTheme.light,home:const BenefitPage()));await tester.pump(const Duration(milliseconds:800));
+    expect(find.text('내 지역 지원사업'),findsOneWidget);expect(tester.takeException(),isNull);
+  });
+  testWidgets('지역 선택 390dp 시안 비교 이미지',(tester)async{
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(theme:AppTheme.light,home:const FarmLocationPickerPage()));await tester.pumpAndSettle();
+    expect(find.text('지역 선택'),findsWidgets);expect(tester.takeException(),isNull);
   });
   testWidgets('돈가 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,PigPriceDetailPage(snapshot:actualMarketFixture(),analysis:null,loadGrades:false),'pig_detail_390');});
   for(final id in const ['corn','soybean_meal','usd_krw','wti']){
