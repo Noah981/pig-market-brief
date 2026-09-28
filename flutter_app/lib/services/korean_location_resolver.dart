@@ -70,5 +70,5 @@ abstract final class KoreanLocationResolver {
   }
 
   static String _normalize(String value) =>
-      value.toLowerCase().replaceAll(RegExp(r'[\\s._-]'), '');
+      value.toLowerCase().replaceAll(RegExp(r'[\s._-]'), '');
 }
