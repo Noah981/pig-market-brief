@@ -57,6 +57,8 @@ if File.exist?(preview_source)
   preview = project.targets.find { |t| t.name == 'WidgetPreview' } || project.new_target(:application, 'WidgetPreview', :ios, '17.0')
   %w[PriceSnapshot.swift PriceViews.swift WidgetPreviewApp.swift].each { |name| preview.source_build_phase.add_file_reference(group.files.find { |f| f.path == name } || group.new_file(name), true) }
   preview.resources_build_phase.add_file_reference(ref, true)
+  runner_assets = runner.resources_build_phase.files_references.find { |file| file.path == 'Assets.xcassets' }
+  preview.resources_build_phase.add_file_reference(runner_assets, true) if runner_assets
   preview.build_configurations.each { |c| c.build_settings.merge!({'PRODUCT_NAME' => '$(TARGET_NAME)', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.example.dondonhae.WidgetPreview', 'ASSETCATALOG_COMPILER_APPICON_NAME' => '', 'ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME' => '', 'GENERATE_INFOPLIST_FILE' => 'YES', 'CURRENT_PROJECT_VERSION' => '18', 'MARKETING_VERSION' => '1.8.1', 'INFOPLIST_KEY_UIApplicationSceneManifest_Generation' => 'YES', 'INFOPLIST_KEY_UILaunchScreen_Generation' => 'YES', 'SWIFT_VERSION' => '5.0', 'IPHONEOS_DEPLOYMENT_TARGET' => '17.0', 'TARGETED_DEVICE_FAMILY' => '1,2', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) WIDGET_PREVIEW'}) }
   scheme = Xcodeproj::XCScheme.new; scheme.add_build_target(preview); scheme.set_launch_target(preview); scheme.save_as(File.join(ios, 'Runner.xcodeproj'), 'WidgetPreview', true)
 end
