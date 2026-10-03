@@ -26,7 +26,7 @@ jobs:
           flutter create --platforms=ios .
           flutter pub get
           ruby ../scripts/configure_ios_widgets.rb
-          dart run flutter_launcher_icons
+          dart run flutter_launcher_icons -f ios_widget/launcher_icons.yaml
           cd ios
           pod install
       - name: Analyze Flutter app
