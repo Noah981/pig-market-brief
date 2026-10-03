@@ -51,7 +51,7 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
           const Text('등급별 경락가격',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),
           const SizedBox(height:8),
           if(grades==null||grades!.grades.isEmpty)_InfoBox(gradeError??'축산물품질평가원 등급별 가격을 확인하고 있습니다.')
-          else Container(padding:const EdgeInsets.all(12),decoration:appCard(radius:16),child:Column(children:[...grades!.grades.map((x){final old=grades!.previous(x.grade),change=old==null?null:x.price-old.price,pct=old==null||old.price==0?null:change!*100/old.price;return Padding(padding:const EdgeInsets.symmetric(vertical:7),child:Row(children:[SizedBox(width:34,child:Text(x.grade,style:const TextStyle(fontWeight:FontWeight.w900))),Expanded(child:LinearProgressIndicator(value:(x.price/10000).clamp(0,1),color:AppColors.coral,backgroundColor:AppColors.lightBlue)),const SizedBox(width:8),SizedBox(width:80,child:Text('${_number(x.price)}원/kg',textAlign:TextAlign.right,style:const TextStyle(fontSize:10,fontWeight:FontWeight.w900))),const SizedBox(width:7),SizedBox(width:56,child:Text(change==null?'정보 없음':'${change>=0?'▲':'▼'} ${pct!.abs().toStringAsFixed(1)}%',textAlign:TextAlign.right,style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:change==null?AppColors.secondary:change>=0?AppColors.coral:AppColors.blue))) ]));}),const SizedBox(height:8),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradePriceTrendPage(snapshot:grades!))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(44),foregroundColor:AppColors.coral),child:const Text('등급별 가격 추이 보기  >'))])),
+          else Container(padding:const EdgeInsets.all(12),decoration:appCard(radius:16),child:Column(children:[...grades!.grades.map((x){final old=grades!.previous(x.grade),change=old==null?null:x.price-old.price,pct=old==null||old.price==0?null:change!*100/old.price;return Padding(padding:const EdgeInsets.symmetric(vertical:7),child:Row(children:[SizedBox(width:34,child:Text(x.grade,style:const TextStyle(fontWeight:FontWeight.w900))),Expanded(child:LinearProgressIndicator(value:(x.price/10000).clamp(0,1),color:AppColors.coral,backgroundColor:AppColors.lightBlue)),const SizedBox(width:8),SizedBox(width:80,child:Text('${_number(x.price)}원/kg',textAlign:TextAlign.right,style:const TextStyle(fontSize:10,fontWeight:FontWeight.w900))),const SizedBox(width:7),SizedBox(width:56,child:Text(change==null?'정보 없음':'${change>=0?'▲':'▼'} ${pct!.abs().toStringAsFixed(1)}%',textAlign:TextAlign.right,style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:change==null?AppColors.secondary:change>=0?AppColors.coral:AppColors.blue))) ]));}),const SizedBox(height:8),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradeSexPricePage(initial:grades,date:snapshot?.date))),style:OutlinedButton.styleFrom(minimumSize:const Size.fromHeight(44),foregroundColor:AppColors.coral),child:const Text('거세·암컷 가격 자세히 보기  >'))])),
           if(grades!=null&&grades!.grades.isNotEmpty)...[
             const SizedBox(height:16),const Text('오늘 경락 현황',style:TextStyle(fontSize:16,fontWeight:FontWeight.w900)),const SizedBox(height:8),
             _InfoBox('경락두수: ${_number(grades!.auctionStatus?.totalCount??grades!.grades.fold(0,(sum,x)=>sum+x.count))}두\n평균 도체중: ${grades!.auctionStatus?.averageCarcassWeight==null?'정보 없음':'${grades!.auctionStatus!.averageCarcassWeight!.toStringAsFixed(1)}kg'}\n거세: ${grades!.auctionStatus==null?'정보 없음':'${_number(grades!.auctionStatus!.castratedCount)}두'}\n암퇘지: ${grades!.auctionStatus==null?'정보 없음':'${_number(grades!.auctionStatus!.femaleCount)}두'}\n※ 다봄 공식 응답에 포함된 항목만 표시합니다.'),
@@ -73,6 +73,41 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
 
   String _number(int value) => value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',');
   String _date(String value) => value.length == 8 ? '${value.substring(0, 4)}.${value.substring(4, 6)}.${value.substring(6, 8)}' : value;
+}
+
+class GradeSexPricePage extends StatefulWidget {
+  const GradeSexPricePage({super.key,this.initial,this.date});
+  final PigGradeSnapshot? initial;
+  final String? date;
+  @override State<GradeSexPricePage> createState()=>_GradeSexPricePageState();
+}
+class _GradeSexPricePageState extends State<GradeSexPricePage> {
+  PigGradeSnapshot? data;
+  bool loading=true;
+  @override void initState(){super.initState();data=widget.initial;_load();}
+  Future<void> _load()async{
+    final repo=PigGradeRepository();
+    final cached=await repo.cached();
+    if(mounted&&data==null&&cached!=null)setState(()=>data=cached);
+    final now=DateTime.now().toUtc().add(const Duration(hours:9));
+    final date=widget.date??'${now.year}${now.month.toString().padLeft(2,'0')}${now.day.toString().padLeft(2,'0')}';
+    try{final value=await repo.refresh(date);if(mounted)setState(()=>data=value);}catch(_){}
+    if(mounted)setState(()=>loading=false);
+  }
+  String _price(String grade,String sex){final row=data?.sexPrice(grade,sex);return row==null?'확인 중':row.price.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');}
+  @override Widget build(BuildContext context)=>_DetailScaffold(title:'등급별 경락가격',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+    const Text('거세 · 암컷 가격 비교',style:TextStyle(fontSize:20,fontWeight:FontWeight.w900)),
+    const SizedBox(height:8),
+    Text('전국 · 제주 제외 · 탕박 / 원/kg\n기준일: ${data?.date??'확인 중'}${data?.fromCache==true?' · 마지막 저장값':''}',style:const TextStyle(fontSize:12,color:AppColors.secondary,height:1.6)),
+    const SizedBox(height:16),
+    Container(decoration:appCard(radius:16),padding:const EdgeInsets.all(12),child:Table(columnWidths:const {0:FlexColumnWidth(0.7),1:FlexColumnWidth(),2:FlexColumnWidth()},children:[
+      TableRow(children:['등급','거세','암컷'].map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:12),child:Text(x,textAlign:TextAlign.center,style:const TextStyle(fontSize:15,fontWeight:FontWeight.w900)))).toList()),
+      ...const ['1+','1','2','등외'].map((grade)=>TableRow(children:[grade,_price(grade,'castrated'),_price(grade,'female')].map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:14,horizontal:2),child:Text(x,textAlign:TextAlign.center,style:const TextStyle(fontSize:15,fontWeight:FontWeight.w800)))).toList()))
+    ])),
+    if(loading)const Padding(padding:EdgeInsets.all(16),child:Center(child:CircularProgressIndicator())),
+    const SizedBox(height:12),const _InfoBox('출처: 축산물품질평가원 축산유통정보 다봄\n성별 공식 경락가격을 따로 조회합니다. 거래가 없거나 조회되지 않은 등급은 합계 가격으로 대신 표시하지 않습니다.'),
+    if(data!=null)...[const SizedBox(height:12),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradePriceTrendPage(snapshot:data!))),child:const Text('등급별 전체 가격 추이 보기'))],
+  ]));
 }
 
 class ThreeYearPigPricePage extends StatelessWidget{
