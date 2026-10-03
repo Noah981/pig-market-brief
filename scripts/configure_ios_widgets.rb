@@ -29,7 +29,7 @@ entitlements = {'com.apple.security.application-groups' => ['group.com.example.d
 Xcodeproj::Plist.write_to_path(entitlements, File.join(folder, 'PigPriceWidgets.entitlements'))
 Xcodeproj::Plist.write_to_path(entitlements, File.join(ios, 'Runner', 'Runner.entitlements'))
 ext.build_configurations.each do |config|
-  config.build_settings.merge!({'PRODUCT_BUNDLE_IDENTIFIER' => 'com.example.dondonhae.PigPriceWidgets', 'INFOPLIST_FILE' => 'PigPriceWidgets/Info.plist', 'CODE_SIGN_ENTITLEMENTS' => 'PigPriceWidgets/PigPriceWidgets.entitlements', 'SWIFT_VERSION' => '5.0', 'IPHONEOS_DEPLOYMENT_TARGET' => '17.0', 'TARGETED_DEVICE_FAMILY' => '1,2', 'SKIP_INSTALL' => 'YES', 'APPLICATION_EXTENSION_API_ONLY' => 'YES', 'LD_RUNPATH_SEARCH_PATHS' => '$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks'})
+  config.build_settings.merge!({'PRODUCT_NAME' => '$(TARGET_NAME)', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.example.dondonhae.PigPriceWidgets', 'INFOPLIST_FILE' => 'PigPriceWidgets/Info.plist', 'CODE_SIGN_ENTITLEMENTS' => 'PigPriceWidgets/PigPriceWidgets.entitlements', 'SWIFT_VERSION' => '5.0', 'IPHONEOS_DEPLOYMENT_TARGET' => '17.0', 'TARGETED_DEVICE_FAMILY' => '1,2', 'SKIP_INSTALL' => 'YES', 'APPLICATION_EXTENSION_API_ONLY' => 'YES', 'LD_RUNPATH_SEARCH_PATHS' => '$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks'})
 end
 runner.build_configurations.each do |config|
   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
@@ -51,7 +51,7 @@ if File.exist?(preview_source)
   preview = project.targets.find { |t| t.name == 'WidgetPreview' } || project.new_target(:application, 'WidgetPreview', :ios, '17.0')
   %w[PriceSnapshot.swift PriceViews.swift WidgetPreviewApp.swift].each { |name| preview.source_build_phase.add_file_reference(group.files.find { |f| f.path == name } || group.new_file(name), true) }
   preview.resources_build_phase.add_file_reference(ref, true)
-  preview.build_configurations.each { |c| c.build_settings.merge!({'PRODUCT_BUNDLE_IDENTIFIER' => 'com.example.dondonhae.WidgetPreview', 'GENERATE_INFOPLIST_FILE' => 'YES', 'SWIFT_VERSION' => '5.0', 'IPHONEOS_DEPLOYMENT_TARGET' => '17.0', 'TARGETED_DEVICE_FAMILY' => '1,2', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) WIDGET_PREVIEW'}) }
+  preview.build_configurations.each { |c| c.build_settings.merge!({'PRODUCT_NAME' => '$(TARGET_NAME)', 'PRODUCT_BUNDLE_IDENTIFIER' => 'com.example.dondonhae.WidgetPreview', 'GENERATE_INFOPLIST_FILE' => 'YES', 'SWIFT_VERSION' => '5.0', 'IPHONEOS_DEPLOYMENT_TARGET' => '17.0', 'TARGETED_DEVICE_FAMILY' => '1,2', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) WIDGET_PREVIEW'}) }
   scheme = Xcodeproj::XCScheme.new; scheme.add_build_target(preview); scheme.set_launch_target(preview); scheme.save_as(File.join(ios, 'Runner.xcodeproj'), 'WidgetPreview', true)
 end
 project.save
