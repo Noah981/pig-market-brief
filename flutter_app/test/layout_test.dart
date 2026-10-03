@@ -124,7 +124,7 @@ void main() {
   testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:actualMarketFixture()),'three_year_390');});
   testWidgets('가격 요인 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const MarketDriverDetailPage(analysis:fixtureAnalysis),'driver_detail_390');});
   testWidgets('성별 경락가격 상세에 거세와 암컷 가격을 따로 표시한다',(tester)async{
-    final snapshot=PigGradeSnapshot(date:'20260926',fromCache:false,grades:fixtureGrades().grades,sexGrades:const [KapeGradePrice(grade:'1+',price:5900,count:10,date:'20260926',sex:'castrated'),KapeGradePrice(grade:'1+',price:6200,count:10,date:'20260926',sex:'female')]);
+    final snapshot=PigGradeSnapshot(date:'20260926',fromCache:false,history:const [],grades:fixtureGrades().grades,sexGrades:const [KapeGradePrice(grade:'1+',price:5900,count:10,date:'20260926',sex:'castrated'),KapeGradePrice(grade:'1+',price:6200,count:10,date:'20260926',sex:'female')]);
     await renderPage(tester,GradeSexPricePage(initial:snapshot,load:false),'grade_sex_detail_390');
     expect(find.text('거세'),findsOneWidget);expect(find.text('암컷'),findsOneWidget);expect(find.textContaining('5,900'),findsOneWidget);expect(find.textContaining('6,200'),findsOneWidget);
   });
