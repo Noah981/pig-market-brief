@@ -36,6 +36,8 @@ jobs:
       - name: Update verified market and benefits adapters
         run: python scripts/platform_pipeline.py
       - name: Collect official livestock support notices
+        env:
+          BIZINFO_API_KEY: ${{ secrets.BIZINFO_API_KEY }}
         run: python scripts/fetch_official_benefits.py || echo "Benefit fetch failed; keeping previous cached data"
       - name: Fetch verified exchange, energy and feed benchmarks
         run: python scripts/fetch_fred_markets.py || echo "Market fetch failed; keeping previous cached data"
