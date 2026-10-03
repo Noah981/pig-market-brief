@@ -33,6 +33,7 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoSansKR.ttf
   assets:
+    - assets/fonts/OFL.txt
     - assets/images/pig_hero.jpg
     - assets/data/pig-price.json
     - assets/data/pig-price-history.json
