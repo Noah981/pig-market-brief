@@ -3,6 +3,16 @@ import 'package:dondonhae/services/korean_location_resolver.dart';
 
 void main() {
   group('KoreanLocationResolver', () {
+    test('explicit province wins over romanized Gwangju city name', () {
+      final result = KoreanLocationResolver.resolve(
+        administrativeArea: 'Gyeonggi-do',
+        subAdministrativeArea: '광주시',
+        locality: 'Gwangju',
+        subLocality: '경안동',
+      );
+      expect(result?.province, '경기도');
+      expect(result?.cityCounty, '광주시');
+    });
     test('resolves Korean province and municipality names', () {
       final result = KoreanLocationResolver.resolve(
         administrativeArea: '충청남도',

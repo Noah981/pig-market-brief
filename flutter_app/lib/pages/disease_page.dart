@@ -55,17 +55,18 @@ class _DiseasePageState extends State<DiseasePage>{
         position.latitude,
         position.longitude,
       ).timeout(const Duration(seconds:10));
-      final place=places.firstOrNull;
-      if(place==null)throw StateError('reverse-geocoding-empty');
-      if((place.isoCountryCode??'').isNotEmpty&&place.isoCountryCode!.toUpperCase()!='KR'){
-        throw StateError('outside-supported-region');
-      }
-      final address=KoreanLocationResolver.resolve(
+      ResolvedKoreanLocation? address;
+      for(final place in places){
+        final country=(place.isoCountryCode??'').toUpperCase();
+        if(country.isNotEmpty&&country!='KR')continue;
+        address=KoreanLocationResolver.resolve(
         administrativeArea:place.administrativeArea,
         subAdministrativeArea:place.subAdministrativeArea,
         locality:place.locality,
         subLocality:place.subLocality,
       );
+        if(address!=null)break;
+      }
       if(address==null)throw StateError('korean-administrative-area-unresolved');
 
       await FarmLocationSettings.instance.setGps(
@@ -95,18 +96,19 @@ class _DiseasePageState extends State<DiseasePage>{
     for(var attempt=0;attempt<2;attempt++){
       try{
         final candidate=await Geolocator.getCurrentPosition(
-          locationSettings:const LocationSettings(
+          locationSettings:AndroidSettings(
             accuracy:LocationAccuracy.best,
             distanceFilter:0,
-            timeLimit:Duration(seconds:12),
+            timeLimit:const Duration(seconds:12),
+            forceLocationManager:attempt>0,
           ),
         );
         if(_validPosition(candidate)&&(best==null||candidate.accuracy<best.accuracy))best=candidate;
         if(best!=null&&best.accuracy<=100)break;
       } on TimeoutException {
-        break;
+        continue;
       } catch (_) {
-        break;
+        continue;
       }
     }
     if(best!=null&&best.accuracy<=500){return best;}
@@ -133,7 +135,7 @@ class _DiseasePageState extends State<DiseasePage>{
     else Container(padding:const EdgeInsets.all(14),decoration:appCard(radius:16),child:const Text('해외 정보는 국내 지도·거리·방역 LEVEL과 완전히 분리됩니다.',style:TextStyle(fontSize:10.5))),
     const SizedBox(height:12),Row(children:[const Expanded(child:Text('최근 발생 정보',style:TextStyle(fontSize:15,fontWeight:FontWeight.w900))),Text(_updated(),style:const TextStyle(fontSize:8,color:AppColors.secondary))]),
     if(_feed?.state==DiseaseDataState.error)const Padding(padding:EdgeInsets.all(24),child:Text('데이터 확인 실패',textAlign:TextAlign.center))
-    else if(_visible.isEmpty)const Padding(padding:EdgeInsets.all(24),child:Text('최근 30일 발생 정보 0건',textAlign:TextAlign.center,style:TextStyle(color:AppColors.secondary)))
+    else if(_visible.isEmpty)Padding(padding:const EdgeInsets.all(24),child:Text(_feed?.fromCache==true?'최신 발생 정보를 확인하지 못했습니다.\n마지막 저장 자료에는 최근 30일 정보가 없습니다.':'최근 30일 발생 정보 0건',textAlign:TextAlign.center,style:const TextStyle(color:AppColors.secondary)))
     else ..._visible.map(_eventRow),
   ]));}
   Widget _tabs()=>Container(height:40,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:const Color(0xFFF4F4F6),borderRadius:BorderRadius.circular(16)),child:Row(children:List.generate(2,(i)=>Expanded(child:InkWell(onTap:()=>setState((){_tab=i;_focusedId=null;}),borderRadius:BorderRadius.circular(13),child:Container(alignment:Alignment.center,decoration:BoxDecoration(color:_tab==i?AppColors.coral:Colors.transparent,borderRadius:BorderRadius.circular(13)),child:Text(i==0?'국내':'해외',style:TextStyle(fontSize:11,fontWeight:FontWeight.w800,color:_tab==i?Colors.white:AppColors.secondary))))))));
