@@ -76,15 +76,16 @@ class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
 }
 
 class GradeSexPricePage extends StatefulWidget {
-  const GradeSexPricePage({super.key,this.initial,this.date});
+  const GradeSexPricePage({super.key,this.initial,this.date,this.load=true});
   final PigGradeSnapshot? initial;
   final String? date;
+  final bool load;
   @override State<GradeSexPricePage> createState()=>_GradeSexPricePageState();
 }
 class _GradeSexPricePageState extends State<GradeSexPricePage> {
   PigGradeSnapshot? data;
   bool loading=true;
-  @override void initState(){super.initState();data=widget.initial;_load();}
+  @override void initState(){super.initState();data=widget.initial;if(widget.load){_load();}else{loading=false;}}
   Future<void> _load()async{
     final repo=PigGradeRepository();
     final cached=await repo.cached();

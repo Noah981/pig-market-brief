@@ -45,6 +45,13 @@ jobs:
           done
       - name: Require live Dabom grade and auction rows
         run: python scripts/validate_official_apis.py --dabom-only
+      - name: Bundle verified disease records
+        env:
+          MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
+        run: |
+          python -m unittest scripts.test_disease_classifier
+          python scripts/fetch_disease_alerts.py
+          cp docs/data/disease-alerts.json flutter_app/assets/data/disease-alerts.json
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |

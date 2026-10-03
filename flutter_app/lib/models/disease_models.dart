@@ -23,6 +23,10 @@ class DiseaseAlert {
   final String id,source,countryCode,status,summary,sourceUrl,occurrenceDate,announcementDate,updatedAt,livestockType,districtCode,province,cityCounty,town;
   final DiseaseType type;final DiseaseEvidence evidence;final double? latitude,longitude;
   String get disease=>type.label;
+  bool get usesNotificationDate=>countryCode!='KR'&&occurrenceDate.isEmpty&&announcementDate.isNotEmpty;
+  String get displayDate=>usesNotificationDate?announcementDate:occurrenceDate;
+  String get dateLabel=>usesNotificationDate?'공식 통보일':'발생일';
+  DateTime? get displayMoment=>usesNotificationDate?_parseDate(announcementDate):eventDate;
   String get scope=>countryCode=='KR'?'국내':'국외';
   bool get isOfficial=>evidence==DiseaseEvidence.official;
   bool get isSuspected=>status.contains('의심')||status.contains('확인 중');

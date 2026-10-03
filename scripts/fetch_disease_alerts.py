@@ -3,7 +3,8 @@
 Official pages and public news are deliberately kept as separate evidence
 levels.  A keyword match is a signal, never an app-side diagnosis.
 """
-import html,json,re,urllib.parse,urllib.request,xml.etree.ElementTree as ET
+import html,json,re,os,urllib.parse,urllib.request,xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -42,7 +43,7 @@ def classify(code):
  return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
 
 def fetch(url):
- req=urllib.request.Request(url,headers={"User-Agent":"TodayPig/5.0 provenance feed"})
+ req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; DondonhaeOfficialFeed/1.0)"})
  return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
@@ -139,17 +140,84 @@ def public_news(scope="국내"):
   except Exception as e:print("public source skipped",term,e)
  return out
 
+WOAH_URL="https://rr-africa.woah.org/en/immediate-notifications-in-africa/"
+WOAH_COUNTRIES={"South Sudan":"SS","Namibia":"NA","Botswana":"BW","Kenya":"KE","Libya":"LY","Zambia":"ZM","Lesotho":"LS","Eswatini":"SZ","Cabo Verde":"CV","Zimbabwe":"ZW","Mozambique":"MZ","South Africa":"ZA","Eritrea":"ER","Mali":"ML","Egypt":"EG","Burkina Faso":"BF"}
+def woah_notifications(raw):
+ out=[]
+ # Each dated entry is isolated before checking its disease and country.
+ chunks=re.split(r"(?=\b\d{2}/\d{2}/20\d{2}\b)",raw)
+ for chunk in chunks:
+  text=clean(chunk)
+  match=re.match(r"(\d{2})/(\d{2})/(20\d{2})\s+(.+)",text)
+  if not match or re.search(r"simulation|exercise",text,re.I):continue
+  try:date=datetime(int(match[3]),int(match[2]),int(match[1])).date().isoformat()
+  except ValueError:continue
+  name=next((x for x in WOAH_COUNTRIES if re.match(re.escape(x)+r"\s*[:–-]",match[4])),None)
+  if not name:continue
+  for disease in diseases(text):
+   if disease not in ("ASF","구제역","PED","PRRS"):continue
+   out.append({"id":f"WOAH-AFRICA|{WOAH_COUNTRIES[name]}|{date}|{disease}","disease":disease,"source":"WOAH 아프리카 공식 즉시통보","countryCode":WOAH_COUNTRIES[name],"scope":"국외","evidenceLevel":"OFFICIAL","status":"공식 통보","summary":f"{name} · {disease} 공식 통보","sourceUrl":WOAH_URL,"occurrenceDate":"","announcementDate":date,"dateBasis":"notification","livestockType":"축종은 원문 확인"})
+ return out
+
+def mafra_incidents():
+ key=os.environ.get("MAFRA_API_KEY","")
+ if not key:raise ValueError("MAFRA key unavailable")
+ grid="Grid_20151204000000000316_1"
+ def read(bounds):
+  start,end=bounds
+  url=f"http://211.237.50.150:7080/openapi/{urllib.parse.quote(key,safe='')}/json/{grid}/{start}/{end}"
+  try:
+   result=json.loads(fetch(url)).get(grid,{})
+   if not isinstance(result.get('row'),list):raise ValueError()
+   return result
+  except Exception:raise ValueError("MAFRA request failed; credentials omitted") from None
+ first=read((1,1));total=int(first.get("totalCnt",first.get("TOTAL_CNT",0)))
+ if total<=0:raise ValueError("MAFRA coverage unknown")
+ with ThreadPoolExecutor(max_workers=4) as pool:pages=list(pool.map(read,[(start,min(start+999,total)) for start in range(1,total+1,1000)]))
+ rows=[row for page in pages for row in page['row']]
+ if len(rows)!=total:raise ValueError("MAFRA coverage incomplete")
+ cutoff=(datetime.now(KST)-timedelta(days=366)).date().isoformat();out=[]
+ for row in rows:
+  types=diseases(str(row.get('LKNTS_NM','')))
+  raw=str(row.get('OCCRRNC_DE','')).replace('-','')
+  if len(raw)!=8:continue
+  date=f"{raw[:4]}-{raw[4:6]}-{raw[6:]}"
+  if date<cutoff:continue
+  livestock=str(row.get('LVSTCKSPC_NM',''))
+  address=str(row.get('FARM_LOCPLC',''))
+  # Keep administrative locations; never publish farm names or owner details.
+  region=' '.join(re.findall(r'[가-힣]+(?:특별자치도|특별시|광역시|도|시|군|구|읍|면|동)(?=\s|$)',address))
+  for disease in types:
+   if disease not in ('ASF','구제역','PED','PRRS'):continue
+   if disease=='구제역' and livestock and '돼지' not in livestock:continue
+   out.append({'id':str(row.get('ICTSD_OCCRRNC_NO','')),'disease':disease,'countryCode':'KR','source':'농림축산검역본부 가축질병발생정보','sourceUrl':'https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20151204000000000316','evidenceLevel':'OFFICIAL','status':'종식' if row.get('CESSATION_DE') else '공식 발생','summary':f'{region} {disease}','region':region,'occurrenceDate':date,'livestockType':livestock})
+ print('MAFRA coverage verified',total,'recent pig incidents',len(out))
+ return out
+
 def main():
- items=[]
+ items=[];coverage=False
+ try:
+  items+=mafra_incidents();coverage=True
+ except ValueError:
+  print("MAFRA full coverage unavailable; retaining previous official records")
+  if OUT.exists():items+=[x for x in json.loads(OUT.read_text()).get("items",[]) if x.get("countryCode")=="KR" and x.get("occurrenceDate")]
+ try:
+  overseas=woah_notifications(fetch(WOAH_URL))
+  if not overseas:raise ValueError("no dated notifications")
+  items+=overseas
+ except Exception:
+  print("WOAH source unavailable; retaining verified previous notifications")
+  for previous in (OUT,Path("flutter_app/assets/data/disease-alerts.json")):
+   if previous.exists():items+=[x for x in json.loads(previous.read_text()).get("items",[]) if x.get("sourceUrl")==WOAH_URL]
  items+=official_page("농림축산식품부","https://www.mafra.go.kr/home/5108/subview.do",default_country="KR")
  items+=official_page("농림축산검역본부","https://www.qia.go.kr/listindexWebAction.do",default_country="KR")
  # 공개뉴스의 게시일은 실제 발생일이 아니므로 법정질병 발생 피드에
  # 포함하지 않는다. 앱의 국내 발생 현황은 공식 MAFRA API가 보강한다.
  seen=set();dedup=[]
  for x in items:
-  key=(x["disease"],x["summary"])
+  key=(x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
- payload={"schemaVersion":2,"updatedAt":datetime.now(KST).isoformat(),"items":dedup[:50],"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ payload={"schemaVersion":4,"coverageVerified":coverage,"coverageScope":"국내 공식 전체 조회; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
 

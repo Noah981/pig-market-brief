@@ -21,7 +21,8 @@ class DiseaseRepository {
   Future<DiseaseFeed> refresh()async{
     try{
       final hosted=await _fromHosted();
-      final feed=ApiConfig.hasMafra?await _fromMafra(hosted):hosted;
+      DiseaseFeed feed=hosted;
+      if(ApiConfig.hasMafra){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
       await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(_feedJson(feed)));
       return feed;
     }catch(error){
@@ -62,7 +63,7 @@ class DiseaseRepository {
       // publishedAt is not an incident date. Old incidents are often
       // republished, so using it here makes February events look current.
       final occurrence=x['occurrenceDate']?.toString()??x['eventDate']?.toString()??'';
-      final summary=x['summary']?.toString()??'';if(occurrence.isEmpty||summary.isEmpty)continue;
+      final summary=x['summary']?.toString()??'';if(summary.isEmpty||(occurrence.isEmpty&&(code=='KR'||x['dateBasis']!='notification'||x['announcementDate']==null)))continue;
       final evidence=(x['evidenceLevel']?.toString().toUpperCase()=='OFFICIAL'||x['verificationLevel']?.toString().toUpperCase()=='OFFICIAL')?DiseaseEvidence.official:DiseaseEvidence.publicInfo;
       final address=x['region']?.toString()??summary;
       final rawStatus=x['status']?.toString()??x['level']?.toString()??'확인 중';
@@ -99,5 +100,5 @@ class DiseaseRepository {
   String _province(String text)=>RegExp(r'(서울특별시|부산광역시|대구광역시|인천광역시|광주광역시|대전광역시|울산광역시|세종특별자치시|경기도|강원(?:특별자치)?도|충청북도|충청남도|전북특별자치도|전라북도|전라남도|경상북도|경상남도|제주특별자치도)').firstMatch(text)?.group(0)??'';
   String _cityCounty(String text)=>RegExp(r'([가-힣]+(?:시|군)(?:\s+[가-힣]+구)?|[가-힣]+구)').firstMatch(text.replaceFirst(_province(text),''))?.group(0)??'';
   String _town(String text)=>RegExp(r'([가-힣]+(?:읍|면|동))').firstMatch(text)?.group(0)??'';
-  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':3,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
+  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':3,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'dateBasis':x.usesNotificationDate?'notification':'occurrence','updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
 }

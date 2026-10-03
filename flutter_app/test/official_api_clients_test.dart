@@ -55,6 +55,19 @@ void main() {
     expect(requested.queryParameters['searchCondition2'],'');
   });
 
+  test('다봄 성별 등급 가격을 대표 가격과 섞지 않는다',()async{
+    final client=KapeApiClient(apiKey:'test',client:MockClient((request)async{
+      final sex=request.url.queryParameters['searchCondition2'];
+      final body=_dabomHtml().replaceAll('5,977',sex=='1'?'6,200':sex=='3'?'5,900':'5,977');
+      return http.Response.bytes(utf8.encode(body),200);
+    }));
+    final result=await client.latestDabom(endYmd:'20260923');
+    expect(result.grades.first.price,5977);
+    expect(result.sexGrades.firstWhere((x)=>x.sex=='female'&&x.grade=='1+').price,6200);
+    expect(result.sexGrades.firstWhere((x)=>x.sex=='castrated'&&x.grade=='1+').price,5900);
+    expect(result.sexGrades.every((x)=>x.date==result.date),isTrue);
+  });
+
   test('KMA 예보 필수 항목을 파싱한다', () async {
     final body = {'response': {'header': {'resultCode': '00'}, 'body': {'items': {'item': [
       {'category': 'TMP', 'fcstValue': '18'}, {'category': 'TMP', 'fcstValue': '27'},
