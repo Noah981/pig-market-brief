@@ -128,7 +128,7 @@ object WidgetRenderer {
         val data = WidgetStore.price(context); val views = RemoteViews(context.packageName, R.layout.widget_price_small)
         bindPrice(views, data); views.setTextViewText(R.id.widget_date, todayLabel()); views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 101 + id))
         val width = manager.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180)
-        views.setViewVisibility(R.id.pig_mascot, if (width >= 170) View.VISIBLE else View.GONE); manager.updateAppWidget(id, views)
+        views.setViewVisibility(R.id.pig_mascot, if (width >= 240) View.VISIBLE else View.GONE); manager.updateAppWidget(id, views)
     }
 
     private fun priceDetail(context: Context, manager: AppWidgetManager, id: Int) {
