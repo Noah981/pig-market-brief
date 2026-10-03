@@ -42,6 +42,7 @@ jobs:
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - name: Build native widget verification app
+        if: ${{ !cancelled() }}
         working-directory: flutter_app/ios
         run: xcodebuild -project Runner.xcodeproj -scheme WidgetPreview -sdk iphonesimulator -configuration Debug -derivedDataPath ../build/widget-preview CODE_SIGNING_ALLOWED=NO build
       - name: Render and check home and lock screen layouts
