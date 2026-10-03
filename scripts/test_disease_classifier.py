@@ -9,6 +9,11 @@ class DiseaseClassifierTest(unittest.TestCase):
   self.assertEqual(rows[1]['announcementDate'],'2026-09-18')
   self.assertEqual(rows[1]['occurrenceDate'],'')
   self.assertEqual(rows[1]['dateBasis'],'notification')
+ def test_official_api_abbreviations_are_not_dropped(self):
+  self.assertEqual(diseases("ASF"),["ASF"])
+  self.assertEqual(diseases("FMD"),["구제역"])
+  self.assertEqual(diseases("PED"),["PED"])
+  self.assertEqual(diseases("PRRS"),["PRRS"])
  def test_asf_is_not_classical_swine_fever(self):
   self.assertEqual(diseases('아프리카돼지열병 발생'),['ASF'])
  def test_prevention_is_not_outbreak(self):

@@ -12,7 +12,7 @@ from pathlib import Path
 OUT=Path("docs/data/disease-alerts.json")
 KST=timezone(timedelta(hours=9))
 DISEASES={
- "아프리카돼지열병":"ASF","구제역":"구제역","돼지열병":"돼지열병","PRRS":"PRRS","돼지생식기호흡기증후군":"PRRS",
+ "ASF":"ASF","FMD":"구제역","아프리카돼지열병":"ASF","구제역":"구제역","돼지열병":"돼지열병","PRRS":"PRRS","돼지생식기호흡기증후군":"PRRS",
  "PED":"PED","돼지유행성설사":"PED","돼지인플루엔자":"돼지인플루엔자","PCV2":"PCV2","써코":"PCV2",
  "마이코플라즈마":"마이코플라즈마","흉막폐렴":"흉막폐렴","회장염":"회장염","살모넬라":"살모넬라",
  "로타바이러스":"로타바이러스","대장균":"대장균","돈단독":"돈단독","오제스키":"오제스키병"}
@@ -192,6 +192,8 @@ def mafra_incidents():
    if disease=='구제역' and livestock and '돼지' not in livestock:continue
    out.append({'id':str(row.get('ICTSD_OCCRRNC_NO','')),'disease':disease,'countryCode':'KR','source':'농림축산검역본부 가축질병발생정보','sourceUrl':'https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20151204000000000316','evidenceLevel':'OFFICIAL','status':'종식' if row.get('CESSATION_DE') else '공식 발생','summary':f'{region} {disease}','region':region,'occurrenceDate':date,'livestockType':livestock})
  print('MAFRA coverage verified',total,'recent pig incidents',len(out))
+ from collections import Counter
+ print('MAFRA disease counts',json.dumps(dict(Counter(x['disease'] for x in out)),ensure_ascii=False))
  return out
 
 def main():
