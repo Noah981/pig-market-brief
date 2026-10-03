@@ -12,7 +12,7 @@ struct HomePriceView: View {
     }
     var body: some View {
         GeometryReader { geometry in
-            let scale = min(geometry.size.width / 169, 1.35)
+            let scale = min(geometry.size.width / 169, geometry.size.height / 169, 1.35)
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 5 * scale) {
                     Image("PigLogo").resizable().scaledToFit().frame(width: 19 * scale, height: 19 * scale)
