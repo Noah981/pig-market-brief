@@ -3,6 +3,13 @@ import WidgetKit
 
 struct HomePriceView: View {
     let snapshot: PriceSnapshot
+    private var headerDate: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        formatter.dateFormat = "M월 d일 (E)"
+        return formatter.string(from: Date())
+    }
     var body: some View {
         GeometryReader { geometry in
             let scale = min(geometry.size.width / 169, 1.35)
@@ -11,7 +18,7 @@ struct HomePriceView: View {
                     Image("PigLogo").resizable().scaledToFit().frame(width: 19 * scale, height: 19 * scale)
                     Text("돈돈해").font(.system(size: 13 * scale, weight: .bold))
                     Spacer(minLength: 2)
-                    Text(Date(), format: .dateTime.month(.twoDigits).day().weekday(.abbreviated))
+                    Text(headerDate)
                         .font(.system(size: 7 * scale)).foregroundStyle(Color.gray).lineLimit(1).minimumScaleFactor(0.7)
                 }
                 .padding(.bottom, 9 * scale)

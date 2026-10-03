@@ -24,6 +24,7 @@ jobs:
         working-directory: flutter_app
         run: |
           flutter create --platforms=ios .
+          rm -f test/widget_test.dart
           flutter pub get
           ruby ../scripts/configure_ios_widgets.rb
           dart run flutter_launcher_icons -f ios_widget/launcher_icons.yaml

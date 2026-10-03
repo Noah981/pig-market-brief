@@ -16,7 +16,9 @@ import WidgetKit
         let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         for (name, view, size) in snapshots {
             let content = view.frame(width: size.width, height: size.height)
-                .background(Color(red: 1, green: 0.98, blue: 0.99)).environment(\.locale, Locale(identifier: "ko_KR"))
+                .background(LinearGradient(colors: [Color.white, Color(red: 1, green: 0.965, blue: 0.98)], startPoint: .leading, endPoint: .trailing))
+                .clipShape(RoundedRectangle(cornerRadius: name.hasPrefix("home") ? 22 : 0))
+                .environment(\.locale, Locale(identifier: "ko_KR"))
             let renderer = ImageRenderer(content: content); renderer.scale = 3
             if let data = renderer.uiImage?.pngData() { try? data.write(to: directory.appendingPathComponent(name + ".png")) }
         }
