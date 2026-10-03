@@ -34,6 +34,7 @@ jobs:
         working-directory: flutter_app
         run: flutter analyze
       - name: Build iPhone app with embedded widget, without signing
+        id: ios_app
         working-directory: flutter_app
         run: >-
           flutter build ios --release --no-codesign
@@ -42,10 +43,12 @@ jobs:
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
           --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
       - name: Build native widget verification app
+        id: widget_preview
         if: ${{ !cancelled() }}
         working-directory: flutter_app/ios
         run: xcodebuild -project Runner.xcodeproj -scheme WidgetPreview -sdk iphonesimulator -configuration Debug -derivedDataPath ../build/widget-preview CODE_SIGNING_ALLOWED=NO build
       - name: Render and check home and lock screen layouts
+        if: ${{ !cancelled() && steps.widget_preview.outcome == 'success' }}
         working-directory: flutter_app
         run: |
           DEVICE=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for rows in d["devices"].values() for x in rows if "iPhone" in x["name"]))')
@@ -63,6 +66,7 @@ jobs:
           cp "$CONTAINER"/Documents/*.png build/widget-screenshots/
           cp "$CONTAINER/Documents/verified.txt" build/widget-screenshots/
       - name: Package unsigned iOS build honestly
+        if: ${{ !cancelled() && steps.ios_app.outcome == 'success' }}
         working-directory: flutter_app
         run: |
           test -d build/ios/iphoneos/Runner.app/PlugIns/PigPriceWidgets.appex
