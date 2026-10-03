@@ -71,7 +71,7 @@ DateTime? _parseDate(String value){
 }
 
 class DiseaseFeed {
-  const DiseaseFeed({required this.items,required this.updatedAt,required this.fromCache,this.state=DiseaseDataState.live,this.errorMessage});
-  final List<DiseaseAlert> items;final String updatedAt;final bool fromCache;final DiseaseDataState state;final String? errorMessage;
+  const DiseaseFeed({required this.items,required this.updatedAt,required this.fromCache,this.state=DiseaseDataState.live,this.errorMessage,this.coverageVerified=false});
+  final List<DiseaseAlert> items;final String updatedAt;final bool fromCache,coverageVerified;final DiseaseDataState state;final String? errorMessage;
   List<DiseaseAlert> active(DateTime now)=>items.where((x)=>x.isActiveAt(now)).toList(growable:false);
 }

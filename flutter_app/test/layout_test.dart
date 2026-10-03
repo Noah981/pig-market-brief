@@ -123,6 +123,16 @@ void main() {
   }
   testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:actualMarketFixture()),'three_year_390');});
   testWidgets('가격 요인 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const MarketDriverDetailPage(analysis:fixtureAnalysis),'driver_detail_390');});
+  testWidgets('성별 경락가격 상세에 거세와 암컷 가격을 따로 표시한다',(tester)async{
+    final snapshot=PigGradeSnapshot(date:'20260926',fromCache:false,grades:fixtureGrades().grades,sexGrades:const [KapeGradePrice(grade:'1+',price:5900,count:10,date:'20260926',sex:'castrated'),KapeGradePrice(grade:'1+',price:6200,count:10,date:'20260926',sex:'female')]);
+    await renderPage(tester,GradeSexPricePage(initial:snapshot,load:false),'grade_sex_detail_390');
+    expect(find.text('거세'),findsOneWidget);expect(find.text('암컷'),findsOneWidget);expect(find.textContaining('5,900'),findsOneWidget);expect(find.textContaining('6,200'),findsOneWidget);
+  });
+  testWidgets('해외 공식 통보 상세에 한국 지도와 GPS 경보를 넣지 않는다',(tester)async{
+    const alert=DiseaseAlert(type:DiseaseType.asf,source:'WOAH',countryCode:'SS',evidence:DiseaseEvidence.official,status:'공식 통보',summary:'South Sudan ASF 공식 통보',sourceUrl:'https://rr-africa.woah.org/en/immediate-notifications-in-africa/',occurrenceDate:'',announcementDate:'2026-09-18');
+    await renderPage(tester,const DiseaseEventDetailPage(event:alert),'disease_overseas_detail_390');
+    expect(find.textContaining('실제 발생일 미확인'),findsOneWidget);expect(find.textContaining('국내 방역 LEVEL 제외'),findsOneWidget);
+  });
   testWidgets('등급별 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,GradePriceTrendPage(snapshot:fixtureGrades()),'grade_detail_390');});
   testWidgets('질병 발생 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const DiseaseEventDetailPage(event:fixtureDisease,distanceKm:8.4,userLatitude:36.52,userLongitude:127.0),'disease_detail_390');});
   testWidgets('건강 신호 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const HealthSignalDetailPage(risk:FarmHealthRisk('호흡기 질환 주의','주의','기온 변화와 습도 조건을 확인하세요.','기침·재채기·복식호흡')),'health_signal_detail_390');});
