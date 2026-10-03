@@ -12,6 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 DiseaseAlert event(DiseaseType type,double km,{bool official=true,DateTime? date})=>DiseaseAlert(id:'${type.name}-$km',type:type,source:'공식',countryCode:'KR',evidence:official?DiseaseEvidence.official:DiseaseEvidence.publicInfo,status:'발생',summary:'테스트',sourceUrl:'',occurrenceDate:(date??DateTime(2026,9,26)).toIso8601String(),latitude:36.8+km/111,longitude:127.1);
 
 void main(){
+  test('조회 범위가 검증되지 않은 빈 피드를 발생 없음으로 확정하지 않는다',()async{
+    final repo=DiseaseRepository(client:MockClient((_)async=>http.Response('{"items":[],"updatedAt":"2026-10-03"}',200)));
+    final feed=await repo.refresh();
+    expect(feed.state,DiseaseDataState.reviewRequired);
+    expect(feed.errorMessage,contains('발생 없음으로 판단하지'));
+  });
   test('같은 시군의 서로 다른 발생 ID를 합치지 않는다',(){
     const first=DiseaseAlert(id:'farm-a',type:DiseaseType.asf,source:'공식',countryCode:'KR',evidence:DiseaseEvidence.official,status:'발생',summary:'첫 농장',sourceUrl:'',occurrenceDate:'2026-10-01',province:'경상북도',cityCounty:'김천시');
     const second=DiseaseAlert(id:'farm-b',type:DiseaseType.asf,source:'공식',countryCode:'KR',evidence:DiseaseEvidence.official,status:'발생',summary:'둘째 농장',sourceUrl:'',occurrenceDate:'2026-10-01',province:'경상북도',cityCounty:'김천시');
