@@ -31,6 +31,7 @@ class DiseaseAlert {
   bool get isOfficial=>evidence==DiseaseEvidence.official;
   bool get isSuspected=>status.contains('의심')||status.contains('확인 중');
   bool get isNegative=>status.contains('음성')||status.contains('해제')||status.contains('불검출');
+  bool get isClosed=>status.contains('종식');
   bool get isConfirmed=>isOfficial&&!isSuspected&&!isNegative;
   bool get hasMapPoint=>countryCode=='KR'&&latitude!=null&&longitude!=null;
   String get region=>[province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
@@ -44,7 +45,7 @@ class DiseaseAlert {
     return _dateMention(summary,declared)??declared;
   }
   bool isRecentAt(DateTime now){final d=eventDate;if(d==null)return false;final today=DateTime(now.year,now.month,now.day),day=DateTime(d.year,d.month,d.day);return !day.isAfter(today)&&!day.isBefore(today.subtract(const Duration(days:30)));}
-  bool isActiveAt(DateTime now)=>!isNegative&&isRecentAt(now);
+  bool isActiveAt(DateTime now)=>!isNegative&&!isClosed&&isRecentAt(now);
 }
 
 DateTime? _dateMention(String text,DateTime reference){

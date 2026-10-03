@@ -74,7 +74,7 @@ class DiseaseRepository {
     final unverifiedEmpty=items.isEmpty&&json['coverageVerified']!=true;
     return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,coverageVerified:json['coverageVerified']==true,state:fromCache?DiseaseDataState.stale:unverifiedEmpty?DiseaseDataState.reviewRequired:DiseaseDataState.live,errorMessage:unverifiedEmpty?'공식 발생자료의 조회 범위를 확인하지 못했습니다. 발생 없음으로 판단하지 마세요.':null);
   }
-  String _status(String raw,String summary,DiseaseEvidence evidence){final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
+  String _status(String raw,String summary,DiseaseEvidence evidence){if(raw.contains('종식'))return '종식';if(raw.contains('공식 통보'))return '공식 통보';final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
   void _putLatest(Map<String,DiseaseAlert> target,DiseaseAlert next){
     final old=target[next.incidentKey];
     if(old==null||_eventMoment(next).isAfter(_eventMoment(old))||(_eventMoment(next)==_eventMoment(old)&&_statusRank(next)>_statusRank(old))){target[next.incidentKey]=next;}

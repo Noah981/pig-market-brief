@@ -215,7 +215,7 @@ def main():
  # 포함하지 않는다. 앱의 국내 발생 현황은 공식 MAFRA API가 보강한다.
  seen=set();dedup=[]
  for x in items:
-  key=(x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
+  key=(x.get("id"),x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
  payload={"schemaVersion":4,"coverageVerified":coverage,"coverageScope":"국내 공식 전체 조회; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")

@@ -19,6 +19,12 @@ void main(){
     expect(alert.occurrenceDate,isEmpty);expect(alert.displayDate,'2026-09-18');expect(alert.dateLabel,'공식 통보일');
     expect(alert.displayMoment,DateTime(2026,9,18));expect(alert.isActiveAt(DateTime(2026,10,3)),isFalse);expect(alert.hasMapPoint,isFalse);
   });
+  test('종식된 공식 발생은 내역을 유지하되 현재 경보에서 제외한다',()async{
+    final payload={'items':[{'id':'closed-case','disease':'PRRS','countryCode':'KR','evidenceLevel':'OFFICIAL','status':'종식','summary':'공식 과거 내역','occurrenceDate':'2026-10-01'}]};
+    final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)));
+    final alert=(await repo.refresh()).items.single;
+    expect(alert.isClosed,isTrue);expect(alert.isActiveAt(DateTime(2026,10,3)),isFalse);expect(alert.occurrenceDate,'2026-10-01');
+  });
   test('조회 범위가 검증되지 않은 빈 피드를 발생 없음으로 확정하지 않는다',()async{
     final repo=DiseaseRepository(client:MockClient((_)async=>http.Response('{"items":[],"updatedAt":"2026-10-03"}',200)));
     final feed=await repo.refresh();

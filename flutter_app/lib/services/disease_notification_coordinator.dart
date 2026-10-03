@@ -12,7 +12,7 @@ class DiseaseNotificationCoordinator {
     final recent=_latestIncidents(allRecent);
     // Keep every distinct official event for distance alerts and the first-sync
     // baseline; only status-transition checks are coalesced per incident.
-    final active=allRecent.where((x)=>!x.isNegative).toList();
+    final active=allRecent.where((x)=>!x.isNegative&&!x.isClosed).toList();
     final ids=active.map((x)=>x.stableKey).toSet(),previousEvidence=_decodeMap(prefs.getString(_evidence));
     final previousStatus=_decodeMap(prefs.getString(_status));
     if(!(prefs.getBool(_baseline)??false)){
