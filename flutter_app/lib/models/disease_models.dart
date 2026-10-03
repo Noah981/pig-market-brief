@@ -31,7 +31,7 @@ class DiseaseAlert {
   bool get hasMapPoint=>countryCode=='KR'&&latitude!=null&&longitude!=null;
   String get region=>[province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
   String get stableKey=>id.isNotEmpty?id:'${type.name}|$occurrenceDate|$countryCode|$province|$cityCounty|$town|$summary';
-  String get incidentKey=>'${type.name}|$countryCode|$province|$cityCounty|$town';
+  String get incidentKey=>id.isNotEmpty?'${type.name}|$countryCode|$id':'${type.name}|$countryCode|$occurrenceDate|$province|$cityCounty|$town';
   DateTime? get eventDate{
     final declared=_parseDate(occurrenceDate);
     if(declared==null)return null;

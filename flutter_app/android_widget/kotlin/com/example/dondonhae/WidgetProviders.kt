@@ -76,8 +76,11 @@ object WidgetStore {
         val configured = listOf(city, town).filter { it.isNotBlank() }.joinToString(" ").ifBlank { province }
         val root = objectOrNull(raw(context, "weather_farm_guide_v1"))
         val rows = root?.optJSONArray("regions")
-        val row = if (rows != null && rows.length() > 0) rows.optJSONObject(0) else null
-        val region = configured.ifBlank { row?.optString("region") ?: "지역 미설정" }
+        val label = listOf(province, city, town).filter { it.isNotBlank() }.joinToString(" ")
+        // A saved forecast from the previous region must not acquire the new label.
+        val row = (0 until (rows?.length() ?: 0)).mapNotNull { rows?.optJSONObject(it) }
+            .firstOrNull { it.optString("region") == label || it.optString("region") == configured || it.optString("region") == province }
+        val region = row?.optString("region") ?: configured.ifBlank { "지역 미설정" }
         return WeatherData(region, row?.number("tempMax"), row?.number("rainProbabilityMax"), row?.number("humidityMax"), root?.optString("updatedAt") ?: "")
     }
 
@@ -125,7 +128,7 @@ object WidgetRenderer {
         val data = WidgetStore.price(context); val views = RemoteViews(context.packageName, R.layout.widget_price_small)
         bindPrice(views, data); views.setTextViewText(R.id.widget_date, todayLabel()); views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 101 + id))
         val width = manager.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180)
-        views.setViewVisibility(R.id.pig_mascot, if (width >= 170) View.VISIBLE else View.GONE); manager.updateAppWidget(id, views)
+        views.setViewVisibility(R.id.pig_mascot, if (width >= 240) View.VISIBLE else View.GONE); manager.updateAppWidget(id, views)
     }
 
     private fun priceDetail(context: Context, manager: AppWidgetManager, id: Int) {

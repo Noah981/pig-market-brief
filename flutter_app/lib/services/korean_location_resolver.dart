@@ -44,16 +44,20 @@ abstract final class KoreanLocationResolver {
     if (fields.isEmpty) return null;
 
     String? province;
-    for (final entry in _provinceAliases.entries) {
+    // Prefer the explicit province field over city names such as Gwangju.
+    final provinceFields = [administrativeArea, ...fields]
+        .whereType<String>().map(_normalize).toList();
+    for (final field in provinceFields) {
+      for (final entry in _provinceAliases.entries) {
       final names = [entry.key, ...entry.value].map(_normalize);
-      final matchesProvince = fields.any((field) {
-        return names.any((name) =>
-            field == name || (name.length >= 5 && field.contains(name)));
-      });
+      final matchesProvince = names.any((name) =>
+          field == name || (name.length >= 5 && field.contains(name)));
       if (matchesProvince) {
         province = entry.key;
         break;
       }
+      }
+      if (province != null) break;
     }
     if (province == null) return null;
 
