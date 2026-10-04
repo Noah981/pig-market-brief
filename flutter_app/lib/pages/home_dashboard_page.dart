@@ -67,7 +67,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _refreshAnalysis()async{try{final value=await _analysisRepository.refresh();if(mounted)setState(()=>_analysis=value);}catch(_){}}
   Future<void> _refreshWeather()async{try{final value=await _weatherRepository.refresh(region:_weatherRegion);if(mounted)setState(()=>_weather=value);}catch(_){}}
   Future<void> _refreshBenefits()async{try{await FarmLocationSettings.instance.load();await BenefitRepository().refresh();}catch(_){}}
-  void _locationChanged(){final region=FarmLocationSettings.instance.location.province;if(region!=_weatherRegion){_weatherRegion=region;_refreshWeather();}else if(mounted){setState((){});}}
+  void _locationChanged(){_weatherRegion=FarmLocationSettings.instance.location.province;if(mounted)setState(()=>_weather=WeatherFarmRepository.fallback);_refreshWeather();}
   Future<void> _pullToRefresh()async{
     await Future.wait([DataRefreshService.refreshAll(force:true),_refreshAnalysis(),_refreshBenefits()]);
     await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);

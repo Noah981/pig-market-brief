@@ -25,7 +25,8 @@ class FarmLocationSettings extends ChangeNotifier {
     final province=p.getString(_provinceKey)??p.getString('farm_weather_region')??'';
     if(province.isEmpty){_loaded=true;notifyListeners();return;}
     final city=p.getString(_cityKey)??'';
-    final candidates=locations[province]??locations['대구광역시']!;
+    final candidates=locations[province];
+    if(candidates==null){_loaded=true;notifyListeners();return;}
     _location=candidates.where((x)=>x.cityCounty==city).firstOrNull??candidates.first;
     final lat=p.getDouble(_latKey),lng=p.getDouble(_lngKey);
     if(lat!=null&&lng!=null)_location=FarmLocation(province:_location.province,cityCounty:_location.cityCounty,town:p.getString(_townKey)??'',latitude:lat,longitude:lng,gpsVerified:p.getBool(_gpsKey)??false,accuracy:p.getDouble(_accuracyKey));
