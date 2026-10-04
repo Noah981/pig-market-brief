@@ -126,9 +126,13 @@ object WidgetRenderer {
 
     private fun priceSmall(context: Context, manager: AppWidgetManager, id: Int) {
         val data = WidgetStore.price(context); val views = RemoteViews(context.packageName, R.layout.widget_price_small)
-        bindPrice(views, data); views.setTextViewText(R.id.widget_date, todayLabel()); views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 101 + id))
-        val width = manager.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180)
-        views.setViewVisibility(R.id.pig_mascot, View.GONE); manager.updateAppWidget(id, views)
+        val options = manager.getAppWidgetOptions(id)
+        val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).coerceIn(100, 600)
+        val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 184).coerceIn(80, 600)
+        views.setImageViewBitmap(R.id.price_artwork, PriceCardArtwork.render(context, width * 2, height * 2, data, todayLabel()))
+        views.setContentDescription(R.id.price_artwork, "돈돈해 전국 평균 돈가 ${money(data.price)}원/kg, ${dateBasis(data.date)}, ${changeText(data.change, data.percent)}")
+        views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 101 + id))
+        manager.updateAppWidget(id, views)
     }
 
     private fun priceDetail(context: Context, manager: AppWidgetManager, id: Int) {
