@@ -1,0 +1,17 @@
+name: Disease coverage inspection
+on:
+  pull_request:
+    branches: [main]
+    paths: ['scripts/inspect_disease_coverage.py', '.github/workflows/disease-coverage.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect official query coverage without exposing credentials or addresses
+        env:
+          MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
+        run: python scripts/inspect_disease_coverage.py

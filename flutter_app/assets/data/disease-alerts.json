@@ -1,1 +1,69 @@
-{"schemaVersion":2,"updatedAt":"","items":[],"notice":"앱 실행 후 공식 질병정보를 확인합니다. 공개정보는 공식 발생으로 해석하지 마세요."}
+{
+  "schemaVersion": 4,
+  "updatedAt": "2026-10-03",
+  "items": [
+    {
+      "id": "WOAH-AFRICA|NA|2026-09-24|구제역",
+      "disease": "구제역",
+      "source": "WOAH 아프리카 공식 즉시통보",
+      "countryCode": "NA",
+      "scope": "국외",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 통보",
+      "summary": "Namibia · 구제역 공식 통보",
+      "sourceUrl": "https://rr-africa.woah.org/en/immediate-notifications-in-africa/",
+      "occurrenceDate": "",
+      "announcementDate": "2026-09-24",
+      "dateBasis": "notification",
+      "livestockType": "축종은 원문 확인"
+    },
+    {
+      "id": "WOAH-AFRICA|SS|2026-09-18|ASF",
+      "disease": "ASF",
+      "source": "WOAH 아프리카 공식 즉시통보",
+      "countryCode": "SS",
+      "scope": "국외",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 통보",
+      "summary": "South Sudan · ASF 공식 통보",
+      "sourceUrl": "https://rr-africa.woah.org/en/immediate-notifications-in-africa/",
+      "occurrenceDate": "",
+      "announcementDate": "2026-09-18",
+      "dateBasis": "notification",
+      "livestockType": "축종은 원문 확인"
+    },
+    {
+      "id": "WOAH-AFRICA|BW|2026-09-07|구제역",
+      "disease": "구제역",
+      "source": "WOAH 아프리카 공식 즉시통보",
+      "countryCode": "BW",
+      "scope": "국외",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 통보",
+      "summary": "Botswana · 구제역 공식 통보",
+      "sourceUrl": "https://rr-africa.woah.org/en/immediate-notifications-in-africa/",
+      "occurrenceDate": "",
+      "announcementDate": "2026-09-07",
+      "dateBasis": "notification",
+      "livestockType": "축종은 원문 확인"
+    },
+    {
+      "id": "WOAH-AFRICA|KE|2026-07-31|ASF",
+      "disease": "ASF",
+      "source": "WOAH 아프리카 공식 즉시통보",
+      "countryCode": "KE",
+      "scope": "국외",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 통보",
+      "summary": "Kenya · ASF 공식 통보",
+      "sourceUrl": "https://rr-africa.woah.org/en/immediate-notifications-in-africa/",
+      "occurrenceDate": "",
+      "announcementDate": "2026-07-31",
+      "dateBasis": "notification",
+      "livestockType": "축종은 원문 확인"
+    }
+  ],
+  "notice": "앱 실행 후 공식 질병정보를 확인합니다. 공개정보는 공식 발생으로 해석하지 마세요.",
+  "coverageVerified": false,
+  "coverageScope": "WOAH 아프리카 통보 · 세계 전체 집계 아님"
+}

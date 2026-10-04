@@ -23,10 +23,15 @@ class DiseaseAlert {
   final String id,source,countryCode,status,summary,sourceUrl,occurrenceDate,announcementDate,updatedAt,livestockType,districtCode,province,cityCounty,town;
   final DiseaseType type;final DiseaseEvidence evidence;final double? latitude,longitude;
   String get disease=>type.label;
+  bool get usesNotificationDate=>countryCode!='KR'&&occurrenceDate.isEmpty&&announcementDate.isNotEmpty;
+  String get displayDate=>usesNotificationDate?announcementDate:occurrenceDate;
+  String get dateLabel=>usesNotificationDate?'공식 통보일':'발생일';
+  DateTime? get displayMoment=>usesNotificationDate?_parseDate(announcementDate):eventDate;
   String get scope=>countryCode=='KR'?'국내':'국외';
   bool get isOfficial=>evidence==DiseaseEvidence.official;
   bool get isSuspected=>status.contains('의심')||status.contains('확인 중');
   bool get isNegative=>status.contains('음성')||status.contains('해제')||status.contains('불검출');
+  bool get isClosed=>status.contains('종식');
   bool get isConfirmed=>isOfficial&&!isSuspected&&!isNegative;
   bool get hasMapPoint=>countryCode=='KR'&&latitude!=null&&longitude!=null;
   String get region=>[province,cityCounty,town].where((x)=>x.isNotEmpty).join(' ');
@@ -40,7 +45,7 @@ class DiseaseAlert {
     return _dateMention(summary,declared)??declared;
   }
   bool isRecentAt(DateTime now){final d=eventDate;if(d==null)return false;final today=DateTime(now.year,now.month,now.day),day=DateTime(d.year,d.month,d.day);return !day.isAfter(today)&&!day.isBefore(today.subtract(const Duration(days:30)));}
-  bool isActiveAt(DateTime now)=>!isNegative&&isRecentAt(now);
+  bool isActiveAt(DateTime now)=>!isNegative&&!isClosed&&isRecentAt(now);
 }
 
 DateTime? _dateMention(String text,DateTime reference){
@@ -67,7 +72,7 @@ DateTime? _parseDate(String value){
 }
 
 class DiseaseFeed {
-  const DiseaseFeed({required this.items,required this.updatedAt,required this.fromCache,this.state=DiseaseDataState.live,this.errorMessage});
-  final List<DiseaseAlert> items;final String updatedAt;final bool fromCache;final DiseaseDataState state;final String? errorMessage;
+  const DiseaseFeed({required this.items,required this.updatedAt,required this.fromCache,this.state=DiseaseDataState.live,this.errorMessage,this.coverageVerified=false});
+  final List<DiseaseAlert> items;final String updatedAt;final bool fromCache,coverageVerified;final DiseaseDataState state;final String? errorMessage;
   List<DiseaseAlert> active(DateTime now)=>items.where((x)=>x.isActiveAt(now)).toList(growable:false);
 }

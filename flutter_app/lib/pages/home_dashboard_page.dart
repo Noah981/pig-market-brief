@@ -47,7 +47,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   }
   Future<void> _openWidgetRoute(String route)async{
     if(!mounted)return;
-    if(route.contains('/market/pig-price')){await _reloadMarketCache();if(mounted){WidgetsBinding.instance.addPostFrameCallback((_){if(mounted){_openPigPrice();}});}}
+    if(route.contains('/market/pig-price/grade')){_openGradePrices();}
+    else if(route.contains('/market/pig-price')){await _reloadMarketCache();if(mounted){WidgetsBinding.instance.addPostFrameCallback((_){if(mounted){_openPigPrice();}});}}
     else if(route.contains('/weather')){setState(()=>_nav=3);}
     else if(route.contains('/tasks')){setState(()=>_nav=3);}
     else if(route.contains('/settings/farm-location')){setState(()=>_nav=4);}
@@ -82,12 +83,13 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
       MarketPriceCard(period:_period,snapshot:_market,onRefresh:_refreshMarket,onTap:_openPigPrice,onPeriodChanged:(i)=>setState(()=>_period=i)),const SizedBox(height:10),
       SizedBox(height:244,child:Row(crossAxisAlignment:CrossAxisAlignment.stretch,children:[Expanded(child:MarketReasonCard(analysis:LiveMarketDriverBuilder.build(market:_market,grades:_grades,fallback:_analysis),onTap:_openMarketDrivers)),const SizedBox(width:8),Expanded(child:WeatherSummaryCard(guide:_weather,onTap:()=>setState(()=>_nav=3)))])),
       const SizedBox(height:10),
-      HomeGradeAuctionCard(snapshot:_grades,onTap:_openPigPrice),
+      HomeGradeAuctionCard(snapshot:_grades,onTap:_openGradePrices),
       const SizedBox(height:10),
       CommodityTrendCard(items:_commodities,onTap:_openCommodity,onHeaderTap:()=>setState(()=>_nav=1)),
       const SizedBox(height:12),
     ]))
   ]))));
+  void _openGradePrices()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>GradeSexPricePage(initial:_grades,date:_market?.date)));
   void _openPigPrice()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:_market,analysis:_analysis)));
   void _openMarketDrivers()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>MarketDriverDetailPage(analysis:LiveMarketDriverBuilder.build(market:_market,grades:_grades,fallback:_analysis))));
   void _openCommodity(Commodity item)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item)));

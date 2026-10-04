@@ -1,7 +1,19 @@
 import unittest
-from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code,event_status,event_date,occurrence_date
+from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code,event_status,event_date,occurrence_date,woah_notifications
 
 class DiseaseClassifierTest(unittest.TestCase):
+ def test_woah_notifications_exclude_simulations_and_preserve_date_basis(self):
+  rows=woah_notifications('<p>04/10/2026 Egypt – Simulation : Foot and mouth disease</p><p>24/09/2026 Namibia: Foot and mouth disease</p><p>18/09/2026 South Sudan: African swine fever</p>')
+  self.assertEqual([x['countryCode'] for x in rows],['NA','SS'])
+  self.assertEqual([x['disease'] for x in rows],['구제역','ASF'])
+  self.assertEqual(rows[1]['announcementDate'],'2026-09-18')
+  self.assertEqual(rows[1]['occurrenceDate'],'')
+  self.assertEqual(rows[1]['dateBasis'],'notification')
+ def test_official_api_abbreviations_are_not_dropped(self):
+  self.assertEqual(diseases("ASF"),["ASF"])
+  self.assertEqual(diseases("FMD"),["구제역"])
+  self.assertEqual(diseases("PED"),["PED"])
+  self.assertEqual(diseases("PRRS"),["PRRS"])
  def test_asf_is_not_classical_swine_fever(self):
   self.assertEqual(diseases('아프리카돼지열병 발생'),['ASF'])
  def test_prevention_is_not_outbreak(self):

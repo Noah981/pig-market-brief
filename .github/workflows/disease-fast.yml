@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Collect suspected, confirmed and negative signals
+        env:
+          MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
           python -m unittest scripts/test_disease_classifier.py
           python scripts/fetch_disease_alerts.py

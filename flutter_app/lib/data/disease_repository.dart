@@ -21,7 +21,8 @@ class DiseaseRepository {
   Future<DiseaseFeed> refresh()async{
     try{
       final hosted=await _fromHosted();
-      final feed=ApiConfig.hasMafra?await _fromMafra(hosted):hosted;
+      DiseaseFeed feed=hosted;
+      if(ApiConfig.hasMafra){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
       await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(_feedJson(feed)));
       return feed;
     }catch(error){
@@ -46,7 +47,7 @@ class DiseaseRepository {
     for(final x in hosted.items){_putLatest(merged,x);}
     // An official result always wins over a public signal for the same incident.
     for(final x in items){merged[x.incidentKey]=x;}
-    return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,state:DiseaseDataState.live);
+    return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,coverageVerified:hosted.coverageVerified,state:hosted.coverageVerified?DiseaseDataState.live:DiseaseDataState.reviewRequired,errorMessage:hosted.coverageVerified?null:'국내 전체 조회 범위를 확인 중입니다. 표시된 자료만으로 발생 없음을 판단하지 마세요.');
   }
   Future<DiseaseFeed> _fromHosted()async{
     final response=await _client.get(Uri.parse('$_url?v=${_clock().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
@@ -62,7 +63,7 @@ class DiseaseRepository {
       // publishedAt is not an incident date. Old incidents are often
       // republished, so using it here makes February events look current.
       final occurrence=x['occurrenceDate']?.toString()??x['eventDate']?.toString()??'';
-      final summary=x['summary']?.toString()??'';if(occurrence.isEmpty||summary.isEmpty)continue;
+      final summary=x['summary']?.toString()??'';if(summary.isEmpty||(occurrence.isEmpty&&(code=='KR'||x['dateBasis']!='notification'||x['announcementDate']==null)))continue;
       final evidence=(x['evidenceLevel']?.toString().toUpperCase()=='OFFICIAL'||x['verificationLevel']?.toString().toUpperCase()=='OFFICIAL')?DiseaseEvidence.official:DiseaseEvidence.publicInfo;
       final address=x['region']?.toString()??summary;
       final rawStatus=x['status']?.toString()??x['level']?.toString()??'확인 중';
@@ -71,9 +72,9 @@ class DiseaseRepository {
       if(seen.add(alert.stableKey))items.add(alert);
     }
     final unverifiedEmpty=items.isEmpty&&json['coverageVerified']!=true;
-    return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,state:fromCache?DiseaseDataState.stale:unverifiedEmpty?DiseaseDataState.reviewRequired:DiseaseDataState.live,errorMessage:unverifiedEmpty?'공식 발생자료의 조회 범위를 확인하지 못했습니다. 발생 없음으로 판단하지 마세요.':null);
+    return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,coverageVerified:json['coverageVerified']==true,state:fromCache?DiseaseDataState.stale:unverifiedEmpty?DiseaseDataState.reviewRequired:DiseaseDataState.live,errorMessage:unverifiedEmpty?'공식 발생자료의 조회 범위를 확인하지 못했습니다. 발생 없음으로 판단하지 마세요.':null);
   }
-  String _status(String raw,String summary,DiseaseEvidence evidence){final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
+  String _status(String raw,String summary,DiseaseEvidence evidence){if(raw.contains('종식'))return '종식';if(raw.contains('공식 통보'))return '공식 통보';final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
   void _putLatest(Map<String,DiseaseAlert> target,DiseaseAlert next){
     final old=target[next.incidentKey];
     if(old==null||_eventMoment(next).isAfter(_eventMoment(old))||(_eventMoment(next)==_eventMoment(old)&&_statusRank(next)>_statusRank(old))){target[next.incidentKey]=next;}
@@ -99,5 +100,5 @@ class DiseaseRepository {
   String _province(String text)=>RegExp(r'(서울특별시|부산광역시|대구광역시|인천광역시|광주광역시|대전광역시|울산광역시|세종특별자치시|경기도|강원(?:특별자치)?도|충청북도|충청남도|전북특별자치도|전라북도|전라남도|경상북도|경상남도|제주특별자치도)').firstMatch(text)?.group(0)??'';
   String _cityCounty(String text)=>RegExp(r'([가-힣]+(?:시|군)(?:\s+[가-힣]+구)?|[가-힣]+구)').firstMatch(text.replaceFirst(_province(text),''))?.group(0)??'';
   String _town(String text)=>RegExp(r'([가-힣]+(?:읍|면|동))').firstMatch(text)?.group(0)??'';
-  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':3,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
+  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':4,'coverageVerified':feed.coverageVerified,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'dateBasis':x.usesNotificationDate?'notification':'occurrence','updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
 }

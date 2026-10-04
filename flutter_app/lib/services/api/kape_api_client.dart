@@ -11,8 +11,8 @@ class KapePigPrice {
 }
 
 class KapeGradePrice {
-  const KapeGradePrice({required this.grade,required this.price,required this.count,required this.date});
-  final String grade,date;final int price,count;
+  const KapeGradePrice({required this.grade,required this.price,required this.count,required this.date,this.sex='all'});
+  final String grade,date,sex;final int price,count;
 }
 
 class KapeAuctionStatus {
@@ -23,9 +23,9 @@ class KapeAuctionStatus {
 }
 
 class KapeDabomSnapshot {
-  const KapeDabomSnapshot({required this.date, required this.grades, required this.auctionStatus});
+  const KapeDabomSnapshot({required this.date, required this.grades, required this.auctionStatus,this.sexGrades=const []});
   final String date;
-  final List<KapeGradePrice> grades;
+  final List<KapeGradePrice> grades,sexGrades;
   final KapeAuctionStatus auctionStatus;
 }
 
@@ -110,7 +110,8 @@ class KapeApiClient {
         final female=await _dabomTable(ymd:all.date,sex:'1');
         final castrated=await _dabomTable(ymd:all.date,sex:'3');
         final overall=_summaryRow(all);
-        return KapeDabomSnapshot(date:all.date,grades:grades,auctionStatus:KapeAuctionStatus(
+        if(female.date!=all.date||castrated.date!=all.date)throw const OfficialApiException('KAPE_DABOM','sex-date-mismatch');
+        return KapeDabomSnapshot(date:all.date,grades:grades,sexGrades:[..._gradeRows(castrated,sex:'castrated'),..._gradeRows(female,sex:'female')],auctionStatus:KapeAuctionStatus(
           date:all.date,totalCount:_integer(overall,1),femaleCount:_integer(_summaryRow(female),1),castratedCount:_integer(_summaryRow(castrated),1),averageCarcassWeight:_decimal(overall,3),
         ));
       }on OfficialApiException catch(e){lastError=e;}
@@ -152,13 +153,13 @@ class KapeApiClient {
     return _DabomTable(date,rows);
   }
 
-  List<KapeGradePrice> _gradeRows(_DabomTable table){
+  List<KapeGradePrice> _gradeRows(_DabomTable table,{String sex='all'}){
     final out=<KapeGradePrice>[];
     for(final grade in const ['1+','1','2','등외']){
       final matches=table.rows.where((r)=>r.isNotEmpty&&r.first==grade);
       if(matches.isEmpty)continue;final row=matches.first;
       final price=_integer(row,2),count=_integer(row,1);
-      if(price>0&&count>0)out.add(KapeGradePrice(grade:grade,price:price,count:count,date:table.date));
+      if(price>0&&count>0)out.add(KapeGradePrice(grade:grade,price:price,count:count,date:table.date,sex:sex));
     }
     return out;
   }
