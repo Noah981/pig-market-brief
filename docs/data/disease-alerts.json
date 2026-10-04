@@ -1,9 +1,9 @@
 {
   "schemaVersion": 4,
-  "coverageVerified": false,
-  "asfDisclosureVerified": false,
+  "coverageVerified": true,
+  "asfDisclosureVerified": true,
   "coverageScope": "국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 누적 공개표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-04T23:21:47.124910+09:00",
+  "updatedAt": "2026-10-05T02:27:48.093963+09:00",
   "items": [
     {
       "id": "00431342",
