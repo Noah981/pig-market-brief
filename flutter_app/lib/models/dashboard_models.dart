@@ -48,6 +48,17 @@ class Commodity {
   final List<MarketSource> analysisSources;
   final double? previousValue;
   final String previousDate,updatedAt,status;
+  bool get hasQuote => double.tryParse(value)?.isFinite == true && (double.tryParse(value) ?? 0) > 0;
+  String get shortName => name.replaceAll('\n', ' ');
+  String get periodLabel => frequency == 'monthly' ? '월평균' : '일간 공표';
+  String get basisLabel {
+    final digits=asOf.replaceAll(RegExp(r'[^0-9]'),'');
+    if(digits.length<8)return '기준일 확인 필요';
+    return frequency=='monthly'?'${digits.substring(0,4)}.${digits.substring(4,6)} 월평균':'${digits.substring(4,6)}.${digits.substring(6,8)} 기준';
+  }
+  String get comparisonLabel => change==null?'비교 자료 없음':change==0?'— 0.0%':'${change!>0?'▲ +':'▼ −'}${change!.abs().toStringAsFixed(1)}%';
+  Commodity copyWith({String? status}) => Commodity(name,value,unit,change,icon,id:id,source:source,asOf:asOf,frequency:frequency,basis:basis,url:url,history:history,analysisSummary:analysisSummary,analysisUpdatedAt:analysisUpdatedAt,analysisConfidence:analysisConfidence,analysisFactors:analysisFactors,analysisSources:analysisSources,previousValue:previousValue,previousDate:previousDate,updatedAt:updatedAt,status:status??this.status);
+
 }
 
 class CommodityPoint {

@@ -10,7 +10,7 @@ import json
 import math
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,10 +61,15 @@ def parse_series(name, spec, raw):
         text = row.get(spec["id"], "").strip()
         if not text or text == ".":
             continue
-        value = float(text)
+        try:value = float(text)
+        except ValueError:continue
+        try:observed=date.fromisoformat(row["observation_date"])
+        except (ValueError,KeyError):continue
+        if observed>datetime.now(KST).date():continue
         if not math.isfinite(value) or value <= 0:
             continue
         rows.append({"date": row["observation_date"], "value": value})
+    rows=sorted({r["date"]:r for r in rows}.values(),key=lambda r:r["date"])
     if len(rows) < 2:
         raise ValueError(f"{name}: fewer than two valid observations")
     latest, previous = rows[-1], rows[-2]
@@ -81,8 +86,8 @@ def parse_series(name, spec, raw):
         "basis": spec["basis"],
         "source": spec["source"],
         "url": f"https://fred.stlouisfed.org/series/{spec['id']}",
-        "history": rows[-12:],
-        "updatedAt": datetime.now(KST).isoformat(),
+        "history": rows[-(36 if spec["frequency"]=="monthly" else 366):],
+        "updatedAt": datetime.now(KST).isoformat(),"status":"LIVE",
     }
 
 
@@ -97,7 +102,11 @@ def fetch_one(name, spec):
 
 def update(previous, fetched):
     old = {row.get("name"): row for row in previous.get("markets", []) if row.get("name")}
-    old.update({row["name"]: row for row in fetched})
+    for row in old.values():row["status"]="STALE"
+    for row in fetched:
+        previous_row=old.get(row["name"])
+        if previous_row and previous_row.get("date","")>row.get("date",""):continue
+        old[row["name"]]=row
     result = dict(previous)
     result["markets"] = [old[name] for name in SERIES if name in old]
     result["checkedAt"] = datetime.now(KST).isoformat()

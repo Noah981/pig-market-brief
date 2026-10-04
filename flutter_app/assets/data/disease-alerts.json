@@ -1,8 +1,9 @@
 {
   "schemaVersion": 4,
-  "coverageVerified": true,
-  "coverageScope": "국내 API 전체 조회 + ASF 공식 누적 발생현황표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-04T15:21:17.797986+09:00",
+  "coverageVerified": false,
+  "asfDisclosureVerified": true,
+  "coverageScope": "국내 API 전체 조회 + 올해·전년 ASF 누적 공개표 대조; 해외 WOAH 아프리카 통보 (세계 전체 아님)",
+  "updatedAt": "2026-10-04T17:18:18.134988+09:00",
   "items": [
     {
       "id": "00431342",
@@ -2840,8 +2841,8 @@
       "sourceUrl": "https://mafra.go.kr/bbs/FMD-AI2/404/577369/artclView.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "전라남도 영광군 칠곡리 ASF · 2026년 4차",
-      "region": "전라남도 영광군 칠곡리",
+      "summary": "전라남도 영광군 ASF · 2026년 4차",
+      "region": "전라남도 영광군",
       "occurrenceDate": "2026-01-26",
       "announcementDate": "2026-03-20",
       "livestockType": "돼지"
@@ -2924,8 +2925,8 @@
       "sourceUrl": "https://mafra.go.kr/bbs/FMD-AI2/404/577369/artclView.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "전라남도 나주 봉황면 ASF · 2026년 10차",
-      "region": "전라남도 나주 봉황면",
+      "summary": "전라남도 봉황면 ASF · 2026년 10차",
+      "region": "전라남도 봉황면",
       "occurrenceDate": "2026-02-09",
       "announcementDate": "2026-03-20",
       "livestockType": "돼지"
@@ -3125,6 +3126,20 @@
       "occurrenceDate": "2026-03-16",
       "announcementDate": "2026-03-20",
       "livestockType": "돼지"
+    },
+    {
+      "id": "MAFRA-ASF-TABLE|2025|55",
+      "disease": "ASF",
+      "countryCode": "KR",
+      "source": "농림축산식품부 ASF 발생현황 정보공개",
+      "sourceUrl": "https://mafra.go.kr/bbs/FMD-AI2/404/576354/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "충청남도 당진시 송산면 ASF · 2025년 55차",
+      "region": "충청남도 당진시 송산면",
+      "occurrenceDate": "2025-11-24",
+      "announcementDate": "2025-12-30",
+      "livestockType": "돼지"
     }
   ],
   "evidencePolicy": {
@@ -3132,6 +3147,5 @@
     "PUBLIC_UNCONFIRMED": "공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목",
     "FARM_OBSERVATION": "사용자가 자기 농장에서 직접 기록한 관찰"
   },
-  "notice": "이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요.",
-  "asfDisclosureVerified": true
+  "notice": "이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."
 }

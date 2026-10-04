@@ -18,4 +18,21 @@ void main(){
     expect(seasonal.map((x)=>x.name).join(' '),contains('PRRS'));
     expect(seasonal.first.differentiate,contains('검사'));
   });
+  test('조회 전에는 고정 기온이나 정상 위험을 표시하지 않는다',()async{
+    final repository=WeatherFarmRepository();
+    final guide=await repository.cached();
+    expect(guide.hasForecast,isFalse);
+    expect(guide.condition,'정보 없음');
+    expect(repository.risks(guide).single.level,'확인 필요');
+  });
+  test('다른 지역 예보나 누락된 수치를 0으로 대체하지 않는다',()async{
+    for(final row in [
+      {'region':'서울특별시','tempMin':10,'tempMax':20,'humidityMax':70,'rainProbabilityMax':0},
+      {'region':'대구광역시','tempMin':10,'tempMax':20,'rainProbabilityMax':0},
+    ]){
+      final repository=WeatherFarmRepository(client:MockClient((_)async=>http.Response(jsonEncode({'regions':[row]}),200,headers:{'content-type':'application/json; charset=utf-8'})));
+      await expectLater(repository.refresh(region:'대구광역시'),throwsFormatException);
+    }
+  });
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/commodity_quote_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -203,15 +204,10 @@ class CommodityDetailPage extends StatelessWidget {
     return _DetailScaffold(
       title: '${item.name.replaceAll('\n', ' ')} 상세',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _ValueCard(
-          title: item.name.replaceAll('\n', ' '),
-          value: item.change == null ? '공식 데이터 연결 대기' : '${item.value} ${item.unit}',
-          change: item.change == null ? '확인되지 않은 수치는 표시하지 않습니다.' : '${item.change! >= 0 ? '▲ 상승' : '▼ 하락'} ${item.change!.abs().toStringAsFixed(1)}% · ${item.frequency == 'monthly' ? '전월 대비' : '직전 발표 대비'}',
-          up: (item.change ?? 0) >= 0,
-        ),
+        CommodityQuoteCard(item:item,detail:true),
         if (item.history.length >= 2) ...[
           const SizedBox(height: 14),
-          _PeriodCommodityChart(points: item.history),
+          _PeriodCommodityChart(points: item.history,monthly:item.frequency=='monthly'),
         ],
         const SizedBox(height: 16),
         const Text('가격 움직임 주요 요인', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
@@ -242,8 +238,17 @@ class _SourceButton extends StatelessWidget{
 
 class _PeriodTabs extends StatelessWidget{const _PeriodTabs({required this.labels,required this.selected,required this.onChanged});final List<String> labels;final int selected;final ValueChanged<int> onChanged;@override Widget build(BuildContext context)=>Container(height:38,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:const Color(0xFFF1F2F5),borderRadius:BorderRadius.circular(11)),child:Row(children:List.generate(labels.length,(i)=>Expanded(child:InkWell(onTap:()=>onChanged(i),child:Container(alignment:Alignment.center,decoration:BoxDecoration(color:selected==i?AppColors.coral:Colors.transparent,borderRadius:BorderRadius.circular(8)),child:Text(labels[i],style:TextStyle(fontSize:9,fontWeight:FontWeight.w800,color:selected==i?Colors.white:AppColors.secondary))))))));}
 
-class _PeriodCommodityChart extends StatefulWidget{const _PeriodCommodityChart({required this.points});final List<CommodityPoint> points;@override State<_PeriodCommodityChart> createState()=>_PeriodCommodityChartState();}
-class _PeriodCommodityChartState extends State<_PeriodCommodityChart>{int selected=0;@override Widget build(BuildContext context){final limits=[7,30,90,365],take=limits[selected],points=widget.points.length>take?widget.points.sublist(widget.points.length-take):widget.points;return Column(children:[_PeriodTabs(labels:const ['7일','1개월','3개월','1년'],selected:selected,onChanged:(i)=>setState(()=>selected=i)),const SizedBox(height:8),_CommodityChart(points:points)]);}}
+class _PeriodCommodityChart extends StatefulWidget{const _PeriodCommodityChart({required this.points,this.monthly=false});final List<CommodityPoint> points;final bool monthly;@override State<_PeriodCommodityChart> createState()=>_PeriodCommodityChartState();}
+class _PeriodCommodityChartState extends State<_PeriodCommodityChart>{
+  int selected=0;
+  @override Widget build(BuildContext context){
+    final latest=widget.points.isEmpty?null:DateTime.tryParse(widget.points.last.date);
+    final amount=(widget.monthly?[3,6,12,36]:[7,30,90,365])[selected];
+    final cutoff=latest==null?null:widget.monthly?DateTime(latest.year,latest.month-amount+1,1):latest.subtract(Duration(days:amount-1));
+    final points=widget.points.where((x){final d=DateTime.tryParse(x.date);return cutoff==null||d!=null&&!d.isBefore(cutoff);}).toList();
+    return Column(children:[_PeriodTabs(labels:widget.monthly?const ['3개월','6개월','1년','3년']:const ['7일','1개월','3개월','1년'],selected:selected,onChanged:(i)=>setState(()=>selected=i)),const SizedBox(height:8),_CommodityChart(points:points)]);
+  }
+}
 
 class _CommodityChart extends StatelessWidget {
   const _CommodityChart({required this.points});

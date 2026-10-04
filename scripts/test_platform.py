@@ -28,6 +28,13 @@ class PlatformTests(unittest.TestCase):
   self.assertEqual(row['date'],'2026-09-11')
   self.assertAlmostEqual(row['changePct'],-0.40,places=2)
   self.assertEqual(row['source'],'Federal Reserve')
+ def test_fred_rejects_future_nonfinite_and_sorts_observations(self):
+  raw=b'observation_date,DEXKOUS\n2026-09-11,1340.30\n2099-01-01,9999\n2026-09-12,NaN\n2026-02-30,1000\n2026-09-10,1345.63\n'
+  spec=dict(id='DEXKOUS',unit='원/USD',frequency='daily',source='Federal Reserve',basis='spot')
+  row=parse_series('usd_krw',spec,raw)
+  self.assertEqual(row['date'],'2026-09-11')
+  self.assertEqual(row['previousDate'],'2026-09-10')
+  self.assertEqual(len(row['history']),2)
  def test_failed_source_preserves_last_good(self):
   previous={'markets':[{'name':'wti','value':100}],'benefits':[]}
   result=update(previous,[])

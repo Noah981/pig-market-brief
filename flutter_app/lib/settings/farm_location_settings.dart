@@ -15,14 +15,15 @@ class FarmLocationSettings extends ChangeNotifier {
   FarmLocationSettings._();
   static final instance = FarmLocationSettings._();
   static const _provinceKey='farm_location_province', _cityKey='farm_location_city_county', _latKey='farm_location_latitude', _lngKey='farm_location_longitude',_gpsKey='farm_location_gps_verified',_townKey='farm_location_town',_accuracyKey='farm_location_accuracy';
-  FarmLocation _location=locations['대구광역시']!.first;
+  FarmLocation _location=const FarmLocation(province:'',cityCounty:'',latitude:double.nan,longitude:double.nan);
   bool _loaded=false;
   FarmLocation get location=>_location;
 
   Future<void> load() async {
     if(_loaded)return;
     final p=await SharedPreferences.getInstance();
-    final province=p.getString(_provinceKey)??p.getString('farm_weather_region')??'대구광역시';
+    final province=p.getString(_provinceKey)??p.getString('farm_weather_region')??'';
+    if(province.isEmpty){_loaded=true;notifyListeners();return;}
     final city=p.getString(_cityKey)??'';
     final candidates=locations[province]??locations['대구광역시']!;
     _location=candidates.where((x)=>x.cityCounty==city).firstOrNull??candidates.first;
@@ -32,7 +33,7 @@ class FarmLocationSettings extends ChangeNotifier {
   }
   Future<void> setLocation(FarmLocation value)async{
     _location=value;_loaded=true;final p=await SharedPreferences.getInstance();
-    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setString(_townKey,value.town),p.setDouble(_latKey,value.latitude),p.setDouble(_lngKey,value.longitude),p.setBool(_gpsKey,value.gpsVerified),if(value.accuracy!=null)p.setDouble(_accuracyKey,value.accuracy!),p.setString('farm_weather_region',value.province)]);notifyListeners();await WidgetUpdateService.updateAll();
+    await Future.wait([p.setString(_provinceKey,value.province),p.setString(_cityKey,value.cityCounty),p.setString(_townKey,value.town),if(value.latitude.isFinite)p.setDouble(_latKey,value.latitude)else p.remove(_latKey),if(value.longitude.isFinite)p.setDouble(_lngKey,value.longitude)else p.remove(_lngKey),p.setBool(_gpsKey,value.gpsVerified),if(value.accuracy!=null)p.setDouble(_accuracyKey,value.accuracy!),p.setString('farm_weather_region',value.province)]);notifyListeners();await WidgetUpdateService.updateAll();
   }
   Future<void> setGps(double lat,double lng,{required String province,required String cityCounty,String town='',double? accuracy})async{
     await setLocation(FarmLocation(province:province,cityCounty:cityCounty,town:town,latitude:lat,longitude:lng,gpsVerified:true,accuracy:accuracy));
@@ -64,5 +65,5 @@ class FarmLocationSettings extends ChangeNotifier {
     '경상남도':_p('경상남도','창원시,진주시,통영시,사천시,김해시,밀양시,거제시,양산시,의령군,함안군,창녕군,고성군,남해군,하동군,산청군,함양군,거창군,합천군',35.4606,128.2132),
     '제주특별자치도':_p('제주특별자치도','제주시,서귀포시',33.4996,126.5312),
   };
-  static List<FarmLocation> _p(String province,String csv,double lat,double lng)=>csv.split(',').toList().asMap().entries.map((e){final d=(e.key%7-3)*.045, d2=(e.key%5-2)*.055;return FarmLocation(province:province,cityCounty:e.value,latitude:lat+d,longitude:lng+d2);}).toList();
+  static List<FarmLocation> _p(String province,String csv,double lat,double lng)=>csv.split(',').map((city)=>FarmLocation(province:province,cityCounty:city,latitude:double.nan,longitude:double.nan)).toList();
 }

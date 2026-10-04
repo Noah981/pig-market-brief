@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/dashboard_models.dart';
@@ -10,7 +11,7 @@ class MarketSnapshot {
   factory MarketSnapshot.fromJson(Map<String,dynamic> j,{bool fromCache=false,List<PricePoint> history=const []}){
     final price=(j['price'] as num?)?.round()??0,previous=(j['previousPrice'] as num?)?.round()??0;
     if(price<=0||previous<=0)throw const FormatException('Invalid official pig price');
-    return MarketSnapshot(price:price,previousPrice:previous,change:(j['change'] as num?)?.round()??price-previous,changePct:(j['changePct'] as num?)?.toDouble()??0,date:j['date']?.toString()??'',updatedAt:j['updatedAt']?.toString()??'',source:j['source']?.toString()??'축산물품질평가원',scope:j['scope']?.toString()??'전국·탕박·등외제외·제주제외',history:history,fromCache:fromCache);
+    return MarketSnapshot(price:price,previousPrice:previous,change:price-previous,changePct:(price-previous)/previous*100,date:j['date']?.toString()??'',updatedAt:j['updatedAt']?.toString()??'',source:j['source']?.toString()??'축산물품질평가원',scope:j['scope']?.toString()??'전국·탕박·등외제외·제주제외',history:history,fromCache:fromCache);
   }
   PriceSeries seriesFor(int period){
     final daily=history.where((x)=>x.resolution!='month').toList();
@@ -64,7 +65,9 @@ class MarketRepository {
   MarketRepository({http.Client? client}):_client=client??http.Client();
   Future<MarketSnapshot?> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey);
-    if(raw==null)return null;
+    if(raw==null){
+      try{return _decode({'price':jsonDecode(await rootBundle.loadString('assets/data/pig-price.json')),'history':jsonDecode(await rootBundle.loadString('assets/data/pig-price-history.json'))},fromCache:true);}catch(_){return null;}
+    }
     try{return _decode(jsonDecode(raw) as Map<String,dynamic>,fromCache:true);}catch(_){return null;}
   }
   Future<MarketSnapshot> refresh()async{
@@ -83,13 +86,16 @@ class MarketRepository {
         rows.removeWhere((x)=>x['date']==official['date']);
         rows.add({'date':official['date'],'price':official['price'],'resolution':'day','sourceType':'dabom-headline'});
         rows.sort((a,b)=>a['date'].toString().compareTo(b['date'].toString()));
-        final previous=rows.where((x)=>x['date'].toString().compareTo(official['date'].toString())<0&&x['price'] is num).lastOrNull;
+        final previous=rows.where((x)=>x['date'].toString().compareTo(official['date'].toString())<0&&x['price'] is num&&x['resolution']!='month').lastOrNull;
         final previousPrice=(previous?['price'] as num?)?.round()??official['price'] as int;
         final price=official['price'] as int,change=price-previousPrice;
         combined['price']={...official,'previousPrice':previousPrice,'previousDate':previous?['date']??official['date'],'change':change,'changePct':previousPrice==0?0:change/previousPrice*100};
         combined['history']={'rows':rows};
       }
     }catch(_){/* 검증된 원격 snapshot 유지 */}
+    final old=await cached();
+    final incomingDate=((combined['price'] as Map)['date']??'').toString();
+    if(old!=null&&old.date.compareTo(incomingDate)>0)return old;
     final value=_decode(combined);await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(combined));return value;
   }
   Future<Map<String,dynamic>> _fetchDabomHeadline()async{

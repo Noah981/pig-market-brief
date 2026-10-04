@@ -37,7 +37,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   final _gradeRepository=PigGradeRepository();PigGradeSnapshot? _grades;
-  String _weatherRegion='대구광역시';
+  String _weatherRegion='';
   @override void initState(){super.initState();WidgetUpdateService.onRoute=_openWidgetRoute;WidgetsBinding.instance.addObserver(this);DisplaySettings.instance.addListener(_displayChanged);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();_consumeWidgetRoute();}
   @override void dispose(){WidgetUpdateService.onRoute=null;DisplaySettings.instance.removeListener(_displayChanged);FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
   void _displayChanged(){if(mounted)setState((){});}

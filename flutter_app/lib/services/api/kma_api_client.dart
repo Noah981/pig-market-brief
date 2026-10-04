@@ -39,11 +39,11 @@ class KmaApiClient {
     for (final raw in rows.whereType<Map>()) {
       final row = raw.cast<String, dynamic>(), category = row['category']?.toString() ?? '';
       final value = double.tryParse(row['fcstValue']?.toString() ?? '');
-      if (value != null && const ['TMP', 'TMN', 'TMX', 'REH', 'POP', 'WSD'].contains(category)) values.putIfAbsent(category, () => []).add(value);
+      if (value != null && value.isFinite && const ['TMP', 'TMN', 'TMX', 'REH', 'POP', 'WSD'].contains(category)) values.putIfAbsent(category, () => []).add(value);
     }
     final temps = [...?values['TMP'], ...?values['TMN'], ...?values['TMX']];
-    if (temps.isEmpty) throw const OfficialApiException('KMA', 'empty-result');
-    double maxOf(String key) => values[key]?.reduce(math.max) ?? 0;
+    if (temps.isEmpty || (values['REH']?.isEmpty ?? true) || (values['POP']?.isEmpty ?? true)) throw const OfficialApiException('KMA', 'empty-result');
+    double maxOf(String key) => values[key]?.reduce(math.max) ?? double.nan;
     return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), windSpeedMax: maxOf('WSD'), baseDate: baseDate, baseTime: baseTime);
   }
 

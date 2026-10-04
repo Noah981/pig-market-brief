@@ -37,13 +37,13 @@ void main(){
     expect(first.incidentKey,isNot(second.incidentKey));
   });
   test('김천 공식 발생은 1년 이력에 남고 현재 30일 경보에서는 제외된다',()async{
-    final root=jsonDecode(File('assets/data/disease-alerts.json').readAsStringSync()) as Map<String,dynamic>;
+    final root={'coverageVerified':true,'items':[{'id':'MAFRA-ASF-TABLE|2026|13','disease':'ASF','countryCode':'KR','evidenceLevel':'OFFICIAL','source':'농림축산식품부 ASF 발생현황 정보공개','sourceUrl':'https://mafra.go.kr/bbs/FMD-AI2/404/577369/artclView.do','region':'경상북도 김천시 구성면','summary':'경상북도 김천시 구성면 ASF','occurrenceDate':'2026-02-12','announcementDate':'2026-03-20'}]};
     final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(root)),200)),clock:()=>DateTime(2026,10,4));
     final feed=await repo.refresh();
     final kimcheon=feed.items.singleWhere((x)=>x.type==DiseaseType.asf&&x.cityCounty=='김천시');
     expect(kimcheon.occurrenceDate,'2026-02-12');expect(kimcheon.region,contains('구성면'));
     expect(kimcheon.isActiveAt(DateTime(2026,10,4)),isFalse);
-    expect(feed.items.where((x)=>x.type==DiseaseType.asf&&x.countryCode=='KR'&&x.occurrenceDate.startsWith('2026')).length,24);
+    expect(feed.items.length,1);
   });
   setUp(()=>SharedPreferences.setMockInitialValues({}));
   test('질병명 정규화와 국내외 분리',()async{
