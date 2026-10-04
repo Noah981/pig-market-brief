@@ -96,19 +96,76 @@ class _GradeSexPricePageState extends State<GradeSexPricePage> {
     if(mounted)setState(()=>loading=false);
   }
   String _price(String grade,String sex){final row=data?.sexPrice(grade,sex);return row==null?'확인 중':row.price.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');}
-  @override Widget build(BuildContext context)=>_DetailScaffold(title:'등급별 경락가격',child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-    const Text('거세 · 암컷 가격 비교',style:TextStyle(fontSize:20,fontWeight:FontWeight.w900)),
-    const SizedBox(height:8),
-    Text('전국 · 제주 제외 · 탕박 / 원/kg\n기준일: ${data?.date??'확인 중'}${data?.fromCache==true?' · 마지막 저장값':''}',style:const TextStyle(fontSize:12,color:AppColors.secondary,height:1.6)),
-    const SizedBox(height:16),
-    Container(decoration:appCard(radius:16),padding:const EdgeInsets.all(12),child:Table(columnWidths:const {0:FlexColumnWidth(0.7),1:FlexColumnWidth(),2:FlexColumnWidth()},children:[
-      TableRow(children:['등급','거세','암컷'].map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:12),child:Text(x,textAlign:TextAlign.center,style:const TextStyle(fontSize:15,fontWeight:FontWeight.w900)))).toList()),
-      ...const ['1+','1','2','등외'].map((grade)=>TableRow(children:[grade,_price(grade,'castrated'),_price(grade,'female')].map((x)=>Padding(padding:const EdgeInsets.symmetric(vertical:14,horizontal:2),child:Text(x,textAlign:TextAlign.center,style:const TextStyle(fontSize:15,fontWeight:FontWeight.w800)))).toList()))
-    ])),
-    if(loading)const Padding(padding:EdgeInsets.all(16),child:Center(child:CircularProgressIndicator())),
-    const SizedBox(height:12),const _InfoBox('출처: 축산물품질평가원 축산유통정보 다봄\n성별 공식 경락가격을 따로 조회합니다. 거래가 없거나 조회되지 않은 등급은 합계 가격으로 대신 표시하지 않습니다.'),
-    if(data!=null)...[const SizedBox(height:12),OutlinedButton(onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradePriceTrendPage(snapshot:data!))),child:const Text('등급별 전체 가격 추이 보기'))],
-  ]));
+  String get _dateLabel {
+    final date=data?.date;
+    return date!=null&&date.length==8?'${date.substring(0,4)}.${date.substring(4,6)}.${date.substring(6,8)}':'기준일 확인 중';
+  }
+  @override Widget build(BuildContext context)=>_DetailScaffold(
+    title:'등급별 경락가격',
+    child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+      Row(children:[
+        Container(width:42,height:42,decoration:BoxDecoration(color:AppColors.lightCoral,borderRadius:BorderRadius.circular(14)),child:const Icon(Icons.compare_arrows_rounded,color:AppColors.coral,size:24)),
+        const SizedBox(width:12),
+        const Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+          Text('거세 · 암컷 가격 비교',style:TextStyle(fontSize:19,fontWeight:FontWeight.w900,letterSpacing:-.6)),
+          SizedBox(height:4),Text('같은 등급의 성별 가격을 한눈에',style:TextStyle(fontSize:11,color:AppColors.secondary)),
+        ])),
+      ]),
+      const SizedBox(height:18),
+      Wrap(spacing:7,runSpacing:7,children:[
+        _GradeMetaChip(icon:Icons.calendar_today_rounded,label:_dateLabel),
+        const _GradeMetaChip(icon:Icons.location_on_outlined,label:'전국 · 제주 제외'),
+        if(data?.fromCache==true)const _GradeMetaChip(icon:Icons.history_rounded,label:'마지막 저장값'),
+      ]),
+      const SizedBox(height:16),
+      Container(decoration:appCard(radius:22),padding:const EdgeInsets.fromLTRB(14,16,14,6),child:Column(children:[
+        Row(children:[
+          const SizedBox(width:54,child:Text('등급',textAlign:TextAlign.center,style:TextStyle(fontSize:11,fontWeight:FontWeight.w800,color:AppColors.secondary))),
+          const SizedBox(width:8),
+          ...[('거세',AppColors.lightCoral,AppColors.coral),('암컷',AppColors.lightBlue,AppColors.blue)].map((sex)=>Expanded(child:Padding(padding:const EdgeInsets.symmetric(horizontal:4),child:Container(padding:const EdgeInsets.symmetric(vertical:9),decoration:BoxDecoration(color:sex.$2,borderRadius:BorderRadius.circular(12)),child:Text(sex.$1,textAlign:TextAlign.center,style:TextStyle(fontSize:12,fontWeight:FontWeight.w900,color:sex.$3)))))),
+        ]),
+        const SizedBox(height:8),
+        ...const ['1+','1','2','등외'].map((grade)=>_GradeSexRow(grade:grade,castrated:_price(grade,'castrated'),female:_price(grade,'female'),last:grade=='등외')),
+        const Padding(padding:EdgeInsets.only(top:5,bottom:8),child:Align(alignment:Alignment.centerRight,child:Text('탕박 경락가격 · 원/kg',style:TextStyle(fontSize:10,color:AppColors.secondary)))),
+      ])),
+      if(loading)const Padding(padding:EdgeInsets.all(16),child:Center(child:CircularProgressIndicator())),
+      const SizedBox(height:14),
+      Container(decoration:BoxDecoration(color:AppColors.lightBlue,borderRadius:BorderRadius.circular(16)),child:Theme(data:Theme.of(context).copyWith(dividerColor:Colors.transparent),child:const ExpansionTile(
+        tilePadding:EdgeInsets.symmetric(horizontal:14),childrenPadding:EdgeInsets.fromLTRB(14,0,14,14),
+        leading:Icon(Icons.verified_outlined,color:AppColors.blue,size:20),
+        title:Text('축산물품질평가원 · 공식 가격',style:TextStyle(fontSize:11,fontWeight:FontWeight.w800)),
+        subtitle:Text('다봄 성별 경락가격 기준',style:TextStyle(fontSize:10,color:AppColors.secondary)),
+        children:[Text('거세와 암컷의 공식 경락가격을 각각 조회합니다. 거래가 없거나 조회되지 않은 등급은 확인 중으로 표시하며, 합계 가격으로 대신하지 않습니다.',style:TextStyle(fontSize:11,height:1.6,color:AppColors.secondary))],
+      ))),
+      if(data!=null)...[
+        const SizedBox(height:18),
+        SizedBox(width:double.infinity,child:FilledButton.icon(
+          onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>GradePriceTrendPage(snapshot:data!))),
+          icon:const Icon(Icons.show_chart_rounded,size:20),label:const Text('등급별 가격 추이 보기',style:TextStyle(fontSize:13,fontWeight:FontWeight.w800)),
+          style:FilledButton.styleFrom(backgroundColor:AppColors.coral,foregroundColor:Colors.white,padding:const EdgeInsets.symmetric(vertical:16),shape:RoundedRectangleBorder(borderRadius:BorderRadius.circular(16))),
+        )),
+      ],
+    ]),
+  );
+}
+
+class _GradeMetaChip extends StatelessWidget {
+  const _GradeMetaChip({required this.icon,required this.label});
+  final IconData icon;final String label;
+  @override Widget build(BuildContext context)=>Container(padding:const EdgeInsets.symmetric(horizontal:9,vertical:7),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(9),border:Border.all(color:AppColors.divider)),child:Row(mainAxisSize:MainAxisSize.min,children:[Icon(icon,size:12,color:AppColors.secondary),const SizedBox(width:5),Text(label,style:const TextStyle(fontSize:10,color:AppColors.secondary,fontWeight:FontWeight.w600))]));
+}
+class _GradeSexRow extends StatelessWidget {
+  const _GradeSexRow({required this.grade,required this.castrated,required this.female,required this.last});
+  final String grade,castrated,female;final bool last;
+  @override Widget build(BuildContext context)=>Container(
+    padding:const EdgeInsets.symmetric(vertical:16),
+    decoration:BoxDecoration(border:last?null:const Border(bottom:BorderSide(color:AppColors.divider))),
+    child:Row(children:[
+      Container(width:54,height:38,alignment:Alignment.center,decoration:BoxDecoration(color:grade=='1+'?AppColors.lightCoral:const Color(0xFFF5F5F7),borderRadius:BorderRadius.circular(12)),child:Text(grade,style:TextStyle(fontSize:grade=='등외'?12:17,fontWeight:FontWeight.w900,color:grade=='1+'?AppColors.coral:AppColors.text))),
+      const SizedBox(width:8),
+      ...[castrated,female].map((price)=>Expanded(child:Padding(padding:const EdgeInsets.symmetric(horizontal:4),child:FittedBox(fit:BoxFit.scaleDown,child:Text(price,style:TextStyle(fontSize:price=='확인 중'?12:20,fontWeight:FontWeight.w900,letterSpacing:-.4,color:price=='확인 중'?AppColors.secondary:AppColors.text)))))),
+    ]),
+  );
 }
 
 class ThreeYearPigPricePage extends StatelessWidget{
