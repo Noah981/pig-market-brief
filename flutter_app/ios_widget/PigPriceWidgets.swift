@@ -21,7 +21,13 @@ struct PriceProvider: TimelineProvider {
                     snapshot = latest; PriceSharedStore.save(latest)
                 }
             } catch { /* Preserve the last verified value with a cache label. */ }
-            completion(Timeline(entries: [PriceEntry(date: Date(), snapshot: snapshot)], policy: .after(Date().addingTimeInterval(1800))))
+            let now = Date()
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+            let midnight = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
+            // Preload midnight so the calendar date can advance even if networking is delayed.
+            completion(Timeline(entries: [PriceEntry(date: now, snapshot: snapshot), PriceEntry(date: midnight, snapshot: snapshot)],
+                policy: .after(min(now.addingTimeInterval(1800), midnight))))
         }
     }
 }
@@ -31,7 +37,7 @@ struct PriceWidgetView: View {
     let entry: PriceEntry
     var body: some View {
         Group {
-            if family == .systemSmall || family == .systemMedium { HomePriceView(snapshot: entry.snapshot) }
+            if family == .systemSmall || family == .systemMedium { HomePriceView(snapshot: entry.snapshot, displayDate: entry.date) }
             else { LockPriceView(snapshot: entry.snapshot, family: family) }
         }
         .containerBackground(for: .widget) {

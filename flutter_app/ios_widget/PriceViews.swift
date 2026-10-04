@@ -3,12 +3,13 @@ import WidgetKit
 
 struct HomePriceView: View {
     let snapshot: PriceSnapshot
+    var displayDate: Date = Date()
     private var headerDate: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         formatter.dateFormat = "M월 d일 (E)"
-        return formatter.string(from: Date())
+        return formatter.string(from: displayDate)
     }
     var body: some View {
         GeometryReader { geometry in

@@ -1,7 +1,18 @@
-import unittest
+import unittest,io,zipfile
+from scripts.fetch_disease_alerts import parse_asf_hwpx,merge_asf_table
 from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code,event_status,event_date,occurrence_date,woah_notifications
 
 class DiseaseClassifierTest(unittest.TestCase):
+ def test_official_numbered_table_preserves_kimcheon_incident_date(self):
+  stream=io.BytesIO()
+  xml='<hp:section xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph"><hp:tr>'+''.join('<hp:tc><hp:p><hp:run><hp:t>'+x+'</hp:t></hp:run></hp:p></hp:tc>' for x in ['1','2.12(목)','2,722','경북 김천시 구성면'])+'</hp:tr></hp:section>'
+  with zipfile.ZipFile(stream,'w') as z:z.writestr('Contents/section0.xml',xml)
+  rows=parse_asf_hwpx(stream.getvalue(),2026,'https://mafra.go.kr/official','2026-03-20',1)
+  self.assertEqual(rows[0]['occurrenceDate'],'2026-02-12')
+  self.assertEqual(rows[0]['region'],'경상북도 김천시 구성면')
+  with self.assertRaises(ValueError):parse_asf_hwpx(stream.getvalue(),2026,'official','2026-03-20',24)
+  api=[{'id':'api','disease':'ASF','countryCode':'KR','occurrenceDate':'2026-02-13'},{'id':'future','disease':'ASF','countryCode':'KR','occurrenceDate':'2026-04-01'},{'id':'prrs','disease':'PRRS','countryCode':'KR','occurrenceDate':'2026-02-12'}]
+  self.assertEqual([x['id'] for x in merge_asf_table(api,rows)],['future','prrs','MAFRA-ASF-TABLE|2026|1'])
  def test_woah_notifications_exclude_simulations_and_preserve_date_basis(self):
   rows=woah_notifications('<p>04/10/2026 Egypt – Simulation : Foot and mouth disease</p><p>24/09/2026 Namibia: Foot and mouth disease</p><p>18/09/2026 South Sudan: African swine fever</p>')
   self.assertEqual([x['countryCode'] for x in rows],['NA','SS'])

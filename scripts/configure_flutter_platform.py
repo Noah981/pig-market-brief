@@ -59,6 +59,11 @@ if "android.jetifier.ignorelist=" not in ptext:
     ptext += "\nandroid.jetifier.ignorelist=bcprov-jdk18on\n"
     properties.write_text(ptext,encoding="utf-8")
 
+gtext=gradle.read_text(encoding="utf-8")
+if 'androidx.work:work-runtime-ktx' not in gtext:
+    gtext += '\ndependencies { implementation "androidx.work:work-runtime-ktx:2.8.1" }\n'
+    gradle.write_text(gtext,encoding="utf-8")
+
 # Register all five real AppWidget providers and widget deep links.
 text=manifest.read_text(encoding="utf-8")
 providers="""
@@ -85,6 +90,16 @@ providers="""
 """
 if 'PigPriceSmallWidget' not in text:
     text=text.replace('</application>',providers+'\n    </application>')
+if 'WidgetClockReceiver' not in text:
+    text=text.replace('</application>',"""
+        <receiver android:name=".WidgetClockReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>""")
 if 'android:scheme="dondonhae"' not in text:
     deep_link='''
             <intent-filter>
