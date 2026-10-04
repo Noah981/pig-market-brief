@@ -25,5 +25,15 @@ void main(){
     expect(current.seriesFor(3).points.map((x)=>x.date),containsAll(['2024','2025','2026']));
     final cached=await repository.cached();expect(cached?.price,5307);expect(cached?.fromCache,isTrue);
   });
+  test('잘못된 날짜와 비정상 수치를 공식 돈가로 표시하지 않는다',(){
+    for(final value in [
+      {'price':5000,'previousPrice':5100,'date':'20260230'},
+      {'price':5000,'previousPrice':5100,'date':'20990101'},
+      {'price':double.nan,'previousPrice':5100,'date':'20260923'},
+    ]){expect(()=>MarketSnapshot.fromJson(value),throwsFormatException);}
+    final value=MarketSnapshot.fromJson({'price':5000,'previousPrice':5100,'change':999,'changePct':50,'date':'20260923'});
+    expect(value.change,-100);expect(value.changePct,closeTo(-100/5100*100,0.0001));
+  });
+
 }
 

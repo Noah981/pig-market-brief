@@ -74,7 +74,7 @@ object WidgetStore {
         val city = p.getString("flutter.farm_location_city_county", "") ?: ""
         val town = p.getString("flutter.farm_location_town", "") ?: ""
         val configured = listOf(city, town).filter { it.isNotBlank() }.joinToString(" ").ifBlank { province }
-        val root = objectOrNull(raw(context, "weather_farm_guide_v1"))
+        val root = objectOrNull(raw(context, "weather_farm_guide_v2"))
         val rows = root?.optJSONArray("regions")
         val label = listOf(province, city, town).filter { it.isNotBlank() }.joinToString(" ")
         // A saved forecast from the previous region must not acquire the new label.
