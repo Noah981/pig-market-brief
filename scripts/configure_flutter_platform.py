@@ -51,6 +51,14 @@ if "org.robolectric:robolectric" not in gtext:
     gtext += '\nandroid { testOptions { unitTests { includeAndroidResources = true } } }\ndependencies { testImplementation "junit:junit:4.13.2"; testImplementation "org.robolectric:robolectric:4.14.1" }\n'
     gradle.write_text(gtext,encoding="utf-8")
 
+# Robolectric's Java cryptography dependency contains Java 21 multi-release
+# classes, but no Android support-library references for Jetifier to rewrite.
+properties=root/"android/gradle.properties"
+ptext=properties.read_text(encoding="utf-8")
+if "android.jetifier.ignorelist=" not in ptext:
+    ptext += "\nandroid.jetifier.ignorelist=bcprov-jdk18on\n"
+    properties.write_text(ptext,encoding="utf-8")
+
 # Register all five real AppWidget providers and widget deep links.
 text=manifest.read_text(encoding="utf-8")
 providers="""
