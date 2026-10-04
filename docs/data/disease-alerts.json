@@ -1,9 +1,9 @@
 {
   "schemaVersion": 4,
-  "coverageVerified": false,
-  "asfDisclosureVerified": false,
+  "coverageVerified": true,
+  "asfDisclosureVerified": true,
   "coverageScope": "국내 API 전체 조회 + ASF 공식 누적 발생현황표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-04T16:46:59.293910+09:00",
+  "updatedAt": "2026-10-04T17:31:48.240223+09:00",
   "items": [
     {
       "id": "00431342",
