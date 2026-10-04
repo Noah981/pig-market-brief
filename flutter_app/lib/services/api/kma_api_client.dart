@@ -48,7 +48,7 @@ class KmaApiClient {
     values['POP']=values['POP']?.where((x)=>x>=0&&x<=100).toList()??[];
     values['WSD']=values['WSD']?.where((x)=>x>=0).toList()??[];
     if (temps.isEmpty || (values['REH']?.isEmpty ?? true) || (values['POP']?.isEmpty ?? true)) throw const OfficialApiException('KMA', 'empty-result');
-    double maxOf(String key) => values[key]?.reduce(math.max) ?? double.nan;
+    double maxOf(String key){final rows=values[key]??const <double>[];return rows.isEmpty?double.nan:rows.reduce(math.max);}
     return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), windSpeedMax: maxOf('WSD'), baseDate: baseDate, baseTime: baseTime,forecastDate:forecastDate);
   }
 
