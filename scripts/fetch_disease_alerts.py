@@ -189,9 +189,8 @@ def mafra_incidents():
   region=' '.join(re.findall(r'[가-힣]+(?:특별자치도|특별시|광역시|도|시|군|구|읍|면|동)(?=\s|$)',address))
   for disease in types:
    if disease not in ('ASF','구제역','PED','PRRS'):continue
-   if disease=='구제역' and livestock and '돼지' not in livestock:continue
    out.append({'id':str(row.get('ICTSD_OCCRRNC_NO','')),'disease':disease,'countryCode':'KR','source':'농림축산검역본부 가축질병발생정보','sourceUrl':'https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20151204000000000316','evidenceLevel':'OFFICIAL','status':'종식' if row.get('CESSATION_DE') else '공식 발생','summary':f'{region} {disease}','region':region,'occurrenceDate':date,'livestockType':livestock})
- print('MAFRA coverage verified',total,'recent pig incidents',len(out))
+ print('MAFRA coverage verified',total,'recent relevant incidents',len(out))
  from collections import Counter
  print('MAFRA disease counts',json.dumps(dict(Counter(x['disease'] for x in out)),ensure_ascii=False))
  return out
@@ -295,7 +294,7 @@ def main():
  for x in items:
   key=(x.get("id"),x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
- payload={"schemaVersion":4,"coverageVerified":coverage and asf_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회 + 올해·전년 ASF 누적 공개표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ payload={"schemaVersion":4,"coverageVerified":coverage and asf_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 누적 공개표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
 

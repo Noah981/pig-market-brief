@@ -1,4 +1,5 @@
-import unittest,io,zipfile
+import unittest,io,zipfile,json,os
+from unittest.mock import patch
 from scripts.fetch_disease_alerts import parse_asf_hwpx,merge_asf_table
 from scripts.fetch_disease_alerts import diseases,event_title,region_fields,country_code,event_status,event_date,occurrence_date,woah_notifications
 
@@ -13,6 +14,13 @@ class DiseaseClassifierTest(unittest.TestCase):
   with self.assertRaises(ValueError):parse_asf_hwpx(stream.getvalue(),2026,'official','2026-03-20',24)
   api=[{'id':'api','disease':'ASF','countryCode':'KR','occurrenceDate':'2026-02-13'},{'id':'future','disease':'ASF','countryCode':'KR','occurrenceDate':'2026-04-01'},{'id':'prrs','disease':'PRRS','countryCode':'KR','occurrenceDate':'2026-02-12'}]
   self.assertEqual([x['id'] for x in merge_asf_table(api,rows)],['future','prrs','MAFRA-ASF-TABLE|2026|1'])
+ def test_cattle_fmd_is_kept_with_original_livestock_type(self):
+  from scripts.fetch_disease_alerts import mafra_incidents,datetime,KST
+  today=datetime.now(KST).strftime('%Y%m%d')
+  row={'ICTSD_OCCRRNC_NO':'official-cattle-fmd','LKNTS_NM':'구제역','OCCRRNC_DE':today,'LVSTCKSPC_NM':'소','FARM_LOCPLC':'경기도 포천시 영북면'}
+  response=json.dumps({'Grid_20151204000000000316_1':{'totalCnt':1,'row':[row]}},ensure_ascii=False)
+  with patch.dict(os.environ,{'MAFRA_API_KEY':'unit-test'}),patch('scripts.fetch_disease_alerts.fetch',return_value=response):items=mafra_incidents()
+  self.assertEqual(len(items),1);self.assertEqual(items[0]['disease'],'구제역');self.assertEqual(items[0]['livestockType'],'소')
  def test_prior_year_cumulative_table_includes_dangjin(self):
   stream=io.BytesIO()
   cells=['1','충남 당진시 합덕읍 신리 123','‘25.11.24.','1,000']

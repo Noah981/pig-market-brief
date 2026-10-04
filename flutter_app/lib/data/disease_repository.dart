@@ -35,7 +35,7 @@ class DiseaseRepository {
     for(final row in rows){
       final rawDisease=row.pick(const ['LKNTS_NM','DISEASE_NM','DISS_NM']),type=normalizeDiseaseType(rawDisease);
       final livestock=row.pick(const ['LVSTCKSPC_NM','LSK_NM']);
-      if(type==null||!_isPigRelevant(type,livestock))continue;
+      if(type==null)continue;
       final occurrence=row.pick(const ['OCCRRNC_DE','OCCRRNC_DT','FRST_OCRN_DT']);if(occurrence.isEmpty)continue;
       final address=row.pick(const ['FARM_LOCPLC','OCCRRNC_AREA','ADDR']);
       final id=row.pick(const ['ICTSD_OCCRRNC_NO','OCCRRNC_NO']);
@@ -94,7 +94,6 @@ class DiseaseRepository {
     return DateTime.fromMillisecondsSinceEpoch(0);
   }
   int _statusRank(DiseaseAlert event)=>event.isNegative?4:event.isConfirmed?3:event.isSuspected?2:1;
-  bool _isPigRelevant(DiseaseType type,String livestock)=>type!=DiseaseType.fmd||livestock.isEmpty||livestock.contains('돼지')||livestock.toUpperCase().contains('SWINE');
   double? _number(MafraDiseaseRow row,List<String> keys)=>double.tryParse(row.pick(keys));
   Future<(double,double)?> _coordinate(MafraDiseaseRow row,String address,String occurrence)async{
     final lat=_number(row,const ['LAT','LATITUDE','Y']),lng=_number(row,const ['LON','LNG','LONGITUDE','X']);if(lat!=null&&lng!=null)return (lat,lng);
