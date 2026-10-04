@@ -123,11 +123,24 @@ void main() {
   }
   testWidgets('3개년 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,ThreeYearPigPricePage(snapshot:actualMarketFixture()),'three_year_390');});
   testWidgets('가격 요인 상세 390dp 시안 비교 이미지',(tester)async{await renderPage(tester,const MarketDriverDetailPage(analysis:fixtureAnalysis),'driver_detail_390');});
-  testWidgets('성별 경락가격 상세에 거세와 암컷 가격을 따로 표시한다',(tester)async{
-    final snapshot=PigGradeSnapshot(date:'20260926',fromCache:false,history:const [],grades:fixtureGrades().grades,sexGrades:const [KapeGradePrice(grade:'1+',price:5900,count:10,date:'20260926',sex:'castrated'),KapeGradePrice(grade:'1+',price:6200,count:10,date:'20260926',sex:'female')]);
-    await renderPage(tester,GradeSexPricePage(initial:snapshot,load:false),'grade_sex_detail_390');
-    expect(find.text('거세'),findsOneWidget);expect(find.text('암컷'),findsOneWidget);expect(find.textContaining('5,900'),findsOneWidget);expect(find.textContaining('6,200'),findsOneWidget);
-  });
+  for(final width in const [360.0,390.0,412.0]){
+    testWidgets('성별 경락가격 ${width.toInt()}dp 가격과 버튼 표시',(tester)async{
+      final snapshot=PigGradeSnapshot(date:'20261002',fromCache:false,history:const [],grades:fixtureGrades().grades,sexGrades:[
+        for(final row in const [('1+',6296,6495),('1',6261,6417),('2',5599,5879),('등외',3375,3668)])...[
+          KapeGradePrice(grade:row.$1,price:row.$2,count:10,date:'20261002',sex:'castrated'),
+          KapeGradePrice(grade:row.$1,price:row.$3,count:10,date:'20261002',sex:'female'),
+        ],
+      ]);
+      tester.view.devicePixelRatio=1;tester.view.physicalSize=Size(width,844);addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:GradeSexPricePage(initial:snapshot,load:false)));
+      await tester.pumpAndSettle();expect(tester.takeException(),isNull);
+      expect(find.text('거세'),findsOneWidget);expect(find.text('암컷'),findsOneWidget);
+      expect(find.text('6,296'),findsOneWidget);expect(find.text('6,495'),findsOneWidget);
+      expect(find.text('2026.10.02'),findsOneWidget);
+      expect(find.text('등급별 가격 추이 보기'),findsOneWidget);
+      await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/grade_sex_detail_${width.toInt()}.png'));
+    });
+  }
   testWidgets('해외 공식 통보 상세에 한국 지도와 GPS 경보를 넣지 않는다',(tester)async{
     const alert=DiseaseAlert(type:DiseaseType.asf,source:'WOAH',countryCode:'SS',evidence:DiseaseEvidence.official,status:'공식 통보',summary:'South Sudan ASF 공식 통보',sourceUrl:'https://rr-africa.woah.org/en/immediate-notifications-in-africa/',occurrenceDate:'',announcementDate:'2026-09-18');
     await renderPage(tester,const DiseaseEventDetailPage(event:alert),'disease_overseas_detail_390');
