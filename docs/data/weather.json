@@ -1,8 +1,8 @@
 {
   "source": "기상청 단기예보 조회서비스",
   "baseDate": "20261005",
-  "baseTime": "0200",
-  "updatedAt": "2026-10-05T02:26:21.733369+09:00",
+  "baseTime": "0500",
+  "updatedAt": "2026-10-05T06:13:47.222555+09:00",
   "regions": [
     {
       "region": "서울특별시",
@@ -13,6 +13,28 @@
       "tempMax": 20.0,
       "diurnalRange": 6.0,
       "humidityMax": 85.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "대구광역시",
+      "forecastDate": "20261005",
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 15.0,
+      "tempMax": 22.0,
+      "diurnalRange": 7.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "부산광역시",
+      "forecastDate": "20261005",
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 17.0,
+      "tempMax": 24.0,
+      "diurnalRange": 7.0,
+      "humidityMax": 90.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -27,58 +49,14 @@
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "대구광역시",
-      "forecastDate": "20261005",
-      "nx": 89,
-      "ny": 90,
-      "tempMin": 14.0,
-      "tempMax": 23.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "부산광역시",
-      "forecastDate": "20261005",
-      "nx": 98,
-      "ny": 76,
-      "tempMin": 17.0,
-      "tempMax": 25.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "대전광역시",
-      "forecastDate": "20261005",
-      "nx": 67,
-      "ny": 100,
-      "tempMin": 13.0,
-      "tempMax": 21.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 60.0
-    },
-    {
       "region": "광주광역시",
       "forecastDate": "20261005",
       "nx": 58,
       "ny": 74,
-      "tempMin": 15.0,
-      "tempMax": 23.0,
+      "tempMin": 14.0,
+      "tempMax": 22.0,
       "diurnalRange": 8.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 60.0
-    },
-    {
-      "region": "울산광역시",
-      "forecastDate": "20261005",
-      "nx": 102,
-      "ny": 84,
-      "tempMin": 15.0,
-      "tempMax": 25.0,
-      "diurnalRange": 10.0,
-      "humidityMax": 90.0,
+      "humidityMax": 85.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -88,6 +66,39 @@
       "ny": 103,
       "tempMin": 12.0,
       "tempMax": 20.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "울산광역시",
+      "forecastDate": "20261005",
+      "nx": 102,
+      "ny": 84,
+      "tempMin": 16.0,
+      "tempMax": 24.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "대전광역시",
+      "forecastDate": "20261005",
+      "nx": 67,
+      "ny": 100,
+      "tempMin": 12.0,
+      "tempMax": 21.0,
+      "diurnalRange": 9.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "강원특별자치도",
+      "forecastDate": "20261005",
+      "nx": 73,
+      "ny": 134,
+      "tempMin": 11.0,
+      "tempMax": 19.0,
       "diurnalRange": 8.0,
       "humidityMax": 95.0,
       "rainProbabilityMax": 30.0
@@ -100,29 +111,7 @@
       "tempMin": 14.0,
       "tempMax": 20.0,
       "diurnalRange": 6.0,
-      "humidityMax": 85.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "강원특별자치도",
-      "forecastDate": "20261005",
-      "nx": 73,
-      "ny": 134,
-      "tempMin": 10.0,
-      "tempMax": 19.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "충청북도",
-      "forecastDate": "20261005",
-      "nx": 69,
-      "ny": 107,
-      "tempMin": 13.0,
-      "tempMax": 20.0,
-      "diurnalRange": 7.0,
-      "humidityMax": 95.0,
+      "humidityMax": 90.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -130,11 +119,22 @@
       "forecastDate": "20261005",
       "nx": 68,
       "ny": 100,
-      "tempMin": 13.0,
+      "tempMin": 12.0,
       "tempMax": 21.0,
+      "diurnalRange": 9.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "충청북도",
+      "forecastDate": "20261005",
+      "nx": 69,
+      "ny": 107,
+      "tempMin": 12.0,
+      "tempMax": 20.0,
       "diurnalRange": 8.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 60.0
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
     },
     {
       "region": "경상북도",
@@ -142,21 +142,21 @@
       "nx": 89,
       "ny": 91,
       "tempMin": 15.0,
-      "tempMax": 24.0,
-      "diurnalRange": 9.0,
+      "tempMax": 23.0,
+      "diurnalRange": 8.0,
       "humidityMax": 90.0,
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "경상남도",
+      "region": "제주특별자치도",
       "forecastDate": "20261005",
-      "nx": 91,
-      "ny": 77,
-      "tempMin": 16.0,
-      "tempMax": 24.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 30.0
+      "nx": 52,
+      "ny": 38,
+      "tempMin": 18.0,
+      "tempMax": 21.0,
+      "diurnalRange": 3.0,
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 60.0
     },
     {
       "region": "전북특별자치도",
@@ -167,7 +167,7 @@
       "tempMax": 21.0,
       "diurnalRange": 7.0,
       "humidityMax": 90.0,
-      "rainProbabilityMax": 60.0
+      "rainProbabilityMax": 30.0
     },
     {
       "region": "전라남도",
@@ -177,19 +177,19 @@
       "tempMin": 15.0,
       "tempMax": 21.0,
       "diurnalRange": 6.0,
-      "humidityMax": 85.0,
-      "rainProbabilityMax": 60.0
+      "humidityMax": 80.0,
+      "rainProbabilityMax": 30.0
     },
     {
-      "region": "제주특별자치도",
+      "region": "경상남도",
       "forecastDate": "20261005",
-      "nx": 52,
-      "ny": 38,
-      "tempMin": 19.0,
-      "tempMax": 21.0,
-      "diurnalRange": 2.0,
-      "humidityMax": 80.0,
-      "rainProbabilityMax": 60.0
+      "nx": 91,
+      "ny": 77,
+      "tempMin": 16.0,
+      "tempMax": 24.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 30.0
     }
   ],
   "errors": []
