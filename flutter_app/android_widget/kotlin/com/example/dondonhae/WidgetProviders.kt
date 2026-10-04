@@ -206,7 +206,11 @@ object WidgetRenderer {
 
 abstract class BaseDondonWidget : AppWidgetProvider() {
     abstract val providerClass: Class<*>
-    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) = ids.forEach { WidgetRenderer.update(context, manager, it, providerClass) }
+    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+        ids.forEach { WidgetRenderer.update(context, manager, it, providerClass) }
+        PriceRefreshWorker.schedule(context)
+    }
+    override fun onEnabled(context: Context) { PriceRefreshWorker.schedule(context) }
     override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: Bundle) = WidgetRenderer.update(context, manager, id, providerClass)
 }
 class PigPriceSmallWidget : BaseDondonWidget() { override val providerClass = PigPriceSmallWidget::class.java }

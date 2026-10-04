@@ -3,7 +3,7 @@
 Official pages and public news are deliberately kept as separate evidence
 levels.  A keyword match is a signal, never an app-side diagnosis.
 """
-import html,json,re,os,urllib.parse,urllib.request,xml.etree.ElementTree as ET
+import html,json,re,os,io,zipfile,urllib.parse,urllib.request,xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
@@ -196,6 +196,58 @@ def mafra_incidents():
  print('MAFRA disease counts',json.dumps(dict(Counter(x['disease'] for x in out)),ensure_ascii=False))
  return out
 
+
+ASF_BOARD="https://mafra.go.kr/FMD-AI2/2145/subview.do"
+ASF_NS={"hp":"http://www.hancom.co.kr/hwpml/2011/paragraph"}
+ASF_PROVINCES={"강원":"강원특별자치도","경기":"경기도","충남":"충청남도","충북":"충청북도","전북":"전북특별자치도","전남":"전라남도","경북":"경상북도","경남":"경상남도"}
+
+def parse_asf_hwpx(data,year,source_url,announcement_date,expected_count):
+ """Read the official numbered farm table, never publication-date headlines."""
+ out=[]
+ with zipfile.ZipFile(io.BytesIO(data)) as archive:
+  for name in archive.namelist():
+   if not re.fullmatch(r"Contents/section\d+\.xml",name):continue
+   root=ET.fromstring(archive.read(name))
+   for row in root.findall('.//hp:tr',ASF_NS):
+    cells=[''.join(c.itertext()).strip() for c in row.findall('hp:tc',ASF_NS)]
+    if len(cells)!=4 or not cells[0].isdigit():continue
+    match=re.match(r"(\d{1,2})\.(\d{1,2})",cells[1])
+    if not match:raise ValueError("ASF table date changed")
+    date=datetime(year,int(match[1]),int(match[2])).date().isoformat()
+    parts=cells[3].split();province=ASF_PROVINCES.get(parts[0],parts[0]);region=' '.join([province]+parts[1:])
+    out.append({"id":f"MAFRA-ASF-TABLE|{year}|{int(cells[0])}","disease":"ASF","countryCode":"KR","source":"농림축산식품부 ASF 발생현황 정보공개","sourceUrl":source_url,"evidenceLevel":"OFFICIAL","status":"공식 발생","summary":f"{region} ASF · {year}년 {cells[0]}차","region":region,"occurrenceDate":date,"announcementDate":announcement_date,"livestockType":"돼지"})
+ if len(out)!=expected_count or {int(x['id'].split('|')[-1]) for x in out}!=set(range(1,expected_count+1)):
+  raise ValueError("ASF official table coverage incomplete")
+ return out
+
+def asf_official_table():
+ board=fetch(ASF_BOARD);year=datetime.now(KST).year
+ links=re.findall(r'<a[^>]+href=[\"\']([^\"\']+)[\"\'][^>]*>(.*?)</a>',board,re.S)
+ candidates=[]
+ for href,label in links:
+  title=clean(label)
+  if re.search(rf"(?:{year}|{str(year)[2:]})년.*아프리카돼지열병.*발생현황",title) and 'artclView' in href:
+   candidates.append((urllib.parse.urljoin(ASF_BOARD,html.unescape(href)),title))
+ if not candidates:raise ValueError("ASF current-year table unavailable")
+ # The board is newest first. Validate the declared total before replacing API rows.
+ url,title=candidates[0];page=fetch(url)
+ expected=re.search(r"[~～]\s*(\d+)차",title)
+ published=re.search(r"(20\d{2})\.(\d{2})\.(\d{2})",clean(page))
+ downloads=re.findall(r'<a[^>]+href=[\"\']([^\"\']*download\.do[^\"\']*)[\"\'][^>]*>(.*?)</a>',page,re.S)
+ hwpx=next((urllib.parse.urljoin(url,html.unescape(href)) for href,label in downloads if '.hwpx' in clean(label)),None)
+ if not expected or not published or not hwpx:raise ValueError("ASF table metadata changed")
+ announcement='-'.join(published.groups())
+ req=urllib.request.Request(hwpx,headers={"User-Agent":"DondonhaeOfficialFeed/1.0"})
+ data=urllib.request.urlopen(req,timeout=20).read()
+ return parse_asf_hwpx(data,year,url,announcement,int(expected[1]))
+
+def merge_asf_table(items,table):
+ if not table:return items
+ year=table[0]['occurrenceDate'][:4];through=max(x['announcementDate'] for x in table)
+ # The numbered cumulative disclosure is authoritative for this covered period.
+ # API reporting dates can differ by a day; merging by date would double count farms.
+ return [x for x in items if not (x.get('countryCode')=='KR' and x.get('disease')=='ASF' and x.get('occurrenceDate','').startswith(year) and x['occurrenceDate']<=through)]+table
+
 def main():
  items=[];coverage=False
  try:
@@ -203,6 +255,15 @@ def main():
  except ValueError:
   print("MAFRA full coverage unavailable; retaining previous official records")
   if OUT.exists():items+=[x for x in json.loads(OUT.read_text()).get("items",[]) if x.get("countryCode")=="KR" and x.get("occurrenceDate")]
+ asf_verified=False
+ try:
+  table=asf_official_table();items=merge_asf_table(items,table);asf_verified=True
+  print("ASF disclosure verified",len(table),"farms")
+ except Exception as error:
+  print("ASF disclosure unavailable:",type(error).__name__)
+  if OUT.exists():
+   previous=[x for x in json.loads(OUT.read_text()).get("items",[]) if str(x.get("id","")).startswith("MAFRA-ASF-TABLE|")]
+   items=merge_asf_table(items,previous)
  try:
   overseas=woah_notifications(fetch(WOAH_URL))
   if not overseas:raise ValueError("no dated notifications")
@@ -219,7 +280,7 @@ def main():
  for x in items:
   key=(x.get("id"),x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
- payload={"schemaVersion":4,"coverageVerified":coverage,"coverageScope":"국내 공식 전체 조회; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ payload={"schemaVersion":4,"coverageVerified":coverage and asf_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회 + ASF 공식 누적 발생현황표 대조; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
 

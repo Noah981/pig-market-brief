@@ -10,8 +10,8 @@ import '../services/api/mafra_api_client.dart';
 class DiseaseRepository {
   DiseaseRepository({http.Client? client,MafraApiClient? mafraClient,DateTime Function()? clock}):_client=client??http.Client(),_mafraClient=mafraClient??MafraApiClient(client:client),_clock=clock??DateTime.now;
   static const _url='https://noah981.github.io/pig-market-brief/data/disease-alerts.json';
-  // v4: 기사 게시일 기반 공개뉴스 캐시를 폐기하고 공식 발생 자료만 사용.
-  static const _cacheKey='verified_disease_feed_v4';
+  // v5: ASF 누적 공개표와 대조하기 전의 불완전한 캐시를 폐기.
+  static const _cacheKey='verified_disease_feed_v5';
   final http.Client _client;final MafraApiClient _mafraClient;final DateTime Function() _clock;
 
   Future<DiseaseFeed> cached()async{
@@ -46,7 +46,12 @@ class DiseaseRepository {
     final merged=<String,DiseaseAlert>{};
     for(final x in hosted.items){_putLatest(merged,x);}
     // An official result always wins over a public signal for the same incident.
-    for(final x in items){merged[x.incidentKey]=x;}
+    final disclosed=hosted.items.where((x)=>x.id.startsWith('MAFRA-ASF-TABLE|')).toList();
+    for(final x in items){
+      final date=x.occurrenceDate.replaceAll(RegExp(r'[^0-9]'),'');
+      final covered=x.type==DiseaseType.asf&&disclosed.any((d)=>date.length>=8&&d.occurrenceDate.startsWith(date.substring(0,4))&&date.substring(0,8).compareTo(d.announcementDate.replaceAll(RegExp(r'[^0-9]'),''))<=0);
+      if(!covered)merged[x.incidentKey]=x;
+    }
     return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,coverageVerified:hosted.coverageVerified,state:hosted.coverageVerified?DiseaseDataState.live:DiseaseDataState.reviewRequired,errorMessage:hosted.coverageVerified?null:'국내 전체 조회 범위를 확인 중입니다. 표시된 자료만으로 발생 없음을 판단하지 마세요.');
   }
   Future<DiseaseFeed> _fromHosted()async{
@@ -68,7 +73,7 @@ class DiseaseRepository {
       final address=x['region']?.toString()??summary;
       final rawStatus=x['status']?.toString()??x['level']?.toString()??'확인 중';
       final status=_status(rawStatus,summary,evidence);
-      final alert=DiseaseAlert(id:x['id']?.toString()??'',type:type,source:x['source']?.toString()??'',countryCode:code,evidence:evidence,status:status,summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',occurrenceDate:occurrence,announcementDate:x['announcementDate']?.toString()??x['publishedAt']?.toString()??'',updatedAt:x['updatedAt']?.toString()??x['detectedAt']?.toString()??'',livestockType:x['livestockType']?.toString()??'',districtCode:x['districtCode']?.toString()??'',province:x['province']?.toString()??_province(address),cityCounty:x['cityCounty']?.toString()??_cityCounty(address),town:x['town']?.toString()??'',latitude:(x['latitude'] as num?)?.toDouble(),longitude:(x['longitude'] as num?)?.toDouble());
+      final alert=DiseaseAlert(id:x['id']?.toString()??'',type:type,source:x['source']?.toString()??'',countryCode:code,evidence:evidence,status:status,summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',occurrenceDate:occurrence,announcementDate:x['announcementDate']?.toString()??x['publishedAt']?.toString()??'',updatedAt:x['updatedAt']?.toString()??x['detectedAt']?.toString()??'',livestockType:x['livestockType']?.toString()??'',districtCode:x['districtCode']?.toString()??'',province:x['province']?.toString()??_province(address),cityCounty:x['cityCounty']?.toString()??_cityCounty(address),town:x['town']?.toString()??_town(address),latitude:(x['latitude'] as num?)?.toDouble(),longitude:(x['longitude'] as num?)?.toDouble());
       if(seen.add(alert.stableKey))items.add(alert);
     }
     final unverifiedEmpty=items.isEmpty&&json['coverageVerified']!=true;
