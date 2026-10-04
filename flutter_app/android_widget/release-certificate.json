@@ -1,0 +1,5 @@
+{
+  "alias": "dondonhae-release",
+  "sha256": "1fc224f0b50fe1c25a08c01c19168dce5d8ba370ffb573105eae6bebed2d92ad",
+  "privateKeyPolicy": "Private keystore is backed up separately and never committed. All future distribution APKs must use this certificate."
+}

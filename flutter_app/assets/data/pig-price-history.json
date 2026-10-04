@@ -1,1 +1,418 @@
-{"rows":[{"date":"20260911","price":5800},{"date":"20260912","price":6200},{"date":"20260913","price":6700},{"date":"20260914","price":6850},{"date":"20260915","price":7000},{"date":"20260916","price":6900},{"date":"20260917","price":6740},{"date":"20260918","price":6442},{"date":"20260922","price":5360,"sourceType":"dabom-headline"},{"date":"20260923","price":5307,"sourceType":"dabom-headline"}]}
+{
+  "source": "축산물품질평가원 축산유통정보 다봄",
+  "scope": "전국·탕박·등외제외·제주제외",
+  "formulaVersion": "dabom-headline-v1-no-recalculation",
+  "rows": [
+    {
+      "date": "20230901",
+      "price": 5166,
+      "count": 139690,
+      "resolution": "month"
+    },
+    {
+      "date": "20231001",
+      "price": 4592,
+      "count": 146193,
+      "resolution": "month"
+    },
+    {
+      "date": "20231101",
+      "price": 4667,
+      "count": 157738,
+      "resolution": "month"
+    },
+    {
+      "date": "20231201",
+      "price": 4615,
+      "count": 147491,
+      "resolution": "month"
+    },
+    {
+      "date": "20240101",
+      "price": 4163,
+      "count": 162164,
+      "resolution": "month"
+    },
+    {
+      "date": "20240201",
+      "price": 4059,
+      "count": 131886,
+      "resolution": "month"
+    },
+    {
+      "date": "20240301",
+      "price": 4467,
+      "count": 126856,
+      "resolution": "month"
+    },
+    {
+      "date": "20240401",
+      "price": 4614,
+      "count": 129953,
+      "resolution": "month"
+    },
+    {
+      "date": "20240501",
+      "price": 4889,
+      "count": 131137,
+      "resolution": "month"
+    },
+    {
+      "date": "20240601",
+      "price": 5465,
+      "count": 101968,
+      "resolution": "month"
+    },
+    {
+      "date": "20240701",
+      "price": 5164,
+      "count": 122028,
+      "resolution": "month"
+    },
+    {
+      "date": "20240801",
+      "price": 4984,
+      "count": 119645,
+      "resolution": "month"
+    },
+    {
+      "date": "20240901",
+      "price": 5464,
+      "count": 113731,
+      "resolution": "month"
+    },
+    {
+      "date": "20241001",
+      "price": 5172,
+      "count": 135087,
+      "resolution": "month"
+    },
+    {
+      "date": "20241101",
+      "price": 5007,
+      "count": 122773,
+      "resolution": "month"
+    },
+    {
+      "date": "20241201",
+      "price": 5188,
+      "count": 138173,
+      "resolution": "month"
+    },
+    {
+      "date": "20250101",
+      "price": 4731,
+      "count": 121059,
+      "resolution": "month"
+    },
+    {
+      "date": "20250201",
+      "price": 4446,
+      "count": 126570,
+      "resolution": "month"
+    },
+    {
+      "date": "20250301",
+      "price": 4870,
+      "count": 112820,
+      "resolution": "month"
+    },
+    {
+      "date": "20250401",
+      "price": 5180,
+      "count": 119296,
+      "resolution": "month"
+    },
+    {
+      "date": "20250501",
+      "price": 5312,
+      "count": 112027,
+      "resolution": "month"
+    },
+    {
+      "date": "20250601",
+      "price": 5566,
+      "count": 106039,
+      "resolution": "month"
+    },
+    {
+      "date": "20250701",
+      "price": 5789,
+      "count": 120461,
+      "resolution": "month"
+    },
+    {
+      "date": "20250801",
+      "price": 5951,
+      "count": 119433,
+      "resolution": "month"
+    },
+    {
+      "date": "20250901",
+      "price": 5906,
+      "count": 146940,
+      "resolution": "month"
+    },
+    {
+      "date": "20251001",
+      "price": 5365,
+      "count": 113306,
+      "resolution": "month"
+    },
+    {
+      "date": "20251101",
+      "price": 5317,
+      "count": 116894,
+      "resolution": "month"
+    },
+    {
+      "date": "20251201",
+      "price": 5283,
+      "count": 140785,
+      "resolution": "month"
+    },
+    {
+      "date": "20260101",
+      "price": 4852,
+      "count": 120741,
+      "resolution": "month"
+    },
+    {
+      "date": "20260201",
+      "price": 5088,
+      "count": 96235,
+      "resolution": "month"
+    },
+    {
+      "date": "20260301",
+      "price": 4894,
+      "count": 123790,
+      "resolution": "month"
+    },
+    {
+      "date": "20260401",
+      "price": 5603,
+      "count": 112932,
+      "resolution": "month"
+    },
+    {
+      "date": "20260501",
+      "price": 5862,
+      "count": 107697,
+      "resolution": "month"
+    },
+    {
+      "date": "20260601",
+      "price": 5835,
+      "count": 123234,
+      "resolution": "month"
+    },
+    {
+      "date": "20260701",
+      "price": 5675,
+      "count": 130011,
+      "resolution": "month"
+    },
+    {
+      "date": "20260805",
+      "price": 5816,
+      "count": 6840
+    },
+    {
+      "date": "20260806",
+      "price": 5656,
+      "count": 7237
+    },
+    {
+      "date": "20260807",
+      "price": 5112,
+      "count": 3888
+    },
+    {
+      "date": "20260810",
+      "price": 6135,
+      "count": 6713
+    },
+    {
+      "date": "20260811",
+      "price": 5809,
+      "count": 6981
+    },
+    {
+      "date": "20260812",
+      "price": 5594,
+      "count": 7430
+    },
+    {
+      "date": "20260813",
+      "price": 5482,
+      "count": 7605
+    },
+    {
+      "date": "20260814",
+      "price": 6057,
+      "count": 1141
+    },
+    {
+      "date": "20260817",
+      "price": 5949,
+      "count": 6065
+    },
+    {
+      "date": "20260818",
+      "price": 5728,
+      "count": 6721
+    },
+    {
+      "date": "20260819",
+      "price": 5682,
+      "count": 6837
+    },
+    {
+      "date": "20260820",
+      "price": 5591,
+      "count": 7003
+    },
+    {
+      "date": "20260821",
+      "price": 4784,
+      "count": 2844
+    },
+    {
+      "date": "20260824",
+      "price": 6084,
+      "count": 5720
+    },
+    {
+      "date": "20260825",
+      "price": 6216,
+      "count": 6140
+    },
+    {
+      "date": "20260826",
+      "price": 5749,
+      "count": 6269
+    },
+    {
+      "date": "20260827",
+      "price": 5776,
+      "count": 6776
+    },
+    {
+      "date": "20260828",
+      "price": 5099,
+      "count": 2858
+    },
+    {
+      "date": "20260831",
+      "price": 6334,
+      "count": 6450
+    },
+    {
+      "date": "20260901",
+      "price": 6246,
+      "count": 6128
+    },
+    {
+      "date": "20260902",
+      "price": 6129,
+      "count": 6363
+    },
+    {
+      "date": "20260903",
+      "price": 6166,
+      "count": 6469
+    },
+    {
+      "date": "20260904",
+      "price": 5731,
+      "count": 3418
+    },
+    {
+      "date": "20260907",
+      "price": 6660,
+      "count": 7777
+    },
+    {
+      "date": "20260908",
+      "price": 6403,
+      "count": 7581
+    },
+    {
+      "date": "20260909",
+      "price": 6233,
+      "count": 7718
+    },
+    {
+      "date": "20260910",
+      "price": 6184,
+      "count": 8042
+    },
+    {
+      "date": "20260911",
+      "price": 5668,
+      "count": 5850
+    },
+    {
+      "date": "20260912",
+      "price": 4865,
+      "count": 182
+    },
+    {
+      "date": "20260914",
+      "price": 6626,
+      "count": 6895
+    },
+    {
+      "date": "20260915",
+      "price": 6277,
+      "count": 7927
+    },
+    {
+      "date": "20260916",
+      "price": 6215,
+      "count": 8045
+    },
+    {
+      "date": "20260917",
+      "price": 6740,
+      "count": null
+    },
+    {
+      "date": "20260918",
+      "price": 6442,
+      "count": null
+    },
+    {
+      "date": "20260922",
+      "price": 5360,
+      "count": null,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20260923",
+      "price": 5307,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20260928",
+      "price": 5912,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20260929",
+      "price": 5861,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20260930",
+      "price": 6065,
+      "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20261001",
+      "price": 6027,
+      "sourceType": "dabom-headline"
+    }
+  ]
+}

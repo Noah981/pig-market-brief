@@ -68,8 +68,8 @@ void main() {
     final history=jsonDecode(File('../docs/data/pig-price-history.json').readAsStringSync());
     SharedPreferences.setMockInitialValues({
       'official_dabom_producer_pig_price_v4':jsonEncode({'price':price,'history':history}),
-      'verified_commodity_market_v1':File('../docs/data/platform.json').readAsStringSync(),
-      'verified_disease_feed_v3':File('../docs/data/disease-alerts.json').readAsStringSync(),
+      'verified_commodity_market_v2':File('../docs/data/platform.json').readAsStringSync(),
+      'verified_disease_feed_v5':File('../docs/data/disease-alerts.json').readAsStringSync(),
     });
   });
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
@@ -181,7 +181,7 @@ void main() {
     expect(find.text('약품·예방 정보'),findsOneWidget);
     expect(find.text('${DateTime.now().month}월 주의 질환'),findsOneWidget);
     expect(find.textContaining('PRRS'),findsWidgets);
-    final risk=find.textContaining('호흡기 질환').last;await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();
+    final risk=find.byKey(const ValueKey('health_signal_예보 미확인')); await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();
     expect(find.text('건강 신호 상세'),findsOneWidget);
     expect(tester.takeException(),isNull);
   });
@@ -226,7 +226,7 @@ void main() {
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('nav_1')));await tester.pumpAndSettle();
-    expect(find.text('시황'),findsWidgets);expect(find.text('최근 7일 추이'),findsOneWidget);
+    expect(find.text('시황'),findsWidgets);expect(find.text('최근 공표 추이'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('nav_2')));await tester.pumpAndSettle();
     expect(find.byType(CustomPaint),findsWidgets);expect(tester.takeException(),isNull);
   });

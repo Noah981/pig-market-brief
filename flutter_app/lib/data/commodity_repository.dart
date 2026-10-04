@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +16,7 @@ class CommodityRepository {
 
   static const _url =
       'https://noah981.github.io/pig-market-brief/data/platform.json';
-  static const _cacheKey = 'verified_commodity_market_v1';
+  static const _cacheKey = 'verified_commodity_market_v2';
   final http.Client _client;
   final EcosApiClient _ecosClient;
   static const bundledSnapshot = [
@@ -29,36 +30,39 @@ class CommodityRepository {
 
   Future<List<Commodity>> cached() async {
     final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
-    if(raw==null)return bundledSnapshot;
+    if(raw==null){
+      try{return _parse(jsonDecode(await rootBundle.loadString('assets/data/platform.json')) as Map<String,dynamic>).map((x)=>x.copyWith(status:'STALE')).toList();}catch(_){return bundledSnapshot;}
+    }
     try {
-      return _parse(jsonDecode(raw) as Map<String, dynamic>);
+      return _parse(jsonDecode(raw) as Map<String, dynamic>).map((x)=>x.copyWith(status:'STALE')).toList();
     } catch (_) {
       return bundledSnapshot;
     }
   }
 
   Future<List<Commodity>> refresh() async {
-    final response = await _client
-        .get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}'))
-        .timeout(const Duration(seconds: 12));
-    if (response.statusCode != 200) throw Exception('Market data unavailable');
-    final raw = utf8.decode(response.bodyBytes);
-    final json = jsonDecode(raw) as Map<String, dynamic>;
-    var values = _parse(json);
+    var values=await cached();
+    try {
+      final response=await _client.get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
+      if(response.statusCode==200){
+        final incoming=_parse(jsonDecode(utf8.decode(response.bodyBytes)) as Map<String,dynamic>);
+        values=incoming.map((x){final old=values.where((v)=>v.id==x.id).firstOrNull;return old!=null&&old.hasQuote&&(!x.hasQuote||old.asOf.compareTo(x.asOf)>0)?old:x;}).toList();
+      }
+    }catch(_){ /* Other official providers still run if the mirror fails. */ }
     final refreshed=<String,Commodity>{};
     await Future.wait({
-      'corn':'PMAIZMTUSDM','soybean_meal':'PSMEAUSDM','wti':'DCOILWTICO'
+      'corn':'PMAIZMTUSDM','soybean_meal':'PSMEAUSDM','wheat':'PWHEAMTUSDM','soybean':'PSOYBUSDM','wti':'DCOILWTICO','usd_krw':'DEXKOUS'
     }.entries.map((entry)async{try{refreshed[entry.key]=await _fred(entry.key,entry.value);}catch(_){}}));
-    if(refreshed.isNotEmpty)values=values.map((x)=>refreshed[x.id]??x).toList();
+    if(refreshed.isNotEmpty)values=values.map((x){final latest=refreshed[x.id];return latest!=null&&(!x.hasQuote||latest.asOf.compareTo(x.asOf)>=0)?latest:x;}).toList();
     if (ApiConfig.hasEcos) {
       try {
         final points = await _ecosClient.usdKrw();
         final latest = points.last, previous = points.length > 1 ? points[points.length - 2] : latest;
         final changePct = previous.value == 0 ? 0.0 : (latest.value - previous.value) / previous.value * 100;
         final official = Commodity('환율\n(USD/KRW)', latest.value.toStringAsFixed(1), '원/USD', changePct, Icons.attach_money,
-            id: 'usd_krw', source: '한국은행 ECOS', asOf: latest.date, frequency: 'daily',
-            basis: '원/미국달러 매매기준율',
-            history: points.map((x) => CommodityPoint(x.date, x.value)).toList());
+            id: 'usd_krw', source: '한국은행 ECOS', asOf: _isoDate(latest.date), frequency: 'daily',
+            basis: '원/미국달러 매매기준율', url:'https://ecos.bok.or.kr/', previousValue:previous.value,previousDate:_isoDate(previous.date),updatedAt:DateTime.now().toIso8601String(),status:'LIVE',
+            history: points.map((x) => CommodityPoint(_isoDate(x.date), x.value)).toList());
         values = values.map((x) => x.id == 'usd_krw' ? official : x).toList();
       } catch (_) {
         // ECOS 실패 시 검증된 마지막 플랫폼 값과 캐시를 유지한다.
@@ -74,16 +78,20 @@ class CommodityRepository {
     final points=<CommodityPoint>[];
     for(final line in utf8.decode(response.bodyBytes).split(RegExp(r'\r?\n')).skip(1)){
       final cells=line.split(',');if(cells.length<2)continue;
-      final value=double.tryParse(cells[1].trim());if(value!=null&&value>0)points.add(CommodityPoint(cells[0].trim(),value));
+      final value=double.tryParse(cells[1].trim());if(value!=null&&value.isFinite&&value>0&&_validDate(cells[0].trim()))points.add(CommodityPoint(cells[0].trim(),value));
     }
+    points.sort((a,b)=>a.date.compareTo(b.date));
     if(points.length<2)throw const FormatException('FRED series empty');
     final latest=points.last,previous=points[points.length-2],change=(latest.value-previous.value)/previous.value*100;
     final meta={
       'corn':('옥수수','\$/톤','세계 옥수수 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
       'soybean_meal':('대두박','\$/톤','세계 대두박 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
+      'wheat':('소맥','\$/톤','세계 소맥 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
+      'soybean':('대두','\$/톤','세계 대두 벤치마크 월평균','국제통화기금(IMF)·FRED','monthly'),
+      'usd_krw':('환율\n(USD/KRW)','원/USD','뉴욕 정오 원/달러 현물환율','미국 연방준비제도 이사회·FRED','daily'),
       'wti':('국제유가\n(WTI)','\$/bbl','WTI Cushing 현물가격','미국 에너지정보청(EIA)·FRED','daily'),
     }[id]!;
-    return Commodity(meta.$1,latest.value.toStringAsFixed(latest.value>=1000?1:2),meta.$2,change,id=='wti'?Icons.local_gas_station:Icons.eco,id:id,source:meta.$4,asOf:latest.date,frequency:meta.$5,basis:meta.$3,url:'https://fred.stlouisfed.org/series/$series',history:points.length>366?points.sublist(points.length-366):points,previousValue:previous.value,previousDate:previous.date,updatedAt:DateTime.now().toIso8601String(),status:'LIVE');
+    return Commodity(meta.$1,latest.value.toStringAsFixed(latest.value>=1000?1:2),meta.$2,change,id=='wti'?Icons.local_gas_station:id=='usd_krw'?Icons.attach_money:Icons.eco,id:id,source:meta.$4,asOf:latest.date,frequency:meta.$5,basis:meta.$3,url:'https://fred.stlouisfed.org/series/$series',history:points.length>366?points.sublist(points.length-366):points,previousValue:previous.value,previousDate:_isoDate(previous.date),updatedAt:DateTime.now().toIso8601String(),status:'LIVE',analysisSummary:'공식 공표값의 실제 추세입니다. 가격 변동의 원인은 별도 확인이 필요합니다.',analysisFactors:points.length<3?const []:[MarketFactor('최근 3회 발표 추세','실측 계산','${((latest.value/points[points.length-3].value-1)*100).toStringAsFixed(1)}% · ${points[points.length-3].date} → ${latest.date}',source:meta.$4,sourceDate:latest.date)]);
   }
 
   Map<String, dynamic> _cacheJson(List<Commodity> values) => {'markets': values.map((x) => {
@@ -116,14 +124,15 @@ class CommodityRepository {
 
   Commodity _item(
       Map<String, dynamic>? row, String label, IconData icon) {
-    if (row == null || row['value'] is! num) {
+    if (row == null || row['value'] is! num || !(row['value'] as num).isFinite || (row['value'] as num)<=0 || !_validDate(row['date']?.toString()??'') || (row['source']?.toString()??'').isEmpty || (row['unit']?.toString()??'').isEmpty) {
       return Commodity(label, '확인 중', '', null, icon,
           id: row?['name']?.toString() ?? _idForLabel(label));
     }
     final value = (row['value'] as num).toDouble();
     final decimals = value >= 1000 ? 1 : 2;
     final text = value.toStringAsFixed(decimals);
-    final change = (row['changePct'] as num?)?.toDouble();
+    final previous=(row['previousValue'] as num?)?.toDouble();
+    final change=previous!=null&&previous.isFinite&&previous>0?(value-previous)/previous*100:_finite(row['changePct']);
     final history = (row['history'] as List? ?? const [])
         .whereType<Map<String, dynamic>>()
         .where((x) => x['value'] is num)
@@ -135,7 +144,7 @@ class CommodityRepository {
     return Commodity(label, text, row['unit']?.toString() ?? '', change, icon,
         id: row['name']?.toString() ?? _idForLabel(label),
         source: row['source']?.toString() ?? '',
-        asOf: row['date']?.toString() ?? row['updatedAt']?.toString() ?? '',
+        asOf: _isoDate(row['date']?.toString() ?? ''),
         frequency: row['frequency']?.toString() ?? '',
         basis: row['basis']?.toString() ?? '',
         url: row['url']?.toString() ?? '',
@@ -151,6 +160,16 @@ class CommodityRepository {
         status:row['status']?.toString()??'LIVE');
   }
 
+  double? _finite(dynamic value)=>value is num&&value.isFinite?value.toDouble():null;
+  String _isoDate(String raw){
+    if(RegExp(r'^\d{8}$').hasMatch(raw))return '${raw.substring(0,4)}-${raw.substring(4,6)}-${raw.substring(6,8)}';
+    return raw;
+  }
+  bool _validDate(String raw){
+    final iso=_isoDate(raw),date=DateTime.tryParse(_isoDate(raw));
+    if(date==null||!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(iso))return false;
+    return date.toIso8601String().startsWith(iso)&&!date.isAfter(DateTime.now().toUtc().add(const Duration(hours:9)));
+  }
   String _idForLabel(String label) {
     if (label.startsWith('옥수수')) return 'corn';
     if (label.startsWith('대두박')) return 'soybean_meal';

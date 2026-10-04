@@ -27,7 +27,8 @@ for w in weather.get("regions",[]):
     regions.append({**w,"riskFactors":reasons,"farmChecks":checks,
                     "top3":checks[:3] if checks else ["급이기·급수기 청결 확인","환기 상태 확인","돈군 건강상태 관찰"]})
 brief={
- "updatedAt":datetime.now(KST).isoformat(),
+ "updatedAt":weather.get("updatedAt", ""),
+ "generatedAt":datetime.now(KST).isoformat(),
  "scope":"대한민국 전역 · 제주 포함",
  "weatherSource":weather.get("source"),
  "regions":regions,

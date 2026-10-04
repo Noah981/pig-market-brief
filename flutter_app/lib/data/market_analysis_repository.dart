@@ -10,7 +10,7 @@ class MarketAnalysisRepository {
 
   static const _url =
       'https://noah981.github.io/pig-market-brief/data/market-analysis.json';
-  static const _cacheKey = 'official_market_analysis_v1';
+  static const _cacheKey = 'official_market_analysis_v2';
   final http.Client _client;
   static const MarketAnalysis? bundledSnapshot=null;
 

@@ -68,10 +68,12 @@ void main() {
     expect(result.sexGrades.every((x)=>x.date==result.date),isTrue);
   });
 
-  test('KMA 예보 필수 항목을 파싱한다', () async {
+  test('KMA 오늘 예보만 파싱하고 다음 날의 수치를 섞지 않는다', () async {
+    final today=DateTime.now().toUtc().add(const Duration(hours:9));
+    String ymd(DateTime d)=>'${d.year}${d.month.toString().padLeft(2,'0')}${d.day.toString().padLeft(2,'0')}';
     final body = {'response': {'header': {'resultCode': '00'}, 'body': {'items': {'item': [
-      {'category': 'TMP', 'fcstValue': '18'}, {'category': 'TMP', 'fcstValue': '27'},
-      {'category': 'REH', 'fcstValue': '85'}, {'category': 'POP', 'fcstValue': '40'}
+      {'category':'TMP','fcstValue':'18','fcstDate':ymd(today)}, {'category':'TMP','fcstValue':'27','fcstDate':ymd(today)}, {'category':'TMP','fcstValue':'99','fcstDate':ymd(today.add(const Duration(days:1)))},
+      {'category':'REH','fcstValue':'85','fcstDate':ymd(today)}, {'category':'POP','fcstValue':'40','fcstDate':ymd(today)}
     ]}}}};
     final client = KmaApiClient(apiKey: 'test', client: MockClient((_) async => http.Response.bytes(utf8.encode(jsonEncode(body)), 200)));
     final result = await client.forecast(35.87, 128.60);

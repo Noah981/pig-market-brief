@@ -1,4 +1,4 @@
-import json, os, urllib.parse, urllib.request
+import json, os, math, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,12 +33,13 @@ def fetch(name,nx,ny,key,date,t):
     normalized_key=urllib.parse.quote(urllib.parse.unquote(key), safe="")
     url=BASE+"?serviceKey="+normalized_key+"&"+params
     req=urllib.request.Request(url, headers={"User-Agent":"pig-market-brief/1.0"})
-    with urllib.request.urlopen(req,timeout=12) as r:
+    with urllib.request.urlopen(req,timeout=20) as r:
         raw=r.read()
     try:
         data=json.loads(raw.decode("utf-8"))
     except Exception:
         raise RuntimeError("KMA non-JSON response: "+raw[:180].decode("utf-8","replace"))
+    if str(data.get("response",{}).get("header",{}).get("resultCode"))!="00":raise ValueError("KMA response not successful")
     items=data["response"]["body"]["items"]["item"]
     today=datetime.now(KST).strftime("%Y%m%d")
     vals={}
@@ -48,21 +49,24 @@ def fetch(name,nx,ny,key,date,t):
     def nums(cat):
         out=[]
         for x in vals.get(cat,[]):
-            try: out.append(float(x["fcstValue"]))
+            try:
+                value=float(x["fcstValue"])
+                if math.isfinite(value):out.append(value)
             except: pass
         return out
     tmp=nums("TMP"); reh=nums("REH"); pop=nums("POP")
-    return {"region":name,"nx":nx,"ny":ny,
+    if not tmp or not reh or not pop:raise ValueError("Incomplete today forecast")
+    return {"region":name,"forecastDate":today,"nx":nx,"ny":ny,
             "tempMin":min(tmp) if tmp else None,"tempMax":max(tmp) if tmp else None,
             "diurnalRange":round(max(tmp)-min(tmp),1) if tmp else None,
             "humidityMax":max(reh) if reh else None,"rainProbabilityMax":max(pop) if pop else None}
 
 def main():
-    key=os.environ.get("KMA_SERVICE_KEY")
+    key=os.environ.get("KMA_API_KEY") or os.environ.get("KMA_SERVICE_KEY")
     if not key: raise SystemExit("KMA_SERVICE_KEY missing")
     now=datetime.now(KST); date,t=base_time(now)
     regions=[]; errors=[]
-    with ThreadPoolExecutor(max_workers=8) as pool:
+    with ThreadPoolExecutor(max_workers=4) as pool:
         futures={pool.submit(fetch,name,nx,ny,key,date,t):name for name,(nx,ny) in POINTS.items()}
         for future in as_completed(futures):
             name=futures[future]
@@ -70,6 +74,7 @@ def main():
             except Exception as e: errors.append({"region":name,"error":str(e)[:160]})
     payload={"source":"기상청 단기예보 조회서비스","baseDate":date,"baseTime":t,
              "updatedAt":now.isoformat(),"regions":regions,"errors":errors}
+    if not regions:raise SystemExit("No weather data fetched; previous forecast file preserved")
     OUT.parent.mkdir(parents=True,exist_ok=True)
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
     if not regions: raise SystemExit("No weather data fetched")

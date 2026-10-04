@@ -37,7 +37,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   final _commodityRepository=CommodityRepository();List<Commodity> _commodities=CommodityRepository.bundledSnapshot;
   final _weatherRepository=WeatherFarmRepository();WeatherFarmGuide _weather=WeatherFarmRepository.fallback;
   final _gradeRepository=PigGradeRepository();PigGradeSnapshot? _grades;
-  String _weatherRegion='대구광역시';
+  String _weatherRegion='';
   @override void initState(){super.initState();WidgetUpdateService.onRoute=_openWidgetRoute;WidgetsBinding.instance.addObserver(this);DisplaySettings.instance.addListener(_displayChanged);FarmLocationSettings.instance.addListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.addListener(_openDiseaseNotification);_loadCachedData();_loadAnalysis();_refreshBenefits();_startupRefresh();_openDiseaseNotification();_consumeWidgetRoute();}
   @override void dispose(){WidgetUpdateService.onRoute=null;DisplaySettings.instance.removeListener(_displayChanged);FarmLocationSettings.instance.removeListener(_locationChanged);NotificationService.instance.selectedDiseaseEvent.removeListener(_openDiseaseNotification);WidgetsBinding.instance.removeObserver(this);super.dispose();}
   void _displayChanged(){if(mounted)setState((){});}
@@ -67,7 +67,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _refreshAnalysis()async{try{final value=await _analysisRepository.refresh();if(mounted)setState(()=>_analysis=value);}catch(_){}}
   Future<void> _refreshWeather()async{try{final value=await _weatherRepository.refresh(region:_weatherRegion);if(mounted)setState(()=>_weather=value);}catch(_){}}
   Future<void> _refreshBenefits()async{try{await FarmLocationSettings.instance.load();await BenefitRepository().refresh();}catch(_){}}
-  void _locationChanged(){final region=FarmLocationSettings.instance.location.province;if(region!=_weatherRegion){_weatherRegion=region;_refreshWeather();}else if(mounted){setState((){});}}
+  void _locationChanged(){_weatherRegion=FarmLocationSettings.instance.location.province;if(mounted)setState(()=>_weather=WeatherFarmRepository.fallback);_refreshWeather();}
   Future<void> _pullToRefresh()async{
     await Future.wait([DataRefreshService.refreshAll(force:true),_refreshAnalysis(),_refreshBenefits()]);
     await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);

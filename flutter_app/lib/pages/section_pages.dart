@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
+import '../widgets/commodity_quote_card.dart';
 import '../data/market_repository.dart';
 import '../models/dashboard_models.dart';
 import '../settings/display_settings.dart';
@@ -58,9 +59,11 @@ class MarketOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tiles = [
-      _MarketTile(Icons.savings_rounded,'전국 돈가',snapshot==null?'확인 중':_number(snapshot!.price),snapshot==null?'':'원/kg',_change(snapshot),(snapshot?.change??-1)>=0,tileKey:const ValueKey('market_pig'),onTap:()=>_openPig(context)),
+      _MarketTile(Icons.savings_rounded,'전국 돈가',snapshot==null?'확인 중':_number(snapshot!.price),snapshot==null?'':'원/kg',_change(snapshot),(snapshot?.change??-1)>=0,basis:snapshot==null?'공식 자료 확인 필요':'${snapshot!.date.substring(0,4)}.${snapshot!.date.substring(4,6)}.${snapshot!.date.substring(6,8)} 기준',tileKey:const ValueKey('market_pig'),onTap:()=>_openPig(context)),
       _commodityTile('🌽','corn',context),
       _commodityTile('🫘','soybean_meal',context),
+      _commodityTile('grain','wheat',context),
+      _commodityTile('soy','soybean',context),
       _commodityTile('＄','usd_krw',context),
     ];
     final summaries = [
@@ -71,19 +74,19 @@ class MarketOverviewPage extends StatelessWidget {
     return PageShell(
       title: '시황', subtitle: '지금, 시장의 흐름을 한눈에 확인하세요',onRefresh:onRefresh,help:()=>showDialog(context:context,builder:(context)=>AlertDialog(title:const Text('시황 도움말'),content:const Text('각 가격은 표시된 공식 기준일의 값입니다. 주말·공휴일·미발표일에는 마지막 정상 발표값을 유지합니다. 상승은 분홍색, 하락은 파란색이며 데이터 기준일과 앱 조회 시각은 서로 다를 수 있습니다.'),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('확인'))])),
       child: Column(children: [
-        const _MarketPeriodTabs(),
+        const Align(alignment:Alignment.centerLeft,child:Text('원료는 월평균 · 돈가와 유가는 공표일 기준',style:TextStyle(fontSize:11,color:AppColors.secondary))),
         const SizedBox(height:8),
-        GridView.count(
-          crossAxisCount: 2, shrinkWrap: true,
+        GridView(
+          shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 7, crossAxisSpacing: 7, childAspectRatio: 1.42,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.6)),
           children: tiles,
         ),
         const SizedBox(height: 7),
-        SizedBox(height:92,child:_commodityTile('oil','wti',context,wide:true)),
+        _commodityTile('oil','wti',context,wide:true),
         const SizedBox(height: 10),
         Container(padding:const EdgeInsets.fromLTRB(12,10,12,4),decoration:appCard(radius:18),child:Column(children:[
-          const Row(children:[Expanded(child:_SectionTitle('시황 요약 (오늘)')),Text('전체 보기  ›',style:TextStyle(fontSize:12,fontWeight:FontWeight.w800,color:AppColors.coral))]),
+          const Row(children:[Expanded(child:_SectionTitle('공식 시황 요약'))]),
           const SizedBox(height:2),
           ...summaries.map((x) => _SummaryRow(x.$1, x.$2, x.$3,x.$4)),
         ])),
@@ -95,37 +98,25 @@ class MarketOverviewPage extends StatelessWidget {
   String _number(int value)=>value.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'),(m)=>',');
   String _change(MarketSnapshot? s){if(s==null)return '공식 데이터 연결 중';return '${s.change>=0?'▲':'▼'} ${s.change.abs()}원 (${s.changePct.toStringAsFixed(2)}%)';}
   Commodity? _find(String id){for(final item in commodities){if(item.id==id)return item;}return null;}
-  Widget _commodityTile(String token,String id,BuildContext context,{bool wide=false}){final item=_find(id);final label={'corn':'옥수수','soybean_meal':'대두박','usd_krw':'달러 환율','wti':'국제 유가 (WTI)'}[id]!;final icon={'corn':Icons.eco_rounded,'soybean_meal':Icons.grain_rounded,'usd_krw':Icons.attach_money_rounded,'wti':Icons.oil_barrel_rounded}[id]!;return _MarketTile(icon,label,item?.value??'연결 대기',item?.unit??'',item?.change==null?'공식 데이터 확인 중':'${item!.change!>=0?'▲':'▼'} ${item.change!.abs().toStringAsFixed(1)}%',(item?.change??0)>=0,kind:id,wide:wide,tileKey:ValueKey('market_$id'),onTap:item==null?null:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));}
+  Widget _commodityTile(String token,String id,BuildContext context,{bool wide=false}){
+    final item=_find(id);if(item==null)return const SizedBox.shrink();
+    return CommodityQuoteCard(key:ValueKey('market_$id'),item:item,detail:wide,onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));
+  }
   void _openPig(BuildContext context)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:snapshot,analysis:analysis)));
 }
 
-class _MarketPeriodTabs extends StatefulWidget{const _MarketPeriodTabs();@override State<_MarketPeriodTabs> createState()=>_MarketPeriodTabsState();}
-class _MarketPeriodTabsState extends State<_MarketPeriodTabs>{int selected=0;@override Widget build(BuildContext context)=>Container(height:40,padding:const EdgeInsets.all(3),decoration:BoxDecoration(color:const Color(0xFFF1F2F5),borderRadius:BorderRadius.circular(12)),child:Row(children:List.generate(4,(i)=>Expanded(child:InkWell(onTap:()=>setState(()=>selected=i),child:Container(alignment:Alignment.center,decoration:BoxDecoration(color:selected==i?AppColors.coral:Colors.transparent,borderRadius:BorderRadius.circular(9)),child:Text(const ['오늘','주간','월간','3년 비교'][i],style:TextStyle(fontSize:12,fontWeight:FontWeight.w800,color:selected==i?Colors.white:AppColors.secondary))))))));}
-
 class _MarketRecentTrend extends StatefulWidget{const _MarketRecentTrend({this.snapshot,required this.commodities});final MarketSnapshot? snapshot;final List<Commodity> commodities;@override State<_MarketRecentTrend> createState()=>_MarketRecentTrendState();}
-class _MarketRecentTrendState extends State<_MarketRecentTrend>{String selected='pig';@override Widget build(BuildContext context){final choices=[('pig','전국 돈가'),('corn','옥수수'),('soybean_meal','대두박'),('wti','국제유가'),('usd_krw','환율')];final points=selected=='pig'?(widget.snapshot?.history.where((x)=>x.resolution!='month').map((x)=>(x.date,x.value)).toList()??[]):(widget.commodities.where((x)=>x.id==selected).firstOrNull?.history.map((x)=>(x.date,x.value)).toList()??[]);final data=points.length>7?points.sublist(points.length-7):points;return Container(height:145,padding:const EdgeInsets.fromLTRB(12,8,12,6),decoration:appCard(radius:18),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Row(children:[const Expanded(child:_SectionTitle('최근 7일 추이')),Wrap(spacing:3,children:choices.take(4).map((x)=>ChoiceChip(label:Text(x.$2),selected:selected==x.$1,onSelected:(_)=>setState(()=>selected=x.$1),selectedColor:AppColors.coral,showCheckmark:false,visualDensity:VisualDensity.compact,labelPadding:const EdgeInsets.symmetric(horizontal:3),labelStyle:TextStyle(fontSize:8,fontWeight:FontWeight.w700,color:selected==x.$1?Colors.white:AppColors.secondary))).toList())]),const SizedBox(height:3),Expanded(child:data.length<2?const Center(child:Text('해당 기간의 실제 데이터가 없습니다.',style:TextStyle(fontSize:11,color:AppColors.secondary))):LineChart(LineChartData(borderData:FlBorderData(show:false),minX:0,maxX:(data.length-1).toDouble(),gridData:FlGridData(show:true,drawVerticalLine:true,getDrawingHorizontalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:1),getDrawingVerticalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:.6)),titlesData:FlTitlesData(topTitles:const AxisTitles(),rightTitles:const AxisTitles(),leftTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:34,getTitlesWidget:(v,meta)=>Text(v>=1000?v.toStringAsFixed(0):v.toStringAsFixed(1),style:const TextStyle(fontSize:8,color:AppColors.secondary)))),bottomTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:18,interval:1,getTitlesWidget:(v,meta){final i=v.round();if(i<0||i>=data.length)return const SizedBox();final d=data[i].$1;return Padding(padding:const EdgeInsets.only(top:3),child:Text(d.length>=8?'${d.substring(4,6)}/${d.substring(6,8)}':d,style:const TextStyle(fontSize:8,color:AppColors.secondary)));}))),lineTouchData:const LineTouchData(enabled:true),lineBarsData:[LineChartBarData(spots:List.generate(data.length,(i)=>FlSpot(i.toDouble(),data[i].$2)),color:AppColors.coral,barWidth:2.5,isCurved:true,dotData:const FlDotData(show:true),belowBarData:BarAreaData(show:true,gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[AppColors.lightCoral,Colors.transparent])))]))) ]));}}
+class _MarketRecentTrendState extends State<_MarketRecentTrend>{String selected='pig';@override Widget build(BuildContext context){final choices=[('pig','전국 돈가'),('corn','옥수수'),('soybean_meal','대두박'),('wti','국제유가'),('usd_krw','환율')];final points=selected=='pig'?(widget.snapshot?.history.where((x)=>x.resolution!='month').map((x)=>(x.date,x.value)).toList()??[]):(widget.commodities.where((x)=>x.id==selected).firstOrNull?.history.map((x)=>(x.date,x.value)).toList()??[]);final data=points.length>7?points.sublist(points.length-7):points;return Container(height:145,padding:const EdgeInsets.fromLTRB(12,8,12,6),decoration:appCard(radius:18),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Row(children:[const Expanded(child:_SectionTitle('최근 공표 추이')),Wrap(spacing:3,children:choices.take(4).map((x)=>ChoiceChip(label:Text(x.$2),selected:selected==x.$1,onSelected:(_)=>setState(()=>selected=x.$1),selectedColor:AppColors.coral,showCheckmark:false,visualDensity:VisualDensity.compact,labelPadding:const EdgeInsets.symmetric(horizontal:3),labelStyle:TextStyle(fontSize:8,fontWeight:FontWeight.w700,color:selected==x.$1?Colors.white:AppColors.secondary))).toList())]),const SizedBox(height:3),Expanded(child:data.length<2?const Center(child:Text('해당 기간의 실제 데이터가 없습니다.',style:TextStyle(fontSize:11,color:AppColors.secondary))):LineChart(LineChartData(borderData:FlBorderData(show:false),minX:0,maxX:(data.length-1).toDouble(),gridData:FlGridData(show:true,drawVerticalLine:true,getDrawingHorizontalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:1),getDrawingVerticalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:.6)),titlesData:FlTitlesData(topTitles:const AxisTitles(),rightTitles:const AxisTitles(),leftTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:34,getTitlesWidget:(v,meta)=>Text(v>=1000?v.toStringAsFixed(0):v.toStringAsFixed(1),style:const TextStyle(fontSize:8,color:AppColors.secondary)))),bottomTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:18,interval:1,getTitlesWidget:(v,meta){final i=v.round();if(i<0||i>=data.length)return const SizedBox();final d=data[i].$1;return Padding(padding:const EdgeInsets.only(top:3),child:Text(d.length>=8?'${d.replaceAll('-','').substring(4,6)}/${d.replaceAll('-','').substring(6,8)}':d,style:const TextStyle(fontSize:8,color:AppColors.secondary)));}))),lineTouchData:const LineTouchData(enabled:true),lineBarsData:[LineChartBarData(spots:List.generate(data.length,(i)=>FlSpot(i.toDouble(),data[i].$2)),color:AppColors.coral,barWidth:2.5,isCurved:true,dotData:const FlDotData(show:true),belowBarData:BarAreaData(show:true,gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[AppColors.lightCoral,Colors.transparent])))]))) ]));}}
 
 class _MarketTile extends StatelessWidget {
-  const _MarketTile(this.icon, this.name, this.value, this.unit, this.change, this.up, {this.kind='pig',this.wide = false,this.onTap,this.tileKey});
-  final IconData icon; final String name, value, unit, change,kind;
-  final bool up, wide;
-  final VoidCallback? onTap;
-  final Key? tileKey;
-  @override
-  Widget build(BuildContext context) => InkWell(key:tileKey,borderRadius:BorderRadius.circular(18),onTap:onTap,child:Container(
-    padding: EdgeInsets.symmetric(horizontal:wide?16:12,vertical:7), decoration: appCard(color:_background(),radius: 18),
-    child: Row(children: [
-      Container(width:wide?48:44,height:wide?48:44,decoration:BoxDecoration(color:Colors.white.withValues(alpha:.82),shape:BoxShape.circle),child:Icon(icon,color:_iconColor(),size:wide?32:30)),
-      const SizedBox(width: 10),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text('$name  ›',maxLines:1,overflow:TextOverflow.ellipsis, style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900,letterSpacing:-.3)),
-        FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child: Text('$value $unit',maxLines:1,style: const TextStyle(fontSize: 18.5, fontWeight: FontWeight.w900,letterSpacing:-.7))),
-        Text(change,maxLines:1,overflow:TextOverflow.ellipsis, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: up ? AppColors.coral : AppColors.blue)),
-      ])),
-    ]),
-  ));
-  Color _background()=>switch(kind){'corn'=>const Color(0xFFFFFEF2),'usd_krw'=>const Color(0xFFF0FAFF),'wti'=>const Color(0xFFFFF5FC),_=>const Color(0xFFFFF8FB)};
-  Color _iconColor()=>switch(kind){'corn'=>const Color(0xFFE9A600),'usd_krw'=>AppColors.blue,'wti'=>const Color(0xFF3292D0),_=>AppColors.coral};
+  const _MarketTile(this.icon,this.name,this.value,this.unit,this.change,this.up,{this.basis='',this.onTap,this.tileKey});
+  final IconData icon;final String name,value,unit,change,basis;final bool up;final VoidCallback? onTap;final Key? tileKey;
+  @override Widget build(BuildContext context)=>Material(color:const Color(0xFFFFF7FA),borderRadius:BorderRadius.circular(20),child:InkWell(key:tileKey,onTap:onTap,borderRadius:BorderRadius.circular(20),child:Container(padding:const EdgeInsets.all(14),decoration:BoxDecoration(borderRadius:BorderRadius.circular(20),border:Border.all(color:AppColors.coral.withValues(alpha:.15))),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+    Row(children:[Icon(icon,size:25,color:AppColors.coral),const SizedBox(width:7),Expanded(child:Text(name,style:const TextStyle(fontSize:13,fontWeight:FontWeight.w800))),const Icon(Icons.chevron_right,size:17,color:AppColors.secondary)]),
+    const SizedBox(height:13),FittedBox(fit:BoxFit.scaleDown,child:Text(value,style:const TextStyle(fontSize:27,fontWeight:FontWeight.w900,letterSpacing:-1))),
+    Text(unit,style:const TextStyle(fontSize:10,color:AppColors.secondary)),const SizedBox(height:9),Text(change,style:TextStyle(fontSize:11,fontWeight:FontWeight.w800,color:up?AppColors.coral:AppColors.blue)),const SizedBox(height:12),
+    Text(basis,style:const TextStyle(fontSize:10,fontWeight:FontWeight.w700,color:AppColors.coral)),const SizedBox(height:4),const Text('축산유통정보 다봄',style:TextStyle(fontSize:9,color:AppColors.secondary)),
+  ]))));
 }
 
 class MorePage extends StatefulWidget {

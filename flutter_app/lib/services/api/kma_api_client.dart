@@ -5,9 +5,9 @@ import '../../config/api_config.dart';
 import 'api_exception.dart';
 
 class KmaForecast {
-  const KmaForecast({required this.tempMin, required this.tempMax, required this.humidityMax, required this.rainProbabilityMax, required this.windSpeedMax, required this.baseDate, required this.baseTime});
+  const KmaForecast({required this.tempMin, required this.tempMax, required this.humidityMax, required this.rainProbabilityMax, required this.windSpeedMax, required this.baseDate, required this.baseTime,required this.forecastDate});
   final double tempMin, tempMax, humidityMax, rainProbabilityMax, windSpeedMax;
-  final String baseDate, baseTime;
+  final String baseDate, baseTime, forecastDate;
 }
 
 class KmaApiClient {
@@ -23,7 +23,7 @@ class KmaApiClient {
     var date = available, hour = slots.where((x) => x <= available.hour).lastOrNull;
     if (hour == null) { date = available.subtract(const Duration(days: 1)); hour = 23; }
     String two(int x) => x.toString().padLeft(2, '0');
-    final baseDate = '${date.year}${two(date.month)}${two(date.day)}', baseTime = '${two(hour)}00';
+    final baseDate = '${date.year}${two(date.month)}${two(date.day)}', baseTime = '${two(hour)}00',forecastDate='${now.year}${two(now.month)}${two(now.day)}';
     final uri = Uri.https('apis.data.go.kr', '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
       'serviceKey': Uri.decodeComponent(_apiKey), 'pageNo': '1', 'numOfRows': '1000', 'dataType': 'JSON',
       'base_date': baseDate, 'base_time': baseTime, 'nx': '${grid.$1}', 'ny': '${grid.$2}',
@@ -37,14 +37,19 @@ class KmaApiClient {
     final rows = ((((root?['body'] as Map?)?['items'] as Map?)?['item']) as List? ?? const []);
     final values = <String, List<double>>{};
     for (final raw in rows.whereType<Map>()) {
-      final row = raw.cast<String, dynamic>(), category = row['category']?.toString() ?? '';
+      final row = raw.cast<String, dynamic>();
+      if(row['fcstDate']?.toString()!=forecastDate)continue;
+      final category = row['category']?.toString() ?? '';
       final value = double.tryParse(row['fcstValue']?.toString() ?? '');
-      if (value != null && const ['TMP', 'TMN', 'TMX', 'REH', 'POP', 'WSD'].contains(category)) values.putIfAbsent(category, () => []).add(value);
+      if (value != null && value.isFinite && const ['TMP', 'TMN', 'TMX', 'REH', 'POP', 'WSD'].contains(category)) values.putIfAbsent(category, () => []).add(value);
     }
-    final temps = [...?values['TMP'], ...?values['TMN'], ...?values['TMX']];
-    if (temps.isEmpty) throw const OfficialApiException('KMA', 'empty-result');
-    double maxOf(String key) => values[key]?.reduce(math.max) ?? 0;
-    return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), windSpeedMax: maxOf('WSD'), baseDate: baseDate, baseTime: baseTime);
+    final temps = [...?values['TMP'], ...?values['TMN'], ...?values['TMX']].where((x)=>x>=-70&&x<=60).toList();
+    values['REH']=values['REH']?.where((x)=>x>=0&&x<=100).toList()??[];
+    values['POP']=values['POP']?.where((x)=>x>=0&&x<=100).toList()??[];
+    values['WSD']=values['WSD']?.where((x)=>x>=0).toList()??[];
+    if (temps.isEmpty || (values['REH']?.isEmpty ?? true) || (values['POP']?.isEmpty ?? true)) throw const OfficialApiException('KMA', 'empty-result');
+    double maxOf(String key){final rows=values[key]??const <double>[];return rows.isEmpty?double.nan:rows.reduce(math.max);}
+    return KmaForecast(tempMin: temps.reduce(math.min), tempMax: temps.reduce(math.max), humidityMax: maxOf('REH'), rainProbabilityMax: maxOf('POP'), windSpeedMax: maxOf('WSD'), baseDate: baseDate, baseTime: baseTime,forecastDate:forecastDate);
   }
 
   (int, int) _grid(double lat, double lon) {

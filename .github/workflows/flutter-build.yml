@@ -18,11 +18,32 @@ jobs:
           flutter-version: '3.27.4'
           channel: stable
           cache: true
+      - name: Prepare persistent production signing
+        id: release_signing
+        if: github.event_name != 'pull_request'
+        env:
+          DDH_ANDROID_KEYSTORE_B64: ${{ secrets.DDH_ANDROID_KEYSTORE_B64 }}
+          DDH_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.DDH_ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          python3 - <<'PY_SIGNING'
+          import os,base64,pathlib
+          ready=bool(os.environ.get('DDH_ANDROID_KEYSTORE_B64')) and bool(os.environ.get('DDH_ANDROID_KEYSTORE_PASSWORD'))
+          if ready:
+              path=pathlib.Path(os.environ['RUNNER_TEMP'])/'dondonhae-release.p12'
+              path.write_bytes(base64.b64decode(os.environ['DDH_ANDROID_KEYSTORE_B64'],validate=True))
+              path.chmod(0o600)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('production='+str(ready).lower()+'\n')
+          print('Persistent production signer available' if ready else 'Test-signed validation APK only; production publication disabled')
+          PY_SIGNING
       - name: Generate platform files
+        env:
+          DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
+          DDH_ANDROID_KEYSTORE_PASSWORD: ${{ github.event_name != 'pull_request' && secrets.DDH_ANDROID_KEYSTORE_PASSWORD || '' }}
         working-directory: flutter_app
         run: |
           flutter create --platforms=android,ios .
           python ../scripts/configure_flutter_platform.py
+          python ../scripts/configure_android_release_signing.py
           dart run flutter_launcher_icons
           rm -f test/widget_test.dart
       - name: Analyze
@@ -49,8 +70,10 @@ jobs:
         env:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
-          python -m unittest scripts.test_disease_classifier
+          python -m unittest scripts.test_disease_classifier scripts.test_android_release_signing scripts.test_weather_data
+          PYTHONPATH=scripts python -m unittest scripts/test_platform.py
           python scripts/fetch_disease_alerts.py
+          python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True, 'Official disease coverage not verified; release blocked'"
           cp docs/data/disease-alerts.json flutter_app/assets/data/disease-alerts.json
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
@@ -66,8 +89,11 @@ jobs:
           flutter test --update-goldens test/layout_test.dart
       - name: Render actual Android RemoteViews widget
         working-directory: flutter_app/android
-        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest
+        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest
       - name: Build release APK
+        env:
+          DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
+          DDH_ANDROID_KEYSTORE_PASSWORD: ${{ github.event_name != 'pull_request' && secrets.DDH_ANDROID_KEYSTORE_PASSWORD || '' }}
         working-directory: flutter_app
         run: >-
           flutter build apk --release
@@ -85,6 +111,19 @@ jobs:
             grep -q "$provider" <<< "$WIDGETS"
           done
           grep -q 'dondonhae' <<< "$WIDGETS"
+      - name: Verify persistent release certificate
+        if: steps.release_signing.outputs.production == 'true'
+        run: |
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
+          "$APKSIGNER" verify --print-certs flutter_app/build/app/outputs/flutter-apk/app-release.apk > "$RUNNER_TEMP/dondonhae-cert.txt"
+          python3 - <<'PY_CERT'
+          import json,os,pathlib,re
+          expected=json.loads(pathlib.Path('flutter_app/android_widget/release-certificate.json').read_text())['sha256']
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dondonhae-cert.txt').read_text()
+          actual=re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-f]+)',text)
+          if actual is None or actual[1]!=expected:raise SystemExit('Production certificate mismatch; publication blocked')
+          print('Persistent release certificate verified')
+          PY_CERT
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -95,7 +134,7 @@ jobs:
             flutter_app/android/app/build/reports/tests/testDebugUnitTest/**
             flutter_app/build/app/outputs/flutter-apk/app-release.apk
       - name: Publish verified APK and screenshots
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.release_signing.outputs.production == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -106,5 +145,5 @@ jobs:
           cp flutter_app/test/goldens/*.png visual-screenshots/
           cp flutter_app/android/app/build/widget-screenshots/*.png visual-screenshots/
           zip -r dondonhae-visual-screenshots.zip visual-screenshots
-          gh release delete dondonhae-final-ui --cleanup-tag --yes || true
-          gh release create dondonhae-final-ui dondonhae-final-ui-release.apk dondonhae-home-390.png dondonhae-market-390.png dondonhae-visual-screenshots.zip --target "${{ github.sha }}" --title "돈돈해 전체 UI 최종" --notes "첨부된 최종 UI 기준 홈·시황·상세·오늘관리·질병 화면과 실제 API·캐시·GPS·Vector 지도·알림을 연결한 Release APK입니다."
+          gh release view dondonhae-final-ui >/dev/null 2>&1 || gh release create dondonhae-final-ui --target "${{ github.sha }}" --title "돈돈해 Android 배포판" --notes "공식 데이터와 고정 배포 서명 검증을 통과한 APK입니다."
+          gh release upload dondonhae-final-ui dondonhae-final-ui-release.apk dondonhae-home-390.png dondonhae-market-390.png dondonhae-visual-screenshots.zip --clobber

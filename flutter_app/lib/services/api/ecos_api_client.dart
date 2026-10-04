@@ -32,7 +32,8 @@ class EcosApiClient {
       final row = raw.cast<String, dynamic>();
       final value = double.tryParse((row['DATA_VALUE'] ?? '').toString().replaceAll(',', ''));
       final date = row['TIME']?.toString() ?? '';
-      if (value != null && value > 0 && date.length == 8) values.add(EcosExchangePoint(date, value));
+      final observation = date.length==8?DateTime.tryParse('${date.substring(0,4)}-${date.substring(4,6)}-${date.substring(6,8)}'):null;
+      if(value!=null&&value.isFinite&&value>0&&observation!=null&&!observation.isAfter(end)&&observation.toIso8601String().startsWith('${date.substring(0,4)}-${date.substring(4,6)}-${date.substring(6,8)}'))values.add(EcosExchangePoint(date,value));
     }
     values.sort((a, b) => a.date.compareTo(b.date));
     if (values.isEmpty) throw const OfficialApiException('ECOS', 'empty-result');

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/weather_farm_models.dart';
@@ -7,25 +8,36 @@ import '../services/api/kma_api_client.dart';
 import '../settings/farm_location_settings.dart';
 
 class WeatherFarmRepository {
-  WeatherFarmRepository({http.Client? client,KmaApiClient? kmaClient}):_client=client??http.Client(),_kmaClient=kmaClient??KmaApiClient(client:client);
+  WeatherFarmRepository({http.Client? client,KmaApiClient? kmaClient,DateTime Function()? clock}):_client=client??http.Client(),_kmaClient=kmaClient??KmaApiClient(client:client),_clock=clock??DateTime.now;
   static const _url='https://noah981.github.io/pig-market-brief/data/briefing.json';
-  static const _cacheKey='weather_farm_guide_v1';
+  static const _cacheKey='weather_farm_guide_v2';
   final http.Client _client;
   final KmaApiClient _kmaClient;
-  static const fallback=WeatherFarmGuide(region:'대구·경북',tempMin:16,tempMax:28,humidity:95,rainProbability:0,riskFactors:['큰 일교차','고습'],checks:['야간 최소환기와 입기구 방향을 확인하세요.','기침이 늘면 온도·일교차·암모니아를 확인하세요.','자돈이 뭉치면 외풍과 보온구역을 확인하세요.'],updatedAt:'2026-09-20T07:53:12+09:00',source:'기상청 단기예보 조회서비스',fromCache:true);
+  final DateTime Function() _clock;
+  static const fallback=WeatherFarmGuide(region:'지역 설정 필요',tempMin:double.nan,tempMax:double.nan,humidity:double.nan,rainProbability:double.nan,riskFactors:[],checks:['지역을 설정하고 공식 예보를 새로 조회해 주세요.'],updatedAt:'',source:'예보 미확인',fromCache:true);
 
   Future<WeatherFarmGuide> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey);
     if(raw==null)return fallback;
-    try{return _decode(jsonDecode(raw) as Map<String,dynamic>,true);}catch(_){return fallback;}
+    try{return _decode(jsonDecode(raw) as Map<String,dynamic>,true,preferredRegion:FarmLocationSettings.instance.location.province);}catch(_){return fallback;}
   }
   Future<WeatherFarmGuide> refresh({String region='대구광역시'})async{
     if(ApiConfig.hasKma){
+      try {
       final location=FarmLocationSettings.instance.location;
-      final forecast=await _kmaApi(location.latitude,location.longitude);
-      final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,windSpeed:forecast.windSpeedMax,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
-      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'windSpeedMax':value.windSpeed,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
+      double lat=location.latitude,lng=location.longitude;
+      if(!location.gpsVerified){
+        if(location.label.isEmpty)throw const FormatException('Location not configured');
+        final matches=await locationFromAddress('대한민국 ${location.label}').timeout(const Duration(seconds:8));
+        if(matches.isEmpty)throw const FormatException('Location unresolved');
+        lat=matches.first.latitude;lng=matches.first.longitude;
+      }
+      if(!lat.isFinite||!lng.isFinite||lat<33||lat>39||lng<124||lng>132)throw const FormatException('Invalid Korean coordinates');
+      final forecast=await _kmaApi(lat,lng);
+      final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,windSpeed:forecast.windSpeedMax.isFinite?forecast.windSpeedMax:null,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
+      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'forecastDate':forecast.forecastDate,'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'windSpeedMax':value.windSpeed,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
       return value;
+      } catch (_) { /* Try the matching official regional feed. */ }
     }
     final response=await _client.get(Uri.parse('$_url?v=${DateTime.now().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
     if(response.statusCode!=200)throw Exception('Weather briefing unavailable');
@@ -40,11 +52,21 @@ class WeatherFarmRepository {
   WeatherFarmGuide _decode(Map<String,dynamic> json,bool fromCache,{String preferredRegion='대구광역시'}){
     final regions=(json['regions'] as List? ?? const []).whereType<Map<String,dynamic>>().toList();
     if(regions.isEmpty)throw const FormatException('No weather region');
-    final row=regions.firstWhere((x)=>x['region']==preferredRegion,orElse:()=>regions.first);
-    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,windSpeed:(row['windSpeedMax'] as num?)?.toDouble(),riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache);
+    final wanted=preferredRegion.isEmpty?FarmLocationSettings.instance.location.province:preferredRegion;
+    final matches=regions.where((x)=>x['region']==wanted||x['region']==FarmLocationSettings.instance.location.label).toList();
+    if(matches.isEmpty)throw const FormatException('Requested weather region unavailable');
+    final row=matches.first;
+    final date=(row['forecastDate']??json['forecastDate']??json['updatedAt']??'').toString().replaceAll(RegExp(r'[^0-9]'),'');
+    final today=_clock().toUtc().add(const Duration(hours:9));
+    final wantedDate='${today.year}${today.month.toString().padLeft(2,'0')}${today.day.toString().padLeft(2,'0')}';
+    if(date.length<8||date.substring(0,8)!=wantedDate)throw const FormatException('Forecast is not for today');
+    for(final key in ['tempMin','tempMax','humidityMax','rainProbabilityMax']){final value=row[key];if(value is! num||!value.isFinite)throw const FormatException('Incomplete official forecast');}
+    if((row['tempMin'] as num)<-70||(row['tempMax'] as num)>60||(row['tempMin'] as num)>(row['tempMax'] as num)||(row['humidityMax'] as num)<0||(row['humidityMax'] as num)>100||(row['rainProbabilityMax'] as num)<0||(row['rainProbabilityMax'] as num)>100)throw const FormatException('Invalid forecast');
+    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,windSpeed:(row['windSpeedMax'] as num?)?.toDouble(),riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:row['updatedAt']?.toString()??json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache||row['status']=='STALE');
   }
 
   List<FarmHealthRisk> risks(WeatherFarmGuide weather){
+    if(!weather.hasForecast)return const [FarmHealthRisk('예보 미확인','확인 필요','공식 예보가 없어 기상 위험을 판단할 수 없습니다.','지역 설정·네트워크·공식 기준일을 확인하세요.')];
     final result=<FarmHealthRisk>[];
     if(weather.diurnalRange>=8)result.add(const FarmHealthRisk('호흡기 질환군 관찰','주의','큰 일교차와 외풍은 돼지의 스트레스를 높일 수 있습니다. 날씨만으로 PRRS·인플루엔자·흉막폐렴 등을 구분할 수 없습니다.','기침·재채기·복식호흡·발열·사료섭취 감소'));
     if(weather.humidity>=80)result.add(const FarmHealthRisk('설사성 질환군 관찰','주의','고습과 결로는 돈사 내 가스·오염 부담을 키울 수 있습니다. PED 등 감염병 여부는 임상증상과 검사로 확인해야 합니다.','결로·바닥 습윤·설사·구토·돈군 뭉침'));

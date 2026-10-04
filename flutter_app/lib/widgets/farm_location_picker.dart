@@ -16,7 +16,7 @@ class _FarmLocationPickerPageState extends State<FarmLocationPickerPage>{
   static const _towns=<String,List<String>>{
     '경상북도|김천시':['아포읍','농소면','남면','개령면','감문면','어모면','봉산면','대항면','감천면','조마면','구성면','지례면','부항면','대덕면','증산면'],
   };
-  @override void initState(){super.initState();final x=FarmLocationSettings.instance.location;province=x.province;city=x.cityCounty;town=x.town;}
+  @override void initState(){super.initState();final x=FarmLocationSettings.instance.location;province=x.province.isEmpty?FarmLocationSettings.locations.keys.first:x.province;city=x.cityCounty.isEmpty?FarmLocationSettings.locations[province]!.first.cityCounty:x.cityCounty;town=x.town;}
   List<String> get townList=>_towns['$province|$city']??(town.isEmpty?const[]:[town]);
   Future<void> _save()async{final base=FarmLocationSettings.locations[province]!.firstWhere((x)=>x.cityCounty==city);await FarmLocationSettings.instance.setLocation(FarmLocation(province:province,cityCounty:city,town:town,latitude:base.latitude,longitude:base.longitude));if(mounted)Navigator.pop(context);}
   @override Widget build(BuildContext context){final cities=FarmLocationSettings.locations[province]!;return Scaffold(backgroundColor:AppColors.background,appBar:AppBar(toolbarHeight:70,backgroundColor:Colors.transparent,centerTitle:true,leading:IconButton(onPressed:()=>Navigator.pop(context),icon:const Icon(Icons.arrow_back_ios_new_rounded)),title:const Column(children:[Text('지역 지원사업',style:TextStyle(fontSize:22,fontWeight:FontWeight.w900)),SizedBox(height:2),Text('지자체 공식 공고를 한곳에서 확인하세요.',style:TextStyle(fontSize:10.5,color:AppColors.secondary,fontWeight:FontWeight.w600))])),body:SafeArea(child:ListView(padding:const EdgeInsets.fromLTRB(14,5,14,26),children:[
