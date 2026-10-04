@@ -8,11 +8,12 @@ import '../services/api/kma_api_client.dart';
 import '../settings/farm_location_settings.dart';
 
 class WeatherFarmRepository {
-  WeatherFarmRepository({http.Client? client,KmaApiClient? kmaClient}):_client=client??http.Client(),_kmaClient=kmaClient??KmaApiClient(client:client);
+  WeatherFarmRepository({http.Client? client,KmaApiClient? kmaClient,DateTime Function()? clock}):_client=client??http.Client(),_kmaClient=kmaClient??KmaApiClient(client:client),_clock=clock??DateTime.now;
   static const _url='https://noah981.github.io/pig-market-brief/data/briefing.json';
   static const _cacheKey='weather_farm_guide_v2';
   final http.Client _client;
   final KmaApiClient _kmaClient;
+  final DateTime Function() _clock;
   static const fallback=WeatherFarmGuide(region:'지역 설정 필요',tempMin:double.nan,tempMax:double.nan,humidity:double.nan,rainProbability:double.nan,riskFactors:[],checks:['지역을 설정하고 공식 예보를 새로 조회해 주세요.'],updatedAt:'',source:'예보 미확인',fromCache:true);
 
   Future<WeatherFarmGuide> cached()async{
@@ -34,7 +35,7 @@ class WeatherFarmRepository {
       if(!lat.isFinite||!lng.isFinite||lat<33||lat>39||lng<124||lng>132)throw const FormatException('Invalid Korean coordinates');
       final forecast=await _kmaApi(lat,lng);
       final value=WeatherFarmGuide(region:location.label,tempMin:forecast.tempMin,tempMax:forecast.tempMax,humidity:forecast.humidityMax,rainProbability:forecast.rainProbabilityMax,windSpeed:forecast.windSpeedMax.isFinite?forecast.windSpeedMax:null,riskFactors:_riskLabels(forecast.tempMin,forecast.tempMax,forecast.humidityMax),checks:_checks(forecast.tempMin,forecast.tempMax,forecast.humidityMax),updatedAt:'${forecast.baseDate} ${forecast.baseTime}',source:'기상청 단기예보 조회서비스',fromCache:false);
-      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'windSpeedMax':value.windSpeed,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
+      await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode({'updatedAt':value.updatedAt,'weatherSource':value.source,'regions':[{'forecastDate':forecast.forecastDate,'region':value.region,'tempMin':value.tempMin,'tempMax':value.tempMax,'humidityMax':value.humidity,'rainProbabilityMax':value.rainProbability,'windSpeedMax':value.windSpeed,'riskFactors':value.riskFactors,'farmChecks':value.checks}]}));
       return value;
       } catch (_) { /* Try the matching official regional feed. */ }
     }
@@ -55,9 +56,13 @@ class WeatherFarmRepository {
     final matches=regions.where((x)=>x['region']==wanted||x['region']==FarmLocationSettings.instance.location.label).toList();
     if(matches.isEmpty)throw const FormatException('Requested weather region unavailable');
     final row=matches.first;
+    final date=(row['forecastDate']??json['forecastDate']??json['updatedAt']??'').toString().replaceAll(RegExp(r'[^0-9]'),'');
+    final today=_clock().toUtc().add(const Duration(hours:9));
+    final wantedDate='${today.year}${today.month.toString().padLeft(2,'0')}${today.day.toString().padLeft(2,'0')}';
+    if(date.length<8||date.substring(0,8)!=wantedDate)throw const FormatException('Forecast is not for today');
     for(final key in ['tempMin','tempMax','humidityMax','rainProbabilityMax']){final value=row[key];if(value is! num||!value.isFinite)throw const FormatException('Incomplete official forecast');}
-    if((row['tempMin'] as num)>(row['tempMax'] as num)||(row['humidityMax'] as num)<0||(row['humidityMax'] as num)>100||(row['rainProbabilityMax'] as num)<0||(row['rainProbabilityMax'] as num)>100)throw const FormatException('Invalid forecast');
-    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,windSpeed:(row['windSpeedMax'] as num?)?.toDouble(),riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache);
+    if((row['tempMin'] as num)<-70||(row['tempMax'] as num)>60||(row['tempMin'] as num)>(row['tempMax'] as num)||(row['humidityMax'] as num)<0||(row['humidityMax'] as num)>100||(row['rainProbabilityMax'] as num)<0||(row['rainProbabilityMax'] as num)>100)throw const FormatException('Invalid forecast');
+    return WeatherFarmGuide(region:row['region']?.toString()??preferredRegion,tempMin:(row['tempMin'] as num?)?.toDouble()??0,tempMax:(row['tempMax'] as num?)?.toDouble()??0,humidity:(row['humidityMax'] as num?)?.toDouble()??0,rainProbability:(row['rainProbabilityMax'] as num?)?.toDouble()??0,windSpeed:(row['windSpeedMax'] as num?)?.toDouble(),riskFactors:(row['riskFactors'] as List? ?? const []).map((x)=>x.toString()).toList(),checks:(row['farmChecks'] as List? ?? row['top3'] as List? ?? const []).map((x)=>x.toString()).toList(),updatedAt:row['updatedAt']?.toString()??json['updatedAt']?.toString()??'',source:json['weatherSource']?.toString()??'기상청',fromCache:fromCache||row['status']=='STALE');
   }
 
   List<FarmHealthRisk> risks(WeatherFarmGuide weather){

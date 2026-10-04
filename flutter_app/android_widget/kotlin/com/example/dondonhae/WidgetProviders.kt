@@ -81,7 +81,10 @@ object WidgetStore {
         val row = (0 until (rows?.length() ?: 0)).mapNotNull { rows?.optJSONObject(it) }
             .firstOrNull { it.optString("region") == label || it.optString("region") == configured || it.optString("region") == province }
         val region = row?.optString("region") ?: configured.ifBlank { "지역 미설정" }
-        return WeatherData(region, row?.number("tempMax"), row?.number("rainProbabilityMax"), row?.number("humidityMax"), root?.optString("updatedAt") ?: "")
+        val today = SimpleDateFormat("yyyyMMdd", Locale.KOREA).apply { timeZone = java.util.TimeZone.getTimeZone("Asia/Seoul") }.format(Date())
+        val forecastDate = (row?.optString("forecastDate")?.takeIf { it.isNotBlank() } ?: root?.optString("updatedAt") ?: "").filter { it.isDigit() }.take(8)
+        val current = row?.takeIf { forecastDate == today }
+        return WeatherData(region, current?.number("tempMax"), current?.number("rainProbabilityMax"), current?.number("humidityMax"), if(current == null) "" else root?.optString("updatedAt") ?: "")
     }
 
     fun todos(context: Context): List<String> {

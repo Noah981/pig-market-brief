@@ -70,7 +70,7 @@ jobs:
         env:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
-          python -m unittest scripts.test_disease_classifier scripts.test_android_release_signing
+          python -m unittest scripts.test_disease_classifier scripts.test_android_release_signing scripts.test_weather_data
           PYTHONPATH=scripts python -m unittest scripts/test_platform.py
           python scripts/fetch_disease_alerts.py
           python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True, 'Official disease coverage not verified; release blocked'"
@@ -89,7 +89,7 @@ jobs:
           flutter test --update-goldens test/layout_test.dart
       - name: Render actual Android RemoteViews widget
         working-directory: flutter_app/android
-        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest
+        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest
       - name: Build release APK
         env:
           DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
