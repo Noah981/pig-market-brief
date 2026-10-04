@@ -27,6 +27,10 @@ class PriceCardArtworkTest {
         val reference = PriceCardArtwork.render(context, 1332, 765, fixture, "10월 3일 (토)")
         val updated = PriceCardArtwork.render(context, 1332, 765, fixture.copy(price=7123.0,change=-70.0,percent=-1.0,date="20261005"), "10월 6일 (화)")
         assertEquals(0, Color.alpha(reference.getPixel(0, 0)))
+        val supplied=context.assets.open("widget/price_card_reference.jpg").use { android.graphics.BitmapFactory.decodeStream(it) }
+        // At reference size, ornament and brand pixels must come from the source.
+        for ((x,y) in listOf(960 to 500,1120 to 670,135 to 135,310 to 130)) assertEquals(supplied.getPixel(x+102,y+130),reference.getPixel(x,y))
+        supplied.recycle()
         // The pig/heart/flower region remains identical when all live text changes.
         for (x in 740 until 1280 step 7) for (y in 170 until 740 step 7) assertEquals(reference.getPixel(x,y),updated.getPixel(x,y))
         var changed=0

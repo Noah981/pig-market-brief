@@ -42,6 +42,7 @@ widget_assets=android_main/"assets/widget"
 widget_assets.mkdir(parents=True,exist_ok=True)
 shutil.copy2(root/"assets/images/widget/price_card_art.png",widget_assets/"price_card_art.png")
 shutil.copy2(root/"assets/fonts/NotoSansKR.ttf",widget_assets/"NotoSansKR.ttf")
+shutil.copy2(root/"assets/images/widget/price_card_reference.png",widget_assets/"price_card_reference.jpg")
 shutil.copy2(root/"assets/images/widget/price_card_reference.png",drawable/"widget_price_preview.jpg")
 if (root/"android_widget_test").exists():
     shutil.copytree(root/"android_widget_test",root/"android/app/src/test",dirs_exist_ok=True)

@@ -23,6 +23,21 @@ object PriceCardArtwork {
         val art = context.assets.open("widget/price_card_art.png").use { BitmapFactory.decodeStream(it) }
         canvas.drawBitmap(art, crop, RectF(0f, 0f, WIDTH, HEIGHT), Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
         art.recycle()
+        // Preserve the supplied illustration's actual pixels outside live fields.
+        // The edited asset is used only beneath the four changing data regions.
+        val original = context.assets.open("widget/price_card_reference.jpg").use { BitmapFactory.decodeStream(it) }
+        val staticRegions = Path().apply {
+            fillType = Path.FillType.EVEN_ODD
+            addRect(0f, 0f, WIDTH, HEIGHT, Path.Direction.CW)
+            listOf(RectF(998f,195f,1390f,281f),RectF(165f,461f,480f,524f),RectF(155f,535f,805f,704f),RectF(162f,719f,767f,825f)).forEach {
+                addRect(it.left-102,it.top-130,it.right-102,it.bottom-130,Path.Direction.CW)
+            }
+        }
+        canvas.save()
+        canvas.clipPath(staticRegions)
+        canvas.drawBitmap(original, crop, RectF(0f, 0f, WIDTH, HEIGHT), Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
+        canvas.restore()
+        original.recycle()
         val korean = Typeface.createFromAsset(context.assets, "widget/NotoSansKR.ttf")
         val heavy = Typeface.create("sans-serif-black", Typeface.NORMAL)
         fun text(value: String, x: Float, baseline: Float, size: Float, color: Int, face: Typeface, maxWidth: Float) {
