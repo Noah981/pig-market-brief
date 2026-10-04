@@ -76,10 +76,10 @@ class MarketOverviewPage extends StatelessWidget {
       child: Column(children: [
         const Align(alignment:Alignment.centerLeft,child:Text('원료는 월평균 · 돈가와 유가는 공표일 기준',style:TextStyle(fontSize:11,color:AppColors.secondary))),
         const SizedBox(height:8),
-        GridView.count(
-          crossAxisCount: 2, shrinkWrap: true,
+        GridView(
+          shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 7, crossAxisSpacing: 7, mainAxisExtent: 220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.6),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.6)),
           children: tiles,
         ),
         const SizedBox(height: 7),
