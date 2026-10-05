@@ -320,7 +320,9 @@ void main() {
         await DisplaySettings.instance.setTextScale(scale);
         for(final nav in [0,1,2,3,4]){
           await tester.tap(find.byKey(ValueKey('nav_$nav')));await tester.pumpAndSettle();
-          expect(tester.takeException(),isNull,reason:'nav $nav width $width scale $scale');
+          final error=tester.takeException();
+          expect(error,isNull,reason:'nav $nav width $width scale $scale ${error is FlutterError?error.toStringDeep():error}');
+          if(width==390&&scale==1.45&&[0,1,2].contains(nav)){await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/large_nav_${nav}_390.png'));}
           if(nav==0){await tester.drag(find.byType(CustomScrollView).first,const Offset(0,-520));await tester.pumpAndSettle();expect(tester.takeException(),isNull);}
         }
         await DisplaySettings.instance.setTextScale(1.15);

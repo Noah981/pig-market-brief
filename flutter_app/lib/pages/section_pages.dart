@@ -80,7 +80,7 @@ class MarketOverviewPage extends StatelessWidget {
         GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.6)),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:MediaQuery.textScalerOf(context).scale(1)>1.3?1:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.8)),
           children: tiles,
         ),
         const SizedBox(height: 7),
