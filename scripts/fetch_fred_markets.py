@@ -125,7 +125,7 @@ def fetch_one(name, spec):
                     # curl negotiates a different HTTP transport on CI runners.
                     # TLS verification stays enabled; both endpoints are FRED.
                     result=subprocess.run(['curl','--fail','--location','--compressed','--silent','--show-error','--max-time','20','--max-filesize','2000000','--user-agent','Dondonhae/1.8',url],capture_output=True,timeout=25)
-                    if result.returncode:raise OSError('Official FRED alternate transport failed')
+                    if result.returncode:raise OSError(f'Official FRED transport exit {result.returncode}')
                     raw=result.stdout
                 if len(raw)>2_000_000:raise ValueError('payload too large')
                 return parser(name,spec,raw)
