@@ -35,6 +35,11 @@ class PlatformTests(unittest.TestCase):
   self.assertEqual(row['date'],'2026-09-11')
   self.assertEqual(row['previousDate'],'2026-09-10')
   self.assertEqual(len(row['history']),2)
+ def test_market_refresh_preserves_notice_connection_status(self):
+  previous={'markets':[],'benefits':[{'id':'notice'}],'sourceStatus':[{'id':'bizinfo','status':'API 승인 또는 키 연결 대기'}]}
+  result=update(previous,[])
+  self.assertEqual(result['benefits'],previous['benefits'])
+  self.assertEqual(result['sourceStatus'][0]['id'],'bizinfo')
  def test_failed_source_preserves_last_good(self):
   previous={'markets':[{'name':'wti','value':100}],'benefits':[]}
   result=update(previous,[])

@@ -311,7 +311,7 @@ void main() {
   }
   for(final width in const [360.0,390.0,412.0]){
     for(final scale in const [1.45,1.8]){
-      testWidgets('전체 메뉴 ${width}dp ${scale}배 가상 실행',(tester)async{
+      testWidgets('전체 메뉴 $width dp $scale 배 가상 실행',(tester)async{
         tester.view.physicalSize=Size(width,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
         tester.platformDispatcher.textScaleFactorTestValue=scale;addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
         await DisplaySettings.instance.load();
