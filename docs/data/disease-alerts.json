@@ -5,7 +5,7 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-05T22:33:44.427974+09:00",
+      "checkedAt": "2026-10-05T22:37:04.760195+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
@@ -1594,11 +1594,11 @@
       }
     }
   },
-  "fmdDisclosureVerified": true,
-  "coverageVerified": true,
-  "asfDisclosureVerified": true,
+  "fmdDisclosureVerified": false,
+  "coverageVerified": false,
+  "asfDisclosureVerified": false,
   "coverageScope": "국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-05T22:34:20.605215+09:00",
+  "updatedAt": "2026-10-05T22:39:09.876775+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
