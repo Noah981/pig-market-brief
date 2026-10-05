@@ -37,8 +37,16 @@ jobs:
         run: python scripts/platform_pipeline.py
       - name: Collect official livestock support notices
         env:
-          BIZINFO_API_KEY: ${{ secrets.BIZINFO_API_KEY }}
-        run: python scripts/fetch_official_benefits.py || echo "Benefit fetch failed; keeping previous cached data"
+          BIZINFO_API_KEY: ${{ secrets.BIZINFO_API_KEY || secrets.BIZINFO_SUPPORT_PROGRAM_API }}
+          BIZINFO_CANONICAL_CONFIGURED: ${{ secrets.BIZINFO_API_KEY != '' }}
+          BIZINFO_LEGACY_CONFIGURED: ${{ secrets.BIZINFO_SUPPORT_PROGRAM_API != '' }}
+        run: |
+          python - <<'PY_BIZINFO'
+          import os
+          for name, marker in [('BIZINFO_API_KEY', 'BIZINFO_CANONICAL_CONFIGURED'), ('BIZINFO_SUPPORT_PROGRAM_API', 'BIZINFO_LEGACY_CONFIGURED')]:
+              print(name + ' configured: ' + str(os.getenv(marker, '').lower() == 'true'))
+          PY_BIZINFO
+          python scripts/fetch_official_benefits.py || echo "Benefit fetch failed; keeping previous cached data"
       # Independent market-fast.yml publishes these observations every 15 min.
       # This longer weather/disease job must not overwrite its connection state.
       - name: Build briefing
