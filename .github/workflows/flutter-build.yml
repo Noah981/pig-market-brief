@@ -49,6 +49,14 @@ jobs:
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Render actual Android RemoteViews widget
+        working-directory: flutter_app/android
+        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest --tests com.example.dondonhae.NativeGradeRefreshTest
+      - name: Use the four verified native widget previews
+        run: |
+          for kind in small medium large today; do
+            cp "flutter_app/android/app/build/widget-screenshots/four_${kind}_fixture.png" "flutter_app/android/app/src/main/res/drawable/widget_${kind}_preview.png"
+          done
       - name: Verify official API connectivity
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
@@ -95,14 +103,6 @@ jobs:
           flutter test test/official_api_clients_test.dart
           flutter test test/live_market_driver_builder_test.dart
           flutter test --update-goldens test/layout_test.dart
-      - name: Render actual Android RemoteViews widget
-        working-directory: flutter_app/android
-        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest --tests com.example.dondonhae.NativeGradeRefreshTest
-      - name: Use the four verified native widget previews
-        run: |
-          for kind in small medium large today; do
-            cp "flutter_app/android/app/build/widget-screenshots/four_${kind}_fixture.png" "flutter_app/android/app/src/main/res/drawable/widget_${kind}_preview.png"
-          done
       - name: Build release APK
         env:
           DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
