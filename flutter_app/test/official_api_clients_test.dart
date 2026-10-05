@@ -80,6 +80,22 @@ void main() {
     expect(result.tempMin, 18); expect(result.tempMax, 27); expect(result.humidityMax, 85);
   });
 
+  test('MAFRA 전체 페이지에서 순서와 무관하게 구제역과 PED를 유지한다',()async{
+    final requested=<String>[];
+    final rows=[{'LKNTS_NM':'구제역','ICTSD_OCCRRNC_NO':'fmd-new'},{'LKNTS_NM':'돼지유행성설사','ICTSD_OCCRRNC_NO':'ped-new'},{'LKNTS_NM':'PRRS'},{'LKNTS_NM':'ASF'},{'LKNTS_NM':'구제역'}];
+    final client=MafraApiClient(apiKey:'test',client:MockClient((request)async{
+      final parts=request.url.pathSegments;final start=int.parse(parts[parts.length-2]),end=int.parse(parts.last);
+      requested.add('$start/$end');
+      return http.Response.bytes(utf8.encode(jsonEncode({'Grid_20151204000000000316_1':{'totalCnt':5,'RESULT':{'CODE':'INFO-000'},'row':rows.sublist(start-1,end)}})),200);
+    }));
+    final result=await client.fetch(pageSize:2);
+    expect(result.length,5);expect(result.first.pick(['ICTSD_OCCRRNC_NO']),'fmd-new');expect(result[1].pick(['ICTSD_OCCRRNC_NO']),'ped-new');expect(requested,containsAll(['1/2','3/4','5/5']));
+  });
+  test('MAFRA 일부 페이지 누락은 전체 조회 성공으로 표시하지 않는다',()async{
+    final client=MafraApiClient(apiKey:'test',client:MockClient((request)async=>http.Response(jsonEncode({'Grid_20151204000000000316_1':{'totalCnt':5,'RESULT':{'CODE':'INFO-000'},'row':[{'LKNTS_NM':'PED'}]}}),200)));
+    await expectLater(client.fetch(pageSize:2),throwsA(isA<Exception>()));
+  });
+
   test('MAFRA 공식 Grid 행을 파싱한다', () async {
     final body = {'Grid_20151204000000000316_1': {'totalCnt': 1, 'RESULT': {'CODE': 'INFO-000'}, 'row': [{'LKNTS_NM': '아프리카돼지열병'}]}};
     final client = MafraApiClient(apiKey: 'test', client: MockClient((_) async => http.Response.bytes(utf8.encode(jsonEncode(body)), 200)));

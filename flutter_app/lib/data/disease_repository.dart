@@ -18,11 +18,12 @@ class DiseaseRepository {
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey)??await rootBundle.loadString('assets/data/disease-alerts.json');
     return _parse(raw,true);
   }
-  Future<DiseaseFeed> refresh()async{
+  Future<DiseaseFeed> refresh({bool checkOfficial=true})async{
     try{
-      final hosted=await _fromHosted();
+      DiseaseFeed hosted;
+      try{hosted=await _fromHosted();}catch(_){if(!checkOfficial||!ApiConfig.hasMafra)rethrow;hosted=await cached();}
       DiseaseFeed feed=hosted;
-      if(ApiConfig.hasMafra){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
+      if(checkOfficial&&ApiConfig.hasMafra){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
       await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(_feedJson(feed)));
       return feed;
     }catch(error){
@@ -37,6 +38,10 @@ class DiseaseRepository {
       final livestock=row.pick(const ['LVSTCKSPC_NM','LSK_NM']);
       if(type==null)continue;
       final occurrence=row.pick(const ['OCCRRNC_DE','OCCRRNC_DT','FRST_OCRN_DT']);if(occurrence.isEmpty)continue;
+      final digits=occurrence.replaceAll(RegExp(r'[^0-9]'),'');
+      if(digits.length<8)continue;
+      final date=DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');
+      if(date==null||date.isAfter(_clock())||_clock().difference(date).inDays>366)continue;
       final address=row.pick(const ['FARM_LOCPLC','OCCRRNC_AREA','ADDR']);
       final id=row.pick(const ['ICTSD_OCCRRNC_NO','OCCRRNC_NO']);
       final coordinate=await _coordinate(row,address,occurrence);
