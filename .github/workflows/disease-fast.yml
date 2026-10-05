@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['scripts/fetch_disease_alerts.py', '.github/workflows/disease-fast.yml']
+    paths: ['scripts/fetch_disease_alerts.py', 'scripts/disease_supplementary.py', '.github/workflows/disease-fast.yml']
   schedule:
     - cron: '*/5 * * * *'
 permissions:
@@ -23,7 +23,7 @@ jobs:
         env:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
-          python -m unittest scripts/test_disease_classifier.py
+          python -m unittest scripts.test_disease_classifier scripts.test_disease_supplementary
           python scripts/fetch_disease_alerts.py
       - name: Publish changed disease feed
         run: |

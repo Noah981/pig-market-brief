@@ -70,7 +70,7 @@ jobs:
         env:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
-          python -m unittest scripts.test_disease_classifier scripts.test_android_release_signing scripts.test_weather_data
+          python -m unittest scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_android_release_signing scripts.test_weather_data
           PYTHONPATH=scripts python -m unittest scripts/test_platform.py
           python scripts/fetch_disease_alerts.py
           python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True, 'Official disease coverage not verified; release blocked'"

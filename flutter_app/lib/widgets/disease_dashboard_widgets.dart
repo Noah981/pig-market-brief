@@ -4,10 +4,10 @@ import '../models/disease_models.dart';
 import '../theme/app_theme.dart';
 
 class DiseaseSummaryCard extends StatelessWidget {
-  const DiseaseSummaryCard({super.key,required this.type,required this.count,required this.selected,required this.verified,required this.onTap});
+  const DiseaseSummaryCard({super.key,required this.type,required this.count,required this.selected,required this.verified,required this.onTap,this.statistical=false});
   final DiseaseType type;
   final int count;
-  final bool selected,verified;
+  final bool selected,verified,statistical;
   final VoidCallback onTap;
   @override Widget build(BuildContext context){
     final color=switch(type){DiseaseType.asf||DiseaseType.fmd=>AppColors.coral,DiseaseType.ped=>const Color(0xFF9964CB),DiseaseType.prrs=>const Color(0xFF56BEB9)};
@@ -17,7 +17,7 @@ class DiseaseSummaryCard extends StatelessWidget {
         Row(children:[SizedBox(width:21,height:21,child:CustomPaint(painter:_DiseaseSymbol(type,color))),const SizedBox(width:5),Expanded(child:FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child:Text(type.label,style:const TextStyle(fontSize:12,fontWeight:FontWeight.w900))))]),
         const SizedBox(height:2),Text('${type.legalGroup} 법정질병',maxLines:1,style:const TextStyle(fontSize:7,color:AppColors.secondary)),
         const SizedBox(height:5),Text(verified||count>0?'$count건':'—',style:TextStyle(fontSize:16,height:1.1,fontWeight:FontWeight.w900,color:count>0?AppColors.coral:AppColors.text)),
-        const SizedBox(height:3),Row(children:[Expanded(child:FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child:Text(count>0?'최근 1년':verified?'조회 자료 없음':'조회 확인 중',style:const TextStyle(fontSize:7.5,color:AppColors.secondary,fontWeight:FontWeight.w600)))),const Icon(Icons.chevron_right,size:13,color:AppColors.secondary)]),
+        const SizedBox(height:3),Row(children:[Expanded(child:FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child:Text(statistical?'공식 발생통계':count>0?'최근 1년':verified?'조회 자료 없음':'조회 확인 중',style:const TextStyle(fontSize:7.5,color:AppColors.secondary,fontWeight:FontWeight.w600)))),const Icon(Icons.chevron_right,size:13,color:AppColors.secondary)]),
       ])));
   }
 }

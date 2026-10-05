@@ -108,14 +108,14 @@ void main() {
     tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(theme:AppTheme.light,home:const DiseasePage()));await tester.pump(const Duration(milliseconds:800));
     await tester.tap(find.byKey(const ValueKey('disease_filter')));await tester.pumpAndSettle();
-    await tester.tap(find.text('PED만 보기').last);await tester.pumpAndSettle();expect(find.text('PED만 보기 ▼'),findsOneWidget);
+    await tester.tap(find.text('구제역만 보기').last);await tester.pumpAndSettle();expect(find.text('구제역만 보기 ▼'),findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('disease_period_90')));await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('disease_map_zoom_in')));await tester.pump();
     final viewer=tester.widget<InteractiveViewer>(find.byKey(const ValueKey('disease_map_view')));
     expect(viewer.transformationController!.value.getMaxScaleOnAxis(),greaterThan(1));
     await tester.tap(find.byKey(const ValueKey('disease_map_zoom_out')));await tester.pump();expect(viewer.transformationController!.value.getMaxScaleOnAxis(),1);
     await tester.tap(find.byKey(const ValueKey('disease_layers')));await tester.pump();
-    final more=find.byKey(const ValueKey('disease_more'));await tester.ensureVisible(more);await tester.tap(more);await tester.pumpAndSettle();expect(find.text('PED 공식 발생·통보 내역'),findsOneWidget);
+    final more=find.byKey(const ValueKey('disease_more'));await tester.ensureVisible(more);await tester.tap(more);await tester.pumpAndSettle();expect(find.text('구제역 공식 발생·통보 내역'),findsOneWidget);
     await tester.pageBack();await tester.pumpAndSettle();
     final risk=find.byKey(const ValueKey('disease_risk_help'));await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();expect(find.text('방역경보 LEVEL 안내'),findsOneWidget);
     expect(tester.takeException(),isNull);
