@@ -76,9 +76,10 @@ object PriceCardArtwork {
             }
             Kind.MEDIUM->{
                 clear(603f,37f,720f,86f);text(today,612f,70f,24f,muted,110f)
-                clear(35f,111f,301f,215f);price(40f,192f,94f,315f)
-                clear(37f,216f,310f,275f);delta(46f,253f,34f,265f)
+                clear(35f,111f,370f,215f)
+                clear(37f,216f,310f,275f)
                 clear(307f,102f,909f,341f);chart(c,data,RectF(310f,116f,830f,291f),font,true)
+                price(40f,192f,94f,315f);delta(46f,253f,34f,265f)
                 text(basis+" · 다봄",42f,321f,17f,muted,260f)
             }
             Kind.LARGE->{
