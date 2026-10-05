@@ -413,6 +413,11 @@
       "date": "20261001",
       "price": 6027,
       "sourceType": "dabom-headline"
+    },
+    {
+      "date": "20261002",
+      "price": 6057,
+      "sourceType": "dabom-headline"
     }
   ]
 }
