@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/benefit_repository.dart';
+import '../services/data_refresh_service.dart';
 import '../models/benefit_models.dart';
 import '../settings/farm_location_settings.dart';
 import '../theme/app_theme.dart';
@@ -15,8 +16,9 @@ class _BenefitPageState extends State<BenefitPage>{
  final categories=< _Category>[
   _Category('전체',Icons.grid_view_rounded,null),_Category('시설·장비',Icons.account_tree_outlined,RegExp(r'시설|장비|ICT|환기|스마트')),_Category('방역·질병',Icons.health_and_safety_outlined,RegExp(r'방역|질병|소독|구제역|ASF|PED|PRRS')),_Category('환경·저탄소',Icons.eco_outlined,RegExp(r'환경|저탄소|분뇨|악취|질소|에너지')),_Category('사료·사양',Icons.scale_outlined,RegExp(r'사료|사양|종축|가축')),_Category('교육·컨설팅',Icons.school_outlined,RegExp(r'교육|컨설팅|청년|경영')),
  ];
- @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_locationChanged);_load();}
- @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);super.dispose();}
+ @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_locationChanged);DataRefreshService.revision.addListener(_updated);_load();}
+ @override void dispose(){FarmLocationSettings.instance.removeListener(_locationChanged);DataRefreshService.revision.removeListener(_updated);super.dispose();}
+ Future<void> _updated()async{final feed=await _repository.cached();if(mounted)setState(()=>_feed=feed);}
  void _locationChanged(){if(mounted)setState((){});}
  Future<void> _load()async{try{final c=await _repository.cached();if(mounted)setState(()=>_feed=c);}catch(_){}await _refresh();}
  Future<void> _refresh()async{if(_loading)return;setState(()=>_loading=true);try{final f=await _repository.refresh();if(mounted)setState(()=>_feed=f);}catch(_){}finally{if(mounted)setState(()=>_loading=false);}}

@@ -323,7 +323,8 @@ void main() {
           final error=tester.takeException();
           expect(error,isNull,reason:'nav $nav width $width scale $scale ${error is FlutterError?error.toStringDeep():error}');
           if(width==390&&scale==1.45&&[0,1,2].contains(nav)){await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/large_nav_${nav}_390.png'));}
-          if(nav==0){await tester.drag(find.byType(CustomScrollView).first,const Offset(0,-520));await tester.pumpAndSettle();expect(tester.takeException(),isNull);}
+          final scroll=find.byWidgetPredicate((w)=>w is Scrollable&&w.axisDirection==AxisDirection.down);
+          if(scroll.evaluate().isNotEmpty){for(var i=0;i<3;i++){await tester.drag(scroll.first,const Offset(0,-520));await tester.pumpAndSettle();expect(tester.takeException(),isNull,reason:'scroll nav $nav width $width scale $scale');}}
         }
         await DisplaySettings.instance.setTextScale(1.15);
       });

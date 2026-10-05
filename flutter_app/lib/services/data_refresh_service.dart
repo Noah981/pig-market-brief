@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/commodity_repository.dart';
 import '../data/benefit_repository.dart';
@@ -11,6 +12,7 @@ import 'widget_update_service.dart';
 
 class DataRefreshService {
   DataRefreshService._();
+  static final revision=ValueNotifier<int>(0);
   static const _lastCheckKey='official_api_last_check_v1';
   static const minInterval=Duration(minutes:5);
 
@@ -34,6 +36,7 @@ class DataRefreshService {
     ]);
     await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
     await WidgetUpdateService.updateAll();
+    revision.value++;
     return true;
   }
 
