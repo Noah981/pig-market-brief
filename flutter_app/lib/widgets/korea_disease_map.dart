@@ -61,7 +61,7 @@ class _KoreaDiseaseMapState extends State<KoreaDiseaseMap>{
         });
       })),
   );
-  Widget _control(String key,String tooltip,IconData icon,VoidCallback action)=>IconButton(key:ValueKey(key),tooltip:tooltip,onPressed:action,icon:Icon(icon,size:20,color:const Color(0xFF636B77)),padding:const EdgeInsets.all(6),constraints:const BoxConstraints(minHeight:29,minWidth:30));
+  Widget _control(String key,String tooltip,IconData icon,VoidCallback action)=>IconButton(key:ValueKey(key),tooltip:tooltip,onPressed:action,icon:Icon(icon,size:20,color:const Color(0xFF636B77)),style:IconButton.styleFrom(tapTargetSize:MaterialTapTargetSize.shrinkWrap),padding:const EdgeInsets.all(6),constraints:const BoxConstraints.tightFor(height:29,width:30));
 
   void _tap(Offset point,_Projection projection){
     DiseaseAlert? target;var shortest=double.infinity;
@@ -101,8 +101,9 @@ class _Projection{
   static const minLon=124.45,maxLon=132.05,minLat=32.9,maxLat=38.75,padding=8.0;
   Offset point(double lon,double lat){
     // A single geographical scale preserves the reference map proportions.
-    // Longitude is corrected for Korea's mean latitude; no pixel markers.
-    const cosine=.809016994;
+    // Equirectangular geographic projection matches the reference viewport.
+    // Every boundary and marker still comes from longitude/latitude.
+    const cosine=1.0;
     final width=math.max(1.0,size.width-padding*2),height=math.max(1.0,size.height-padding*2);
     final scale=math.min(width/((maxLon-minLon)*cosine),height/(maxLat-minLat));
     return Offset((size.width-(maxLon-minLon)*cosine*scale)/2+(lon-minLon)*cosine*scale,(size.height-(maxLat-minLat)*scale)/2+(maxLat-lat)*scale);

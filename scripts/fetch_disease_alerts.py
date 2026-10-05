@@ -267,7 +267,7 @@ def main():
  items=[];coverage=False
  previous=json.loads(OUT.read_text()) if OUT.exists() else {}
  statistics=previous.get('statistics',{})
- fmd_verified=False
+ fmd_verified=False;ped_verified=False
  try:
   table=fmd_disclosures(datetime.now(KST));fmd_verified=True
   items+=table
@@ -276,7 +276,7 @@ def main():
   print('FMD disclosure unavailable:',type(error).__name__)
   items+=[x for x in previous.get('items',[]) if str(x.get('id','')).startswith('MAFRA-FMD-TABLE|')]
  try:
-  statistics['ped']=ped_statistics(datetime.now(KST))
+  statistics['ped']=ped_statistics(datetime.now(KST));ped_verified=True
   print('PED official statistical reports verified',statistics['ped']['periods']['365']['farmCount'])
  except Exception as error:
   print('PED statistics unavailable:',type(error).__name__)
@@ -313,7 +313,7 @@ def main():
  for x in items:
   key=(x.get("id"),x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
- payload={"schemaVersion":5,"statistics":statistics,"fmdDisclosureVerified":fmd_verified,"coverageVerified":coverage and asf_verified and fmd_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ payload={"schemaVersion":5,"pedStatisticsVerified":ped_verified,"statistics":statistics,"fmdDisclosureVerified":fmd_verified,"coverageVerified":coverage and asf_verified and fmd_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
 
