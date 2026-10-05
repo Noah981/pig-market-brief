@@ -52,7 +52,7 @@ class CommodityRepository {
     final refreshed=<String,Commodity>{};
     await Future.wait({
       'corn':'PMAIZMTUSDM','soybean_meal':'PSMEAUSDM','wheat':'PWHEAMTUSDM','soybean':'PSOYBUSDM','wti':'DCOILWTICO','usd_krw':'DEXKOUS'
-    }.entries.map((entry)async{try{refreshed[entry.key]=await _fred(entry.key,entry.value);}catch(_){}}));
+    }.entries.where((entry)=>!values.any((x)=>x.id==entry.key&&x.hasQuote&&x.status=='LIVE'&&(x.source.contains('World Bank')||x.source.contains('ECOS')||x.source=='미국 에너지정보청 EIA'))).map((entry)async{try{refreshed[entry.key]=await _fred(entry.key,entry.value);}catch(_){}}));
     if(refreshed.isNotEmpty)values=values.map((x){final latest=refreshed[x.id];return latest!=null&&(!x.hasQuote||latest.asOf.compareTo(x.asOf)>=0)?latest:x;}).toList();
     if (ApiConfig.hasEcos) {
       try {

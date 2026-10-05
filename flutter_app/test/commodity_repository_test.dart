@@ -9,6 +9,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
+  test('공식 원자료의 가격과 추세를 FRED 대체 자료로 덮어쓰지 않는다', () async {
+    var cornFallbackRequests=0;
+    final repository=CommodityRepository(client:MockClient((request) async {
+      if(request.url.host=='fred.stlouisfed.org'){
+        if(request.url.queryParameters['id']=='PMAIZMTUSDM')cornFallbackRequests++;
+        return http.Response('observation_date,PMAIZMTUSDM\n2026-08-01,900\n2026-09-01,950',200);
+      }
+      return http.Response.bytes(utf8.encode(jsonEncode({'markets':[{
+        'name':'corn','value':239.6,'previousValue':224,'changePct':6.96,
+        'date':'2026-09-01','previousDate':'2026-08-01','unit':r'$/톤',
+        'frequency':'monthly','source':'세계은행 World Bank Pink Sheet','status':'LIVE',
+        'history':[{'date':'2026-08-01','value':224},{'date':'2026-09-01','value':239.6}]
+      }]})),200);
+    }));
+    final corn=(await repository.refresh()).first;
+    expect(corn.value,'239.60');
+    expect(corn.source,contains('World Bank'));
+    expect(corn.history.first.value,224);
+    expect(cornFallbackRequests,0);
+  });
+
   test('검증된 시황 값·출처·주기·그래프를 보존한다', () async {
     final payload = {
       'markets': [
