@@ -158,7 +158,7 @@ object PriceCardArtwork {
             c.drawText(money(high),r.right+18,r.top+8,p);c.drawText(money(low),r.right+18,r.bottom,p)
             for(i in 0..5){val index=i*(rows.size-1)/5;val d=rows[index].date;val label=d.substring(4,6).toInt().toString()+"."+d.substring(6,8).toInt();c.drawText(label,r.left+i*r.width()/5-9,r.bottom+31,p)}
             val bubbleTop=(if(ey-r.top<65f)ey+14f else ey-81f).coerceIn(r.top,r.bottom-42f)
-            p.color=0xFF20272D.toInt();c.drawRoundRect(RectF(ex-45,bubbleTop,ex+45,bubbleTop+42),14f,14f,p);p.color=white;p.textSize=23f;c.drawText(money(rows.last().price),ex-35,bubbleTop+29,p)
+            p.color=0xFF20272D.toInt();c.drawRoundRect(RectF(ex-95,bubbleTop,ex-5,bubbleTop+42),14f,14f,p);p.color=white;p.textSize=23f;c.drawText(money(rows.last().price),ex-85,bubbleTop+29,p)
         }
     }
 }
