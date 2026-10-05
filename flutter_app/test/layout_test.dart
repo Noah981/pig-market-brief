@@ -73,7 +73,7 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'official_dabom_producer_pig_price_v4':jsonEncode({'price':price,'history':history}),
       'verified_commodity_market_v2':File('../docs/data/platform.json').readAsStringSync(),
-      'verified_disease_feed_v5':File('../docs/data/disease-alerts.json').readAsStringSync(),
+      'verified_disease_feed_v6':File('../docs/data/disease-alerts.json').readAsStringSync(),
     });
   });
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));

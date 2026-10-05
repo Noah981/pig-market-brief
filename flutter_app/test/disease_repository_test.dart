@@ -25,8 +25,13 @@ void main(){
     final feed=await repo.refresh();expect(feed.items,isEmpty);expect(feed.statistics['ped']['periods']['365']['farmCount'],56);
     expect((await repo.cached()).statistics['ped']['periods']['365']['animalCount'],4198);
   });
+  test('구제역 보완 전의 과거 피드를 완전한 최신 조회로 인정하지 않는다',()async{
+    final payload={'schemaVersion':4,'coverageVerified':true,'updatedAt':DateTime.now().toIso8601String(),'items':[]};
+    final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)));
+    final feed=await repo.refresh(checkOfficial:false);expect(feed.state,DiseaseDataState.reviewRequired);expect(feed.coverageVerified,isFalse);
+  });
   test('과거의 검증 완료 피드도 최신 경보 없음으로 사용하지 않는다',()async{
-    final payload={'coverageVerified':true,'updatedAt':'2026-10-04T00:00:00+09:00','items':[]};
+    final payload={'schemaVersion':5,'fmdDisclosureVerified':true,'coverageVerified':true,'updatedAt':'2026-10-04T00:00:00+09:00','items':[]};
     final repo=DiseaseRepository(clock:()=>DateTime.utc(2026,10,5),client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)));
     final feed=await repo.refresh(checkOfficial:false);expect(feed.state,DiseaseDataState.stale);expect(feed.coverageVerified,isFalse);
   });
