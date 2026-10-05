@@ -1,0 +1,38 @@
+name: Fast market series watch
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["scripts/fetch_fred_markets.py", "scripts/test_fred_fallback.py", ".github/workflows/market-fast.yml"]
+  schedule:
+    - cron: "3,18,33,48 * * * *"
+permissions:
+  contents: write
+concurrency:
+  group: fast-market-series
+  cancel-in-progress: false
+jobs:
+  market:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify fallback and publication behavior
+        run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge
+      - name: Collect official market observations
+        run: python scripts/fetch_fred_markets.py
+      - name: Publish changed market feed safely
+        run: |
+          mkdir -p /tmp/generated-market-data
+          cp docs/data/platform.json /tmp/generated-market-data/platform.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+          python scripts/merge_generated_data.py /tmp/generated-market-data docs/data
+          git add docs/data/platform.json
+          git diff --cached --quiet || git commit -m "Update official market observations"
+          git push origin HEAD:main

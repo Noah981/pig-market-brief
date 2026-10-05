@@ -7,7 +7,7 @@ on:
       - ".github/workflows/pages.yml"
   workflow_dispatch:
   workflow_run:
-    workflows: ["Build pig briefing", "Build Android APK", "Fast disease signal watch"]
+    workflows: ["Build pig briefing", "Build Android APK", "Fast disease signal watch", "Fast KAPE price watch", "Fast market series watch"]
     types: [completed]
 permissions:
   contents: read
