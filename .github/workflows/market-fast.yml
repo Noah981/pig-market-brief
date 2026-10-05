@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/fetch_fred_markets.py", "scripts/test_fred_fallback.py", ".github/workflows/market-fast.yml"]
+    paths: ["scripts/fetch_fred_markets.py", "scripts/test_fred_fallback.py", "scripts/direct_market_sources.py", "scripts/test_direct_market_sources.py", ".github/workflows/market-fast.yml"]
   schedule:
     - cron: "3,18,33,48 * * * *"
 permissions:
@@ -20,11 +20,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install official workbook readers
+        run: pip install openpyxl==3.1.5 xlrd==2.0.1
       - name: Verify fallback and publication behavior
-        run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge scripts.test_provider_status_preservation
+        run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge scripts.test_provider_status_preservation scripts.test_direct_market_sources
       - name: Collect official market observations
         env:
-          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
         run: python scripts/fetch_fred_markets.py
       - name: Publish changed market feed safely
         run: |

@@ -65,8 +65,11 @@ jobs:
           done
       - name: Require live Dabom grade and auction rows
         run: python scripts/validate_official_apis.py --dabom-only
+      - name: Install official market workbook readers
+        run: pip install openpyxl==3.1.5 xlrd==2.0.1
       - name: Bundle verified disease records
         env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
           python -m unittest scripts.test_generated_data_merge scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_android_release_signing scripts.test_weather_data

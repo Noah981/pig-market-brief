@@ -159,13 +159,13 @@ def update(previous, fetched):
     for row in old.values():row["status"]="STALE"
     for row in fetched:
         previous_row=old.get(row["name"])
-        if previous_row and previous_row.get("date","")>row.get("date",""):continue
+        if previous_row and previous_row.get("source")==row.get("source") and previous_row.get("date","")>row.get("date",""):continue
         old[row["name"]]=row
     result = dict(previous)
     result["markets"] = [old[name] for name in SERIES if name in old]
     result["checkedAt"] = datetime.now(KST).isoformat()
-    result["sourceStatus"] = [x for x in previous.get("sourceStatus",[]) if x.get("id") != "fred-public-series"] + [
-        {"id": "fred-public-series", "agency": "FRED 공개 시계열", "status":
+    result["sourceStatus"] = [x for x in previous.get("sourceStatus",[]) if x.get("id") not in ("fred-public-series", "official-market-upstreams")] + [
+        {"id": "official-market-upstreams", "agency": "한국은행·세계은행·EIA 공식 시황", "status":
          "연결 완료" if len(fetched) == len(SERIES) else f"일부 연결 · {len(fetched)}/{len(SERIES)}"}
     ]
     return result
@@ -173,15 +173,10 @@ def update(previous, fetched):
 
 def main():
     previous = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"markets": [], "benefits": []}
-    fetched = []
-    print('Official FRED API configured:',bool(os.getenv('FRED_API_KEY','').strip()))
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        futures = {pool.submit(fetch_one, name, spec): name for name, spec in SERIES.items()}
-        for future in as_completed(futures):
-            try:
-                fetched.append(future.result())
-            except Exception as exc:
-                print(f"{futures[future]} fetch failed: {exc}")
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from scripts.direct_market_sources import fetch_all
+    fetched = fetch_all()
     if not fetched and not previous.get("markets"):
         raise RuntimeError("No market data and no last-known-good cache")
     result = update(previous, fetched)
