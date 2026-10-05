@@ -92,7 +92,7 @@ def parse_ped(raw,start,end):
   if 'name="yymm"' not in row:continue
   if header is None or len(header)<15 or len(cells)!=len(header)+2:raise ValueError('PED table schema changed')
   def numbers(c):
-   a=re.search(r'class="had">(\d*)',c);f=re.search(r'class="co">(\d*)',c)
+   a=re.search(r'class="had">\s*(\d*)\s*</span>',c);f=re.search(r'class="co">\s*(\d*)\s*</span>',c)
    if not a:raise ValueError('PED animal count missing')
    return {'animalCount':int(a[1] or 0),'farmCount':int(f[1] or 0) if f else 0}
   values=[numbers(c) for c in cells[1:]];summary=values[-1]

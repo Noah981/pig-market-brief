@@ -16,12 +16,12 @@ import '../widgets/korea_disease_map.dart';
 import '../widgets/disease_dashboard_widgets.dart';
 import 'section_pages.dart';
 
-class DiseasePage extends StatefulWidget{const DiseasePage({super.key});@override State<DiseasePage> createState()=>_DiseasePageState();}
+class DiseasePage extends StatefulWidget{const DiseasePage({super.key,this.repository,this.requestLocationOnOpen=true});final DiseaseRepository? repository;final bool requestLocationOnOpen;@override State<DiseasePage> createState()=>_DiseasePageState();}
 class _DiseasePageState extends State<DiseasePage> with WidgetsBindingObserver{
-  final _repository=DiseaseRepository();DiseaseFeed? _feed;Timer? _liveTimer;int _tab=0,_historyDays=30;DiseaseType? _selected;double? _lat,_lng;bool _gpsVerified=false,_showRadii=false,_locating=false;String _location='현재 위치를 확인할 수 없습니다.';String? _message,_focusedId;bool _refreshing=false;DateTime? _lastOfficialCheck;final _mapController=TransformationController();
+  late final _repository=widget.repository??DiseaseRepository();DiseaseFeed? _feed;Timer? _liveTimer;int _tab=0,_historyDays=30;DiseaseType? _selected;double? _lat,_lng;bool _gpsVerified=false,_showRadii=false,_locating=false;String _location='현재 위치를 확인할 수 없습니다.';String? _message,_focusedId;bool _refreshing=false;DateTime? _lastOfficialCheck;final _mapController=TransformationController();
   @override void initState(){super.initState();WidgetsBinding.instance.addObserver(this);FarmLocationSettings.instance.addListener(_syncLocation);NotificationService.instance.selectedDiseaseEvent.addListener(_notificationSelected);_loadLocation();_load();_liveTimer=Timer.periodic(const Duration(minutes:1),(_)=>_refresh(checkOfficial:false));}
   @override void dispose(){_liveTimer?.cancel();WidgetsBinding.instance.removeObserver(this);_mapController.dispose();FarmLocationSettings.instance.removeListener(_syncLocation);NotificationService.instance.selectedDiseaseEvent.removeListener(_notificationSelected);super.dispose();}
-  Future<void> _loadLocation()async{await FarmLocationSettings.instance.load();_syncLocation();if(!_gpsVerified){try{await _updateGps(silent:true);}catch(_){}}}
+  Future<void> _loadLocation()async{await FarmLocationSettings.instance.load();_syncLocation();if(!_gpsVerified&&widget.requestLocationOnOpen){try{await _updateGps(silent:true);}catch(_){}}}
   void _syncLocation(){final x=FarmLocationSettings.instance.location;if(!mounted)return;setState((){_gpsVerified=x.gpsVerified;_lat=x.gpsVerified?x.latitude:null;_lng=x.gpsVerified?x.longitude:null;_location=x.gpsVerified?x.label:(x.label.isEmpty?'농장 위치를 설정해주세요.':'기준 위치 · ${x.label}');});}
   void _notificationSelected(){final id=NotificationService.instance.selectedDiseaseEvent.value;if(id==null)return;final match=(_feed?.items??const <DiseaseAlert>[]).where((x)=>x.stableKey==id).firstOrNull;if(match!=null&&mounted)setState((){_tab=0;_selected=match.type;_focusedId=id;});}
   Future<void> _load()async{try{final cached=await _repository.cached();if(mounted)setState(()=>_feed=cached);}catch(_){}await _refresh();}
