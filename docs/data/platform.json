@@ -2561,8 +2561,18 @@
     }
   ],
   "benefits": [],
-  "checkedAt": "2026-10-05T23:03:05.105141+09:00",
+  "checkedAt": "2026-10-05T23:03:49.195749+09:00",
   "sourceStatus": [
+    {
+      "id": "official-market",
+      "agency": "공식 시장 데이터",
+      "status": "연결 검증 대기"
+    },
+    {
+      "id": "official-market-upstreams",
+      "agency": "한국은행·세계은행·EIA 공식 시황",
+      "status": "연결 완료"
+    },
     {
       "id": "regional-benefits",
       "agency": "지역 공식 공고",
@@ -2579,11 +2589,6 @@
       "agency": "농림축산식품부",
       "status": "연결 완료 · 0건 확인",
       "permissionBasis": "공식 공개 공지·공고의 제목·원문 링크 이용"
-    },
-    {
-      "id": "official-market-upstreams",
-      "agency": "한국은행·세계은행·EIA 공식 시황",
-      "status": "연결 완료"
     }
   ]
 }
