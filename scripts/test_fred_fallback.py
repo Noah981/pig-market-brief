@@ -1,5 +1,6 @@
 import io
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from scripts.fetch_fred_markets import SERIES,parse_table,fetch_one
 
@@ -21,5 +22,15 @@ class FredFallbackTests(unittest.TestCase):
    row=fetch_one('usd_krw',SERIES['usd_krw'])
   self.assertEqual(row['date'],'2026-09-25')
   self.assertEqual(request.call_args_list[1].args[0].full_url,'https://fred.stlouisfed.org/data/DEXKOUS')
+ def test_python_transport_outage_recovers_with_curl_and_validates_data(self):
+  csv=b'observation_date,DEXKOUS\n2026-09-24,1369.44\n2026-09-25,1356.51\n'
+  with patch('scripts.fetch_fred_markets.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.fetch_fred_markets.time.sleep'),patch('scripts.fetch_fred_markets.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=csv)) as transport:
+   row=fetch_one('usd_krw',SERIES['usd_krw'])
+  self.assertEqual(row['value'],1356.51)
+  self.assertIn('--fail',transport.call_args.args[0])
+  self.assertNotIn('--insecure',transport.call_args.args[0])
+ def test_alternate_transport_never_accepts_an_error_page(self):
+  with patch('scripts.fetch_fred_markets.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.fetch_fred_markets.time.sleep'),patch('scripts.fetch_fred_markets.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=b'<html>unavailable</html>')):
+   with self.assertRaises(ValueError):fetch_one('usd_krw',SERIES['usd_krw'])
 
 if __name__=='__main__':unittest.main()

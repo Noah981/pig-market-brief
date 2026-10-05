@@ -10,6 +10,7 @@ import io
 import json
 import math
 import re
+import subprocess
 from html import unescape
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -114,15 +115,22 @@ def fetch_one(name, spec):
     # complete provider outage. Never substitute another series or sample value.
     endpoints=[(_url(spec['id']),parse_series),(f"https://fred.stlouisfed.org/data/{spec['id']}",parse_table)]
     last_error=None
-    for attempt in range(3):
+    for attempt in range(2):
         for url,parser in endpoints:
             try:
-                req=urllib.request.Request(url,headers={'User-Agent':'Dondonhae/1.8'})
-                with urllib.request.urlopen(req,timeout=20) as response:raw=response.read(2_000_001)
+                if attempt==0:
+                    req=urllib.request.Request(url,headers={'User-Agent':'Dondonhae/1.8'})
+                    with urllib.request.urlopen(req,timeout=20) as response:raw=response.read(2_000_001)
+                else:
+                    # curl negotiates a different HTTP transport on CI runners.
+                    # TLS verification stays enabled; both endpoints are FRED.
+                    result=subprocess.run(['curl','--fail','--location','--compressed','--silent','--show-error','--max-time','20','--max-filesize','2000000','--user-agent','Dondonhae/1.8',url],capture_output=True,timeout=25)
+                    if result.returncode:raise OSError('Official FRED alternate transport failed')
+                    raw=result.stdout
                 if len(raw)>2_000_000:raise ValueError('payload too large')
                 return parser(name,spec,raw)
-            except (OSError,TimeoutError,ValueError) as exc:last_error=exc
-        if attempt<2:time.sleep(attempt+1)
+            except (OSError,TimeoutError,ValueError,subprocess.TimeoutExpired) as exc:last_error=exc
+        if attempt==0:time.sleep(1)
     raise last_error
 
 
@@ -146,7 +154,7 @@ def update(previous, fetched):
 def main():
     previous = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"markets": [], "benefits": []}
     fetched = []
-    with ThreadPoolExecutor(max_workers=len(SERIES)) as pool:
+    with ThreadPoolExecutor(max_workers=3) as pool:
         futures = {pool.submit(fetch_one, name, spec): name for name, spec in SERIES.items()}
         for future in as_completed(futures):
             try:
