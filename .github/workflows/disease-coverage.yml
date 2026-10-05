@@ -2,7 +2,7 @@ name: Disease coverage inspection
 on:
   pull_request:
     branches: [main]
-    paths: ['scripts/inspect_disease_coverage.py', '.github/workflows/disease-coverage.yml']
+    paths: ['scripts/inspect_disease_coverage.py', 'flutter_app/lib/services/api/mafra_api_client.dart', '.github/workflows/disease-coverage.yml']
   workflow_dispatch:
 permissions:
   contents: read

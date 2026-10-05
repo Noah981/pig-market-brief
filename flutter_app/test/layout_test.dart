@@ -21,6 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:dondonhae/data/disease_repository.dart';
+import 'package:dondonhae/settings/farm_location_settings.dart';
 
 Future<void> renderAt(WidgetTester tester, double width, String name) async {
   tester.view.devicePixelRatio = 1;
@@ -69,7 +73,7 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'official_dabom_producer_pig_price_v4':jsonEncode({'price':price,'history':history}),
       'verified_commodity_market_v2':File('../docs/data/platform.json').readAsStringSync(),
-      'verified_disease_feed_v5':File('../docs/data/disease-alerts.json').readAsStringSync(),
+      'verified_disease_feed_v6':File('../docs/data/disease-alerts.json').readAsStringSync(),
     });
   });
   testWidgets('홈 360dp 오버플로 없음', (tester) => renderAt(tester, 360, '360'));
@@ -103,6 +107,37 @@ void main() {
     await tester.tap(find.text('구제역').first);await tester.pumpAndSettle();
     expect(find.text('구제역만 보기 ▼'),findsOneWidget);expect(tester.takeException(),isNull);
     await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/disease_filter_390.png'));
+  });
+  testWidgets('질병 기간·선택·지도·더보기·도움말 버튼은 실제 동작한다',(tester)async{
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(theme:AppTheme.light,home:const DiseasePage()));await tester.pump(const Duration(milliseconds:800));
+    await tester.tap(find.byKey(const ValueKey('disease_filter')));await tester.pumpAndSettle();
+    await tester.tap(find.text('구제역만 보기').last);await tester.pumpAndSettle();expect(find.text('구제역만 보기 ▼'),findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('disease_period_90')));await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('disease_map_zoom_in')));await tester.pump();
+    final viewer=tester.widget<InteractiveViewer>(find.byKey(const ValueKey('disease_map_view')));
+    expect(viewer.transformationController!.value.getMaxScaleOnAxis(),greaterThan(1));
+    await tester.tap(find.byKey(const ValueKey('disease_map_zoom_out')));await tester.pump();expect(viewer.transformationController!.value.getMaxScaleOnAxis(),1);
+    await tester.tap(find.byKey(const ValueKey('disease_layers')));await tester.pump();
+    final more=find.byKey(const ValueKey('disease_more'));await tester.ensureVisible(more);await tester.tap(more);await tester.pumpAndSettle();expect(find.text('구제역 공식 발생·통보 내역'),findsOneWidget);
+    await tester.pageBack();await tester.pumpAndSettle();
+    final risk=find.byKey(const ValueKey('disease_risk_help'));await tester.ensureVisible(risk);await tester.tap(risk);await tester.pumpAndSettle();expect(find.text('방역경보 LEVEL 안내'),findsOneWidget);
+    expect(tester.takeException(),isNull);
+  });
+  testWidgets('공식 데이터로 질병 기준 디자인과 PED 통계를 렌더링한다',(tester)async{
+    tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
+    final original=FarmLocationSettings.instance.location;
+    await tester.runAsync(()=>FarmLocationSettings.instance.setGps(34.7604,127.6622,province:'전라남도',cityCounty:'여수시',accuracy:10));
+    addTearDown(()=>tester.runAsync(()=>FarmLocationSettings.instance.setLocation(original)));
+    final data=File('../docs/data/disease-alerts.json').readAsStringSync();
+    final repository=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(data),200)));
+    await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:DiseasePage(repository:repository,requestLocationOnOpen:false)));
+    await tester.pump(const Duration(milliseconds:800));await tester.tap(find.byKey(const ValueKey('disease_card_fmd')));await tester.pumpAndSettle();
+    expect(find.text('전라남도 여수시'),findsOneWidget);expect(tester.takeException(),isNull);
+    await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/disease_reference_390.png'));
+    await tester.tap(find.byKey(const ValueKey('disease_card_ped')));await tester.pumpAndSettle();
+    expect(find.text('PED 공식 발생통계'),findsOneWidget);expect(find.textContaining('농장별 위치'),findsWidgets);expect(tester.takeException(),isNull);
+    await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/disease_ped_390.png'));
   });
   testWidgets('질병 알림 설정 390dp 시안 비교 이미지',(tester)async{
     await renderPage(tester,const DiseaseNotificationSettingsPage(),'disease_settings_390');

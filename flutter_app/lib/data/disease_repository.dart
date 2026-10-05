@@ -10,23 +10,24 @@ import '../services/api/mafra_api_client.dart';
 class DiseaseRepository {
   DiseaseRepository({http.Client? client,MafraApiClient? mafraClient,DateTime Function()? clock}):_client=client??http.Client(),_mafraClient=mafraClient??MafraApiClient(client:client),_clock=clock??DateTime.now;
   static const _url='https://noah981.github.io/pig-market-brief/data/disease-alerts.json';
-  // v5: ASF 누적 공개표와 대조하기 전의 불완전한 캐시를 폐기.
-  static const _cacheKey='verified_disease_feed_v5';
+  // v6: 구제역 공개표·PED 통계가 없는 과거 피드는 완전한 조회로 취급하지 않는다.
+  static const _cacheKey='verified_disease_feed_v6';
   final http.Client _client;final MafraApiClient _mafraClient;final DateTime Function() _clock;
 
   Future<DiseaseFeed> cached()async{
     final raw=(await SharedPreferences.getInstance()).getString(_cacheKey)??await rootBundle.loadString('assets/data/disease-alerts.json');
     return _parse(raw,true);
   }
-  Future<DiseaseFeed> refresh()async{
+  Future<DiseaseFeed> refresh({bool checkOfficial=true})async{
     try{
-      final hosted=await _fromHosted();
+      DiseaseFeed hosted;
+      try{hosted=await _fromHosted();}catch(_){if(!checkOfficial||!ApiConfig.hasMafra)rethrow;hosted=await cached();}
       DiseaseFeed feed=hosted;
-      if(ApiConfig.hasMafra){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
+      if(checkOfficial&&ApiConfig.hasMafra&&!hosted.coverageVerified){try{feed=await _fromMafra(hosted);}catch(_){feed=DiseaseFeed(items:hosted.items,statistics:hosted.statistics,updatedAt:hosted.updatedAt,fromCache:false,state:DiseaseDataState.reviewRequired,errorMessage:'국내 공식 API 확인 실패 · 해외 공식 자료는 표시합니다.');}}
       await (await SharedPreferences.getInstance()).setString(_cacheKey,jsonEncode(_feedJson(feed)));
       return feed;
     }catch(error){
-      try{final old=await cached();return DiseaseFeed(items:old.items,updatedAt:old.updatedAt,fromCache:true,state:DiseaseDataState.stale,errorMessage:'공식 데이터 확인 실패');}
+      try{final old=await cached();return DiseaseFeed(items:old.items,statistics:old.statistics,updatedAt:old.updatedAt,fromCache:true,state:DiseaseDataState.stale,errorMessage:'공식 데이터 확인 실패');}
       catch(_){return DiseaseFeed(items:const [],updatedAt:'',fromCache:true,state:DiseaseDataState.error,errorMessage:'질병 데이터를 확인할 수 없습니다.');}
     }
   }
@@ -37,6 +38,10 @@ class DiseaseRepository {
       final livestock=row.pick(const ['LVSTCKSPC_NM','LSK_NM']);
       if(type==null)continue;
       final occurrence=row.pick(const ['OCCRRNC_DE','OCCRRNC_DT','FRST_OCRN_DT']);if(occurrence.isEmpty)continue;
+      final digits=occurrence.replaceAll(RegExp(r'[^0-9]'),'');
+      if(digits.length<8)continue;
+      final date=DateTime.tryParse('${digits.substring(0,4)}-${digits.substring(4,6)}-${digits.substring(6,8)}');
+      if(date==null||date.isAfter(_clock())||_clock().difference(date).inDays>366)continue;
       final address=row.pick(const ['FARM_LOCPLC','OCCRRNC_AREA','ADDR']);
       final id=row.pick(const ['ICTSD_OCCRRNC_NO','OCCRRNC_NO']);
       final coordinate=await _coordinate(row,address,occurrence);
@@ -46,13 +51,13 @@ class DiseaseRepository {
     final merged=<String,DiseaseAlert>{};
     for(final x in hosted.items){_putLatest(merged,x);}
     // An official result always wins over a public signal for the same incident.
-    final disclosed=hosted.items.where((x)=>x.id.startsWith('MAFRA-ASF-TABLE|')).toList();
+    final disclosed=hosted.items.where((x)=>x.id.startsWith('MAFRA-ASF-TABLE|')||x.id.startsWith('MAFRA-FMD-TABLE|')).toList();
     for(final x in items){
       final date=x.occurrenceDate.replaceAll(RegExp(r'[^0-9]'),'');
-      final covered=x.type==DiseaseType.asf&&disclosed.any((d)=>date.length>=8&&d.occurrenceDate.startsWith(date.substring(0,4))&&date.substring(0,8).compareTo(d.announcementDate.replaceAll(RegExp(r'[^0-9]'),''))<=0);
+      final covered=disclosed.any((d)=>d.type==x.type&&date.length>=8&&(x.type==DiseaseType.asf?d.occurrenceDate.startsWith(date.substring(0,4)):d.occurrenceDate.substring(0,7)== '${date.substring(0,4)}-${date.substring(4,6)}')&&date.substring(0,8).compareTo(d.announcementDate.replaceAll(RegExp(r'[^0-9]'),''))<=0);
       if(!covered)merged[x.incidentKey]=x;
     }
-    return DiseaseFeed(items:merged.values.toList(),updatedAt:_clock().toIso8601String(),fromCache:false,coverageVerified:hosted.coverageVerified,state:hosted.coverageVerified?DiseaseDataState.live:DiseaseDataState.reviewRequired,errorMessage:hosted.coverageVerified?null:'국내 전체 조회 범위를 확인 중입니다. 표시된 자료만으로 발생 없음을 판단하지 마세요.');
+    return DiseaseFeed(items:merged.values.toList(),statistics:hosted.statistics,updatedAt:_clock().toIso8601String(),fromCache:false,coverageVerified:hosted.coverageVerified,state:hosted.coverageVerified?DiseaseDataState.live:DiseaseDataState.reviewRequired,errorMessage:hosted.coverageVerified?null:'국내 전체 조회 범위를 확인 중입니다. 표시된 자료만으로 발생 없음을 판단하지 마세요.');
   }
   Future<DiseaseFeed> _fromHosted()async{
     final response=await _client.get(Uri.parse('$_url?v=${_clock().millisecondsSinceEpoch}')).timeout(const Duration(seconds:12));
@@ -76,8 +81,12 @@ class DiseaseRepository {
       final alert=DiseaseAlert(id:x['id']?.toString()??'',type:type,source:x['source']?.toString()??'',countryCode:code,evidence:evidence,status:status,summary:summary,sourceUrl:x['sourceUrl']?.toString()??'',occurrenceDate:occurrence,announcementDate:x['announcementDate']?.toString()??x['publishedAt']?.toString()??'',updatedAt:x['updatedAt']?.toString()??x['detectedAt']?.toString()??'',livestockType:x['livestockType']?.toString()??'',districtCode:x['districtCode']?.toString()??'',province:x['province']?.toString()??_province(address),cityCounty:x['cityCounty']?.toString()??_cityCounty(address),town:x['town']?.toString()??_town(address),latitude:(x['latitude'] as num?)?.toDouble(),longitude:(x['longitude'] as num?)?.toDouble());
       if(seen.add(alert.stableKey))items.add(alert);
     }
-    final unverifiedEmpty=json['coverageVerified']!=true;
-    return DiseaseFeed(items:items,updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,coverageVerified:json['coverageVerified']==true,state:fromCache?DiseaseDataState.stale:unverifiedEmpty?DiseaseDataState.reviewRequired:DiseaseDataState.live,errorMessage:unverifiedEmpty?'공식 발생자료의 조회 범위를 확인하지 못했습니다. 발생 없음으로 판단하지 마세요.':null);
+    final checkedAt=DateTime.tryParse(json['updatedAt']?.toString()??'');
+    final age=checkedAt==null?null:_clock().toUtc().difference(checkedAt.toUtc());
+    final fresh=age!=null&&age.inSeconds>=-60&&age<=const Duration(minutes:20);
+    final unverifiedEmpty=json['coverageVerified']!=true||json['fmdDisclosureVerified']!=true||((json['schemaVersion'] as num?)?.toInt()??0)<5;
+    final verified=!unverifiedEmpty&&fresh;
+    return DiseaseFeed(items:items,statistics:(json['statistics'] as Map?)?.cast<String,dynamic>()??const {},updatedAt:json['updatedAt']?.toString()??'',fromCache:fromCache,coverageVerified:verified,state:fromCache?DiseaseDataState.stale:unverifiedEmpty?DiseaseDataState.reviewRequired:!fresh?DiseaseDataState.stale:DiseaseDataState.live,errorMessage:unverifiedEmpty?'공식 발생자료의 조회 범위를 확인하지 못했습니다. 발생 없음으로 판단하지 마세요.':!fresh?'저장된 공식 자료입니다. 최신 조회 시각을 확인하지 못했습니다.':null);
   }
   String _status(String raw,String summary,DiseaseEvidence evidence){if(raw.contains('종식'))return '종식';if(raw.contains('공식 통보'))return '공식 통보';final text='$raw $summary';if(RegExp(r'음성|불검출|의심.*해제|발생하지 않은').hasMatch(text))return '음성 · 의심 해제';if(RegExp(r'의심|검사 중|정밀검사').hasMatch(text))return '의심 · 정밀검사 중';if(evidence==DiseaseEvidence.official||RegExp(r'확진|양성|공식 발생').hasMatch(text))return '공식 발생';return '공개정보 · 확인 중';}
   void _putLatest(Map<String,DiseaseAlert> target,DiseaseAlert next){
@@ -104,5 +113,5 @@ class DiseaseRepository {
   String _province(String text)=>RegExp(r'(서울특별시|부산광역시|대구광역시|인천광역시|광주광역시|대전광역시|울산광역시|세종특별자치시|경기도|강원(?:특별자치)?도|충청북도|충청남도|전북특별자치도|전라북도|전라남도|경상북도|경상남도|제주특별자치도)').firstMatch(text)?.group(0)??'';
   String _cityCounty(String text)=>RegExp(r'([가-힣]+(?:시|군)(?:\s+[가-힣]+구)?|[가-힣]+구)').firstMatch(text.replaceFirst(_province(text),''))?.group(0)??'';
   String _town(String text)=>RegExp(r'([가-힣]+(?:읍|면|동))').firstMatch(text)?.group(0)??'';
-  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':4,'coverageVerified':feed.coverageVerified,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'dateBasis':x.usesNotificationDate?'notification':'occurrence','updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
+  Map<String,dynamic> _feedJson(DiseaseFeed feed)=>{'schemaVersion':5,'fmdDisclosureVerified':feed.coverageVerified,'statistics':feed.statistics,'coverageVerified':feed.coverageVerified,'updatedAt':feed.updatedAt,'items':feed.items.map((x)=>{'id':x.id,'diseaseType':x.type.name,'disease':x.disease,'countryCode':x.countryCode,'evidenceLevel':x.isOfficial?'OFFICIAL':'PUBLIC_INFO','status':x.status,'summary':x.summary,'source':x.source,'sourceUrl':x.sourceUrl,'occurrenceDate':x.occurrenceDate,'announcementDate':x.announcementDate,'dateBasis':x.usesNotificationDate?'notification':'occurrence','updatedAt':x.updatedAt,'livestockType':x.livestockType,'districtCode':x.districtCode,'province':x.province,'cityCounty':x.cityCounty,'town':x.town,'latitude':x.latitude,'longitude':x.longitude}).toList()};
 }

@@ -17,6 +17,7 @@ class DiseaseRiskEngine {
   static DiseaseRiskSummary summarize(Iterable<DiseaseAlert> events,{required double? latitude,required double? longitude,DiseaseType? type}){
     if(latitude==null||longitude==null)return const DiseaseRiskSummary(level:DiseaseRiskLevel.unknown,count10:0,count30:0,count50:0);
     final distances=events.where((x)=>x.isOfficial&&x.latitude!=null&&x.longitude!=null&&(type==null||x.type==type)).map((x)=>distanceKm(latitude,longitude,x.latitude!,x.longitude!)).toList()..sort();
+    if(events.any((x)=>x.isOfficial&&(type==null||x.type==type)&&!x.hasMapPoint))return const DiseaseRiskSummary(level:DiseaseRiskLevel.unknown,count10:0,count30:0,count50:0);
     if(distances.isEmpty)return const DiseaseRiskSummary(level:DiseaseRiskLevel.safe,count10:0,count30:0,count50:0);
     return DiseaseRiskSummary(level:levelFor(distances.first),nearestKm:distances.first,count10:distances.where((x)=>x<=10).length,count30:distances.where((x)=>x<=30).length,count50:distances.where((x)=>x<=50).length);
   }
