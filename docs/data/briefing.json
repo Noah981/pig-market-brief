@@ -1,37 +1,19 @@
 {
-  "updatedAt": "2026-10-05T10:04:21.806930+09:00",
-  "generatedAt": "2026-10-05T15:53:04.181784+09:00",
+  "updatedAt": "2026-10-05T20:21:45.715396+09:00",
+  "generatedAt": "2026-10-05T20:23:04.432928+09:00",
   "scope": "대한민국 전역 · 제주 포함",
   "weatherSource": "기상청 단기예보 조회서비스",
   "regions": [
     {
-      "region": "대구광역시",
+      "region": "인천광역시",
       "forecastDate": "20261005",
-      "nx": 89,
-      "ny": 90,
-      "tempMin": 15.0,
-      "tempMax": 22.0,
-      "diurnalRange": 7.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [],
-      "farmChecks": [],
-      "top3": [
-        "급이기·급수기 청결 확인",
-        "환기 상태 확인",
-        "돈군 건강상태 관찰"
-      ]
-    },
-    {
-      "region": "부산광역시",
-      "forecastDate": "20261005",
-      "nx": 98,
-      "ny": 76,
-      "tempMin": 17.0,
-      "tempMax": 24.0,
-      "diurnalRange": 7.0,
-      "humidityMax": 70.0,
-      "rainProbabilityMax": 30.0,
+      "nx": 55,
+      "ny": 124,
+      "tempMin": 14.0,
+      "tempMax": 15.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -46,10 +28,10 @@
       "nx": 60,
       "ny": 127,
       "tempMin": 14.0,
-      "tempMax": 20.0,
-      "diurnalRange": 6.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
+      "tempMax": 15.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -59,15 +41,33 @@
       ]
     },
     {
-      "region": "인천광역시",
+      "region": "부산광역시",
       "forecastDate": "20261005",
-      "nx": 55,
-      "ny": 124,
-      "tempMin": 14.0,
-      "tempMax": 20.0,
-      "diurnalRange": 6.0,
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 17.0,
+      "tempMax": 18.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "대구광역시",
+      "forecastDate": "20261005",
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 15.0,
+      "tempMax": 16.0,
+      "diurnalRange": 1.0,
       "humidityMax": 70.0,
-      "rainProbabilityMax": 30.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -82,10 +82,28 @@
       "nx": 102,
       "ny": 84,
       "tempMin": 17.0,
-      "tempMax": 24.0,
-      "diurnalRange": 7.0,
+      "tempMax": 17.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "대전광역시",
+      "forecastDate": "20261005",
+      "nx": 67,
+      "ny": 100,
+      "tempMin": 12.0,
+      "tempMax": 14.0,
+      "diurnalRange": 2.0,
       "humidityMax": 70.0,
-      "rainProbabilityMax": 30.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -100,22 +118,16 @@
       "nx": 58,
       "ny": 74,
       "tempMin": 14.0,
-      "tempMax": 22.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 65.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
+      "tempMax": 15.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
       "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
       ]
     },
     {
@@ -124,50 +136,16 @@
       "nx": 66,
       "ny": 103,
       "tempMin": 12.0,
-      "tempMax": 20.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 80.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차",
-        "고습"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검",
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ],
+      "tempMax": 13.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
       "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ]
-    },
-    {
-      "region": "대전광역시",
-      "forecastDate": "20261005",
-      "nx": 67,
-      "ny": 100,
-      "tempMin": 12.0,
-      "tempMax": 21.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
-      "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
       ]
     },
     {
@@ -176,10 +154,28 @@
       "nx": 60,
       "ny": 120,
       "tempMin": 14.0,
-      "tempMax": 20.0,
-      "diurnalRange": 6.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
+      "tempMax": 15.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "충청북도",
+      "forecastDate": "20261005",
+      "nx": 69,
+      "ny": 107,
+      "tempMin": 12.0,
+      "tempMax": 14.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -194,26 +190,16 @@
       "nx": 73,
       "ny": 134,
       "tempMin": 11.0,
-      "tempMax": 19.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 85.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차",
-        "고습"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검",
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ],
+      "tempMax": 12.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
       "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
       ]
     },
     {
@@ -222,58 +208,10 @@
       "nx": 68,
       "ny": 100,
       "tempMin": 12.0,
-      "tempMax": 21.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
-      "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ]
-    },
-    {
-      "region": "충청북도",
-      "forecastDate": "20261005",
-      "nx": 69,
-      "ny": 107,
-      "tempMin": 12.0,
-      "tempMax": 20.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
-      "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ]
-    },
-    {
-      "region": "전라남도",
-      "forecastDate": "20261005",
-      "nx": 51,
-      "ny": 67,
-      "tempMin": 15.0,
-      "tempMax": 21.0,
-      "diurnalRange": 6.0,
-      "humidityMax": 65.0,
-      "rainProbabilityMax": 30.0,
+      "tempMax": 14.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -288,22 +226,52 @@
       "nx": 89,
       "ny": 91,
       "tempMin": 15.0,
-      "tempMax": 23.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 70.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
+      "tempMax": 16.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
       "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "전북특별자치도",
+      "forecastDate": "20261005",
+      "nx": 63,
+      "ny": 89,
+      "tempMin": 13.0,
+      "tempMax": 15.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
+      "region": "전라남도",
+      "forecastDate": "20261005",
+      "nx": 51,
+      "ny": 67,
+      "tempMin": 15.0,
+      "tempMax": 16.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
       ]
     },
     {
@@ -312,34 +280,10 @@
       "nx": 91,
       "ny": 77,
       "tempMin": 16.0,
-      "tempMax": 24.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
-      "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ]
-    },
-    {
-      "region": "전북특별자치도",
-      "forecastDate": "20261005",
-      "nx": 63,
-      "ny": 89,
-      "tempMin": 14.0,
-      "tempMax": 21.0,
-      "diurnalRange": 7.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0,
+      "tempMax": 17.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 70.0,
+      "rainProbabilityMax": 0.0,
       "riskFactors": [],
       "farmChecks": [],
       "top3": [
@@ -354,22 +298,16 @@
       "nx": 52,
       "ny": 38,
       "tempMin": 18.0,
-      "tempMax": 21.0,
-      "diurnalRange": 3.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 60.0,
-      "riskFactors": [
-        "강수 가능성"
-      ],
-      "farmChecks": [
-        "우수 유입·배수로 확인",
-        "사료빈·사료 이송라인 누수 점검",
-        "출입구 소독시설과 차량 동선 확인"
-      ],
+      "tempMax": 19.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [],
+      "farmChecks": [],
       "top3": [
-        "우수 유입·배수로 확인",
-        "사료빈·사료 이송라인 누수 점검",
-        "출입구 소독시설과 차량 동선 확인"
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
       ]
     }
   ],
