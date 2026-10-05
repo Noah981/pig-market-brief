@@ -60,7 +60,8 @@ object PriceCardArtwork {
             val w=(r-l).roundToInt().coerceAtLeast(1);val h=(bt-t).roundToInt().coerceAtLeast(1)
             val pixels=IntArray(w*h)
             for(y in 0 until h){
-                val a=sample(l.toInt()-2,t.toInt()+y);val z=sample(r.toInt()+2,t.toInt()+y)
+                val a=sample(l.toInt()-2,t.toInt()+y);val deltaField=(kind==Kind.SMALL && t==259f)||(kind==Kind.MEDIUM && t==216f)||(kind==Kind.LARGE && (t==258f||t==339f))||(kind==Kind.TODAY && t==148f)
+                val z=if(deltaField)a else sample(r.toInt()+2,t.toInt()+y)
                 for(x in 0 until w){val f=x.toFloat()/max(1,w-1);pixels[y*w+x]=Color.rgb(
                     (Color.red(a)*(1-f)+Color.red(z)*f).roundToInt(),
                     (Color.green(a)*(1-f)+Color.green(z)*f).roundToInt(),
@@ -92,7 +93,7 @@ object PriceCardArtwork {
             Kind.SMALL->{
                 clear(242f,42f,355f,88f);text(today,245f,72f,23f,muted,100f)
                 clear(31f,155f,354f,253f);price(37f,236f,92f,311f)
-                clear(35f,259f,290f,306f);delta(44f,295f,34f,247f)
+                clear(35f,259f,265f,306f);delta(44f,295f,34f,221f)
                 // The source has a missing parenthesis; all comparison text is live.
             }
             Kind.MEDIUM->{
@@ -156,7 +157,8 @@ object PriceCardArtwork {
             p.color=muted;p.typeface=font;p.textSize=19f
             c.drawText(money(high),r.right+18,r.top+8,p);c.drawText(money(low),r.right+18,r.bottom,p)
             for(i in 0..5){val index=i*(rows.size-1)/5;val d=rows[index].date;val label=d.substring(4,6).toInt().toString()+"."+d.substring(6,8).toInt();c.drawText(label,r.left+i*r.width()/5-9,r.bottom+31,p)}
-            p.color=0xFF20272D.toInt();c.drawRoundRect(RectF(ex-45,ey-81,ex+45,ey-39),14f,14f,p);p.color=white;p.textSize=23f;c.drawText(money(rows.last().price),ex-35,ey-52,p)
+            val bubbleTop=(if(ey-r.top<65f)ey+14f else ey-81f).coerceIn(r.top,r.bottom-42f)
+            p.color=0xFF20272D.toInt();c.drawRoundRect(RectF(ex-45,bubbleTop,ex+45,bubbleTop+42),14f,14f,p);p.color=white;p.textSize=23f;c.drawText(money(rows.last().price),ex-35,bubbleTop+29,p)
         }
     }
 }
