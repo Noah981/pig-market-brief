@@ -73,7 +73,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> with WidgetsBindi
   Future<void> _pullToRefresh()async{
     await Future.wait([DataRefreshService.refreshAll(force:true),_refreshAnalysis(),_refreshBenefits()]);
     await Future.wait([_reloadMarketCache(),_reloadCommodityCache(),_reloadWeatherCache()]);
-    if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('최신 시황을 확인했습니다.'),duration:Duration(seconds:1)));
+    if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('자료 갱신을 요청했습니다. 기준일과 연결 상태를 확인하세요.'),duration:Duration(seconds:1)));
   }
   @override Widget build(BuildContext context)=>Scaffold(
     bottomNavigationBar:BottomNavigation(index:_nav,onSelected:(i)=>setState(()=>_nav=i)),

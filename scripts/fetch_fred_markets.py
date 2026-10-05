@@ -4,6 +4,7 @@ The app uses benchmark/spot series, not executable futures quotes. Each row keep
 its original frequency, observation date, source and URL so stale monthly data is
 never presented as today's price.
 """
+import time
 import csv
 import io
 import json
@@ -93,8 +94,14 @@ def parse_series(name, spec, raw):
 
 def fetch_one(name, spec):
     req = urllib.request.Request(_url(spec["id"]), headers={"User-Agent": "Dondonhae/1.1"})
-    with urllib.request.urlopen(req, timeout=25) as response:
-        raw = response.read(2_000_001)
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as response:
+                raw = response.read(2_000_001)
+            break
+        except (OSError,TimeoutError):
+            if attempt == 2:raise
+            time.sleep(attempt+1)
     if len(raw) > 2_000_000:
         raise ValueError("payload too large")
     return parse_series(name, spec, raw)

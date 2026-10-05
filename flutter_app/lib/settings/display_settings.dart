@@ -23,9 +23,12 @@ class DisplaySettings extends ChangeNotifier {
   }
 
   Future<void> setTextScale(double value)async{
+    _largeTextMode=false;
     _textScale=value.clamp(1.15,1.45).toDouble();
     notifyListeners();
-    await (await SharedPreferences.getInstance()).setDouble(_key,_textScale);
+    final prefs=await SharedPreferences.getInstance();
+    await prefs.setDouble(_key,_textScale);
+    await prefs.setBool(_largeKey,false);
   }
 
   Future<void> setLargeTextMode(bool value)async{

@@ -1,7 +1,10 @@
+require 'base64'
 require 'xcodeproj'
 require 'fileutils'
 require 'json'
 root = File.expand_path('../flutter_app', __dir__)
+encoded_logo = File.join(root, 'assets/images/dh_logo.png.base64')
+File.binwrite(File.join(root, 'assets/images/dondonhae_symbol.png'), Base64.strict_decode64(File.read(encoded_logo))) if File.exist?(encoded_logo)
 ios = File.join(root, 'ios')
 template = File.join(root, 'ios_widget')
 project = Xcodeproj::Project.open(File.join(ios, 'Runner.xcodeproj'))

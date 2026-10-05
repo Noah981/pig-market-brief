@@ -77,6 +77,7 @@ jobs:
           python scripts/fetch_fred_markets.py
           python -c "import json; d=json.load(open('docs/data/platform.json')); rows=d.get('markets',[]); assert len(rows)==6 and all(x.get('status')=='LIVE' for x in rows), 'Six official market series are not currently verified; release blocked'; print('All six market series verified')"
           python scripts/fetch_official_benefits.py
+          python -c "import json; d=json.load(open('docs/data/platform.json')); print('Notice source states:',json.dumps(d.get('sourceStatus',[]),ensure_ascii=False))"
           cp docs/data/platform.json flutter_app/assets/data/platform.json
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
