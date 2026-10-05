@@ -6,6 +6,7 @@ import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main(){
+  TestWidgetsFlutterBinding.ensureInitialized();
   test('공식 돈가와 날짜순 그래프를 저장한다',()async{
     SharedPreferences.setMockInitialValues({});
     final client=MockClient((request)async{

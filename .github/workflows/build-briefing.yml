@@ -58,8 +58,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-          rm -rf docs/data
-          cp -R /tmp/generated-data docs/data
+          python scripts/merge_generated_data.py /tmp/generated-data docs/data
           git add docs/data/
           git diff --cached --quiet || git commit -m "Update briefing data"
           git push origin HEAD:main

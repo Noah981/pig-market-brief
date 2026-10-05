@@ -70,7 +70,7 @@ def collect(source):
 
 def main():
  previous=json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {'markets':[],'benefits':[]}
- result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[]};all_items=[]
+ result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[x for x in previous.get('sourceStatus',[]) if x.get('id') not in {'bizinfo',*[s['id'] for s in SOURCES]}]};all_items=[]
  try:
   rows,status=collect_bizinfo();all_items.extend(rows)
   if not rows and status!='API 승인 또는 키 연결 대기':all_items.extend(x for x in previous.get('benefits',[]) if x.get('sourceId')=='bizinfo')

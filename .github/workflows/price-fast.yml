@@ -32,7 +32,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-          cp /tmp/price-data/* docs/data/
+          python scripts/merge_generated_data.py /tmp/price-data docs/data
           git add docs/data/pig-price.json docs/data/pig-price-history.json
           git diff --cached --quiet || git commit -m "Update KAPE price"
           git push origin HEAD:main
