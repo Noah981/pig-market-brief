@@ -110,7 +110,7 @@ def update(previous, fetched):
     result = dict(previous)
     result["markets"] = [old[name] for name in SERIES if name in old]
     result["checkedAt"] = datetime.now(KST).isoformat()
-    result["sourceStatus"] = [
+    result["sourceStatus"] = [x for x in previous.get("sourceStatus",[]) if x.get("id") != "fred-public-series"] + [
         {"id": "fred-public-series", "agency": "FRED 공개 시계열", "status":
          "연결 완료" if len(fetched) == len(SERIES) else f"일부 연결 · {len(fetched)}/{len(SERIES)}"}
     ]

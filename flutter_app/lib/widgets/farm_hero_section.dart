@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'app_header.dart';
-import '../settings/display_settings.dart';
 
 class FarmHeroSection extends StatelessWidget {
   const FarmHeroSection({super.key});
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: DisplaySettings.instance.largeTextMode?140:132,
+        height: 140 * (MediaQuery.textScalerOf(context).scale(1) / 1.15).clamp(1, 1.6),
         child: Stack(fit: StackFit.expand, children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
