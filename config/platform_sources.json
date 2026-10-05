@@ -1,6 +1,15 @@
 {
   "sources": [
-    {"id":"regional-benefits","agency":"지역 공식 공고","kind":"benefits","enabled":false,"permissionBasis":"","endpoint":"","format":"json","itemsKey":"items","region":""},
-    {"id":"official-market","agency":"공식 시장 데이터","kind":"markets","enabled":false,"permissionBasis":"","endpoint":"","format":"json","itemsKey":"items"}
+    {
+      "id": "regional-benefits",
+      "agency": "지역 공식 공고",
+      "kind": "benefits",
+      "enabled": false,
+      "permissionBasis": "",
+      "endpoint": "",
+      "format": "json",
+      "itemsKey": "items",
+      "region": ""
+    }
   ]
 }

@@ -27,7 +27,9 @@ jobs:
       - name: Collect official market observations
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
-        run: python scripts/fetch_fred_markets.py
+        run: |
+          python scripts/fetch_fred_markets.py
+          python scripts/build_market_analysis.py
       - name: Publish changed market feed safely
         run: |
           mkdir -p /tmp/generated-market-data

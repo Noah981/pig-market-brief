@@ -164,7 +164,7 @@ def update(previous, fetched):
     result = dict(previous)
     result["markets"] = [old[name] for name in SERIES if name in old]
     result["checkedAt"] = datetime.now(KST).isoformat()
-    result["sourceStatus"] = [x for x in previous.get("sourceStatus",[]) if x.get("id") not in ("fred-public-series", "official-market-upstreams")] + [
+    result["sourceStatus"] = [x for x in previous.get("sourceStatus",[]) if x.get("id") not in ("fred-public-series", "official-market-upstreams", "official-market")] + [
         {"id": "official-market-upstreams", "agency": "한국은행·세계은행·EIA 공식 시황", "status":
          "연결 완료" if len(fetched) == len(SERIES) else f"일부 연결 · {len(fetched)}/{len(SERIES)}"}
     ]
