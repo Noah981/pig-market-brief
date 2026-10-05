@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'docs/data/platform.json'
 KST=timezone(timedelta(hours=9))
 KEYWORDS=re.compile(r'양돈|돼지|축산|가축|사료|방역|축사|분뇨|저탄소|HACCP|무항생제|동물복지')
-SUPPORT=re.compile(r'지원|사업|보조|융자|시설|개선|인센티브|인증')
+SUPPORT=re.compile(r'지원|보조금|융자|인센티브|모집|신청|참여')
 SOURCES=[
  {'id':'mafra-notice','agency':'농림축산식품부','url':'https://www.mafra.go.kr/home/5108/subview.do','region':'전국','permissionBasis':'공식 공개 공지·공고의 제목·원문 링크 이용'},
 ]
@@ -70,7 +70,7 @@ def collect(source):
 
 def main():
  previous=json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {'markets':[],'benefits':[]}
- result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[]};all_items=[]
+ result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[x for x in previous.get('sourceStatus',[]) if x.get('id') not in {'bizinfo',*[s['id'] for s in SOURCES]}]};all_items=[]
  try:
   rows,status=collect_bizinfo();all_items.extend(rows)
   if not rows and status!='API 승인 또는 키 연결 대기':all_items.extend(x for x in previous.get('benefits',[]) if x.get('sourceId')=='bizinfo')

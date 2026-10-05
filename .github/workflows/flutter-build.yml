@@ -50,7 +50,6 @@ jobs:
         working-directory: flutter_app
         run: flutter analyze
       - name: Verify official API connectivity
-        continue-on-error: true
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
@@ -70,14 +69,20 @@ jobs:
         env:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
-          python -m unittest scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_android_release_signing scripts.test_weather_data
+          python -m unittest scripts.test_generated_data_merge scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_android_release_signing scripts.test_weather_data
           PYTHONPATH=scripts python -m unittest scripts/test_platform.py
           python scripts/fetch_disease_alerts.py
           python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True and data.get('fmdDisclosureVerified') is True and data.get('pedStatisticsVerified') is True, 'Official disease coverage not verified; release blocked'"
           cp docs/data/disease-alerts.json flutter_app/assets/data/disease-alerts.json
+          python scripts/fetch_fred_markets.py
+          python -c "import json; d=json.load(open('docs/data/platform.json')); rows=d.get('markets',[]); assert len(rows)==6 and all(x.get('status')=='LIVE' for x in rows), 'Six official market series are not currently verified; release blocked'; print('All six market series verified')"
+          python scripts/fetch_official_benefits.py
+          python -c "import json; d=json.load(open('docs/data/platform.json')); print('Notice source states:',json.dumps(d.get('sourceStatus',[]),ensure_ascii=False))"
+          cp docs/data/platform.json flutter_app/assets/data/platform.json
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
+          flutter test test/display_refresh_test.dart
           flutter test test/market_repository_test.dart
           flutter test test/commodity_repository_test.dart
           flutter test test/disease_repository_test.dart

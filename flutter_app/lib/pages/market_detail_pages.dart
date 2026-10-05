@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/commodity_quote_card.dart';
+import '../data/commodity_repository.dart';
+import '../services/data_refresh_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,8 +21,10 @@ class PigPriceDetailPage extends StatefulWidget {
 
 class _PigPriceDetailPageState extends State<PigPriceDetailPage>{
   int period=0;PigGradeSnapshot? grades;String? gradeError;
-  MarketSnapshot? get snapshot=>widget.snapshot;MarketAnalysis? get analysis=>widget.analysis;
-  @override void initState(){super.initState();if(widget.loadGrades)_loadGrades();}
+  MarketSnapshot? _latest;MarketSnapshot? get snapshot=>_latest??widget.snapshot;MarketAnalysis? get analysis=>widget.analysis;
+  @override void initState(){super.initState();if(widget.loadGrades)_loadGrades();DataRefreshService.revision.addListener(_updated);}
+  @override void dispose(){DataRefreshService.revision.removeListener(_updated);super.dispose();}
+  Future<void> _updated()async{final value=await MarketRepository().cached();if(mounted&&value!=null){setState(()=>_latest=value);if(widget.loadGrades)await _loadGrades();}}
   Future<void> _loadGrades()async{final repo=PigGradeRepository();final cached=await repo.cached();if(mounted&&cached!=null)setState(()=>grades=cached);if(snapshot==null)return;try{final value=await repo.refresh(snapshot!.date);if(mounted)setState((){grades=value;gradeError=null;});}catch(_){if(mounted)setState(()=>gradeError='공식 등급별 가격을 확인할 수 없습니다.');}}
   @override
   Widget build(BuildContext context) => _DetailScaffold(
@@ -194,10 +198,16 @@ class MarketDriverDetailPage extends StatelessWidget{
   ]));
 }
 
-class CommodityDetailPage extends StatelessWidget {
+class CommodityDetailPage extends StatefulWidget {
   const CommodityDetailPage({super.key, required this.item});
   final Commodity item;
-
+  @override State<CommodityDetailPage> createState()=>_CommodityDetailPageState();
+}
+class _CommodityDetailPageState extends State<CommodityDetailPage>{
+  Commodity? _latest;Commodity get item=>_latest??widget.item;
+  @override void initState(){super.initState();DataRefreshService.revision.addListener(_updated);}
+  @override void dispose(){DataRefreshService.revision.removeListener(_updated);super.dispose();}
+  Future<void> _updated()async{final values=await CommodityRepository().cached();final value=values.where((x)=>x.id==item.id).firstOrNull;if(mounted&&value!=null)setState(()=>_latest=value);}
   @override
   Widget build(BuildContext context) {
     final drivers = item.analysisFactors;

@@ -27,12 +27,13 @@ jobs:
           python scripts/fetch_disease_alerts.py
       - name: Publish changed disease feed
         run: |
-          cp docs/data/disease-alerts.json /tmp/disease-alerts.json
+          mkdir -p /tmp/disease-publish
+          cp docs/data/disease-alerts.json /tmp/disease-publish/
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git fetch origin main
           git reset --hard origin/main
-          cp /tmp/disease-alerts.json docs/data/disease-alerts.json
+          python scripts/merge_generated_data.py /tmp/disease-publish docs/data
           git add docs/data/disease-alerts.json
           git diff --cached --quiet || git commit -m 'Update disease signals'
           git push origin HEAD:main

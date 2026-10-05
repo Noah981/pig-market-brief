@@ -20,7 +20,7 @@ class _DondonhaeAppState extends State<DondonhaeApp>{
         theme: AppTheme.light,
         builder:(context,child){
           final media=MediaQuery.of(context);
-          return MediaQuery(data:media.copyWith(textScaler:TextScaler.linear(settings.textScale)),child:child!);
+          return MediaQuery(data:media.copyWith(textScaler:TextScaler.linear(settings.textScale > media.textScaler.scale(1) ? settings.textScale : media.textScaler.scale(1).clamp(1.15, 1.8))),child:child!);
         },
         home: const HomeDashboardPage(),
       );

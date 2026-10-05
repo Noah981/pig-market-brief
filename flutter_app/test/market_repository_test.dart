@@ -6,8 +6,9 @@ import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main(){
+  TestWidgetsFlutterBinding.ensureInitialized();
   test('공식 돈가와 날짜순 그래프를 저장한다',()async{
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'official_dabom_producer_pig_price_v4':jsonEncode({'price':{'price':5000,'previousPrice':5100,'date':'20240101'},'history':{'rows':[]}})});
     final client=MockClient((request)async{
       if(request.url.path.endsWith('pig-price.json')){
         return http.Response(jsonEncode({'price':5307,'previousPrice':5360,'change':-53,'changePct':-0.99,'date':'20260923','updatedAt':'2026-09-26T13:30:00+09:00','source':'축산물품질평가원','scope':'전국·탕박·등외제외·제주제외','formula':'축산유통정보 다봄 공표 대표값(재계산 없음)'}),200,headers:{'content-type':'application/json; charset=utf-8'});
@@ -35,5 +36,21 @@ void main(){
     expect(value.change,-100);expect(value.changePct,closeTo(-100/5100*100,0.0001));
   });
 
-}
+  test('새 발표를 반영하고 휴일·이전 응답·연결 오류에는 기준일을 유지한다',()async{
+    SharedPreferences.setMockInitialValues({'official_dabom_producer_pig_price_v4':jsonEncode({'price':{'price':5000,'previousPrice':5100,'date':'20240101'},'history':{'rows':[]}})});
+    var date='20261001',price=6027,offline=false;
+    final client=MockClient((request)async{
+      if(offline||request.url.host=='www.ekapepia.com')return http.Response('',503);
+      if(request.url.path.endsWith('pig-price.json'))return http.Response(jsonEncode({'price':price,'previousPrice':6000,'date':date,'scope':'전국·탕박·등외제외·제주제외','source':'축산물품질평가원'}),200,headers:{'content-type':'application/json; charset=utf-8'});
+      return http.Response(jsonEncode({'rows':[{'date':date,'price':price}]}),200);
+    });
+    final repository=MarketRepository(client:client);
+    expect((await repository.refresh()).date,'20261001');
+    expect((await repository.refresh()).date,'20261001');
+    date='20261005';price=6100;
+    final next=await repository.refresh();expect(next.date,'20261005');expect(next.price,6100);
+    date='20261001';price=6027;expect((await repository.refresh()).price,6100);
+    offline=true;final saved=await repository.refresh();expect(saved.price,6100);expect(saved.fromCache,true);
+  });
 
+}

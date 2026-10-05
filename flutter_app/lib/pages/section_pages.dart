@@ -77,10 +77,10 @@ class MarketOverviewPage extends StatelessWidget {
       child: Column(children: [
         const Align(alignment:Alignment.centerLeft,child:Text('원료는 월평균 · 돈가와 유가는 공표일 기준',style:TextStyle(fontSize:11,color:AppColors.secondary))),
         const SizedBox(height:8),
-        GridView(
+        if(MediaQuery.textScalerOf(context).scale(1)>1.3)Column(children:tiles.map((tile)=>Padding(padding:const EdgeInsets.only(bottom:7),child:SizedBox(width:double.infinity,child:tile))).toList())else GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.6)),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:MediaQuery.textScalerOf(context).scale(1)>1.3?1:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.8)),
           children: tiles,
         ),
         const SizedBox(height: 7),
@@ -101,13 +101,13 @@ class MarketOverviewPage extends StatelessWidget {
   Commodity? _find(String id){for(final item in commodities){if(item.id==id)return item;}return null;}
   Widget _commodityTile(String token,String id,BuildContext context,{bool wide=false}){
     final item=_find(id);if(item==null)return const SizedBox.shrink();
-    return CommodityQuoteCard(key:ValueKey('market_$id'),item:item,detail:wide,onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));
+    return CommodityQuoteCard(key:ValueKey('market_$id'),item:item,detail:wide,compact:MediaQuery.textScalerOf(context).scale(1)>1.3,onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));
   }
   void _openPig(BuildContext context)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:snapshot,analysis:analysis)));
 }
 
 class _MarketRecentTrend extends StatefulWidget{const _MarketRecentTrend({this.snapshot,required this.commodities});final MarketSnapshot? snapshot;final List<Commodity> commodities;@override State<_MarketRecentTrend> createState()=>_MarketRecentTrendState();}
-class _MarketRecentTrendState extends State<_MarketRecentTrend>{String selected='pig';@override Widget build(BuildContext context){final choices=[('pig','전국 돈가'),('corn','옥수수'),('soybean_meal','대두박'),('wti','국제유가'),('usd_krw','환율')];final points=selected=='pig'?(widget.snapshot?.history.where((x)=>x.resolution!='month').map((x)=>(x.date,x.value)).toList()??[]):(widget.commodities.where((x)=>x.id==selected).firstOrNull?.history.map((x)=>(x.date,x.value)).toList()??[]);final data=points.length>7?points.sublist(points.length-7):points;return Container(height:145,padding:const EdgeInsets.fromLTRB(12,8,12,6),decoration:appCard(radius:18),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Row(children:[const Expanded(child:_SectionTitle('최근 공표 추이')),Wrap(spacing:3,children:choices.take(4).map((x)=>ChoiceChip(label:Text(x.$2),selected:selected==x.$1,onSelected:(_)=>setState(()=>selected=x.$1),selectedColor:AppColors.coral,showCheckmark:false,visualDensity:VisualDensity.compact,labelPadding:const EdgeInsets.symmetric(horizontal:3),labelStyle:TextStyle(fontSize:8,fontWeight:FontWeight.w700,color:selected==x.$1?Colors.white:AppColors.secondary))).toList())]),const SizedBox(height:3),Expanded(child:data.length<2?const Center(child:Text('해당 기간의 실제 데이터가 없습니다.',style:TextStyle(fontSize:11,color:AppColors.secondary))):LineChart(LineChartData(borderData:FlBorderData(show:false),minX:0,maxX:(data.length-1).toDouble(),gridData:FlGridData(show:true,drawVerticalLine:true,getDrawingHorizontalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:1),getDrawingVerticalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:.6)),titlesData:FlTitlesData(topTitles:const AxisTitles(),rightTitles:const AxisTitles(),leftTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:34,getTitlesWidget:(v,meta)=>Text(v>=1000?v.toStringAsFixed(0):v.toStringAsFixed(1),style:const TextStyle(fontSize:8,color:AppColors.secondary)))),bottomTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:18,interval:1,getTitlesWidget:(v,meta){final i=v.round();if(i<0||i>=data.length)return const SizedBox();final d=data[i].$1;return Padding(padding:const EdgeInsets.only(top:3),child:Text(d.length>=8?'${d.replaceAll('-','').substring(4,6)}/${d.replaceAll('-','').substring(6,8)}':d,style:const TextStyle(fontSize:8,color:AppColors.secondary)));}))),lineTouchData:const LineTouchData(enabled:true),lineBarsData:[LineChartBarData(spots:List.generate(data.length,(i)=>FlSpot(i.toDouble(),data[i].$2)),color:AppColors.coral,barWidth:2.5,isCurved:true,dotData:const FlDotData(show:true),belowBarData:BarAreaData(show:true,gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[AppColors.lightCoral,Colors.transparent])))]))) ]));}}
+class _MarketRecentTrendState extends State<_MarketRecentTrend>{String selected='pig';@override Widget build(BuildContext context){final choices=[('pig','전국 돈가'),('corn','옥수수'),('soybean_meal','대두박'),('wti','국제유가'),('usd_krw','환율')];final points=selected=='pig'?(widget.snapshot?.history.where((x)=>x.resolution!='month').map((x)=>(x.date,x.value)).toList()??[]):(widget.commodities.where((x)=>x.id==selected).firstOrNull?.history.map((x)=>(x.date,x.value)).toList()??[]);final data=points.length>7?points.sublist(points.length-7):points;return Container(height:145 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.8),padding:const EdgeInsets.fromLTRB(12,8,12,6),decoration:appCard(radius:18),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Wrap(spacing:8,runSpacing:4,crossAxisAlignment:WrapCrossAlignment.center,children:[const _SectionTitle('최근 공표 추이'),Wrap(spacing:3,children:choices.take(4).map((x)=>ChoiceChip(label:Text(x.$2),selected:selected==x.$1,onSelected:(_)=>setState(()=>selected=x.$1),selectedColor:AppColors.coral,showCheckmark:false,visualDensity:VisualDensity.compact,labelPadding:const EdgeInsets.symmetric(horizontal:3),labelStyle:TextStyle(fontSize:8,fontWeight:FontWeight.w700,color:selected==x.$1?Colors.white:AppColors.secondary))).toList())]),const SizedBox(height:3),Expanded(child:data.length<2?const Center(child:Text('해당 기간의 실제 데이터가 없습니다.',style:TextStyle(fontSize:11,color:AppColors.secondary))):LineChart(LineChartData(borderData:FlBorderData(show:false),minX:0,maxX:(data.length-1).toDouble(),gridData:FlGridData(show:true,drawVerticalLine:true,getDrawingHorizontalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:1),getDrawingVerticalLine:(_)=>const FlLine(color:AppColors.divider,strokeWidth:.6)),titlesData:FlTitlesData(topTitles:const AxisTitles(),rightTitles:const AxisTitles(),leftTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:34,getTitlesWidget:(v,meta)=>Text(v>=1000?v.toStringAsFixed(0):v.toStringAsFixed(1),style:const TextStyle(fontSize:8,color:AppColors.secondary)))),bottomTitles:AxisTitles(sideTitles:SideTitles(showTitles:true,reservedSize:18,interval:1,getTitlesWidget:(v,meta){final i=v.round();if(i<0||i>=data.length)return const SizedBox();final d=data[i].$1;return Padding(padding:const EdgeInsets.only(top:3),child:Text(d.length>=8?'${d.replaceAll('-','').substring(4,6)}/${d.replaceAll('-','').substring(6,8)}':d,style:const TextStyle(fontSize:8,color:AppColors.secondary)));}))),lineTouchData:const LineTouchData(enabled:true),lineBarsData:[LineChartBarData(spots:List.generate(data.length,(i)=>FlSpot(i.toDouble(),data[i].$2)),color:AppColors.coral,barWidth:2.5,isCurved:true,dotData:const FlDotData(show:true),belowBarData:BarAreaData(show:true,gradient:LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[AppColors.lightCoral,Colors.transparent])))]))) ]));}}
 
 class _MarketTile extends StatelessWidget {
   const _MarketTile(this.icon,this.name,this.value,this.unit,this.change,this.up,{this.basis='',this.onTap,this.tileKey});
@@ -130,12 +130,12 @@ class _MorePageState extends State<MorePage>{
     ('인증 정보', '깨끗한 축산농장 · 저탄소 · HACCP 등', Icons.health_and_safety_outlined),
     ('정부·지자체 지원사업', '내 지역 맞춤 지원사업 확인', Icons.account_balance_outlined),
     ('알림 설정', '돈가 · 질병 · 주문 · 지원사업 등', Icons.notifications_outlined),
-    ('글자 크기', '작게 · 기본 · 크게 · 매우 크게', Icons.text_fields),
+    ('글자 크기', '기본 · 크게 · 매우 크게', Icons.text_fields),
     ('지역 설정', '', Icons.location_on_outlined),
     ('데이터 출처', '정보 제공 기관 안내', Icons.info_outline),
     ('공지사항', '앱 소식 및 업데이트', Icons.campaign_outlined),
     ('이용약관 / 개인정보처리방침', '', Icons.article_outlined),
-    ('앱 정보', '버전 1.4.0', Icons.info),
+    ('앱 정보', '버전 1.8.7', Icons.info),
   ];
   @override void initState(){super.initState();FarmLocationSettings.instance.addListener(_changed);FarmLocationSettings.instance.load();}
   @override void dispose(){FarmLocationSettings.instance.removeListener(_changed);super.dispose();}
@@ -170,7 +170,7 @@ class _MorePageState extends State<MorePage>{
 
   Future<void> _textSize(BuildContext context)async{
     final settings=DisplaySettings.instance;
-    const choices=[(.85,'작게'),(1.0,'기본'),(1.15,'크게'),(1.3,'매우 크게')];
+    const choices=[(1.15,'기본'),(1.3,'크게'),(1.45,'매우 크게')];
     await showModalBottomSheet(context:context,showDragHandle:true,isScrollControlled:true,builder:(context)=>SafeArea(child:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[const ListTile(title:Text('글자 크기',style:TextStyle(fontWeight:FontWeight.w900)),subtitle:Text('선택하면 앱 전체 글자에 바로 적용됩니다. 큰글씨 모드는 홈 상단에서 별도로 켤 수 있습니다.')),...choices.map((x)=>RadioListTile<double>(value:x.$1,groupValue:settings.selectedTextScale,title:Text(x.$2,style:TextStyle(fontSize:14*x.$1,fontWeight:FontWeight.w800)),onChanged:(value)async{if(value==null)return;Navigator.pop(context);await settings.setTextScale(value);})),const SizedBox(height:8)]))));
   }
 }

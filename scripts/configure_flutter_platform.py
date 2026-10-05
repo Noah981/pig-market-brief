@@ -2,8 +2,13 @@
 from pathlib import Path
 import shutil
 import plistlib
+import re
+import base64
 
 root=Path(__file__).resolve().parents[1]/"flutter_app"
+encoded_logo=root/"assets/images/dh_logo.png.base64"
+if encoded_logo.exists():
+    (root/"assets/images/dondonhae_symbol.png").write_bytes(base64.b64decode(encoded_logo.read_text(),validate=True))
 manifest=root/"android/app/src/main/AndroidManifest.xml"
 text=manifest.read_text(encoding="utf-8")
 internet='<uses-permission android:name="android.permission.INTERNET" />'
@@ -17,6 +22,7 @@ if notification not in text:
     text=text.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">',f'<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    {notification}')
 if 'android:usesCleartextTraffic="true"' not in text:
     text=text.replace('<application', '<application android:usesCleartextTraffic="true"')
+text=re.sub(r'android:label="[^\"]*"', 'android:label="돈돈해"', text, count=1)
 manifest.write_text(text,encoding="utf-8")
 
 gradle=root/"android/app/build.gradle"
@@ -114,5 +120,7 @@ manifest.write_text(text,encoding="utf-8")
 
 plist=root/"ios/Runner/Info.plist"
 with plist.open("rb") as file:data=plistlib.load(file)
+data["CFBundleDisplayName"]="돈돈해"
+data["CFBundleName"]="돈돈해"
 data["NSLocationWhenInUseUsageDescription"]="주변 가축질병 발생지역과의 거리를 기기에서 계산하기 위해 사용합니다. 위치정보는 서버에 저장하지 않습니다."
 with plist.open("wb") as file:plistlib.dump(data,file)

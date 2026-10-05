@@ -4,9 +4,10 @@ import '../models/dashboard_models.dart';
 import '../theme/app_theme.dart';
 
 class MarketReasonCard extends StatelessWidget {
-  const MarketReasonCard({super.key, required this.analysis, required this.onTap});
+  const MarketReasonCard({super.key, required this.analysis, required this.onTap,this.compact=false});
   final MarketAnalysis? analysis;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class MarketReasonCard extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10,10,10,9),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(mainAxisSize:compact?MainAxisSize.min:MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Row(children: [
               Icon(Icons.trending_down_rounded, color: AppColors.coral, size: 22),
               SizedBox(width: 5),
@@ -34,7 +35,8 @@ class MarketReasonCard extends StatelessWidget {
               Icon(Icons.chevron_right, color: AppColors.coral, size: 18),
             ]),
             const SizedBox(height: 7),
-            if (factors.isEmpty)
+            if(factors.isEmpty&&compact)const Padding(padding:EdgeInsets.symmetric(vertical:12),child:Text('공식 자료를 확인하고 있습니다.',style:TextStyle(fontSize:9.5,color:AppColors.secondary)))
+            else if (factors.isEmpty)
               const Expanded(child: Center(child: Text('공식 자료를 확인하고 있습니다.', textAlign: TextAlign.center, style: TextStyle(fontSize: 9.5, color: AppColors.secondary))))
             else
               ...factors.map((x) => Padding(
@@ -49,7 +51,7 @@ class MarketReasonCard extends StatelessWidget {
                       const SizedBox(width:3),Icon(x.direction=='up'?Icons.arrow_upward_rounded:x.direction=='down'?Icons.arrow_downward_rounded:Icons.arrow_forward_rounded,size:16,color:_color(x)),
                     ]),
                   )),
-            const Spacer(),
+            if(!compact)const Spacer()else const SizedBox(height:10),
             Container(height:30,alignment:Alignment.center,decoration:BoxDecoration(border:Border.all(color:AppColors.coral.withValues(alpha:.55)),borderRadius:BorderRadius.circular(9)),child:const Text('근거와 출처 자세히 보기  ›',style:TextStyle(fontSize:8.5,color:AppColors.coral,fontWeight:FontWeight.w900))),
           ]),
         ),

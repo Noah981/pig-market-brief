@@ -2,7 +2,12 @@ import unittest
 from platform_pipeline import market,benefit,won_per_kg,index
 from fetch_disease_alerts import classify,country_code,diseases
 from fetch_fred_markets import parse_series,update
+from fetch_official_benefits import SUPPORT
 class PlatformTests(unittest.TestCase):
+ def test_notice_requires_actual_support_or_application_language(self):
+  self.assertIsNone(SUPPORT.search('보조사료로 사용가능한 물질 추가등록 공고'))
+  self.assertIsNone(SUPPORT.search('축산농장 인증 고시 일부개정 행정예고'))
+  self.assertIsNotNone(SUPPORT.search('축산시설 개선 지원사업 신청 공고'))
  def test_countries(self):
   self.assertEqual(classify('KR'),'국내')
   for code in ['VN','CN','JP','US']:self.assertEqual(classify(code),'국외')
@@ -35,6 +40,11 @@ class PlatformTests(unittest.TestCase):
   self.assertEqual(row['date'],'2026-09-11')
   self.assertEqual(row['previousDate'],'2026-09-10')
   self.assertEqual(len(row['history']),2)
+ def test_market_refresh_preserves_notice_connection_status(self):
+  previous={'markets':[],'benefits':[{'id':'notice'}],'sourceStatus':[{'id':'bizinfo','status':'API 승인 또는 키 연결 대기'}]}
+  result=update(previous,[])
+  self.assertEqual(result['benefits'],previous['benefits'])
+  self.assertEqual(result['sourceStatus'][0]['id'],'bizinfo')
  def test_failed_source_preserves_last_good(self):
   previous={'markets':[{'name':'wti','value':100}],'benefits':[]}
   result=update(previous,[])

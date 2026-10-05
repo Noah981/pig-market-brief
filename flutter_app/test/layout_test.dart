@@ -275,27 +275,29 @@ void main() {
     expect(tester.takeException(),isNull,reason:'text size sheet');
     await tester.tap(find.text('크게'));await tester.pumpAndSettle();
     expect(tester.takeException(),isNull,reason:'scale change');
-    expect(DisplaySettings.instance.textScale,1.15);
-    expect((await SharedPreferences.getInstance()).getDouble('display_text_scale'),1.15);
+    expect(DisplaySettings.instance.textScale,1.3);
+    expect((await SharedPreferences.getInstance()).getDouble('display_text_scale_v2'),1.3);
     await DisplaySettings.instance.setTextScale(1);
     expect(tester.takeException(),isNull);
   });
-  testWidgets('홈 큰글씨 모드는 기본 활성이고 안전한 배율로 전환된다',(tester)async{
+  testWidgets('기본은 기존 큰글씨 크기이며 더 큰 모드로 전환된다',(tester)async{
     tester.view.physicalSize=const Size(360,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.largeTextMode,isTrue);
+    expect(DisplaySettings.instance.largeTextMode,isFalse);
     expect(DisplaySettings.instance.textScale,1.15);
-    expect(find.text('기본 글씨'),findsOneWidget);
+    expect(find.text('큰글씨 모드'),findsOneWidget);
+    expect(tester.takeException(),isNull);
+    await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
+    expect(DisplaySettings.instance.largeTextMode,isTrue);
+    expect(DisplaySettings.instance.textScale,1.45);
     expect(tester.takeException(),isNull);
     await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
     expect(DisplaySettings.instance.largeTextMode,isFalse);
-    await tester.tap(find.byKey(const ValueKey('large_text_mode_button')));await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.largeTextMode,isTrue);
   });
   testWidgets('새 설치의 기본 글자 크기는 가독성 기준이다',(tester)async{
     tester.view.physicalSize=const Size(390,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
     await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
-    expect(DisplaySettings.instance.selectedTextScale,1.08);expect(tester.takeException(),isNull);
+    expect(DisplaySettings.instance.selectedTextScale,1.15);expect(tester.takeException(),isNull);
   });
   for(final width in const [360.0,390.0,412.0]){
     testWidgets('큰글씨 상세 화면 ${width.toInt()}dp 배경·상단·오버플로 정상',(tester)async{
@@ -307,4 +309,26 @@ void main() {
       expect(tester.takeException(),isNull);
     });
   }
+  for(final width in const [360.0,390.0,412.0]){
+    for(final scale in const [1.45,1.8]){
+      testWidgets('전체 메뉴 $width dp $scale 배 가상 실행',(tester)async{
+        tester.view.physicalSize=Size(width,844);tester.view.devicePixelRatio=1;addTearDown(tester.view.reset);
+        tester.platformDispatcher.textScaleFactorTestValue=scale;addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await DisplaySettings.instance.load();
+        await DisplaySettings.instance.setTextScale(scale);
+        await tester.pumpWidget(const DondonhaeApp());await tester.pumpAndSettle();
+        await DisplaySettings.instance.setTextScale(scale);
+        for(final nav in [0,1,2,3,4]){
+          await tester.tap(find.byKey(ValueKey('nav_$nav')));await tester.pumpAndSettle();
+          final error=tester.takeException();
+          expect(error,isNull,reason:'nav $nav width $width scale $scale ${error is FlutterError?error.toStringDeep():error}');
+          if(width==390&&scale==1.45&&[0,1,2].contains(nav)){await expectLater(find.byType(MaterialApp),matchesGoldenFile('goldens/large_nav_${nav}_390.png'));}
+          final scroll=find.byWidgetPredicate((w)=>w is Scrollable&&w.axisDirection==AxisDirection.down);
+          if(scroll.evaluate().isNotEmpty){for(var i=0;i<3;i++){await tester.drag(scroll.first,const Offset(0,-520));await tester.pumpAndSettle();expect(tester.takeException(),isNull,reason:'scroll nav $nav width $width scale $scale');}}
+        }
+        await DisplaySettings.instance.setTextScale(1.15);
+      });
+    }
+  }
+
 }
