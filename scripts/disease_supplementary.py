@@ -41,6 +41,7 @@ def parse_fmd(data,url,announcement):
  return out
 
 def fmd_disclosures(now):
+ cutoff=(now-timedelta(days=366)).date().isoformat()
  candidates=[]
  for page_number in range(1,6):
   raw=request(FMD_BOARD+('?page='+str(page_number) if page_number>1 else '')).decode('utf-8','ignore')
@@ -48,7 +49,7 @@ def fmd_disclosures(now):
   for row in re.findall(r'<tr[^>]*>(.*?)</tr>',raw,re.S):
    if 'artclView.do' not in row:continue
    published=re.search(r'(20\d{2})\.\d{2}\.\d{2}',clean(row))
-   if published and int(published[1])<now.year:found_old=True;continue
+   if published and published[0].replace('.','-')<cutoff:found_old=True;continue
    for href,label in re.findall(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',row,re.S):
     title=clean(label)
     if '구제역' in title and '정보공개' in title and 'artclView.do' in href:
@@ -62,7 +63,7 @@ def fmd_disclosures(now):
   page=request(url).decode('utf-8','ignore');published=re.search(r'(20\d{2})\.(\d{2})\.(\d{2})',clean(page))
   if not published:return []
   announcement='-'.join(published.groups())
-  if int(published[1])<now.year:return []
+  if '-'.join(published.groups())<cutoff:return []
   files=re.findall(r'<a[^>]+href=["\']([^"\']*download\.do[^"\']*)["\'][^>]*>(.*?)</a>',page,re.S)
   link=next((urllib.parse.urljoin(url,html.unescape(href)) for href,label in files if '.hwpx' in clean(label)),None)
   if not link:raise ValueError('FMD HWPX missing')

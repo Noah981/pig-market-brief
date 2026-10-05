@@ -25,6 +25,11 @@ void main(){
     final feed=await repo.refresh();expect(feed.items,isEmpty);expect(feed.statistics['ped']['periods']['365']['farmCount'],56);
     expect((await repo.cached()).statistics['ped']['periods']['365']['animalCount'],4198);
   });
+  test('과거의 검증 완료 피드도 최신 경보 없음으로 사용하지 않는다',()async{
+    final payload={'coverageVerified':true,'updatedAt':'2026-10-04T00:00:00+09:00','items':[]};
+    final repo=DiseaseRepository(clock:()=>DateTime.utc(2026,10,5),client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)));
+    final feed=await repo.refresh(checkOfficial:false);expect(feed.state,DiseaseDataState.stale);expect(feed.coverageVerified,isFalse);
+  });
   test('종식된 공식 발생은 내역을 유지하되 현재 경보에서 제외한다',()async{
     final payload={'items':[{'id':'closed-case','disease':'PRRS','countryCode':'KR','evidenceLevel':'OFFICIAL','status':'종식','summary':'공식 과거 내역','occurrenceDate':'2026-10-01'}]};
     final repo=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(jsonEncode(payload)),200)));
