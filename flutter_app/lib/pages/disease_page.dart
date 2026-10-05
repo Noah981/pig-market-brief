@@ -152,7 +152,19 @@ class _DiseasePageState extends State<DiseasePage> with WidgetsBindingObserver{
       if(_tab==0)...[
         _locationBar(),const SizedBox(height:10),
         Container(decoration:appCard(radius:16),padding:const EdgeInsets.all(9),child:Column(children:[
-          Row(children:[Expanded(child:_filterLabel()),const SizedBox(width:5),...const [(30,'1개월'),(90,'3개월'),(180,'6개월'),(365,'1년')].map((period)=>Padding(padding:const EdgeInsets.only(left:2),child:InkWell(key:ValueKey('disease_period_${period.$1}'),onTap:()=>setState(()=>_historyDays=period.$1),borderRadius:BorderRadius.circular(24),child:Container(padding:const EdgeInsets.symmetric(horizontal:7,vertical:8),decoration:BoxDecoration(color:_historyDays==period.$1?AppColors.coral:const Color(0xFFF5F5F7),borderRadius:BorderRadius.circular(24)),child:Text(period.$2,style:TextStyle(fontSize:9,fontWeight:FontWeight.w700,color:_historyDays==period.$1?Colors.white:AppColors.secondary))))),IconButton(key:const ValueKey('disease_layers'),tooltip:'방역반경 표시',onPressed:()=>setState(()=>_showRadii=!_showRadii),constraints:const BoxConstraints(minWidth:28,minHeight:36),padding:EdgeInsets.zero,icon:Icon(Icons.layers_outlined,size:21,color:_showRadii?AppColors.coral:AppColors.secondary))]),
+          Row(children:[
+            Expanded(child:_filterLabel()),const SizedBox(width:5),
+            ...const [(30,'1개월'),(90,'3개월'),(180,'6개월'),(365,'1년')].map((period)=>Padding(
+              padding:const EdgeInsets.only(left:2),
+              child:InkWell(key:ValueKey('disease_period_${period.$1}'),onTap:()=>setState(()=>_historyDays=period.$1),borderRadius:BorderRadius.circular(24),
+                child:Container(padding:const EdgeInsets.symmetric(horizontal:7,vertical:8),
+                  decoration:BoxDecoration(color:_historyDays==period.$1?AppColors.coral:const Color(0xFFF5F5F7),borderRadius:BorderRadius.circular(24)),
+                  child:Text(period.$2,style:TextStyle(fontSize:9,fontWeight:FontWeight.w700,color:_historyDays==period.$1?Colors.white:AppColors.secondary)),
+                ),
+              ),
+            )),
+            IconButton(key:const ValueKey('disease_layers'),tooltip:'방역반경 표시',onPressed:()=>setState(()=>_showRadii=!_showRadii),constraints:const BoxConstraints(minWidth:28,minHeight:36),padding:EdgeInsets.zero,icon:Icon(Icons.layers_outlined,size:21,color:_showRadii?AppColors.coral:AppColors.secondary)),
+          ]),
           KoreaDiseaseMap(items:_listed.where((x)=>x.isConfirmed).toList(),onTap:_openDetail,userLatitude:_lat,userLongitude:_lng,showRadii:_showRadii,focusedEventId:_focusedId,controller:_mapController,dashboard:true),
         ])),const SizedBox(height:10),_riskCard(risk,verified),
       ]else Container(padding:const EdgeInsets.all(14),decoration:appCard(radius:16),child:const Text('WOAH 아프리카 공식 통보입니다. 세계 전체 발생 집계는 아니며, 통보일은 실제 발생일과 다를 수 있습니다.',style:TextStyle(fontSize:11))),
