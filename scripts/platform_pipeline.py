@@ -74,7 +74,8 @@ def collect(source):
 def main():
  out=ROOT/'docs/data/platform.json';config=json.loads((ROOT/'config/platform_sources.json').read_text())
  previous=json.loads(out.read_text()) if out.exists() else {'markets':[],'benefits':[]}
- result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[]}
+ configured_ids={source['id'] for source in config['sources']}
+ result={**previous,'checkedAt':datetime.now(KST).isoformat(),'sourceStatus':[row for row in previous.get('sourceStatus',[]) if row.get('id') not in configured_ids]}
  for source in config['sources']:
   try:
    rows,status=collect(source)

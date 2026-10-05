@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Verify fallback and publication behavior
-        run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge
+        run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge scripts.test_provider_status_preservation
       - name: Collect official market observations
         run: python scripts/fetch_fred_markets.py
       - name: Publish changed market feed safely

@@ -28,6 +28,7 @@ class FredFallbackTests(unittest.TestCase):
    row=fetch_one('usd_krw',SERIES['usd_krw'])
   self.assertEqual(row['value'],1356.51)
   self.assertIn('--fail',transport.call_args.args[0])
+  self.assertIn('--http1.1',transport.call_args.args[0])
   self.assertNotIn('--insecure',transport.call_args.args[0])
  def test_alternate_transport_never_accepts_an_error_page(self):
   with patch('scripts.fetch_fred_markets.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.fetch_fred_markets.time.sleep'),patch('scripts.fetch_fred_markets.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=b'<html>unavailable</html>')):
