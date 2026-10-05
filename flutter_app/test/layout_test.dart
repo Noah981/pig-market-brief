@@ -127,8 +127,8 @@ void main() {
   testWidgets('공식 데이터로 질병 기준 디자인과 PED 통계를 렌더링한다',(tester)async{
     tester.view.devicePixelRatio=1;tester.view.physicalSize=const Size(390,844);addTearDown(tester.view.reset);
     final original=FarmLocationSettings.instance.location;
-    await FarmLocationSettings.instance.setGps(34.7604,127.6622,province:'전라남도',cityCounty:'여수시',accuracy:10);
-    addTearDown(()=>FarmLocationSettings.instance.setLocation(original));
+    await tester.runAsync(()=>FarmLocationSettings.instance.setGps(34.7604,127.6622,province:'전라남도',cityCounty:'여수시',accuracy:10));
+    addTearDown(()=>tester.runAsync(()=>FarmLocationSettings.instance.setLocation(original)));
     final data=File('../docs/data/disease-alerts.json').readAsStringSync();
     final repository=DiseaseRepository(client:MockClient((_)async=>http.Response.bytes(utf8.encode(data),200)));
     await tester.pumpWidget(MaterialApp(debugShowCheckedModeBanner:false,theme:AppTheme.light,home:DiseasePage(repository:repository,requestLocationOnOpen:false)));

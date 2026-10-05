@@ -13,7 +13,10 @@ PROVINCES={'서울':'서울특별시','부산':'부산광역시','대구':'대�
 def clean(text):return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',text))).strip()
 def request(url,data=None):
  req=urllib.request.Request(url,data=data,headers={'User-Agent':'Mozilla/5.0 (DondonhaeOfficialFeed/1.0)'})
- return urllib.request.urlopen(req,timeout=20).read()
+ for attempt in range(3):
+  try:return urllib.request.urlopen(req,timeout=20).read()
+  except (OSError,TimeoutError):
+   if attempt==2:raise
 def parse_fmd(data,url,announcement):
  texts=[];tables=[]
  with zipfile.ZipFile(io.BytesIO(data)) as archive:

@@ -44,7 +44,10 @@ def classify(code):
 
 def fetch(url):
  req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; DondonhaeOfficialFeed/1.0)"})
- return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
+ for attempt in range(3):
+  try:return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
+  except (OSError,TimeoutError):
+   if attempt==2:raise
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def event_date(value):
@@ -248,7 +251,8 @@ def asf_official_table():
   if not expected or not published or not hwpx:raise ValueError("ASF table metadata changed")
   announcement='-'.join(published.groups())
   req=urllib.request.Request(hwpx,headers={"User-Agent":"DondonhaeOfficialFeed/1.0"})
-  data=urllib.request.urlopen(req,timeout=20).read()
+  from disease_supplementary import request
+  data=request(hwpx)
   return parse_asf_hwpx(data,document_year,url,announcement,int(expected[1]))
  with ThreadPoolExecutor(max_workers=2) as pool:
   current,previous=list(pool.map(lambda p:read_document(*p),[(candidates[0],year),(prior,year-1)]))
