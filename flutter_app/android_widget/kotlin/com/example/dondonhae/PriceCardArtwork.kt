@@ -104,9 +104,9 @@ object PriceCardArtwork {
             }
             Kind.LARGE->{
                 clear(650f,32f,986f,89f);text(basis+" | 전국",666f,69f,25f,muted,310f)
-                clear(34f,163f,410f,248f);price(39f,239f,91f,405f)
+                clear(34f,163f,410f,257f);price(39f,239f,91f,405f)
                 clear(38f,258f,344f,307f);delta(44f,294f,33f,300f)
-                clear(71f,339f,318f,381f)
+                clear(90f,339f,318f,381f)
                 val insight=if(change==null)"전일 비교 미확인" else "전일 대비 ${money(abs(change))}원 ${if(change>0)"상승" else if(change<0)"하락" else "보합"}"
                 text(insight,95f,371f,23f,white,235f)
                 val keys=listOf("1+","1","2","등외")
@@ -134,8 +134,13 @@ object PriceCardArtwork {
         source.recycle()
         return b
     }
+    internal fun dailyPlot(data:PriceData):List<PricePoint>{
+        val byDate=data.history.filter{it.price.isFinite()&&it.price>0&&it.date<=data.date}.associateBy{it.date}.toMutableMap()
+        if(data.date.length==8 && data.price!=null)byDate[data.date]=PricePoint(data.date,data.price)
+        return byDate.values.sortedBy{it.date}.takeLast(30)
+    }
     private fun chart(c:Canvas,data:PriceData,r:RectF,font:Typeface,axes:Boolean){
-        val rows=data.history.filter{it.price.isFinite()&&it.price>0&&it.date<=data.date}.takeLast(30)
+        val rows=dailyPlot(data)
         val p=Paint(Paint.ANTI_ALIAS_FLAG)
         if(rows.size<2){p.color=muted;p.typeface=font;p.textSize=if(axes)22f else 15f;c.drawText("일별 이력 확인 중",r.left,r.centerY(),p);return}
         val low=rows.minOf{it.price};val high=rows.maxOf{it.price};val range=max(high-low,1.0)

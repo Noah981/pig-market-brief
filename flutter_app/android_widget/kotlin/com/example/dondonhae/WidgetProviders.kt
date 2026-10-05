@@ -49,7 +49,7 @@ object WidgetStore {
         val currentDate=price?.optString("date") ?: ""
         val currentValue=price?.number("price")
         val daily=history.toMutableList()
-        if(currentDate.length==8 && currentValue!=null && daily.none{it.date==currentDate}) daily.add(PricePoint(currentDate,currentValue))
+        if(currentDate.length==8 && currentValue!=null) { daily.removeAll{it.date==currentDate};daily.add(PricePoint(currentDate,currentValue)) }
         return PriceData(
             price?.number("price"), price?.number("previousPrice"), price?.number("change"),
             price?.number("changePct"), price?.optString("date") ?: "", price?.optString("updatedAt") ?: "", daily.sortedBy{it.date}

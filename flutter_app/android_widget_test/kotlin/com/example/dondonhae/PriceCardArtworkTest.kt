@@ -52,4 +52,24 @@ class PriceCardArtworkTest {
         // The current Korean date varies; an ancient week must never substitute.
         assertNull(PriceCardArtwork.weekAverage(fixture.copy(history=listOf(PricePoint("20000101",5000.0)))))
     }
+    @Test fun officialQuotesAndGradeTablesRenderAllFourCards(){
+        fun input(name:String)=javaClass.getResourceAsStream("/widget/$name")!!.bufferedReader().use{it.readText()}
+        val row=org.json.JSONObject(input("official-price.json"))
+        val history=org.json.JSONObject(input("official-history.json"))
+        val current=NativeGradeRefresh.parse(input("official-current-grade.html"),row.getString("date"))
+        val previous=NativeGradeRefresh.parse(input("official-previous-grade.html"),row.getString("previousDate"))
+        assertNotNull("Actual official grade response must parse",current);assertNotNull(previous)
+        val prefs=context.getSharedPreferences("FlutterSharedPreferences",Context.MODE_PRIVATE)
+        prefs.edit().putString("flutter.official_dabom_producer_pig_price_v4",org.json.JSONObject().put("price",row).put("history",history).toString())
+            .putString("flutter.official_kape_pig_grades_v1",NativeGradeRefresh.merge(null,current!!,previous)).commit()
+        val price=WidgetStore.price(context);val g=WidgetStore.grades(context)
+        assertEquals(row.getDouble("price"),price.price!!,0.0);assertEquals(4,g.current.size)
+        assertEquals(price.price!!,PriceCardArtwork.dailyPlot(price).last().price,0.0)
+        for(kind in PriceCardArtwork.Kind.values()) save(PriceCardArtwork.render(context,kind.w.toInt(),kind.h.toInt(),price,g,kind,"${price.date.substring(4,6).toInt()}. ${price.date.substring(6,8).toInt()} 기준"),"four_${kind.name.lowercase()}_live")
+    }
+    @Test fun correctedQuoteAlsoCorrectsGraphEndpoint(){
+        val points=PriceCardArtwork.dailyPlot(fixture.copy(price=7000.0))
+        assertEquals(7000.0,points.last().price,0.0)
+    }
+
 }

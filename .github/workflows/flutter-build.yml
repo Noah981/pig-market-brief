@@ -49,6 +49,8 @@ jobs:
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Prepare public official inputs for native widget QA
+        run: python scripts/prepare_widget_preview.py
       - name: Render actual Android RemoteViews widget
         working-directory: flutter_app/android
         run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest --tests com.example.dondonhae.NativeGradeRefreshTest
