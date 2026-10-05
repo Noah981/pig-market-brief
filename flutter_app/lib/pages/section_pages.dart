@@ -77,7 +77,7 @@ class MarketOverviewPage extends StatelessWidget {
       child: Column(children: [
         const Align(alignment:Alignment.centerLeft,child:Text('원료는 월평균 · 돈가와 유가는 공표일 기준',style:TextStyle(fontSize:11,color:AppColors.secondary))),
         const SizedBox(height:8),
-        GridView(
+        if(MediaQuery.textScalerOf(context).scale(1)>1.3)Column(children:tiles.map((tile)=>Padding(padding:const EdgeInsets.only(bottom:7),child:SizedBox(width:double.infinity,child:tile))).toList())else GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:MediaQuery.textScalerOf(context).scale(1)>1.3?1:2,mainAxisSpacing:7,crossAxisSpacing:7,mainAxisExtent:220.0 * MediaQuery.textScalerOf(context).scale(1).clamp(1,1.8)),
@@ -101,7 +101,7 @@ class MarketOverviewPage extends StatelessWidget {
   Commodity? _find(String id){for(final item in commodities){if(item.id==id)return item;}return null;}
   Widget _commodityTile(String token,String id,BuildContext context,{bool wide=false}){
     final item=_find(id);if(item==null)return const SizedBox.shrink();
-    return CommodityQuoteCard(key:ValueKey('market_$id'),item:item,detail:wide,onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));
+    return CommodityQuoteCard(key:ValueKey('market_$id'),item:item,detail:wide,compact:MediaQuery.textScalerOf(context).scale(1)>1.3,onTap:()=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>CommodityDetailPage(item:item))));
   }
   void _openPig(BuildContext context)=>Navigator.of(context).push(MaterialPageRoute(builder:(_)=>PigPriceDetailPage(snapshot:snapshot,analysis:analysis)));
 }

@@ -3,10 +3,10 @@ import '../models/dashboard_models.dart';
 import '../theme/app_theme.dart';
 
 class CommodityQuoteCard extends StatelessWidget {
-  const CommodityQuoteCard({super.key,required this.item,this.onTap,this.detail=false});
+  const CommodityQuoteCard({super.key,required this.item,this.onTap,this.detail=false,this.compact=false});
   final Commodity item;
   final VoidCallback? onTap;
-  final bool detail;
+  final bool detail,compact;
   Color get accent=>switch(item.id){'corn'||'wheat'=>const Color(0xFFB78312),'wti'=>const Color(0xFF3576A5),'usd_krw'=>const Color(0xFF6B62AE),_=>const Color(0xFF568D63)};
   Color get movement=>item.change==null||item.change==0?AppColors.secondary:item.change!>0?AppColors.coral:AppColors.blue;
   String get source=>item.source.contains('IMF')?'IMF · FRED':item.source.contains('ECOS')?'한국은행 ECOS':item.source.contains('EIA')?'EIA · FRED':item.source.contains('연방준비')?'Federal Reserve · FRED':item.source;
@@ -18,7 +18,7 @@ class CommodityQuoteCard extends StatelessWidget {
     const SizedBox(height:9),
     Wrap(spacing:5,runSpacing:4,children:[Container(padding:const EdgeInsets.symmetric(horizontal:7,vertical:4),decoration:BoxDecoration(color:movement.withValues(alpha:.08),borderRadius:BorderRadius.circular(7)),child:Text(item.comparisonLabel,style:TextStyle(fontSize:detail?13:11,fontWeight:FontWeight.w800,color:movement))),if(item.hasQuote)Text(item.frequency=='monthly'?'전월 대비':'직전 공표 대비',style:const TextStyle(fontSize:9,height:2.1,color:AppColors.secondary))]),
     if(detail&&item.history.length>=2)...[const SizedBox(height:15),SizedBox(height:45,width:double.infinity,child:CustomPaint(painter:_QuoteSparkline(item.history,accent)))],
-    if(!detail)const Spacer(),
+    if(!detail&&!compact)const Spacer(),
     const SizedBox(height:10),
     Text(item.basisLabel,style:TextStyle(fontSize:detail?13:10,fontWeight:FontWeight.w700,color:accent)),
     const SizedBox(height:4),
