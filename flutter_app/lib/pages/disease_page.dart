@@ -146,7 +146,7 @@ class _DiseasePageState extends State<DiseasePage> with WidgetsBindingObserver{
   @override Widget build(BuildContext context){
     final verified=_feed?.coverageVerified==true&&_feed?.fromCache==false&&_feed?.state==DiseaseDataState.live;
     final risk=DiseaseRiskEngine.summarize(_visible,latitude:verified?_lat:null,longitude:verified?_lng:null,type:_selected);
-    return PageShell(title:'질병',subtitle:'내 농장 주변 질병 발생 현황을 확인하세요',help:_openHelp,onRefresh:()=>_refresh(),child:Column(children:[
+    return PageShell(compactHeader:true,title:'질병',subtitle:'내 농장 주변 질병 발생 현황을 확인하세요',help:_openHelp,onRefresh:()=>_refresh(),child:Column(children:[
       _tabs(),const SizedBox(height:10),_summary(),const SizedBox(height:10),
       if(_message!=null)Padding(padding:const EdgeInsets.only(bottom:8),child:Text(_message!,style:const TextStyle(fontSize:10,color:AppColors.secondary))),
       if(_tab==0)...[

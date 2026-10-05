@@ -13,7 +13,8 @@ import 'benefit_page.dart';
 import 'disease_page.dart' show DiseaseNotificationSettingsPage;
 
 class PageShell extends StatelessWidget {
-  const PageShell({super.key, required this.title, required this.subtitle, required this.child,this.help,this.onRefresh});
+  const PageShell({super.key, required this.title, required this.subtitle, required this.child,this.help,this.onRefresh,this.compactHeader=false});
+  final bool compactHeader;
   final String title;
   final String subtitle;
   final Widget child;
@@ -31,14 +32,14 @@ class PageShell extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 430),
             child: RefreshIndicator(color:AppColors.coral,onRefresh:onRefresh??()async{},notificationPredicate:(_)=>onRefresh!=null,child:CustomScrollView(physics:const AlwaysScrollableScrollPhysics(),slivers: [
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+                padding: EdgeInsets.fromLTRB(16, compactHeader?10:14, 16, 20),
                 sliver: SliverList.list(children: [
-                  if (title.isNotEmpty) Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Text(title, style: const TextStyle(fontSize: 30, height: 1.08, fontWeight: FontWeight.w900,letterSpacing:-1.3))),if(help!=null)IconButton(onPressed:help,icon:const Icon(Icons.help_outline,size:26),tooltip:'도움말',visualDensity:VisualDensity.compact)]),
+                  if (title.isNotEmpty) Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Expanded(child:Text(title, style: const TextStyle(fontSize: 30, height: 1.08, fontWeight: FontWeight.w900,letterSpacing:-1.3))),if(help!=null)IconButton(onPressed:help,icon:const Icon(Icons.help_outline,size:26),tooltip:'도움말',constraints:compactHeader?const BoxConstraints.tightFor(width:32,height:32):null,padding:compactHeader?EdgeInsets.zero:null,visualDensity:VisualDensity.compact)]),
                   if (subtitle.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(subtitle, style: const TextStyle(fontSize: 15, height: 1.35, color: AppColors.secondary)),
+                    Text(subtitle, style: TextStyle(fontSize: compactHeader?12:15, height: 1.35, color: AppColors.secondary)),
                   ],
-                  if (title.isNotEmpty) const SizedBox(height: 14),
+                  if (title.isNotEmpty) SizedBox(height:compactHeader?10:14),
                   child,
                 ]),
               ),

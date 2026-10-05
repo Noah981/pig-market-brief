@@ -130,7 +130,7 @@ class _MapPainter extends CustomPainter{
     if(userLatitude!=null&&userLongitude!=null){final p=projection.point(userLongitude!,userLatitude!);canvas.drawCircle(p,8,Paint()..color=AppColors.blue.withValues(alpha:.2));canvas.drawCircle(p,4.5,Paint()..color=AppColors.blue);canvas.drawCircle(p,4.5,Paint()..color=Colors.white..style=PaintingStyle.stroke..strokeWidth=1.5);}
     if(dashboard){
       for(final label in const [('강원',128.3,37.8),('경기',127.1,37.4),('충북',127.7,36.65),('충남',126.8,36.5),('경북',128.8,36.4),('전북',127.1,35.75),('전남',126.8,34.65),('경남',128.2,35.25),('제주',126.55,33.4),('울릉',130.9,37.5),('독도',131.87,37.25)]){
-        final p=projection.point(label.$2,label.$3);final text=TextPainter(text:TextSpan(text:label.$1,style:TextStyle(fontSize:label.$1=='울릉'||label.$1=='독도'?6:8,color:const Color(0xFF606873),fontWeight:FontWeight.w600)),textDirection:TextDirection.ltr)..layout();text.paint(canvas,p-Offset(text.width/2,text.height/2));
+        final p=projection.point(label.$2,label.$3);final text=TextPainter(text:TextSpan(text:label.$1,style:TextStyle(fontFamily:'NotoSansKR',fontSize:label.$1=='울릉'||label.$1=='독도'?6:8,color:const Color(0xFF606873),fontWeight:FontWeight.w600)),textDirection:TextDirection.ltr)..layout();text.paint(canvas,p-Offset(text.width/2,text.height/2));
       }
       return;
     }
