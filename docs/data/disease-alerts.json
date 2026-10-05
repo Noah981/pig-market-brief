@@ -5,20 +5,20 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-05T23:23:06.808180+09:00",
+      "checkedAt": "2026-10-06T00:52:18.758181+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
-          "from": "2026-09-05",
-          "to": "2026-10-05",
+          "from": "2026-09-06",
+          "to": "2026-10-06",
           "farmCount": 0,
           "animalCount": 0,
           "regions": [],
           "months": []
         },
         "90": {
-          "from": "2026-07-07",
-          "to": "2026-10-05",
+          "from": "2026-07-08",
+          "to": "2026-10-06",
           "farmCount": 1,
           "animalCount": 2,
           "regions": [
@@ -194,10 +194,10 @@
           ]
         },
         "180": {
-          "from": "2026-04-08",
-          "to": "2026-10-05",
-          "farmCount": 14,
-          "animalCount": 366,
+          "from": "2026-04-09",
+          "to": "2026-10-06",
+          "farmCount": 13,
+          "animalCount": 365,
           "regions": [
             {
               "province": "서울특별시",
@@ -246,8 +246,8 @@
             },
             {
               "province": "충청북도",
-              "animalCount": 7,
-              "farmCount": 3
+              "animalCount": 6,
+              "farmCount": 2
             },
             {
               "province": "충청남도",
@@ -283,8 +283,8 @@
           "months": [
             {
               "month": "202604",
-              "animalCount": 306,
-              "farmCount": 5,
+              "animalCount": 305,
+              "farmCount": 4,
               "regions": [
                 {
                   "province": "서울특별시",
@@ -333,8 +333,8 @@
                 },
                 {
                   "province": "충청북도",
-                  "animalCount": 2,
-                  "farmCount": 2
+                  "animalCount": 1,
+                  "farmCount": 1
                 },
                 {
                   "province": "충청남도",
@@ -632,8 +632,8 @@
           ]
         },
         "365": {
-          "from": "2025-10-05",
-          "to": "2026-10-05",
+          "from": "2025-10-06",
+          "to": "2026-10-06",
           "farmCount": 56,
           "animalCount": 4198,
           "regions": [
@@ -1598,7 +1598,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-05T23:23:54.988437+09:00",
+  "updatedAt": "2026-10-06T00:53:06.021892+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
