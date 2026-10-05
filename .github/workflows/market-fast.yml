@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   market:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +23,8 @@ jobs:
       - name: Verify fallback and publication behavior
         run: python -m unittest scripts.test_fred_fallback scripts.test_generated_data_merge scripts.test_provider_status_preservation
       - name: Collect official market observations
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python scripts/fetch_fred_markets.py
       - name: Publish changed market feed safely
         run: |

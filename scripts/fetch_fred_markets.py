@@ -1,4 +1,4 @@
-"""Fetch verified public market series from FRED without API keys.
+"""Fetch official FRED observations, with public downloads as a fallback.
 
 The app uses benchmark/spot series, not executable futures quotes. Each row keeps
 its original frequency, observation date, source and URL so stale monthly data is
@@ -11,6 +11,8 @@ import json
 import math
 import re
 import subprocess
+import os
+import urllib.parse
 from html import unescape
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -111,6 +113,24 @@ def parse_table(name, spec, raw):
 
 
 def fetch_one(name, spec):
+    key=os.getenv('FRED_API_KEY','').strip()
+    if key:
+        try:
+            query=urllib.parse.urlencode({'api_key':key,'series_id':spec['id'],'file_type':'json','sort_order':'desc','limit':'1000'})
+            request=urllib.request.Request('https://api.stlouisfed.org/fred/series/observations?'+query,headers={'User-Agent':'Dondonhae/1.8'})
+            with urllib.request.urlopen(request,timeout=20) as response:payload=response.read(2_000_001)
+            if len(payload)>2_000_000:raise ValueError('payload too large')
+            document=json.loads(payload)
+            if not isinstance(document,dict):raise ValueError('Invalid official API response')
+            observations=document.get('observations',[])
+            if not isinstance(observations,list):raise ValueError('Invalid official API observations')
+            buffer=io.StringIO();writer=csv.writer(buffer)
+            writer.writerow(['observation_date',spec['id']])
+            writer.writerows([r.get('date',''),r.get('value','')] for r in observations if isinstance(r,dict))
+            return parse_series(name,spec,buffer.getvalue().encode('utf-8'))
+        except (OSError,TimeoutError,ValueError,TypeError):
+            # Do not log a request URL: it contains the credential.
+            pass
     # An alternate official endpoint avoids treating one CSV timeout as a
     # complete provider outage. Never substitute another series or sample value.
     endpoints=[(_url(spec['id']),parse_series),(f"https://fred.stlouisfed.org/data/{spec['id']}",parse_table)]
@@ -154,6 +174,7 @@ def update(previous, fetched):
 def main():
     previous = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {"markets": [], "benefits": []}
     fetched = []
+    print('Official FRED API configured:',bool(os.getenv('FRED_API_KEY','').strip()))
     with ThreadPoolExecutor(max_workers=3) as pool:
         futures = {pool.submit(fetch_one, name, spec): name for name, spec in SERIES.items()}
         for future in as_completed(futures):

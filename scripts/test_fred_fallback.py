@@ -1,4 +1,5 @@
 import io
+import json
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -9,6 +10,20 @@ TABLE=b'''<tr><th>Series ID</th><td>DEXKOUS</td></tr>
 <div id="extra-rows">#2026-09-24|1369.44 #2026-09-25|1356.51 #2026-09-26|. #2099-01-01|9000</div>'''
 
 class FredFallbackTests(unittest.TestCase):
+ def setUp(self):
+  self.environment=patch.dict('os.environ',{'FRED_API_KEY':''});self.environment.start();self.addCleanup(self.environment.stop)
+ def test_authenticated_api_observations_use_same_validation(self):
+  payload=json.dumps({'observations':[{'date':'2026-09-25','value':'1356.51'},{'date':'2026-09-24','value':'1369.44'},{'date':'2099-01-01','value':'9999'}]}).encode()
+  with patch.dict('os.environ',{'FRED_API_KEY':'test-credential'}),patch('scripts.fetch_fred_markets.urllib.request.urlopen',return_value=io.BytesIO(payload)) as request:
+   row=fetch_one('usd_krw',SERIES['usd_krw'])
+  self.assertEqual(row['date'],'2026-09-25')
+  self.assertEqual(row['previousValue'],1369.44)
+  self.assertTrue(request.call_args.args[0].full_url.startswith('https://api.stlouisfed.org/fred/series/observations?'))
+ def test_bad_authenticated_response_falls_back_to_official_public_source(self):
+  csv=b'observation_date,DEXKOUS\n2026-09-24,1369.44\n2026-09-25,1356.51\n'
+  with patch.dict('os.environ',{'FRED_API_KEY':'test-credential'}),patch('scripts.fetch_fred_markets.urllib.request.urlopen',side_effect=[io.BytesIO(b'{"error_message":"invalid API key"}'),io.BytesIO(csv)]):
+   row=fetch_one('usd_krw',SERIES['usd_krw'])
+  self.assertEqual(row['status'],'LIVE')
  def test_table_uses_latest_deferred_observations(self):
   row=parse_table('usd_krw',SERIES['usd_krw'],TABLE)
   self.assertEqual(row['date'],'2026-09-25')
