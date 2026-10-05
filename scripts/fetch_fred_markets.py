@@ -9,6 +9,8 @@ import csv
 import io
 import json
 import math
+import re
+from html import unescape
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta, date
@@ -92,19 +94,36 @@ def parse_series(name, spec, raw):
     }
 
 
+def parse_table(name, spec, raw):
+    """Read FRED's own data table, including its deferred observation rows."""
+    text=raw.decode('utf-8-sig')
+    if not re.search(r'Series ID\s*</th>\s*<td[^>]*>\s*'+re.escape(spec['id'])+r'\s*</td>',text,re.I):
+        raise ValueError('FRED table series mismatch')
+    observations=[]
+    for row in re.findall(r'<tr[^>]*>(.*?)</tr>',text,re.S|re.I):
+        cells=[unescape(re.sub(r'<[^>]+>','',x)).strip() for x in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>',row,re.S|re.I)]
+        if len(cells)==2 and re.fullmatch(r'\d{4}-\d{2}-\d{2}',cells[0]):observations.append(cells)
+    observations.extend(re.findall(r'#(\d{4}-\d{2}-\d{2})\|\s*([^\s<]+)',text))
+    buffer=io.StringIO();writer=csv.writer(buffer)
+    writer.writerow(['observation_date',spec['id']]);writer.writerows(observations)
+    return parse_series(name,spec,buffer.getvalue().encode('utf-8'))
+
+
 def fetch_one(name, spec):
-    req = urllib.request.Request(_url(spec["id"]), headers={"User-Agent": "Dondonhae/1.1"})
+    # An alternate official endpoint avoids treating one CSV timeout as a
+    # complete provider outage. Never substitute another series or sample value.
+    endpoints=[(_url(spec['id']),parse_series),(f"https://fred.stlouisfed.org/data/{spec['id']}",parse_table)]
+    last_error=None
     for attempt in range(3):
-        try:
-            with urllib.request.urlopen(req, timeout=20) as response:
-                raw = response.read(2_000_001)
-            break
-        except (OSError,TimeoutError):
-            if attempt == 2:raise
-            time.sleep(attempt+1)
-    if len(raw) > 2_000_000:
-        raise ValueError("payload too large")
-    return parse_series(name, spec, raw)
+        for url,parser in endpoints:
+            try:
+                req=urllib.request.Request(url,headers={'User-Agent':'Dondonhae/1.8'})
+                with urllib.request.urlopen(req,timeout=20) as response:raw=response.read(2_000_001)
+                if len(raw)>2_000_000:raise ValueError('payload too large')
+                return parser(name,spec,raw)
+            except (OSError,TimeoutError,ValueError) as exc:last_error=exc
+        if attempt<2:time.sleep(attempt+1)
+    raise last_error
 
 
 def update(previous, fetched):
