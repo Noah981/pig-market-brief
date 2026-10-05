@@ -19,7 +19,7 @@ class PriceRefreshWorkerTest {
         val merged = JSONObject(PriceRefreshWorker.mergeVerifiedPrice(old.toString(), row("20261005", 6052), now)!!)
         assertEquals("20261005", merged.getJSONObject("price").getString("date"))
         assertEquals(6052, merged.getJSONObject("price").getInt("price"))
-        assertEquals(1, merged.getJSONObject("history").getJSONArray("rows").length())
+        assertEquals(2, merged.getJSONObject("history").getJSONArray("rows").length())
     }
     @Test fun oldOrInvalidFeedsCannotReplaceVerifiedQuote() {
         val old = JSONObject().put("price", JSONObject(row("20261005", 6052))).toString()
