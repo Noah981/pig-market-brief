@@ -38,7 +38,8 @@ class PriceCardArtworkTest {
     }
     @Test fun remoteViewsInflatesAllFourSizes(){
         for(kind in PriceCardArtwork.Kind.values()){
-            val w=kind.w.toInt()/2;val h=kind.h.toInt()/2
+            val size=when(kind){PriceCardArtwork.Kind.SMALL->180 to 174;PriceCardArtwork.Kind.MEDIUM->360 to 142;PriceCardArtwork.Kind.LARGE->360 to 147;PriceCardArtwork.Kind.TODAY->150 to 214}
+            val w=size.first;val h=size.second
             val bitmap=PriceCardArtwork.render(context,w,h,fixture,grades,kind,"10. 6 (화)")
             val views=RemoteViews(context.packageName,R.layout.widget_price_small);views.setImageViewBitmap(R.id.price_artwork,bitmap)
             val view=views.apply(context,null)

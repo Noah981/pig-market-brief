@@ -42,11 +42,33 @@ object PriceCardArtwork {
         val radius=if(kind==Kind.TODAY)34f else 55f
         c.clipPath(Path().apply{addRoundRect(RectF(0f,0f,kind.w,kind.h),radius,radius,Path.Direction.CW)})
         val source=context.assets.open("widget/four_price_reference.png").use{BitmapFactory.decodeStream(it)}
-        c.drawBitmap(source,kind.crop,RectF(0f,0f,kind.w,kind.h),Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG));source.recycle()
+        c.drawBitmap(source,kind.crop,RectF(0f,0f,kind.w,kind.h),Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
         val font=Typeface.createFromAsset(context.assets,"widget/NotoSansKR.ttf")
         val heavy=Typeface.create("sans-serif",Typeface.BOLD)
-        val bg=Paint().apply{shader=LinearGradient(0f,0f,kind.w,kind.h,0xFF1A2228.toInt(),0xFF0C1013.toInt(),Shader.TileMode.CLAMP)}
-        fun clear(l:Float,t:Float,r:Float,bt:Float){c.drawRect(l,t,r,bt,bg)}
+        fun sample(x:Int,y:Int):Int {
+            val candidates=mutableListOf<Int>()
+            for(dx in -3..3)for(dy in -2..2){
+                val col=source.getPixel((kind.crop.left+x+dx).coerceIn(0,source.width-1),(kind.crop.top+y+dy).coerceIn(0,source.height-1))
+                if(maxOf(Color.red(col),Color.green(col),Color.blue(col))<90)candidates.add(col)
+            }
+            return candidates.sortedBy{Color.red(it)+Color.green(it)+Color.blue(it)}.let{if(it.isEmpty())0xFF151C22.toInt() else it[it.size/2]}
+        }
+        fun clear(l:Float,t:Float,r:Float,bt:Float){
+            // Reconstruct the smooth dark field from its untouched row edges.
+            // This keeps the source's per-card and per-grade lighting instead
+            // of painting a visibly different flat rectangle behind new text.
+            val w=(r-l).roundToInt().coerceAtLeast(1);val h=(bt-t).roundToInt().coerceAtLeast(1)
+            val pixels=IntArray(w*h)
+            for(y in 0 until h){
+                val a=sample(l.toInt()-2,t.toInt()+y);val z=sample(r.toInt()+2,t.toInt()+y)
+                for(x in 0 until w){val f=x.toFloat()/max(1,w-1);pixels[y*w+x]=Color.rgb(
+                    (Color.red(a)*(1-f)+Color.red(z)*f).roundToInt(),
+                    (Color.green(a)*(1-f)+Color.green(z)*f).roundToInt(),
+                    (Color.blue(a)*(1-f)+Color.blue(z)*f).roundToInt())}
+            }
+            val patch=Bitmap.createBitmap(pixels,w,h,Bitmap.Config.ARGB_8888)
+            c.drawBitmap(patch,null,RectF(l,t,r,bt),Paint(Paint.FILTER_BITMAP_FLAG));patch.recycle()
+        }
         fun text(s:String,x:Float,y:Float,size:Float,color:Int=white,maxWidth:Float=kind.w-x-20,bold:Boolean=false){
             val p=Paint(Paint.ANTI_ALIAS_FLAG).apply{this.color=color;typeface=if(bold)heavy else font;textSize=size}
             if(p.measureText(s)>maxWidth)p.textSize*=maxWidth/p.measureText(s)
@@ -72,7 +94,6 @@ object PriceCardArtwork {
                 clear(31f,155f,354f,253f);price(37f,236f,92f,311f)
                 clear(35f,259f,290f,306f);delta(44f,295f,34f,247f)
                 // The source has a missing parenthesis; all comparison text is live.
-                clear(30f,314f,220f,342f);text(basis+" · 다봄",39f,337f,14f,muted,176f)
             }
             Kind.MEDIUM->{
                 clear(603f,37f,720f,86f);text(today,612f,70f,24f,muted,110f)
@@ -80,7 +101,6 @@ object PriceCardArtwork {
                 clear(37f,216f,310f,275f)
                 clear(307f,102f,909f,341f);chart(c,data,RectF(310f,116f,830f,291f),font,true)
                 price(40f,192f,94f,315f);delta(46f,253f,34f,265f)
-                text(basis+" · 다봄",42f,321f,17f,muted,260f)
             }
             Kind.LARGE->{
                 clear(650f,32f,986f,89f);text(basis+" | 전국",666f,69f,25f,muted,310f)
@@ -99,19 +119,19 @@ object PriceCardArtwork {
                     text(if(d==null)"—" else (if(d>0)"▲ " else if(d<0)"▼ " else "— ")+money(abs(d)),913f,y+43,22f,if(d!=null&&d>0)red else green,80f)
                 }
                 // Never attach today's price date to older grade records.
-                text(if(grades.date.isEmpty())"등급 자료 미확인" else "등급 ${grades.date.takeLast(4).chunked(2).joinToString("/")} 기준",655f,414f,14f,muted,300f)
+                if(grades.date!=data.date)text(if(grades.date.isEmpty())"등급 자료 미확인" else "등급 ${grades.date.takeLast(4).chunked(2).joinToString("/")} 기준",655f,414f,14f,muted,300f)
             }
             Kind.TODAY->{
                 clear(167f,24f,268f,72f);text(today,175f,56f,20f,muted,85f)
                 clear(22f,82f,268f,143f);price(28f,134f,56f,243f)
                 clear(24f,148f,266f,190f);delta(29f,176f,25f,232f)
-                clear(23f,201f,267f,298f);chart(c,data,RectF(26f,214f,249f,292f),font,false)
+                clear(23f,201f,280f,298f);chart(c,data,RectF(26f,214f,249f,292f),font,false)
                 clear(22f,311f,273f,393f)
                 text("전 거래일",29f,340f,19f,muted,112f);text("이번 주 평균",167f,340f,19f,muted,105f)
                 text(money(data.previous),29f,377f,27f,white,111f,true);text(money(weekAverage(data)),167f,377f,27f,white,105f,true)
-                text(basis,29f,404f,12f,muted,200f)
             }
         }
+        source.recycle()
         return b
     }
     private fun chart(c:Canvas,data:PriceData,r:RectF,font:Typeface,axes:Boolean){

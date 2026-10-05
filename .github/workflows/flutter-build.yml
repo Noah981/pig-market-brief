@@ -57,6 +57,10 @@ jobs:
           for kind in small medium large today; do
             cp "flutter_app/android/app/build/widget-screenshots/four_${kind}_fixture.png" "flutter_app/android/app/src/main/res/drawable/widget_${kind}_preview.png"
           done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dondonhae-four-widgets-native
+          path: flutter_app/android/app/build/widget-screenshots/*.png
       - name: Verify official API connectivity
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:

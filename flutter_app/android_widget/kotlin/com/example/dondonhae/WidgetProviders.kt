@@ -134,7 +134,7 @@ object WidgetRenderer {
         val options=manager.getAppWidgetOptions(id)
         val width=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,(kind.w/2).toInt()).coerceIn(100,600)
         val height=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,(kind.h/2).toInt()).coerceIn(80,500)
-        views.setImageViewBitmap(R.id.price_artwork,PriceCardArtwork.render(context,width*2,height*2,data,grades,kind,todayLabel()))
+        views.setImageViewBitmap(R.id.price_artwork,PriceCardArtwork.render(context,width*2,height*2,data,grades,kind,quoteDateLabel(data.date)))
         views.setContentDescription(R.id.price_artwork,"돈돈해 전국 돈가 ${money(data.price)}원/kg, ${dateBasis(data.date)}, ${changeText(data.change,data.percent)}. 다봄 등외·제주 제외")
         views.setOnClickPendingIntent(R.id.widget_root,deepLink(context,if(kind==PriceCardArtwork.Kind.LARGE) "dondonhae://market/pig-price/grade" else "dondonhae://market/pig-price",id))
         manager.updateAppWidget(id,views)
@@ -175,6 +175,13 @@ object WidgetRenderer {
     }
     private fun changeColor(change: Double?): Int = when { change == null || change == 0.0 -> FLAT; change > 0 -> UP; else -> DOWN }
     private fun dateBasis(date: String): String = if (date.length == 8) "${date.substring(4, 6).toIntOrNull() ?: date.substring(4,6)}/${date.substring(6,8)} 기준" else "데이터 확인 중"
+    private fun quoteDateLabel(date:String):String {
+        return try {
+            val zone=java.util.TimeZone.getTimeZone("Asia/Seoul")
+            val parser=SimpleDateFormat("yyyyMMdd",Locale.KOREA).apply{timeZone=zone;isLenient=false}
+            if(date.length!=8) "기준일 미확인" else SimpleDateFormat("M. d (E)",Locale.KOREA).apply{timeZone=zone}.format(parser.parse(date)!!)
+        } catch(_:Exception){"기준일 미확인"}
+    }
     private fun todayLabel(): String = SimpleDateFormat("M. d (E)", Locale.KOREA).apply { timeZone=java.util.TimeZone.getTimeZone("Asia/Seoul") }.format(Date())
     private fun deepLink(context: Context, uri: String, requestCode: Int): PendingIntent {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri), context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
