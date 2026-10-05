@@ -31,13 +31,21 @@ def period(value):
  dates=re.findall(r'20\d{2}[.\-/]?\d{2}[.\-/]?\d{2}',value or '')
  return (ymd(dates[0]),ymd(dates[-1])) if dates else (None,None)
 
+def bizinfo_rows(data):
+ root=data.get('jsonArray',data) if isinstance(data,dict) else data
+ rows=root.get('item') if isinstance(root,dict) else root
+ if isinstance(rows,dict):rows=[rows]
+ if not isinstance(rows,list) or any(not isinstance(row,dict) for row in rows):
+  raise ValueError('Unrecognized official Bizinfo response; do not treat errors as zero notices')
+ return rows
+
 def collect_bizinfo():
  key=os.getenv('BIZINFO_API_KEY','').strip()
  if not key:return [],'API 승인 또는 키 연결 대기'
- query=urllib.parse.urlencode({'crtfcKey':key,'dataType':'json','searchCnt':'500'})
+ query=urllib.parse.urlencode({'crtfcKey':key,'dataType':'json','searchCnt':'0'})
  data=json.loads(fetch('https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do?'+query))
- root=data.get('jsonArray',data);rows=root.get('item',[]) if isinstance(root,dict) else []
- if isinstance(rows,dict):rows=[rows]
+ rows=bizinfo_rows(data)
+ print('Bizinfo official notices received:',len(rows))
  items=[]
  for row in rows:
   title=clean(str(row.get('pblancNm') or row.get('title') or ''))
@@ -45,8 +53,9 @@ def collect_bizinfo():
   tags=clean(str(row.get('hashTags') or ''))
   haystack=' '.join((title,summary,tags))
   if not KEYWORDS.search(haystack) or not SUPPORT.search(haystack):continue
-  url=str(row.get('pblancUrl') or row.get('link') or '').strip()
-  if not url.startswith('https://www.bizinfo.go.kr/'):continue
+  url=urllib.parse.urljoin('https://www.bizinfo.go.kr/',str(row.get('pblancUrl') or row.get('link') or '').strip())
+  parsed=urllib.parse.urlparse(url)
+  if parsed.scheme!='https' or parsed.hostname not in ('www.bizinfo.go.kr','bizinfo.go.kr') or parsed.username or parsed.password:continue
   start,end=period(str(row.get('reqstBeginEndDe') or row.get('reqstDt') or ''))
   matched=[name for name in REGIONS if name in tags or name in title]
   region='·'.join(matched) if matched else '전국'
