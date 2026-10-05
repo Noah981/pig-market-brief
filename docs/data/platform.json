@@ -254,8 +254,24 @@
           "value": 1359.6
         }
       ],
-      "updatedAt": "2026-10-05T22:59:37.312171+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:02:55.616351+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "제한적",
+        "summary": "원/달러 환율은 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +0.1% 흐름입니다.",
+            "source": "한국은행 ECOS",
+            "sourceDate": "2026-10-02",
+            "direction": "up"
+          }
+        ],
+        "sources": []
+      }
     },
     {
       "name": "wti",
@@ -1735,8 +1751,49 @@
           "value": 96.16
         }
       ],
-      "updatedAt": "2026-10-05T22:59:45.865496+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:03:05.103667+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "보통",
+        "summary": "국제유가는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +12.8% 흐름입니다.",
+            "source": "미국 에너지정보청 EIA",
+            "sourceDate": "2026-09-29",
+            "direction": "up"
+          },
+          {
+            "title": "Crude oil prices and refinery margins generally increased throughout the third quarter",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-10-05 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-10-05"
+          },
+          {
+            "title": "Public companies produce most U.S. crude oil and natural gas",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-09-22 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-09-22"
+          }
+        ],
+        "sources": [
+          {
+            "name": "미국 에너지정보청(EIA)",
+            "label": "Crude oil prices and refinery margins generally increased throughout the third quarter",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68245"
+          },
+          {
+            "name": "미국 에너지정보청(EIA)",
+            "label": "Public companies produce most U.S. crude oil and natural gas",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68184"
+          }
+        ]
+      }
     },
     {
       "name": "corn",
@@ -1896,8 +1953,38 @@
           "value": 239.6
         }
       ],
-      "updatedAt": "2026-10-05T22:59:36.977160+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:02:55.360288+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "제한적",
+        "summary": "옥수수는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +12.3% 흐름입니다.",
+            "source": "세계은행 World Bank Pink Sheet",
+            "sourceDate": "2026-09-01",
+            "direction": "up"
+          },
+          {
+            "title": "원화 환산 압력",
+            "status": "연관 신호",
+            "detail": "환율 2026-10-02 공표값은 직전 대비 +0.3%입니다. 원료의 월평균과 발표 시점이 다르며 실제 수입 계약원가는 아닙니다.",
+            "source": "한국은행 ECOS",
+            "sourceDate": "2026-10-02"
+          },
+          {
+            "title": "에너지·운송 여건",
+            "status": "연관 신호",
+            "detail": "WTI 2026-09-29 공표값은 직전 대비 -3.2%입니다. 국내 유류비나 곡물가격의 직접 원인으로 해석하지 않습니다.",
+            "source": "미국 에너지정보청 EIA",
+            "sourceDate": "2026-09-29"
+          }
+        ],
+        "sources": []
+      }
     },
     {
       "name": "soybean_meal",
@@ -2057,8 +2144,38 @@
           "value": 447.0
         }
       ],
-      "updatedAt": "2026-10-05T22:59:36.980455+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:02:55.363698+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "제한적",
+        "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +9.0% 흐름입니다.",
+            "source": "세계은행 World Bank Pink Sheet",
+            "sourceDate": "2026-09-01",
+            "direction": "up"
+          },
+          {
+            "title": "원화 환산 압력",
+            "status": "연관 신호",
+            "detail": "환율 2026-10-02 공표값은 직전 대비 +0.3%입니다. 원료의 월평균과 발표 시점이 다르며 실제 수입 계약원가는 아닙니다.",
+            "source": "한국은행 ECOS",
+            "sourceDate": "2026-10-02"
+          },
+          {
+            "title": "에너지·운송 여건",
+            "status": "연관 신호",
+            "detail": "WTI 2026-09-29 공표값은 직전 대비 -3.2%입니다. 국내 유류비나 곡물가격의 직접 원인으로 해석하지 않습니다.",
+            "source": "미국 에너지정보청 EIA",
+            "sourceDate": "2026-09-29"
+          }
+        ],
+        "sources": []
+      }
     },
     {
       "name": "soybean",
@@ -2218,8 +2335,38 @@
           "value": 524.0
         }
       ],
-      "updatedAt": "2026-10-05T22:59:36.983791+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:02:55.367088+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "제한적",
+        "summary": "대두는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +9.6% 흐름입니다.",
+            "source": "세계은행 World Bank Pink Sheet",
+            "sourceDate": "2026-09-01",
+            "direction": "up"
+          },
+          {
+            "title": "원화 환산 압력",
+            "status": "연관 신호",
+            "detail": "환율 2026-10-02 공표값은 직전 대비 +0.3%입니다. 원료의 월평균과 발표 시점이 다르며 실제 수입 계약원가는 아닙니다.",
+            "source": "한국은행 ECOS",
+            "sourceDate": "2026-10-02"
+          },
+          {
+            "title": "에너지·운송 여건",
+            "status": "연관 신호",
+            "detail": "WTI 2026-09-29 공표값은 직전 대비 -3.2%입니다. 국내 유류비나 곡물가격의 직접 원인으로 해석하지 않습니다.",
+            "source": "미국 에너지정보청 EIA",
+            "sourceDate": "2026-09-29"
+          }
+        ],
+        "sources": []
+      }
     },
     {
       "name": "wheat",
@@ -2379,21 +2526,46 @@
           "value": 347.0
         }
       ],
-      "updatedAt": "2026-10-05T22:59:36.987387+09:00",
-      "status": "LIVE"
+      "updatedAt": "2026-10-05T23:02:55.370724+09:00",
+      "status": "LIVE",
+      "analysis": {
+        "updatedAt": "2026-10-05T23:03:13.373154+09:00",
+        "confidence": "제한적",
+        "summary": "소맥는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
+        "factors": [
+          {
+            "title": "최근 추세",
+            "status": "계산",
+            "detail": "최근 3개 발표 기준 +11.9% 흐름입니다.",
+            "source": "세계은행 World Bank Pink Sheet",
+            "sourceDate": "2026-09-01",
+            "direction": "up"
+          },
+          {
+            "title": "원화 환산 압력",
+            "status": "연관 신호",
+            "detail": "환율 2026-10-02 공표값은 직전 대비 +0.3%입니다. 원료의 월평균과 발표 시점이 다르며 실제 수입 계약원가는 아닙니다.",
+            "source": "한국은행 ECOS",
+            "sourceDate": "2026-10-02"
+          },
+          {
+            "title": "에너지·운송 여건",
+            "status": "연관 신호",
+            "detail": "WTI 2026-09-29 공표값은 직전 대비 -3.2%입니다. 국내 유류비나 곡물가격의 직접 원인으로 해석하지 않습니다.",
+            "source": "미국 에너지정보청 EIA",
+            "sourceDate": "2026-09-29"
+          }
+        ],
+        "sources": []
+      }
     }
   ],
   "benefits": [],
-  "checkedAt": "2026-10-05T22:59:45.866869+09:00",
+  "checkedAt": "2026-10-05T23:03:05.105141+09:00",
   "sourceStatus": [
     {
       "id": "regional-benefits",
       "agency": "지역 공식 공고",
-      "status": "연결 검증 대기"
-    },
-    {
-      "id": "official-market",
-      "agency": "공식 시장 데이터",
       "status": "연결 검증 대기"
     },
     {
