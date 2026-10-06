@@ -30,6 +30,30 @@ class PriceRefreshWorker(context: Context, parameters: WorkerParameters) : Worke
             val merged = mergeVerifiedPrice(stored, text)
             if (merged == null) return Result.retry()
             if (!prefs.edit().putString(key, merged).commit()) return Result.retry()
+            // History and grades update even while the Flutter activity is closed.
+            try {
+                val root=JSONObject(merged)
+                val hc=URL("https://noah981.github.io/pig-market-brief/data/pig-price-history.json?v=${System.currentTimeMillis()}").openConnection() as HttpURLConnection
+                hc.connectTimeout=12000;hc.readTimeout=12000
+                try {
+                    if(hc.responseCode==200) {
+                        val h=JSONObject(hc.inputStream.bufferedReader().use{it.readText()})
+                        if(h.optString("scope").replace(" ","").contains("제주제외") && h.optJSONArray("rows")!=null) {
+                            root.put("history",h)
+                            val withHistory=mergeVerifiedPrice(root.toString(),text) ?: merged
+                            prefs.edit().putString(key,withHistory).commit()
+                        }
+                    }
+                } finally {hc.disconnect()}
+            } catch (_:Exception) { /* Keep the verified quote and cached daily history. */ }
+            try {
+                val row=JSONObject(text);val gradeKey="flutter.official_kape_pig_grades_v1"
+                val current=NativeGradeRefresh.fetch(row.getString("date"))
+                if(current!=null) {
+                    val previous=try{NativeGradeRefresh.fetch(row.optString("previousDate"))}catch(_:Exception){null}
+                    prefs.edit().putString(gradeKey,NativeGradeRefresh.merge(prefs.getString(gradeKey,null),current,previous)).commit()
+                }
+            } catch (_:Exception) { /* Grade date stays visible; no invented prices. */ }
             return Result.success()
         } catch (_: Exception) { return Result.retry() }
         finally { WidgetRenderer.updateAll(applicationContext) }
@@ -56,6 +80,15 @@ class PriceRefreshWorker(context: Context, parameters: WorkerParameters) : Worke
             if (prior.optString("date") > date) return old.toString()
             // Retain full historical rows and the official price basis on holidays.
             old.put("price", row)
+            val history=old.optJSONObject("history") ?: JSONObject()
+            val priorRows=history.optJSONArray("rows") ?: org.json.JSONArray()
+            val rows=org.json.JSONArray()
+            for(i in 0 until priorRows.length()) {
+                val point=priorRows.optJSONObject(i) ?: continue
+                if(point.optString("date")!=date) rows.put(point)
+            }
+            rows.put(JSONObject().put("date",date).put("price",value).put("sourceType","dabom-headline"))
+            history.put("rows",rows);old.put("history",history)
             return old.toString()
         }
     }

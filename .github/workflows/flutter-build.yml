@@ -49,6 +49,20 @@ jobs:
       - name: Analyze
         working-directory: flutter_app
         run: flutter analyze
+      - name: Prepare public official inputs for native widget QA
+        run: python scripts/prepare_widget_preview.py
+      - name: Render actual Android RemoteViews widget
+        working-directory: flutter_app/android
+        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest --tests com.example.dondonhae.NativeGradeRefreshTest
+      - name: Use the four verified native widget previews
+        run: |
+          for kind in small medium large today; do
+            cp "flutter_app/android/app/build/widget-screenshots/four_${kind}_fixture.png" "flutter_app/android/app/src/main/res/drawable/widget_${kind}_preview.png"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dondonhae-four-widgets-native
+          path: flutter_app/android/app/build/widget-screenshots/*.png
       - name: Verify official API connectivity
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
@@ -95,9 +109,6 @@ jobs:
           flutter test test/official_api_clients_test.dart
           flutter test test/live_market_driver_builder_test.dart
           flutter test --update-goldens test/layout_test.dart
-      - name: Render actual Android RemoteViews widget
-        working-directory: flutter_app/android
-        run: ./gradlew :app:testDebugUnitTest --tests com.example.dondonhae.PriceCardArtworkTest --tests com.example.dondonhae.PriceRefreshWorkerTest --tests com.example.dondonhae.WeatherCacheTest
       - name: Build release APK
         env:
           DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
@@ -115,7 +126,7 @@ jobs:
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
           "$AAPT" dump permissions build/app/outputs/flutter-apk/app-release.apk | grep -q 'android.permission.INTERNET'
           WIDGETS="$($AAPT dump xmltree build/app/outputs/flutter-apk/app-release.apk AndroidManifest.xml)"
-          for provider in PigPriceSmallWidget PigPriceDetailWidget PigGradeWidget WeatherTodoWidget TodayOverviewWidget; do
+          for provider in PigPriceSmallWidget PigPriceDetailWidget PigGradeWidget TodayOverviewWidget; do
             grep -q "$provider" <<< "$WIDGETS"
           done
           grep -q 'dondonhae' <<< "$WIDGETS"

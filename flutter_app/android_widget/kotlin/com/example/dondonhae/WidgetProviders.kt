@@ -41,13 +41,18 @@ object WidgetStore {
             for (i in 0 until rows.length()) {
                 val row = rows.optJSONObject(i) ?: continue
                 val date = row.optString("date")
+                if (row.optString("resolution") == "month") continue
                 val value = row.optDouble("price", Double.NaN)
                 if (date.length == 8 && value.isFinite()) add(PricePoint(date, value))
             }
         }.sortedBy { it.date }
+        val currentDate=price?.optString("date") ?: ""
+        val currentValue=price?.number("price")
+        val daily=history.toMutableList()
+        if(currentDate.length==8 && currentValue!=null) { daily.removeAll{it.date==currentDate};daily.add(PricePoint(currentDate,currentValue)) }
         return PriceData(
             price?.number("price"), price?.number("previousPrice"), price?.number("change"),
-            price?.number("changePct"), price?.optString("date") ?: "", price?.optString("updatedAt") ?: "", history
+            price?.number("changePct"), price?.optString("date") ?: "", price?.optString("updatedAt") ?: "", daily.sortedBy{it.date}
         )
     }
 
@@ -113,49 +118,26 @@ object WidgetRenderer {
         val manager = AppWidgetManager.getInstance(context)
         listOf(
             PigPriceSmallWidget::class.java, PigPriceDetailWidget::class.java, PigGradeWidget::class.java,
-            WeatherTodoWidget::class.java, TodayOverviewWidget::class.java
+            TodayOverviewWidget::class.java
         ).forEach { cls -> manager.getAppWidgetIds(ComponentName(context, cls)).forEach { update(context, manager, it, cls) } }
     }
 
     fun update(context: Context, manager: AppWidgetManager, id: Int, cls: Class<*>) {
-        when (cls) {
-            PigPriceSmallWidget::class.java -> priceSmall(context, manager, id)
-            PigPriceDetailWidget::class.java -> priceDetail(context, manager, id)
-            PigGradeWidget::class.java -> grade(context, manager, id)
-            WeatherTodoWidget::class.java -> weatherTodo(context, manager, id)
-            TodayOverviewWidget::class.java -> today(context, manager, id)
+        val kind = when(cls) {
+            PigPriceDetailWidget::class.java -> PriceCardArtwork.Kind.MEDIUM
+            PigGradeWidget::class.java -> PriceCardArtwork.Kind.LARGE
+            TodayOverviewWidget::class.java -> PriceCardArtwork.Kind.TODAY
+            else -> PriceCardArtwork.Kind.SMALL
         }
-    }
-
-    private fun priceSmall(context: Context, manager: AppWidgetManager, id: Int) {
-        val data = WidgetStore.price(context); val views = RemoteViews(context.packageName, R.layout.widget_price_small)
-        val options = manager.getAppWidgetOptions(id)
-        val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 320).coerceIn(100, 600)
-        val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 184).coerceIn(80, 600)
-        views.setImageViewBitmap(R.id.price_artwork, PriceCardArtwork.render(context, width * 2, height * 2, data, todayLabel()))
-        views.setContentDescription(R.id.price_artwork, "돈돈해 전국 평균 돈가 ${money(data.price)}원/kg, ${dateBasis(data.date)}, ${changeText(data.change, data.percent)}")
-        views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 101 + id))
-        manager.updateAppWidget(id, views)
-    }
-
-    private fun priceDetail(context: Context, manager: AppWidgetManager, id: Int) {
-        val data = WidgetStore.price(context); val views = RemoteViews(context.packageName, R.layout.widget_price_detail)
-        bindPrice(views, data); views.setTextViewText(R.id.widget_date, todayLabel())
-        views.setTextViewText(R.id.price_yesterday, money(data.previous))
-        views.setTextViewText(R.id.price_week, money(nearest(data.history, 7)?.price))
-        views.setTextViewText(R.id.price_year, money(nearest(data.history, 365)?.price))
-        if (data.history.size >= 2) { views.setImageViewBitmap(R.id.sparkline, sparkline(data.history.takeLast(12))); views.setViewVisibility(R.id.sparkline, View.VISIBLE) } else views.setViewVisibility(R.id.sparkline, View.GONE)
-        views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price", 201 + id)); manager.updateAppWidget(id, views)
-    }
-
-    private fun grade(context: Context, manager: AppWidgetManager, id: Int) {
-        val data = WidgetStore.grades(context); val views = RemoteViews(context.packageName, R.layout.widget_grade)
-        views.setTextViewText(R.id.widget_data_date, dateBasis(data.date))
-        listOf("1+" to Pair(R.id.grade_1p_price, R.id.grade_1p_change), "1" to Pair(R.id.grade_1_price, R.id.grade_1_change), "2" to Pair(R.id.grade_2_price, R.id.grade_2_change), "등외" to Pair(R.id.grade_out_price, R.id.grade_out_change)).forEach { (g, ids) ->
-            val value = data.current[g]; val change = if (value != null && data.previous[g] != null) value - data.previous[g]!! else null
-            views.setTextViewText(ids.first, money(value)); views.setTextViewText(ids.second, changeText(change, null)); views.setTextColor(ids.second, changeColor(change))
-        }
-        views.setOnClickPendingIntent(R.id.widget_root, deepLink(context, "dondonhae://market/pig-price/grade", 301 + id)); manager.updateAppWidget(id, views)
+        val data=WidgetStore.price(context); val grades=WidgetStore.grades(context)
+        val views=RemoteViews(context.packageName,R.layout.widget_price_small)
+        val options=manager.getAppWidgetOptions(id)
+        val width=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,(kind.w/2).toInt()).coerceIn(100,600)
+        val height=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,(kind.h/2).toInt()).coerceIn(80,500)
+        views.setImageViewBitmap(R.id.price_artwork,PriceCardArtwork.render(context,width*2,height*2,data,grades,kind,quoteDateLabel(data.date)))
+        views.setContentDescription(R.id.price_artwork,"돈돈해 전국 돈가 ${money(data.price)}원/kg, ${dateBasis(data.date)}, ${changeText(data.change,data.percent)}. 다봄 등외·제주 제외")
+        views.setOnClickPendingIntent(R.id.widget_root,deepLink(context,if(kind==PriceCardArtwork.Kind.LARGE) "dondonhae://market/pig-price/grade" else "dondonhae://market/pig-price",id))
+        manager.updateAppWidget(id,views)
     }
 
     private fun weatherTodo(context: Context, manager: AppWidgetManager, id: Int) {
@@ -193,7 +175,14 @@ object WidgetRenderer {
     }
     private fun changeColor(change: Double?): Int = when { change == null || change == 0.0 -> FLAT; change > 0 -> UP; else -> DOWN }
     private fun dateBasis(date: String): String = if (date.length == 8) "${date.substring(4, 6).toIntOrNull() ?: date.substring(4,6)}/${date.substring(6,8)} 기준" else "데이터 확인 중"
-    private fun todayLabel(): String = SimpleDateFormat("M월 d일 (E)", Locale.KOREA).format(Date())
+    private fun quoteDateLabel(date:String):String {
+        return try {
+            val zone=java.util.TimeZone.getTimeZone("Asia/Seoul")
+            val parser=SimpleDateFormat("yyyyMMdd",Locale.KOREA).apply{timeZone=zone;isLenient=false}
+            if(date.length!=8) "기준일 미확인" else SimpleDateFormat("M. d (E)",Locale.KOREA).apply{timeZone=zone}.format(parser.parse(date)!!)
+        } catch(_:Exception){"기준일 미확인"}
+    }
+    private fun todayLabel(): String = SimpleDateFormat("M. d (E)", Locale.KOREA).apply { timeZone=java.util.TimeZone.getTimeZone("Asia/Seoul") }.format(Date())
     private fun deepLink(context: Context, uri: String, requestCode: Int): PendingIntent {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri), context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
