@@ -52,6 +52,19 @@ def parse_page(raw,start,end,page):
  if len(rows)>10 or (page<last and len(rows)!=10):raise ValueError('KAHIS page truncated')
  return last,rows
 
+def normalize_pages(batches):
+ rows=[row for batch in batches for row in batch]
+ # Reject repeated complete pages (a broken pagination response). The
+ # public table may repeat individual identical records; normalize those
+ # without inventing additional incident identities.
+ page_keys=[tuple(ident for ident,_ in batch) for batch in batches]
+ if len(set(page_keys))!=len(page_keys):raise ValueError('KAHIS repeated complete pages')
+ seen=set();items=[]
+ for ident,item in rows:
+  if item is not None and ident not in seen:
+   seen.add(ident);items.append(item)
+ return items
+
 def kahis_incidents(now):
  start=(now-timedelta(days=366)).date().isoformat();end=now.date().isoformat()
  def read(page):
@@ -69,8 +82,7 @@ def kahis_incidents(now):
  with ThreadPoolExecutor(max_workers=4) as pool:rest=list(pool.map(read,range(2,last+1)))
  if any(total!=last for total,_ in rest):raise ValueError('KAHIS pagination changed during collection')
  rows=first+[row for _,batch in rest for row in batch]
- if len({ident for ident,_ in rows})!=len(rows):raise ValueError('KAHIS repeated rows/pages')
- items=[item for _,item in rows if item]
+ items=normalize_pages([first]+[batch for _,batch in rest])
  if not all(any(x['disease']==d for x in items) for d in DISEASES.values()):
   raise ValueError('KAHIS required disease coverage missing')
  print('KAHIS complete occurrence-date coverage verified',last,'pages',len(rows),'rows',len(items),'relevant incidents',flush=True)
