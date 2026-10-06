@@ -68,9 +68,14 @@ jobs:
           cp -R docs/data /tmp/generated-data
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git reset --hard origin/main
-          python scripts/merge_generated_data.py /tmp/generated-data docs/data
-          git add docs/data/
-          git diff --cached --quiet || git commit -m "Update briefing data"
-          git push origin HEAD:main
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/merge_generated_data.py /tmp/generated-data docs/data
+            git add docs/data/
+            git diff --cached --quiet || git commit -m "Update briefing data"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          echo "Concurrent publication did not complete after retries"
+          exit 1
