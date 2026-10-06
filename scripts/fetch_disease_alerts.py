@@ -3,7 +3,7 @@
 Official pages and public news are deliberately kept as separate evidence
 levels.  A keyword match is a signal, never an app-side diagnosis.
 """
-import html,json,re,os,io,zipfile,urllib.parse,urllib.request,xml.etree.ElementTree as ET
+import html,json,re,os,io,zipfile,urllib.parse,urllib.request,subprocess,xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
@@ -43,11 +43,18 @@ def classify(code):
  return "국내" if code=="KR" else ("국외" if code else "분류 확인 필요")
 
 def fetch(url):
- req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; DondonhaeOfficialFeed/1.0)"})
+ agent="Mozilla/5.0 (compatible; DondonhaeOfficialFeed/1.0)"
+ req=urllib.request.Request(url,headers={"User-Agent":agent})
  for attempt in range(3):
   try:return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
-  except (OSError,TimeoutError):
-   if attempt==2:raise
+  except (OSError,TimeoutError):pass
+ # Same official URL and TLS verification through an independent transport.
+ # URLs and stderr may contain API credentials; never print either.
+ try:
+  result=subprocess.run(["curl","--fail","--silent","--show-error","--location","--http1.1","--connect-timeout","10","--max-time","25","--user-agent",agent,url],capture_output=True,timeout=30)
+  if result.returncode==0 and result.stdout:return result.stdout.decode("utf-8","ignore")
+ except (OSError,subprocess.TimeoutExpired):pass
+ raise ValueError("Official disease request failed; credentials omitted") from None
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def event_date(value):
