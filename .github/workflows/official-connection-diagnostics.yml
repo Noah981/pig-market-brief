@@ -22,6 +22,8 @@ jobs:
             ('ECOS','https://ecos.bok.or.kr/api/StatisticSearch/'+urllib.parse.quote(os.environ['ECOS_API_KEY'],safe='')+'/json/kr/1/1/731Y001/D/'+day+'/'+day+'/0000001'),
             ('MAFRA','http://211.237.50.150:7080/openapi/'+urllib.parse.quote(os.environ['MAFRA_API_KEY'],safe='')+'/json/Grid_20151204000000000316_1/1/5'),
             ('MAFRA_XML','http://211.237.50.150:7080/openapi/'+urllib.parse.quote(os.environ['MAFRA_API_KEY'],safe='')+'/xml/Grid_20151204000000000316_1/1/5'),
+            ('MAFRA_SAMPLE','http://211.237.50.150:7080/openapi/sample/json/Grid_20151204000000000316_1/1/5'),
+            ('MAFRA_HTTP10','http://211.237.50.150:7080/openapi/sample/json/Grid_20151204000000000316_1/1/5'),
             ('FMD','https://www.mafra.go.kr/FMD-AI2/2216/subview.do'),
             ('KAHIS','https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do')]
           def check(item):
@@ -36,6 +38,7 @@ jobs:
               row.update(python_error=type(error).__name__,reason_type=type(reason).__name__,errno=getattr(reason,'errno',None))
             try:
               command=['curl','--silent','--show-error','--location','--http1.1','--connect-timeout','10','--max-time','15','--output','/tmp/'+name+'-diagnostic-response','--write-out','%{http_code} %{time_connect} %{time_appconnect} %{time_starttransfer}','--user-agent','dondonhae-ci/1.0',url]
+              if name=='MAFRA_HTTP10':command[command.index('--http1.1')]='--http1.0'
               result=subprocess.run(command,capture_output=True,timeout=20)
               row['curl_exit']=result.returncode
               metrics=result.stdout.decode().strip()
