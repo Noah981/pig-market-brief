@@ -1,7 +1,7 @@
 import json,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from kahis_occurrences import parse_page
+from kahis_occurrences import parse_page,normalize_pages
 
 class KahisTests(unittest.TestCase):
  def fixture(self,last=1,count=1):
@@ -29,3 +29,8 @@ class KahisTests(unittest.TestCase):
  def test_distinct_farms_have_distinct_opaque_ids(self):
   _,rows=parse_page(self.fixture(count=2),'2025-10-05','2026-10-06',1)
   self.assertNotEqual(rows[0][1]['id'],rows[1][1]['id'])
+
+ def test_identical_records_normalized_but_repeated_pages_rejected(self):
+  _,rows=parse_page(self.fixture(),'2025-10-05','2026-10-06',1)
+  self.assertEqual(len(normalize_pages([rows+rows])),1)
+  with self.assertRaises(ValueError):normalize_pages([rows,rows])
