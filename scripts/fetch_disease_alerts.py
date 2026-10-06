@@ -45,16 +45,18 @@ def classify(code):
 def fetch(url):
  agent="Mozilla/5.0 (compatible; DondonhaeOfficialFeed/1.0)"
  req=urllib.request.Request(url,headers={"User-Agent":agent})
+ last_error="unknown";curl_code="not-run"
  for attempt in range(3):
   try:return urllib.request.urlopen(req,timeout=15).read().decode("utf-8","ignore")
-  except (OSError,TimeoutError):pass
+  except (OSError,TimeoutError) as error:last_error=type(error).__name__
  # Same official URL and TLS verification through an independent transport.
  # URLs and stderr may contain API credentials; never print either.
  try:
   result=subprocess.run(["curl","--fail","--silent","--show-error","--location","--http1.1","--connect-timeout","10","--max-time","25","--user-agent",agent,url],capture_output=True,timeout=30)
+  curl_code=str(result.returncode)
   if result.returncode==0 and result.stdout:return result.stdout.decode("utf-8","ignore")
- except (OSError,subprocess.TimeoutExpired):pass
- raise ValueError("Official disease request failed; credentials omitted") from None
+ except (OSError,subprocess.TimeoutExpired) as error:curl_code=type(error).__name__
+ raise ValueError(f"Official disease request failed (python={last_error},curl={curl_code}); credentials omitted") from None
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def event_date(value):
@@ -178,9 +180,14 @@ def mafra_incidents():
   url=f"http://211.237.50.150:7080/openapi/{urllib.parse.quote(key,safe='')}/json/{grid}/{start}/{end}"
   try:
    result=json.loads(fetch(url)).get(grid,{})
-   if not isinstance(result.get('row'),list):raise ValueError()
+   if not isinstance(result.get('row'),list):
+    code=str(result.get('RESULT',{}).get('CODE','missing-row')) if isinstance(result.get('RESULT'),dict) else 'missing-row'
+    code=code if re.fullmatch(r'[A-Za-z0-9_-]{1,40}',code) else 'unrecognized'
+    raise ValueError('MAFRA schema: '+code)
    return result
-  except Exception:raise ValueError("MAFRA request failed; credentials omitted") from None
+  except Exception as error:
+   reason=str(error) if isinstance(error,ValueError) and str(error).startswith(("Official disease request failed (","MAFRA schema:")) else type(error).__name__
+   raise ValueError("MAFRA request failed: "+reason+"; credentials omitted") from None
  first=read((1,1));total=int(first.get("totalCnt",first.get("TOTAL_CNT",0)))
  if total<=0:raise ValueError("MAFRA coverage unknown")
  with ThreadPoolExecutor(max_workers=4) as pool:pages=list(pool.map(read,[(start,min(start+999,total)) for start in range(1,total+1,1000)]))
@@ -296,8 +303,8 @@ def main():
   api=mafra_incidents();coverage=True
   disclosed=items.copy()
   items+= [x for x in api if not (x.get('disease')=='구제역' and any(d['occurrenceDate'][:7]==x['occurrenceDate'][:7] for d in disclosed))]
- except ValueError:
-  print("MAFRA full coverage unavailable; retaining previous official records")
+ except ValueError as error:
+  print("MAFRA full coverage unavailable; retaining previous official records:",str(error))
   if OUT.exists():items+=[x for x in json.loads(OUT.read_text()).get("items",[]) if x.get("countryCode")=="KR" and x.get("occurrenceDate")]
  asf_verified=False
  try:
