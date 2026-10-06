@@ -46,7 +46,7 @@ def parse_page(raw,start,end,page):
     admin.append(part)
    if not admin:raise ValueError('KAHIS administrative region missing')
    region=' '.join(admin)
-   item={'id':'KAHIS|'+fingerprint,'disease':disease,'countryCode':'KR','source':'농림축산검역본부 KAHIS 가축전염병 발생현황','sourceUrl':URL,'evidenceLevel':'OFFICIAL','status':'공식 발생','summary':region+' '+disease,'region':region,'occurrenceDate':match[1],'diagnosisDate':match[2],'livestockType':values[4],'locationPrecision':'cityCounty'}
+   item={'id':'KAHIS|'+fingerprint,'disease':disease,'countryCode':'KR','source':'농림축산검역본부 KAHIS 가축전염병 발생현황','sourceUrl':URL,'evidenceLevel':'OFFICIAL','status':'공식 발생','summary':region+' '+disease,'region':region,'province':admin[0],'cityCounty':' '.join(admin[1:]),'occurrenceDate':match[1],'diagnosisDate':match[2],'livestockType':values[4],'locationPrecision':'cityCounty'}
   rows.append((fingerprint,item))
  if not header or not rows:raise ValueError('KAHIS occurrence table empty/missing')
  if len(rows)>10 or (page<last and len(rows)!=10):raise ValueError('KAHIS page truncated')
@@ -83,7 +83,10 @@ def kahis_incidents(now):
  if any(total!=last for total,_ in rest):raise ValueError('KAHIS pagination changed during collection')
  rows=first+[row for _,batch in rest for row in batch]
  items=normalize_pages([first]+[batch for _,batch in rest])
- if not all(any(x['disease']==d for x in items) for d in DISEASES.values()):
-  raise ValueError('KAHIS required disease coverage missing')
+ # A complete source may legitimately omit a disease. In particular KAHIS
+ # has not listed the FMD farms present in MAFRA's numbered disclosures.
+ # The feed/release separately require verified FMD and ASF disclosures;
+ # do not equate this public list's absence with no actual outbreaks.
+ if not items:raise ValueError('KAHIS relevant occurrence rows missing')
  print('KAHIS complete occurrence-date coverage verified',last,'pages',len(rows),'rows',len(items),'relevant incidents',flush=True)
  return items
