@@ -20,7 +20,8 @@ jobs:
           day=(datetime.datetime.now(datetime.timezone.utc)-datetime.timedelta(days=4)).strftime('%Y%m%d')
           endpoints=[
             ('ECOS','https://ecos.bok.or.kr/api/StatisticSearch/'+urllib.parse.quote(os.environ['ECOS_API_KEY'],safe='')+'/json/kr/1/1/731Y001/D/'+day+'/'+day+'/0000001'),
-            ('MAFRA','http://211.237.50.150:7080/openapi/'+urllib.parse.quote(os.environ['MAFRA_API_KEY'],safe='')+'/json/Grid_20151204000000000316_1/1/1'),
+            ('MAFRA','http://211.237.50.150:7080/openapi/'+urllib.parse.quote(os.environ['MAFRA_API_KEY'],safe='')+'/json/Grid_20151204000000000316_1/1/5'),
+            ('MAFRA_XML','http://211.237.50.150:7080/openapi/'+urllib.parse.quote(os.environ['MAFRA_API_KEY'],safe='')+'/xml/Grid_20151204000000000316_1/1/5'),
             ('FMD','https://www.mafra.go.kr/FMD-AI2/2216/subview.do'),
             ('KAHIS','https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do')]
           def check(item):
