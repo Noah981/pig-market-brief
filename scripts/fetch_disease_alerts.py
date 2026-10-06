@@ -309,11 +309,12 @@ def main():
   print('PED statistics unavailable:',type(error).__name__)
 
  try:
-  api=retry_official_source('MAFRA',mafra_incidents);coverage=True
+  from kahis_occurrences import kahis_incidents
+  api=retry_official_source('KAHIS',lambda:kahis_incidents(datetime.now(KST)));coverage=True
   disclosed=items.copy()
   items+= [x for x in api if not (x.get('disease')=='구제역' and any(d['occurrenceDate'][:7]==x['occurrenceDate'][:7] for d in disclosed))]
  except ValueError as error:
-  print("MAFRA full coverage unavailable; retaining previous official records:",str(error))
+  print("KAHIS full coverage unavailable; retaining previous official records:",str(error))
   if OUT.exists():items+=[x for x in json.loads(OUT.read_text()).get("items",[]) if x.get("countryCode")=="KR" and x.get("occurrenceDate")]
  asf_verified=False
  try:
@@ -340,7 +341,7 @@ def main():
  for x in items:
   key=(x.get("id"),x["disease"],x["summary"],x.get("occurrenceDate"),x.get("announcementDate"))
   if key not in seen:seen.add(key);dedup.append(x)
- payload={"schemaVersion":5,"pedStatisticsVerified":ped_verified,"statistics":statistics,"fmdDisclosureVerified":fmd_verified,"coverageVerified":coverage and asf_verified and fmd_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
+ payload={"schemaVersion":5,"pedStatisticsVerified":ped_verified,"statistics":statistics,"fmdDisclosureVerified":fmd_verified,"coverageVerified":coverage and asf_verified and fmd_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
  return payload

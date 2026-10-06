@@ -95,10 +95,13 @@ def main():
         raise RuntimeError("KMA authentication/service error")
     print("KMA: authenticated JSON response and schema OK")
 
-    mafra = get("MAFRA", f"http://211.237.50.150:7080/openapi/{urllib.parse.quote(key('MAFRA_API_KEY'), safe='')}/json/Grid_20151204000000000316_1/1/5", json_response=True)
-    if "Grid_20151204000000000316_1" not in mafra:
-        raise RuntimeError("MAFRA authentication/schema error")
-    print("MAFRA: authenticated JSON response and schema OK")
+    # Verify the active official disease source, including every requested page.
+    # KAHIS publishes the same authority's occurrence-date public records over TLS.
+    from kahis_occurrences import kahis_incidents
+    disease_rows = kahis_incidents(now)
+    if not disease_rows:
+        raise RuntimeError("KAHIS complete occurrence coverage missing")
+    print("KAHIS: official complete occurrence-date rows and scope OK")
 
     # Market collection now uses ECOS, World Bank and EIA. The release
     # workflow separately requires all six current provider rows to be LIVE.
