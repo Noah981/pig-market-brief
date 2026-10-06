@@ -2,7 +2,7 @@
 
 PED statistics never become fabricated farm incidents or distance alerts.
 """
-import html,io,re,urllib.parse,urllib.request,zipfile,xml.etree.ElementTree as ET
+import html,io,re,subprocess,urllib.parse,urllib.request,zipfile,xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timedelta
 
@@ -12,11 +12,22 @@ NS={'hp':'http://www.hancom.co.kr/hwpml/2011/paragraph'}
 PROVINCES={'서울':'서울특별시','부산':'부산광역시','대구':'대구광역시','인천':'인천광역시','광주':'광주광역시','대전':'대전광역시','울산':'울산광역시','세종':'세종특별자치시','경기':'경기도','강원':'강원특별자치도','충북':'충청북도','충남':'충청남도','전북':'전북특별자치도','전남':'전라남도','경북':'경상북도','경남':'경상남도','제주':'제주특별자치도'}
 def clean(text):return re.sub(r'\s+',' ',html.unescape(re.sub(r'<[^>]+>',' ',text))).strip()
 def request(url,data=None):
- req=urllib.request.Request(url,data=data,headers={'User-Agent':'Mozilla/5.0 (DondonhaeOfficialFeed/1.0)'})
+ agent='Mozilla/5.0 (DondonhaeOfficialFeed/1.0)'
+ req=urllib.request.Request(url,data=data,headers={'User-Agent':agent})
+ last_error='unknown'
  for attempt in range(3):
   try:return urllib.request.urlopen(req,timeout=20).read()
-  except (OSError,TimeoutError):
-   if attempt==2:raise
+  except (OSError,TimeoutError) as error:last_error=type(error).__name__
+ command=['curl','--fail','--silent','--show-error','--location','--http1.1','--connect-timeout','10','--max-time','25','--user-agent',agent]
+ if data is not None:command+=['--data-binary','@-']
+ command.append(url)
+ try:
+  result=subprocess.run(command,input=data,capture_output=True,timeout=30)
+  if result.returncode==0 and result.stdout:return result.stdout
+ except (OSError,subprocess.TimeoutExpired):pass
+ # Never expose a credential-bearing URL, response or stderr.
+ raise ValueError('Official supplemental request failed: '+last_error) from None
+
 def parse_fmd(data,url,announcement):
  texts=[];tables=[]
  with zipfile.ZipFile(io.BytesIO(data)) as archive:

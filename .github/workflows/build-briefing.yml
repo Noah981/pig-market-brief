@@ -58,7 +58,11 @@ jobs:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
           python -m unittest scripts/test_disease_classifier.py
-          python scripts/fetch_disease_alerts.py || echo "Disease feed failed; keeping previous data"
+          cp docs/data/disease-alerts.json /tmp/previous-disease-alerts.json
+          if ! python -u scripts/fetch_disease_alerts.py --require-verified; then
+            cp /tmp/previous-disease-alerts.json docs/data/disease-alerts.json
+            echo "Disease coverage fetch failed; retained the original data and original verification timestamp"
+          fi
       - name: Commit generated data safely
         run: |
           cp -R docs/data /tmp/generated-data

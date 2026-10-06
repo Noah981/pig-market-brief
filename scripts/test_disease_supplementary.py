@@ -32,3 +32,22 @@ class SupplementaryDiseaseTests(unittest.TestCase):
   with self.assertRaises(ValueError):parse_ped(self.ped(3),'2026-09-05','2026-10-05')
   with self.assertRaises(ValueError):parse_ped(self.ped(),'2026-08-05','2026-10-05')
 if __name__=='__main__':unittest.main()
+
+class SupplementaryTransportTest(unittest.TestCase):
+ def test_post_fallback_preserves_ped_scope_and_tls_verification(self):
+  from scripts.disease_supplementary import request
+  from unittest.mock import patch
+  from types import SimpleNamespace
+  body=b'dissCl=0422&occrFromDt=2026-09-06&occrToDt=2026-10-06'
+  url='https://home.kahis.go.kr/official'
+  with patch('scripts.disease_supplementary.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.disease_supplementary.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=b'<table>official</table>')) as call:
+   self.assertEqual(request(url,body),b'<table>official</table>')
+   self.assertEqual(call.call_args.kwargs['input'],body)
+   self.assertIn('--data-binary',call.call_args.args[0]);self.assertNotIn('--insecure',call.call_args.args[0])
+ def test_failed_fallback_does_not_expose_url_or_credentials(self):
+  from scripts.disease_supplementary import request
+  from unittest.mock import patch
+  from types import SimpleNamespace
+  url='https://official.example/?key=private-test-key'
+  with patch('scripts.disease_supplementary.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.disease_supplementary.subprocess.run',return_value=SimpleNamespace(returncode=28,stdout=b'',stderr=url.encode())),self.assertRaises(ValueError) as error:request(url)
+  self.assertNotIn('private-test-key',str(error.exception));self.assertNotIn(url,str(error.exception))

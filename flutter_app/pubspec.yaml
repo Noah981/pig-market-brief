@@ -1,7 +1,7 @@
 name: dondonhae
 description: 돈돈해 모바일 대시보드
 publish_to: none
-version: 1.8.10+27
+version: 1.8.11+28
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:

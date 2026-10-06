@@ -24,7 +24,7 @@ jobs:
           MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
         run: |
           python -m unittest scripts.test_disease_classifier scripts.test_disease_supplementary
-          python scripts/fetch_disease_alerts.py
+          python -u scripts/fetch_disease_alerts.py --require-verified
       - name: Publish changed disease feed
         run: |
           mkdir -p /tmp/disease-publish

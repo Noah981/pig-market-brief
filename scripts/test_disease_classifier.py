@@ -87,3 +87,17 @@ class DiseaseTransportTest(unittest.TestCase):
    self.assertNotIn('private-key',str(error.exception))
 
 if __name__=='__main__':unittest.main()
+
+class OfficialSourceRecoveryTest(unittest.TestCase):
+ def test_transient_source_failure_recovers_with_validated_result(self):
+  from scripts.fetch_disease_alerts import retry_official_source
+  expected=[{'id':'official-original','occurrenceDate':'2026-10-06'}]
+  from unittest.mock import Mock
+  source=Mock(side_effect=[TimeoutError(),expected])
+  with patch('scripts.fetch_disease_alerts.time.sleep'):
+   self.assertEqual(retry_official_source('MAFRA',source),expected)
+ def test_persistent_failure_is_never_reported_as_verified(self):
+  from scripts.fetch_disease_alerts import retry_official_source
+  from unittest.mock import Mock
+  with patch('scripts.fetch_disease_alerts.time.sleep'),self.assertRaises(ValueError):
+   retry_official_source('FMD',Mock(side_effect=ValueError('coverage incomplete')))

@@ -3,7 +3,7 @@
 Official pages and public news are deliberately kept as separate evidence
 levels.  A keyword match is a signal, never an app-side diagnosis.
 """
-import html,json,re,os,io,zipfile,urllib.parse,urllib.request,subprocess,xml.etree.ElementTree as ET
+import html,json,re,os,io,zipfile,urllib.parse,urllib.request,subprocess,time,sys,xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
@@ -57,6 +57,15 @@ def fetch(url):
   if result.returncode==0 and result.stdout:return result.stdout.decode("utf-8","ignore")
  except (OSError,subprocess.TimeoutExpired) as error:curl_code=type(error).__name__
  raise ValueError(f"Official disease request failed (python={last_error},curl={curl_code}); credentials omitted") from None
+
+def retry_official_source(name,call):
+ # Retry only the failed source; retain all existing schema/count checks.
+ for attempt in range(2):
+  try:return call()
+  except Exception as error:
+   if attempt==1:raise
+   print('Official source retry',name,type(error).__name__,flush=True)
+   time.sleep(3)
 
 def clean(text):return re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",text))).strip()
 def event_date(value):
@@ -287,20 +296,20 @@ def main():
  statistics=previous.get('statistics',{})
  fmd_verified=False;ped_verified=False
  try:
-  table=fmd_disclosures(datetime.now(KST));fmd_verified=True
+  table=retry_official_source('FMD',lambda:fmd_disclosures(datetime.now(KST)));fmd_verified=True
   items+=table
   print('FMD disclosure verified',len(table),'farms')
  except Exception as error:
   print('FMD disclosure unavailable:',type(error).__name__)
   items+=[x for x in previous.get('items',[]) if str(x.get('id','')).startswith('MAFRA-FMD-TABLE|')]
  try:
-  statistics['ped']=ped_statistics(datetime.now(KST));ped_verified=True
+  statistics['ped']=retry_official_source('PED',lambda:ped_statistics(datetime.now(KST)));ped_verified=True
   print('PED official statistical reports verified',statistics['ped']['periods']['365']['farmCount'])
  except Exception as error:
   print('PED statistics unavailable:',type(error).__name__)
 
  try:
-  api=mafra_incidents();coverage=True
+  api=retry_official_source('MAFRA',mafra_incidents);coverage=True
   disclosed=items.copy()
   items+= [x for x in api if not (x.get('disease')=='구제역' and any(d['occurrenceDate'][:7]==x['occurrenceDate'][:7] for d in disclosed))]
  except ValueError as error:
@@ -308,7 +317,7 @@ def main():
   if OUT.exists():items+=[x for x in json.loads(OUT.read_text()).get("items",[]) if x.get("countryCode")=="KR" and x.get("occurrenceDate")]
  asf_verified=False
  try:
-  table=asf_official_table();items=merge_asf_table(items,table);asf_verified=True
+  table=retry_official_source('ASF',asf_official_table);items=merge_asf_table(items,table);asf_verified=True
   print("ASF disclosure verified",len(table),"farms")
  except Exception as error:
   print("ASF disclosure unavailable:",type(error).__name__)
@@ -334,5 +343,9 @@ def main():
  payload={"schemaVersion":5,"pedStatisticsVerified":ped_verified,"statistics":statistics,"fmdDisclosureVerified":fmd_verified,"coverageVerified":coverage and asf_verified and fmd_verified,"asfDisclosureVerified":asf_verified,"coverageScope":"국내 API 전체 조회(구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)","updatedAt":datetime.now(KST).isoformat(),"items":dedup,"evidencePolicy":{"OFFICIAL":"정부·방역기관 원문에서 발생·확진·양성이 확인된 항목","PUBLIC_UNCONFIRMED":"공개 뉴스에서 탐지됐으나 공식 원문 확인 전인 항목","FARM_OBSERVATION":"사용자가 자기 농장에서 직접 기록한 관찰"},"notice":"이 피드는 조기 확인을 위한 정보이며 진단 또는 처방이 아닙니다. 공개정보·확인중은 공식 발생으로 해석하지 마세요."}
  OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
  print("disease signals",len(dedup))
+ return payload
 
-if __name__=="__main__":main()
+if __name__=="__main__":
+ payload=main()
+ if '--require-verified' in sys.argv and not all(payload.get(key) is True for key in ('coverageVerified','asfDisclosureVerified','fmdDisclosureVerified','pedStatisticsVerified')):
+  raise SystemExit('Official disease coverage not verified; publishing blocked')
