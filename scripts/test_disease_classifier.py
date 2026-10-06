@@ -69,4 +69,21 @@ class DiseaseClassifierTest(unittest.TestCase):
  def test_republic_of_korea_is_not_united_states(self):
   self.assertEqual(country_code('대한민국 ASF 발생','국내'),'KR')
 
+
+class DiseaseTransportTest(unittest.TestCase):
+ def test_same_official_url_recovers_without_disabling_tls(self):
+  from types import SimpleNamespace
+  from scripts.fetch_disease_alerts import fetch
+  url="https://official.example/data?key=unit-test-only"
+  with patch('scripts.fetch_disease_alerts.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.fetch_disease_alerts.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=b'{"row":[]}')) as call:
+   self.assertEqual('{"row":[]}',fetch(url))
+   self.assertEqual(url,call.call_args.args[0][-1])
+   self.assertNotIn('--insecure',call.call_args.args[0])
+ def test_failed_alternate_transport_remains_unverified_and_redacted(self):
+  from types import SimpleNamespace
+  from scripts.fetch_disease_alerts import fetch
+  with patch('scripts.fetch_disease_alerts.urllib.request.urlopen',side_effect=TimeoutError()),patch('scripts.fetch_disease_alerts.subprocess.run',return_value=SimpleNamespace(returncode=22,stdout=b'error')):
+   with self.assertRaises(ValueError) as error:fetch('https://official.example/private-key')
+   self.assertNotIn('private-key',str(error.exception))
+
 if __name__=='__main__':unittest.main()
