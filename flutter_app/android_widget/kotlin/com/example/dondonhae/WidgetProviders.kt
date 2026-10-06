@@ -130,7 +130,13 @@ object WidgetRenderer {
             else -> PriceCardArtwork.Kind.SMALL
         }
         val data=WidgetStore.price(context); val grades=WidgetStore.grades(context)
-        val views=RemoteViews(context.packageName,R.layout.widget_price_small)
+        val layout = when(kind) {
+            PriceCardArtwork.Kind.SMALL -> R.layout.widget_preview_small
+            PriceCardArtwork.Kind.MEDIUM -> R.layout.widget_preview_medium
+            PriceCardArtwork.Kind.LARGE -> R.layout.widget_preview_large
+            PriceCardArtwork.Kind.TODAY -> R.layout.widget_preview_today
+        }
+        val views=RemoteViews(context.packageName,layout)
         val options=manager.getAppWidgetOptions(id)
         val width=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,(kind.w/2).toInt()).coerceIn(100,600)
         val height=options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,(kind.h/2).toInt()).coerceIn(80,500)
