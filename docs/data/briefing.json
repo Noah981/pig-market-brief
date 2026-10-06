@@ -1,33 +1,9 @@
 {
-  "updatedAt": "2026-10-06T12:59:26.296259+09:00",
-  "generatedAt": "2026-10-06T13:35:30.943051+09:00",
+  "updatedAt": "2026-10-06T13:56:17.569908+09:00",
+  "generatedAt": "2026-10-06T13:56:40.071715+09:00",
   "scope": "대한민국 전역 · 제주 포함",
   "weatherSource": "기상청 단기예보 조회서비스",
   "regions": [
-    {
-      "region": "대구광역시",
-      "forecastDate": "20261006",
-      "nx": 89,
-      "ny": 90,
-      "tempMin": 14.0,
-      "tempMax": 22.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 60.0,
-      "rainProbabilityMax": 0.0,
-      "riskFactors": [
-        "큰 일교차"
-      ],
-      "farmChecks": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ],
-      "top3": [
-        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
-        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
-        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
-      ]
-    },
     {
       "region": "인천광역시",
       "forecastDate": "20261006",
@@ -89,14 +65,38 @@
       ]
     },
     {
-      "region": "울산광역시",
+      "region": "대구광역시",
       "forecastDate": "20261006",
-      "nx": 102,
-      "ny": 84,
-      "tempMin": 15.0,
-      "tempMax": 23.0,
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 14.0,
+      "tempMax": 22.0,
       "diurnalRange": 8.0,
-      "humidityMax": 50.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0,
+      "riskFactors": [
+        "큰 일교차"
+      ],
+      "farmChecks": [
+        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
+        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
+        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+      ],
+      "top3": [
+        "환절기: 야간 최소환기·입기구를 확인하세요. 외풍이 느껴지면 입기 방향과 최소환기량부터 조정",
+        "기침이 늘면 돈사 온도·일교차·암모니아를 먼저 확인하고 지속되면 수의사에게 호흡기 검사를 의뢰",
+        "자돈이 뭉치면 보온구역 온도와 외풍을 확인하고 보온등·바닥 보온을 점검"
+      ]
+    },
+    {
+      "region": "광주광역시",
+      "forecastDate": "20261006",
+      "nx": 58,
+      "ny": 74,
+      "tempMin": 14.0,
+      "tempMax": 23.0,
+      "diurnalRange": 9.0,
+      "humidityMax": 65.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [
         "큰 일교차"
@@ -137,14 +137,14 @@
       ]
     },
     {
-      "region": "광주광역시",
+      "region": "울산광역시",
       "forecastDate": "20261006",
-      "nx": 58,
-      "ny": 74,
-      "tempMin": 14.0,
+      "nx": 102,
+      "ny": 84,
+      "tempMin": 15.0,
       "tempMax": 23.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 65.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 50.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [
         "큰 일교차"
@@ -209,13 +209,13 @@
       ]
     },
     {
-      "region": "충청북도",
+      "region": "강원특별자치도",
       "forecastDate": "20261006",
-      "nx": 69,
-      "ny": 107,
-      "tempMin": 12.0,
+      "nx": 73,
+      "ny": 134,
+      "tempMin": 11.0,
       "tempMax": 21.0,
-      "diurnalRange": 9.0,
+      "diurnalRange": 10.0,
       "humidityMax": 75.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [
@@ -257,13 +257,13 @@
       ]
     },
     {
-      "region": "강원특별자치도",
+      "region": "충청북도",
       "forecastDate": "20261006",
-      "nx": 73,
-      "ny": 134,
-      "tempMin": 11.0,
+      "nx": 69,
+      "ny": 107,
+      "tempMin": 12.0,
       "tempMax": 21.0,
-      "diurnalRange": 10.0,
+      "diurnalRange": 9.0,
       "humidityMax": 75.0,
       "rainProbabilityMax": 0.0,
       "riskFactors": [
