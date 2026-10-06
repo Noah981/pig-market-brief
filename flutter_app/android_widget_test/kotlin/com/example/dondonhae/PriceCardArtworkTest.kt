@@ -36,6 +36,24 @@ class PriceCardArtworkTest {
             save(PriceCardArtwork.render(context,kind.w.toInt()/2,kind.h.toInt()/2,fixture.copy(price=null,change=null,percent=null,history=emptyList()),GradeData("",emptyMap(),emptyMap()),kind,"10. 6 (화)"),"four_${kind.name.lowercase()}_missing")
         };source.recycle()
     }
+    @Test fun launcherPreviewsUseFourDistinctLayoutsAndImages() {
+        val providers=listOf(R.xml.widget_price_small_info,R.xml.widget_price_detail_info,R.xml.widget_grade_info,R.xml.widget_today_info)
+        val expected=listOf(R.layout.widget_preview_small,R.layout.widget_preview_medium,R.layout.widget_preview_large,R.layout.widget_preview_today)
+        val images=listOf(R.drawable.widget_small_preview,R.drawable.widget_medium_preview,R.drawable.widget_large_preview,R.drawable.widget_today_preview)
+        val namespace="http://schemas.android.com/apk/res/android"
+        providers.forEachIndexed { index, resource ->
+            val parser=context.resources.getXml(resource)
+            try {
+                while(parser.eventType!=org.xmlpull.v1.XmlPullParser.START_TAG) parser.next()
+                assertEquals(expected[index],parser.getAttributeResourceValue(namespace,"previewLayout",0))
+                assertEquals(expected[index],parser.getAttributeResourceValue(namespace,"initialLayout",0))
+                assertEquals(images[index],parser.getAttributeResourceValue(namespace,"previewImage",0))
+                val view=RemoteViews(context.packageName,expected[index]).apply(context,null)
+                assertNotNull(view.findViewById<android.widget.ImageView>(R.id.price_artwork).drawable)
+            } finally { parser.close() }
+        }
+        assertEquals(4,expected.distinct().size)
+    }
     @Test fun remoteViewsInflatesAllFourSizes(){
         for(kind in PriceCardArtwork.Kind.values()){
             val size=when(kind){PriceCardArtwork.Kind.SMALL->180 to 174;PriceCardArtwork.Kind.MEDIUM->360 to 142;PriceCardArtwork.Kind.LARGE->360 to 147;PriceCardArtwork.Kind.TODAY->150 to 214}

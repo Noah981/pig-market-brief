@@ -51,8 +51,8 @@ shutil.copy2(root/"assets/fonts/NotoSansKR.ttf",widget_assets/"NotoSansKR.ttf")
 shutil.copy2(root/"assets/images/widget/four_price_reference.png",widget_assets/"four_price_reference.png")
 shutil.copy2(root/"assets/images/widget/price_card_reference.png",widget_assets/"price_card_reference.jpg")
 shutil.copy2(root/"assets/images/widget/price_card_reference.png",drawable/"widget_price_preview.jpg")
-for kind in ("small","medium","large","today"):
-    shutil.copy2(root/"assets/images/widget/four_price_reference.png",drawable/f"widget_{kind}_preview.png")
+# Distinct bundled preview images are copied from android_widget above.
+# Never overwrite them with the full four-card reference collage.
 if (root/"android_widget_test").exists():
     shutil.copytree(root/"android_widget_test",root/"android/app/src/test",dirs_exist_ok=True)
 gtext=gradle.read_text(encoding="utf-8")
