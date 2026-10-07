@@ -5,197 +5,28 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-07T21:04:22.386396+09:00",
+      "checkedAt": "2026-10-08T01:19:55.370842+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
-          "from": "2026-09-07",
-          "to": "2026-10-07",
+          "from": "2026-09-08",
+          "to": "2026-10-08",
           "farmCount": 0,
           "animalCount": 0,
           "regions": [],
           "months": []
         },
         "90": {
-          "from": "2026-07-09",
-          "to": "2026-10-07",
-          "farmCount": 1,
-          "animalCount": 2,
-          "regions": [
-            {
-              "province": "서울특별시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "부산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대구광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "인천광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대전광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "울산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "세종특별자치시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경기도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "강원특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "충청북도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "충청남도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "전북특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "전라남도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경상북도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경상남도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "제주특별자치도",
-              "animalCount": 2,
-              "farmCount": 1
-            }
-          ],
-          "months": [
-            {
-              "month": "202607",
-              "animalCount": 2,
-              "farmCount": 1,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 2,
-                  "farmCount": 1
-                }
-              ]
-            }
-          ]
+          "from": "2026-07-10",
+          "to": "2026-10-08",
+          "farmCount": 0,
+          "animalCount": 0,
+          "regions": [],
+          "months": []
         },
         "180": {
-          "from": "2026-04-10",
-          "to": "2026-10-07",
+          "from": "2026-04-11",
+          "to": "2026-10-08",
           "farmCount": 13,
           "animalCount": 365,
           "regions": [
@@ -632,8 +463,8 @@
           ]
         },
         "365": {
-          "from": "2025-10-07",
-          "to": "2026-10-07",
+          "from": "2025-10-08",
+          "to": "2026-10-08",
           "farmCount": 56,
           "animalCount": 4198,
           "regions": [
@@ -1598,7 +1429,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-07T21:05:32.653310+09:00",
+  "updatedAt": "2026-10-08T01:20:49.162179+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
