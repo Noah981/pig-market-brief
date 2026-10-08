@@ -43,6 +43,7 @@ jobs:
         run: |
           flutter create --platforms=android,ios .
           python ../scripts/configure_flutter_platform.py
+          python ../scripts/configure_firebase.py
           python ../scripts/configure_android_release_signing.py
           dart run flutter_launcher_icons
           rm -f test/widget_test.dart

@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths: ['scripts/fetch_pig_price.py', '.github/workflows/price-fast.yml']
   schedule:
-    # 평일 KST 16:30~20:00, 5분 간격으로 다봄 신규 확정값을 확인한다.
-    - cron: '*/5 7-11 * * 1-5'
+    # 야간·주말 포함 5분 간격으로 공식 신규 발표와 정정을 확인한다.
+    - cron: '*/5 * * * *'
 permissions:
   contents: write
 concurrency:

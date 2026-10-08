@@ -12,6 +12,9 @@ class NotificationService{
    const android=AndroidInitializationSettings('@mipmap/ic_launcher');
    const ios=DarwinInitializationSettings(requestAlertPermission:false,requestBadgePermission:false,requestSoundPermission:false);
    await _plugin.initialize(const InitializationSettings(android:android,iOS:ios),onDidReceiveNotificationResponse:(r)=>selectedDiseaseEvent.value=r.payload);
+   final platform=_plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+   await platform?.createNotificationChannel(const AndroidNotificationChannel('market_price','돈가 갱신',description:'공식 돈가 신규 발표 · 야간 포함',importance:Importance.high));
+   await platform?.createNotificationChannel(const AndroidNotificationChannel('disease_nationwide_v2','전국 질병 신규 발생',description:'전국 공식 신규 발생 · 야간 포함',importance:Importance.high));
    _ready=true;
   }
   // A headless worker has no Activity and must never request permissions.
@@ -28,6 +31,19 @@ class NotificationService{
   await _plugin.show(41001,'전국 돈가 갱신 · ${market.price}원/kg',
    '기준일 ${market.date} · 전일 대비 $sign${market.change}원 (${market.changePct.toStringAsFixed(1)}%)',
    const NotificationDetails(android:AndroidNotificationDetails('market_price','돈가 갱신',channelDescription:'공식 대표 돈가의 새 발표 및 정정',importance:Importance.high,priority:Priority.high),iOS:DarwinNotificationDetails()));
+ }
+ Future<void> newNationwideDiseaseEvent(DiseaseAlert event)async{
+  await showServerPush(id:event.incidentKey,title:'[전국] ${event.disease} 신규 발생',
+   body:'${event.region} · 발생일 ${event.occurrenceDate}',kind:'disease',payload:event.stableKey);
+ }
+ Future<void> showServerPush({required String id,required String title,required String body,required String kind,String? payload})async{
+  await initialize();
+  await _plugin.show(id.hashCode&0x7fffffff,title,body,
+   NotificationDetails(android:AndroidNotificationDetails(
+    kind=='disease'?'disease_nationwide_v2':'market_price',
+    kind=='disease'?'전국 질병 신규 발생':'돈가 갱신',
+    channelDescription:kind=='disease'?'전국 공식 신규 발생 · 야간 포함':'공식 돈가 신규 발표 · 야간 포함',
+    importance:Importance.high,priority:Priority.high),iOS:const DarwinNotificationDetails()),payload:payload);
  }
  Future<void> newBenefit(String region,String title)async{await initialize();await _plugin.show(title.hashCode,'$region 신규 지원사업',title,const NotificationDetails(android:AndroidNotificationDetails('benefits','지원사업',channelDescription:'내 지역 신규 지원사업과 마감 알림',importance:Importance.high,priority:Priority.high),iOS:DarwinNotificationDetails()));}
  Future<void> newDiseaseEvent(DiseaseAlert event,double km)async{await initialize();final level=DiseaseRiskEngine.levelFor(km),label=switch(level){DiseaseRiskLevel.level1=>'긴급',DiseaseRiskLevel.level2=>'주의',_=>'관심'};await _plugin.show(event.stableKey.hashCode,'[$label] ${event.disease} 신규 발생','${event.region} · 내 기준 위치에서 약 ${km<10?km.toStringAsFixed(1):km.round()}km',const NotificationDetails(android:AndroidNotificationDetails('disease_official','질병 공식 발생',channelDescription:'50km 이내 공식 가축질병 신규 발생',importance:Importance.high,priority:Priority.high),iOS:DarwinNotificationDetails()),payload:event.stableKey);}
