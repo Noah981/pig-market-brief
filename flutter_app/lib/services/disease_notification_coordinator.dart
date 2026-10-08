@@ -1,7 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/disease_models.dart';
-import '../settings/farm_location_settings.dart';
-import 'disease_risk_engine.dart';
 import 'notification_service.dart';
 
 class DiseaseNotificationCoordinator {
@@ -20,7 +18,7 @@ class DiseaseNotificationCoordinator {
     if(!(prefs.getBool(_baseline)??false)){
       await prefs.setStringList(_notified,ids.toList());await prefs.setString(_evidence,_encodeMap(active));await prefs.setString(_status,_encodeStatus(recent));await prefs.setBool(_baseline,true);return 0;
     }
-    final notified=(prefs.getStringList(_notified)??const <String>[]).toSet(),location=FarmLocationSettings.instance.location;
+    final notified=(prefs.getStringList(_notified)??const <String>[]).toSet();
     final enabled=prefs.getBool('disease_notifications_enabled')??true;
     var count=0;
     for(final event in recent){
@@ -29,14 +27,14 @@ class DiseaseNotificationCoordinator {
       if(old==null&&current=='suspected'){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
       else if(old=='suspected'&&(current=='confirmed'||current=='negative')){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
     }
-    if(location.gpsVerified){
-      for(final event in active.where((x)=>x.isOfficial&&x.latitude!=null&&x.longitude!=null)){
+    {
+      for(final event in active.where((x)=>x.isOfficial)){
         if(!enabled||!(prefs.getBool('disease_type_${_typeIndex(event.type)}')??true))continue;
         final promoted=previousEvidence[event.stableKey]=='publicInfo';
         if((notified.contains(event.stableKey)&&!promoted))continue;
-        final km=DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!);
-        final levelIndex=km<=10?0:km<=30?1:km<=50?2:-1;
-        if(levelIndex>=0&&(prefs.getBool('disease_level_$levelIndex')??true)){await NotificationService.instance.newDiseaseEvent(event,km);count++;}
+        // Nationwide official incidents are delivered regardless of GPS or radius.
+        // Distance tiers remain available for the separate nearby-risk UI.
+        await NotificationService.instance.newNationwideDiseaseEvent(event);count++;
         notified.add(event.stableKey);
       }
     }
