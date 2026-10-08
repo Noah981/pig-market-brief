@@ -31,6 +31,11 @@ class NotificationService{
  }
  Future<void> newBenefit(String region,String title)async{await initialize();await _plugin.show(title.hashCode,'$region 신규 지원사업',title,const NotificationDetails(android:AndroidNotificationDetails('benefits','지원사업',channelDescription:'내 지역 신규 지원사업과 마감 알림',importance:Importance.high,priority:Priority.high),iOS:DarwinNotificationDetails()));}
  Future<void> newDiseaseEvent(DiseaseAlert event,double km)async{await initialize();final level=DiseaseRiskEngine.levelFor(km),label=switch(level){DiseaseRiskLevel.level1=>'긴급',DiseaseRiskLevel.level2=>'주의',_=>'관심'};await _plugin.show(event.stableKey.hashCode,'[$label] ${event.disease} 신규 발생','${event.region} · 내 기준 위치에서 약 ${km<10?km.toStringAsFixed(1):km.round()}km',const NotificationDetails(android:AndroidNotificationDetails('disease_official','질병 공식 발생',channelDescription:'50km 이내 공식 가축질병 신규 발생',importance:Importance.high,priority:Priority.high),iOS:DarwinNotificationDetails()),payload:event.stableKey);}
+ Future<void> remotePush(String id,String title,String body,String? eventId)async{
+  await initialize();
+  await _plugin.show(id.hashCode,title,body,
+    const NotificationDetails(android:AndroidNotificationDetails('dondonhae_remote','돈돈해 실시간 알림',importance:Importance.max,priority:Priority.high),iOS:DarwinNotificationDetails()),payload:eventId);
+ }
  Future<void> newNationwideDiseaseEvent(DiseaseAlert event)async{
   await initialize();
   await _plugin.show(event.stableKey.hashCode,'[전국 발생] ${event.disease}',
