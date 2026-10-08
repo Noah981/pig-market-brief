@@ -20,7 +20,7 @@ class DiseaseNotificationCoordinator {
     if(!(prefs.getBool(_baseline)??false)){
       await prefs.setStringList(_notified,ids.toList());await prefs.setString(_evidence,_encodeMap(active));await prefs.setString(_status,_encodeStatus(recent));await prefs.setBool(_baseline,true);return 0;
     }
-    final notified=(prefs.getStringList(_notified)??const <String>[]).toSet(),location=FarmLocationSettings.instance.location;
+    final notified=(prefs.getStringList(_notified)??const <String>[]).toSet();
     final enabled=prefs.getBool('disease_notifications_enabled')??true;
     var count=0;
     for(final event in recent){
@@ -34,9 +34,6 @@ class DiseaseNotificationCoordinator {
         if(!enabled||!(prefs.getBool('disease_type_${_typeIndex(event.type)}')??true))continue;
         final promoted=previousEvidence[event.stableKey]=='publicInfo';
         if((notified.contains(event.stableKey)&&!promoted))continue;
-        final km=location.gpsVerified&&event.latitude!=null&&event.longitude!=null
-            ? DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!)
-            : double.infinity;
         // Nationwide official incidents are delivered regardless of GPS or radius.
         // Distance tiers remain available for the separate nearby-risk UI.
         await NotificationService.instance.newNationwideDiseaseEvent(event);count++;
