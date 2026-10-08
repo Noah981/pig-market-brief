@@ -43,6 +43,8 @@ jobs:
         run: |
           flutter create --platforms=android,ios .
           python ../scripts/configure_flutter_platform.py
+          python ../scripts/configure_firebase.py --require
+          python ../scripts/configure_play_release.py
           python ../scripts/configure_android_release_signing.py
           dart run flutter_launcher_icons
           rm -f test/widget_test.dart
@@ -88,6 +90,8 @@ jobs:
         run: |
           python -m unittest scripts.test_generated_data_merge scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_kahis_occurrences scripts.test_android_release_signing scripts.test_weather_data
           PYTHONPATH=scripts python -m unittest scripts/test_platform.py
+          python scripts/fetch_pig_price.py
+          cp docs/data/pig-price.json docs/data/pig-price-history.json flutter_app/assets/data/
           python scripts/fetch_disease_alerts.py
           python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True and data.get('fmdDisclosureVerified') is True and data.get('pedStatisticsVerified') is True, 'Official disease coverage not verified; release blocked'"
           cp docs/data/disease-alerts.json flutter_app/assets/data/disease-alerts.json
@@ -117,6 +121,14 @@ jobs:
         working-directory: flutter_app
         run: >-
           flutter build apk --release
+          --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
+          --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+          --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
+          --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
+      - name: Build Android 16 upload bundle with configured Firebase
+        working-directory: flutter_app
+        run: >
+          flutter build appbundle --release
           --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
           --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
@@ -153,6 +165,7 @@ jobs:
             flutter_app/android/app/build/widget-screenshots/*.png
             flutter_app/android/app/build/reports/tests/testDebugUnitTest/**
             flutter_app/build/app/outputs/flutter-apk/app-release.apk
+            flutter_app/build/app/outputs/bundle/release/app-release.aab
       - name: Publish verified APK and screenshots
         if: github.event_name != 'pull_request' && steps.release_signing.outputs.production == 'true'
         env:

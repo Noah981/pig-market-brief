@@ -1,0 +1,89 @@
+name: Verified Play Store bundle
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      DDH_FIREBASE_ANDROID_CONFIG_B64: ${{ secrets.DDH_FIREBASE_ANDROID_CONFIG_B64 }}
+      DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID || 'dondonhae-cd1d7' }}
+      DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
+      DDH_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.DDH_ANDROID_KEYSTORE_PASSWORD }}
+      DDH_ANDROID_KEYSTORE_B64: ${{ secrets.DDH_ANDROID_KEYSTORE_B64 }}
+      DDH_ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/dondonhae-release.p12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Require real Firebase project and persistent release signer
+        run: |
+          python - <<'PY'
+          import os,base64,pathlib,json
+          required=['DDH_FIREBASE_PROJECT_ID','DDH_FCM_SERVICE_ACCOUNT_JSON','DDH_ANDROID_KEYSTORE_PASSWORD','DDH_ANDROID_KEYSTORE_B64']
+          missing=[k for k in required if not os.environ.get(k)]
+          if missing:raise SystemExit('Final bundle blocked: configure '+', '.join(missing))
+          os.environ['DDH_FIREBASE_PROJECT_ID']=os.environ.get('DDH_FIREBASE_PROJECT_ID') or 'dondonhae-cd1d7'
+          account=json.loads(os.environ['DDH_FCM_SERVICE_ACCOUNT_JSON'])
+          if account['project_id']!=os.environ['DDH_FIREBASE_PROJECT_ID']:raise SystemExit('FCM project mismatch')
+          path=pathlib.Path(os.environ['DDH_ANDROID_KEYSTORE_FILE'])
+          path.write_bytes(base64.b64decode(os.environ['DDH_ANDROID_KEYSTORE_B64'],validate=True));path.chmod(0o600)
+          PY
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: stable
+          cache: true
+      - name: Configure existing application for Firebase and Play
+        working-directory: flutter_app
+        run: |
+          flutter create --platforms=android,ios .
+          python ../scripts/configure_flutter_platform.py
+          python ../scripts/configure_firebase.py --require
+          python ../scripts/configure_play_release.py
+          python ../scripts/configure_android_release_signing.py
+          dart run flutter_launcher_icons
+          rm -f test/widget_test.dart
+      - name: Refresh and verify official release data
+        env:
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+          KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+          KMA_API_KEY: ${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
+          MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
+        run: |
+          pip install openpyxl==3.1.5 xlrd==2.0.1 'google-auth[requests]>=2.38,<3'
+          python scripts/validate_official_apis.py
+          python scripts/fetch_pig_price.py
+          python scripts/fetch_disease_alerts.py --require-verified
+          python scripts/fetch_fred_markets.py
+          cp docs/data/pig-price.json docs/data/pig-price-history.json docs/data/disease-alerts.json docs/data/platform.json flutter_app/assets/data/
+          python -m unittest scripts.test_official_push
+          python scripts/send_official_push.py --validate-connection
+      - name: Verify code and all Flutter regression cases
+        working-directory: flutter_app
+        run: |
+          flutter analyze
+          flutter test --update-goldens
+      - name: Build signed store bundle and installation APK
+        working-directory: flutter_app
+        run: |
+          flutter build appbundle --release --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }} --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }} --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }} --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
+          flutter build apk --release --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }} --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }} --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }} --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
+      - name: Verify final APK signature and Android 16 target
+        working-directory: flutter_app
+        run: |
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
+          "$APKSIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk | tee "$RUNNER_TEMP/signature.txt"
+          grep -i '1fc224f0b50fe1c25a08c01c19168dce5d8ba370ffb573105eae6bebed2d92ad' "$RUNNER_TEMP/signature.txt"
+          ZIPALIGN="$(find "$ANDROID_HOME/build-tools" -type f -name zipalign | sort -V | tail -1)"
+          "$ZIPALIGN" -c -P 16 -v 4 build/app/outputs/flutter-apk/app-release.apk
+          "$AAPT" dump badging build/app/outputs/flutter-apk/app-release.apk | grep "targetSdkVersion:'36'"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dondonhae-verified-play-bundle
+          path: |
+            flutter_app/build/app/outputs/bundle/release/app-release.aab
+            flutter_app/build/app/outputs/flutter-apk/app-release.apk

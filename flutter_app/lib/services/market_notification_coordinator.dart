@@ -18,7 +18,7 @@ class MarketNotificationCoordinator {
     if(previousDate!=null&&date.compareTo(previousDate)<0)return false;
     if(date==previousDate&&market.price==previousPrice)return false;
     final changed=previousDate!=null;
-    if(changed&&(prefs.getBool('market_notifications_enabled')??true)){
+    if(changed&&(prefs.getBool('market_notifications_enabled')??true)&&!(prefs.getBool('server_push_active_v1')??false)){
       await (notify??NotificationService.instance.newMarketPrice)(market);
     }
     // Save only after delivery succeeds, so a failed notification is retried.

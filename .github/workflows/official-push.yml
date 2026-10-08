@@ -1,0 +1,47 @@
+name: Free official nationwide push
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Fast disease signal watch', 'Fast KAPE price watch']
+    types: [completed]
+  schedule:
+    - cron: '*/5 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: official-push-ledger
+  cancel-in-progress: false
+jobs:
+  push:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'google-auth[requests]>=2.38,<3'
+      - name: Check official-event selection
+        run: python -m unittest scripts.test_official_push
+      - name: Deliver only new official occurrences and changed quotes
+        env:
+          DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
+          DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID || 'dondonhae-cd1d7' }}
+        run: python scripts/send_official_push.py
+      - name: Preserve accepted-delivery ledger
+        if: always()
+        run: |
+          if [ ! -f docs/data/push-state.json ]; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/data/push-state.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Record accepted official push deliveries'
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo 'Push ledger was not persisted; operator attention required'
+          exit 1
