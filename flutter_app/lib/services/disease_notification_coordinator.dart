@@ -29,14 +29,18 @@ class DiseaseNotificationCoordinator {
       if(old==null&&current=='suspected'){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
       else if(old=='suspected'&&(current=='confirmed'||current=='negative')){await NotificationService.instance.diseaseStatusUpdate(event,phase:current);count++;}
     }
-    if(location.gpsVerified){
-      for(final event in active.where((x)=>x.isOfficial&&x.latitude!=null&&x.longitude!=null)){
+    {
+      for(final event in active.where((x)=>x.isOfficial)){
         if(!enabled||!(prefs.getBool('disease_type_${_typeIndex(event.type)}')??true))continue;
         final promoted=previousEvidence[event.stableKey]=='publicInfo';
         if((notified.contains(event.stableKey)&&!promoted))continue;
-        final km=DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!);
+        final km=location.gpsVerified&&event.latitude!=null&&event.longitude!=null
+            ? DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!)
+            : double.infinity;
         final levelIndex=km<=10?0:km<=30?1:km<=50?2:-1;
-        if(levelIndex>=0&&(prefs.getBool('disease_level_$levelIndex')??true)){await NotificationService.instance.newDiseaseEvent(event,km);count++;}
+        // Nationwide official incidents are delivered regardless of GPS or radius.
+        // Distance tiers remain available for the separate nearby-risk UI.
+        await NotificationService.instance.newNationwideDiseaseEvent(event);count++;
         notified.add(event.stableKey);
       }
     }
