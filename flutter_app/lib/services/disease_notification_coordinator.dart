@@ -1,7 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/disease_models.dart';
-import '../settings/farm_location_settings.dart';
-import 'disease_risk_engine.dart';
 import 'notification_service.dart';
 
 class DiseaseNotificationCoordinator {
