@@ -104,14 +104,14 @@ def fcm_sender():
     from google.oauth2 import service_account
     from google.auth.transport.requests import Request
     creds=service_account.Credentials.from_service_account_info(config,scopes=['https://www.googleapis.com/auth/firebase.messaging'])
-    def send(message):
+    def send(message,validate_only=False):
         if not creds.valid:creds.refresh(Request())
         request=urllib.request.Request(f'https://fcm.googleapis.com/v1/projects/{project}/messages:send',
-          data=json.dumps({'message':message},ensure_ascii=False).encode(),
+          data=json.dumps({'message':message,'validate_only':validate_only},ensure_ascii=False).encode(),
           headers={'Authorization':'Bearer '+creds.token,'Content-Type':'application/json'},method='POST')
         with urllib.request.urlopen(request,timeout=30) as response:
             result=json.load(response)
-            if response.status!=200 or not result.get('name'):raise RuntimeError('FCM did not confirm acceptance')
+            if response.status!=200 or (not validate_only and not result.get('name')):raise RuntimeError('FCM did not confirm acceptance')
     return send
 
 def persist(state):
@@ -120,9 +120,15 @@ def persist(state):
     temporary.replace(STATE)
 
 if __name__=='__main__':
-    argparse.ArgumentParser(description=__doc__).parse_args()
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--validate-connection',action='store_true')
+    args=parser.parse_args()
     # Missing configuration is a release blocker, never a successful fake delivery.
     sender=fcm_sender()
+    if args.validate_connection:
+        sender({'topic':'dondonhae_market_v1','data':{'kind':'connection_validation'}},validate_only=True)
+        print('FCM credentials validated without sending any notification')
+        raise SystemExit(0)
     state=json.loads(STATE.read_text()) if STATE.exists() else {}
     count=deliver(json.loads((ROOT/'docs/data/disease-alerts.json').read_text()),
       json.loads((ROOT/'docs/data/pig-price.json').read_text()),state,sender,persist,datetime.now(timezone.utc))

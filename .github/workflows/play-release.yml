@@ -59,6 +59,7 @@ jobs:
           python scripts/fetch_fred_markets.py
           cp docs/data/pig-price.json docs/data/pig-price-history.json docs/data/disease-alerts.json docs/data/platform.json flutter_app/assets/data/
           python -m unittest scripts.test_official_push
+          python scripts/send_official_push.py --validate-connection
       - name: Verify code and all Flutter regression cases
         working-directory: flutter_app
         run: |
