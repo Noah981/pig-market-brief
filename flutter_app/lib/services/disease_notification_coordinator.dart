@@ -37,7 +37,6 @@ class DiseaseNotificationCoordinator {
         final km=location.gpsVerified&&event.latitude!=null&&event.longitude!=null
             ? DiseaseRiskEngine.distanceKm(location.latitude,location.longitude,event.latitude!,event.longitude!)
             : double.infinity;
-        final levelIndex=km<=10?0:km<=30?1:km<=50?2:-1;
         // Nationwide official incidents are delivered regardless of GPS or radius.
         // Distance tiers remain available for the separate nearby-risk UI.
         await NotificationService.instance.newNationwideDiseaseEvent(event);count++;
