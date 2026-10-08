@@ -9,6 +9,8 @@ ROOT=Path(__file__).resolve().parents[1]/'flutter_app'
 
 def configure(required=False):
     encoded=os.environ.get('DDH_FIREBASE_ANDROID_CONFIG_B64','')
+    bundled=ROOT/'firebase/google-services.json'
+    if not encoded and bundled.exists():encoded=base64.b64encode(bundled.read_bytes()).decode()
     if not encoded:
         if required:raise RuntimeError('Firebase Android configuration is missing; final release blocked')
         print('Validation environment only: Firebase connection is not configured')
@@ -16,7 +18,8 @@ def configure(required=False):
     raw=base64.b64decode(encoded,validate=True)
     config=json.loads(raw)
     project=config['project_info']['project_id']
-    if project!=os.environ.get('DDH_FIREBASE_PROJECT_ID'):raise ValueError('Firebase project mismatch')
+    expected=os.environ.get('DDH_FIREBASE_PROJECT_ID') or 'dondonhae-cd1d7'
+    if project!=expected:raise ValueError('Firebase project mismatch')
     clients=[c for c in config['client'] if c['client_info']['android_client_info']['package_name']=='com.example.dondonhae']
     if len(clients)!=1:raise ValueError('Firebase Android application must match the existing package')
     if not clients[0].get('api_key') or not clients[0]['client_info'].get('mobilesdk_app_id'):raise ValueError('Incomplete Firebase Android configuration')

@@ -28,7 +28,7 @@ jobs:
       - name: Deliver only new official occurrences and changed quotes
         env:
           DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
-          DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID }}
+          DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID || 'dondonhae-cd1d7' }}
         run: python scripts/send_official_push.py
       - name: Preserve accepted-delivery ledger
         if: always()

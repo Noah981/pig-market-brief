@@ -43,7 +43,8 @@ jobs:
         run: |
           flutter create --platforms=android,ios .
           python ../scripts/configure_flutter_platform.py
-          python ../scripts/configure_firebase.py
+          python ../scripts/configure_firebase.py --require
+          python ../scripts/configure_play_release.py
           python ../scripts/configure_android_release_signing.py
           dart run flutter_launcher_icons
           rm -f test/widget_test.dart
@@ -118,6 +119,14 @@ jobs:
         working-directory: flutter_app
         run: >-
           flutter build apk --release
+          --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
+          --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+          --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
+          --dart-define=MAFRA_API_KEY=${{ secrets.MAFRA_API_KEY }}
+      - name: Build Android 16 upload bundle with configured Firebase
+        working-directory: flutter_app
+        run: >
+          flutter build appbundle --release
           --dart-define=ECOS_API_KEY=${{ secrets.ECOS_API_KEY }}
           --dart-define=KAPE_API_KEY=${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
           --dart-define=KMA_API_KEY=${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}

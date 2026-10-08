@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DDH_FIREBASE_ANDROID_CONFIG_B64: ${{ secrets.DDH_FIREBASE_ANDROID_CONFIG_B64 }}
-      DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID }}
+      DDH_FIREBASE_PROJECT_ID: ${{ secrets.DDH_FIREBASE_PROJECT_ID || 'dondonhae-cd1d7' }}
       DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
       DDH_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.DDH_ANDROID_KEYSTORE_PASSWORD }}
       DDH_ANDROID_KEYSTORE_B64: ${{ secrets.DDH_ANDROID_KEYSTORE_B64 }}
@@ -22,9 +22,10 @@ jobs:
         run: |
           python - <<'PY'
           import os,base64,pathlib,json
-          required=['DDH_FIREBASE_ANDROID_CONFIG_B64','DDH_FIREBASE_PROJECT_ID','DDH_FCM_SERVICE_ACCOUNT_JSON','DDH_ANDROID_KEYSTORE_PASSWORD','DDH_ANDROID_KEYSTORE_B64']
+          required=['DDH_FIREBASE_PROJECT_ID','DDH_FCM_SERVICE_ACCOUNT_JSON','DDH_ANDROID_KEYSTORE_PASSWORD','DDH_ANDROID_KEYSTORE_B64']
           missing=[k for k in required if not os.environ.get(k)]
           if missing:raise SystemExit('Final bundle blocked: configure '+', '.join(missing))
+          os.environ['DDH_FIREBASE_PROJECT_ID']=os.environ.get('DDH_FIREBASE_PROJECT_ID') or 'dondonhae-cd1d7'
           account=json.loads(os.environ['DDH_FCM_SERVICE_ACCOUNT_JSON'])
           if account['project_id']!=os.environ['DDH_FIREBASE_PROJECT_ID']:raise SystemExit('FCM project mismatch')
           path=pathlib.Path(os.environ['DDH_ANDROID_KEYSTORE_FILE'])
