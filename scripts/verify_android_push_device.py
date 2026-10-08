@@ -18,7 +18,9 @@ root_result=adb('root'); print('ADB root:',root_result.strip()); adb('wait-for-d
 apks=list(Path('qa-apk').rglob('app-release.apk'))
 assert len(apks)==1,'Expected the validated release APK'
 adb('install','-r',str(apks[0]))
-adb('shell','pm','grant',PKG,'android.permission.POST_NOTIFICATIONS')
+if int(adb('shell','getprop','ro.build.version.sdk').strip())>=33:
+ adb('shell','pm','grant',PKG,'android.permission.POST_NOTIFICATIONS')
+adb('shell','am','broadcast','-a','android.server.checkin.CHECKIN_NOW',check=False)
 adb('shell','am','start','-n',PKG+'/.MainActivity')
 def registration():
  raw=adb('shell','cat',f'/data/data/{PKG}/shared_prefs/com.google.android.gms.appid.xml',check=False)

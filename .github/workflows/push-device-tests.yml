@@ -38,7 +38,7 @@ jobs:
           DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
           DDH_FIREBASE_PROJECT_ID: dondonhae-cd1d7
         with:
-          api-level: 35
+          api-level: 30
           target: google_apis
           arch: x86_64
           disable-animations: true
