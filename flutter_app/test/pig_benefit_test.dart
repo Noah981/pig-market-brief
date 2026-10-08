@@ -18,4 +18,13 @@ void main(){
   expect(province.matchesRegion('경상북도','김천시'),true);
  });
 
+ test('Conditional application periods are preserved without invented dates',(){
+  final continuous=BenefitNotice.fromJson({'id':'b','title':'양돈 지원','region':'전국','agency':'공식기관','url':'https://www.mafra.go.kr/','applicationPeriod':'예산 소진시까지'});
+  expect(continuous.isContinuousApplication,true);expect(continuous.deadline,isNull);
+  final guideline=BenefitNotice.fromJson({'id':'g','title':'2026년 축사시설현대화사업 시행지침','region':'전국','agency':'농림축산식품부','url':'https://www.mafra.go.kr/','target':'양돈농가 포함','applicationPeriod':'관할 시·군·구 접수 일정 확인'});
+  expect(guideline.relevantToPigFarming,true);expect(guideline.isContinuousApplication,false);
+ });
+ test('Crop-only body cannot qualify through a livestock project title',(){
+  expect(notice('농·축산시설 탄소 지원사업',support:'토마토 재배 온실 테스트베드 활용 지원').relevantToPigFarming,false);
+ });
 }
