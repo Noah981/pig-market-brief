@@ -1,12 +1,13 @@
 {
   "initialized": true,
   "diseaseIds": [
-    "MAFRA-FMD-TABLE|2026-09|3",
-    "MAFRA-FMD-TABLE|2026-09|4",
-    "KAHIS|eb17b5d87d0dca041054cce05dd0e06afb8abcb77a40e458a37a6ed7fb5cedf9",
+    "KAHIS|b6a968764db41a7ae9b84c91612328f573f998a3f04adf66772fdad0d09c2caf",
     "KAHIS|b91fe16a1945a15cbe4dab7fd10e0e925c162d2f727bf387b0ac655f9518669b",
+    "KAHIS|de6fb7e0c80c8a1f3833af2219e1f94e851a0366484b19d568069fb0f6005854",
     "KAHIS|e7dacb01f7637f73917739da8e58209a22919fca7368bf3504bdd081453ba0fd",
-    "KAHIS|b6a968764db41a7ae9b84c91612328f573f998a3f04adf66772fdad0d09c2caf"
+    "KAHIS|eb17b5d87d0dca041054cce05dd0e06afb8abcb77a40e458a37a6ed7fb5cedf9",
+    "MAFRA-FMD-TABLE|2026-09|3",
+    "MAFRA-FMD-TABLE|2026-09|4"
   ],
   "priceDate": "20261007",
   "priceValue": 6212
