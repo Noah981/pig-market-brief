@@ -30,3 +30,14 @@ jobs:
       - name: Verify headless delivery and price deduplication
         working-directory: flutter_app
         run: flutter test test/market_notification_test.dart test/disease_notification_test.dart
+      - name: Validate configured FCM sending authorization without delivery
+        env:
+          DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
+          DDH_FIREBASE_PROJECT_ID: dondonhae-cd1d7
+        run: |
+          if [ -z "$DDH_FCM_SERVICE_ACCOUNT_JSON" ]; then
+            echo 'FCM_SENDER_NOT_CONNECTED: production delivery still blocked'
+            exit 0
+          fi
+          pip install 'google-auth[requests]>=2.38,<3'
+          python scripts/send_official_push.py --validate-connection

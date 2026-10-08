@@ -163,6 +163,7 @@ jobs:
             flutter_app/android/app/build/widget-screenshots/*.png
             flutter_app/android/app/build/reports/tests/testDebugUnitTest/**
             flutter_app/build/app/outputs/flutter-apk/app-release.apk
+            flutter_app/build/app/outputs/bundle/release/app-release.aab
       - name: Publish verified APK and screenshots
         if: github.event_name != 'pull_request' && steps.release_signing.outputs.production == 'true'
         env:
