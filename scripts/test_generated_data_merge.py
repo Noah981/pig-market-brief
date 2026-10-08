@@ -16,4 +16,13 @@ class PublicationTests(unittest.TestCase):
   incoming={'checkedAt':'2026-10-05T13:00:00+09:00','markets':[{'name':'corn','date':'2026-07-01','value':213}],'benefits':[]}
   value=merge('platform.json',current,incoming)
   self.assertEqual(value['markets'][0]['value'],220);self.assertEqual(value['benefits'],current['benefits']);self.assertEqual(value['sourceStatus'],current['sourceStatus'])
+ def test_later_market_job_cannot_erase_newer_support_collection(self):
+  current={'checkedAt':'2026-10-08T16:10:00+09:00','benefitsCheckedAt':'2026-10-08T16:10:00+09:00','benefits':[{'id':'actual-pig-notice'}],'sourceStatus':[{'id':'bizinfo','status':'connected'}]}
+  incoming={'checkedAt':'2026-10-08T16:15:00+09:00','benefits':[],'sourceStatus':[{'id':'bizinfo','status':'old-empty'},{'id':'market','status':'LIVE'}]}
+  result=merge('platform.json',current,incoming)
+  self.assertEqual(result['benefits'],current['benefits']);self.assertIn({'id':'bizinfo','status':'connected'},result['sourceStatus']);self.assertIn({'id':'market','status':'LIVE'},result['sourceStatus'])
+ def test_genuinely_new_support_can_publish_verified_empty_result(self):
+  current={'benefitsCheckedAt':'2026-10-08T16:10:00+09:00','benefits':[{'id':'old'}]}
+  incoming={'benefitsCheckedAt':'2026-10-08T16:15:00+09:00','benefits':[]}
+  self.assertEqual(merge('platform.json',current,incoming)['benefits'],[])
 if __name__=='__main__':unittest.main()

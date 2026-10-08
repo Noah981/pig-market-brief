@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from scripts.fetch_official_benefits import bizinfo_detail,collect_bizinfo_public,pig_related,collect
+from scripts.fetch_official_benefits import bizinfo_detail,collect_bizinfo_public,pig_related,collect,collect_bizinfo
 
 DETAIL='''<ul><li><span class="s_title">소관부처·지자체</span><div class="txt">경상남도</div></li><li><span class="s_title">신청기간</span><div class="txt">2025.12.23 ~ 2026.12.31</div></li><li><span class="s_title">사업개요</span><div class="txt"><p>가축분뇨 운반 수수료 지원</p><p>☞ 돈사 면적 1,000㎡ 이하 양돈농가</p><p>☞ 규모별 지원</p></div></li></ul>'''
 ROW='''<table><tbody><tr><td>1</td><td>경영</td><td><a href= "/sii/siia/selectSIIA200Detail.do?pblancId=TEST">[경남] 김해시 가축분뇨 수수료 지원사업</a></td><td>2025-12-23 ~ 2026-12-31</td><td>경상남도</td><td>시청</td><td>2025-12-24</td></tr></tbody></table>'''
@@ -27,4 +27,8 @@ class PublicBenefitTests(unittest.TestCase):
   with patch('scripts.fetch_official_benefits.fetch',return_value=f'<dt>{datetime.now().year}년 축사시설현대화사업 시행지침</dt>'):
    rows=collect(source)
   self.assertEqual(rows[0]['region'],'전국');self.assertNotIn('deadline',rows[0]);self.assertIn('접수 일정 확인',rows[0]['applicationPeriod'])
+ def test_invalid_api_key_falls_back_to_verified_public_source(self):
+  with patch.dict('os.environ',{'BIZINFO_API_KEY':'invalid-fixture'}),patch('scripts.fetch_official_benefits.collect_bizinfo_api',side_effect=ValueError),patch('scripts.fetch_official_benefits.collect_bizinfo_public',return_value=([{'id':'verified'}],'public connected')):
+   rows,status=collect_bizinfo()
+  self.assertEqual(rows,[{'id':'verified'}]);self.assertEqual(status,'public connected')
 if __name__=='__main__':unittest.main()

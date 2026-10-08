@@ -205,6 +205,7 @@ def main():
    all_items.extend(x for x in previous.get('benefits',[]) if x.get('sourceId')==source['id'])
   result['sourceStatus'].append({'id':source['id'],'agency':source['agency'],'status':status,'permissionBasis':source['permissionBasis']})
  result['benefits']=list({x['id']:x for x in all_items if eligible_item(x)}.values())
+ result['benefitsCheckedAt']=datetime.now(KST).isoformat()
  temp=OUT.with_suffix('.tmp');temp.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8');temp.replace(OUT)
  print('official benefits',len(result['benefits']))
 if __name__=='__main__':main()

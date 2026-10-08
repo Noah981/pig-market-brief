@@ -22,7 +22,16 @@ def merge(name,current,incoming):
   for x in incoming.get('markets',[]):
    old=rows.get(x.get('name')); new_date=str(x.get('date',''))
    if old is None or new_date>str(old.get('date','')) or (new_date==str(old.get('date','')) and stamp(x)>=stamp(old)):rows[x['name']]=x
-  return {**newer,'markets':list(rows.values())}
+  result={**newer,'markets':list(rows.values())}
+  current_support=stamp({'updatedAt':current.get('benefitsCheckedAt')})
+  incoming_support=stamp({'updatedAt':incoming.get('benefitsCheckedAt')})
+  if current_support or incoming_support:
+   owner=incoming if incoming_support>current_support else current
+   result['benefits']=owner.get('benefits',[])
+   result['benefitsCheckedAt']=owner['benefitsCheckedAt']
+   support_ids={'bizinfo','mafra-notice','mafra-livestock-guideline'}
+   result['sourceStatus']=[x for x in result.get('sourceStatus',[]) if x.get('id') not in support_ids]+[x for x in owner.get('sourceStatus',[]) if x.get('id') in support_ids]
+  return result
  elif stamp(current)>stamp(incoming):return current
  return incoming
 

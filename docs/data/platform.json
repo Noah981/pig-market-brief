@@ -2564,17 +2564,17 @@
     {
       "id": "bizinfo-PBLN_000000000116966",
       "title": "[경남] 김해시 2026년 가축분뇨 수집ㆍ운반 수수료 지원사업 신청서 접수 공고",
+      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000116966",
       "region": "경남·김해시",
       "agency": "경상남도",
-      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000116966",
-      "target": "소상공인",
-      "support": "2026년 가축분뇨 수집·운반 수수료 지원사업을 다음과 같이 시행하오니 가축분뇨 수집ㆍ운반 수수료 지원을 희망하는 축산농가에서는 신청하여 주시기 바랍니다. ☞ 김해시 관내 가축분뇨 배출시설 설치허가(신고)를 득한 돈사 면적 1,000㎡ 또는 우사 면적 900㎡ 이하인 농가 ☞ 가축분뇨 배출시설 규모별 차등 지원 ※ 자세한 지원내용 공고문 참조",
       "sourceId": "bizinfo",
       "publishedAt": "2025-12-24",
-      "collectedAt": "2026-10-08T16:12:50.591566+09:00",
+      "applicationPeriod": "2025.12.23 ~ 2026.12.31",
+      "collectedAt": "2026-10-08T16:10:08.097818+09:00",
+      "support": "2026년 가축분뇨 수집·운반 수수료 지원사업을 다음과 같이 시행하오니 가축분뇨 수집ㆍ운반 수수료 지원을 희망하는 축산농가에서는 신청하여 주시기 바랍니다. ☞ 김해시 관내 가축분뇨 배출시설 설치허가(신고)를 득한 돈사 면적 1,000㎡ 또는 우사 면적 900㎡ 이하인 농가 ☞ 가축분뇨 배출시설 규모별 차등 지원 ※ 자세한 지원내용 공고문 참조",
+      "target": "김해시 관내 가축분뇨 배출시설 설치허가(신고)를 득한 돈사 면적 1,000㎡ 또는 우사 면적 900㎡ 이하인 농가",
       "startDate": "2025-12-23",
-      "deadline": "2026-12-31",
-      "applicationPeriod": "2025-12-23 ~ 2026-12-31"
+      "deadline": "2026-12-31"
     },
     {
       "id": "mafra-livestock-guideline-2026",
@@ -2587,7 +2587,7 @@
       "applicationPeriod": "관할 시·군·구 접수 일정 확인",
       "noticeKind": "guideline",
       "sourceId": "mafra-livestock-guideline",
-      "collectedAt": "2026-10-08T16:12:52.446525+09:00"
+      "collectedAt": "2026-10-08T16:11:03.204739+09:00"
     }
   ],
   "checkedAt": "2026-10-08T16:12:39.595941+09:00",
@@ -2605,20 +2605,21 @@
     {
       "id": "bizinfo",
       "agency": "기업마당",
-      "status": "연결 완료 · 1건 확인",
+      "status": "공식 공개 공고 연결 완료 · 1건 확인",
       "permissionBasis": "기업마당 지원사업정보 공식 API"
-    },
-    {
-      "id": "mafra-livestock-guideline",
-      "agency": "농림축산식품부",
-      "status": "연결 완료 · 1건 확인",
-      "permissionBasis": "공공누리 출처표시 · 공식 축사시설현대화 시행지침 및 원문 링크"
     },
     {
       "id": "mafra-notice",
       "agency": "농림축산식품부",
       "status": "연결 완료 · 0건 확인",
       "permissionBasis": "공식 공개 공지·공고의 제목·원문 링크 이용"
+    },
+    {
+      "id": "mafra-livestock-guideline",
+      "agency": "농림축산식품부",
+      "status": "연결 완료 · 1건 확인",
+      "permissionBasis": "공공누리 출처표시 · 공식 축사시설현대화 시행지침 및 원문 링크"
     }
-  ]
+  ],
+  "benefitsCheckedAt": "2026-10-08T16:11:03.205045+09:00"
 }
