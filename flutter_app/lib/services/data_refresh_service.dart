@@ -9,6 +9,7 @@ import '../data/weather_farm_repository.dart';
 import '../settings/farm_location_settings.dart';
 import 'disease_notification_coordinator.dart';
 import 'widget_update_service.dart';
+import 'market_notification_coordinator.dart';
 
 class DataRefreshService {
   DataRefreshService._();
@@ -24,20 +25,21 @@ class DataRefreshService {
 
   static Future<bool> refreshAll({bool force=false})async{
     final prefs=await SharedPreferences.getInstance();
+    await prefs.reload();
     final last=DateTime.tryParse(prefs.getString(_lastCheckKey)??'');
     if(!force&&!shouldRefresh(last,DateTime.now())){await WidgetUpdateService.updateAll();return false;}
     await FarmLocationSettings.instance.load();
-    await Future.wait<void>([
-      _isolated(()async{final market=await MarketRepository().refresh();await PigGradeRepository().refresh(market.date);}),
+    final results=await Future.wait<bool>([
+      _isolated(()async{final market=await MarketRepository().refresh();await MarketNotificationCoordinator.process(market);await PigGradeRepository().refresh(market.date);}),
       _isolated(()async{await CommodityRepository().refresh();}),
       _isolated(()async{await BenefitRepository().refresh();}),
       _isolated(()async{await WeatherFarmRepository().refresh(region:FarmLocationSettings.instance.location.province);}),
       _isolated(()async{final feed=await DiseaseRepository().refresh();await DiseaseNotificationCoordinator.process(feed);}),
     ]);
-    await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
+    if(results.every((x)=>x))await prefs.setString(_lastCheckKey,DateTime.now().toIso8601String());
     await WidgetUpdateService.updateAll();
     revision.value++;
-    return true;
+    return results.every((x)=>x);
   }
 
   /// Disease signals are checked independently so reopening the app is not
@@ -49,5 +51,5 @@ class DataRefreshService {
     }catch(_){return 0;}
   }
 
-  static Future<void> _isolated(Future<void> Function() action)async{try{await action();}catch(_){}}
+  static Future<bool> _isolated(Future<void> Function() action)async{try{await action();return true;}catch(_){return false;}}
 }

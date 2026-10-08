@@ -1,0 +1,26 @@
+name: Background notification regression tests
+on:
+  pull_request:
+    branches: [main]
+    paths: ['flutter_app/lib/services/**', 'flutter_app/test/*notification*', '.github/workflows/background-alert-tests.yml']
+permissions:
+  contents: read
+jobs:
+  notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: stable
+          cache: true
+      - name: Prepare existing platform and assets
+        working-directory: flutter_app
+        run: |
+          flutter create --platforms=android,ios .
+          python ../scripts/configure_flutter_platform.py
+          rm -f test/widget_test.dart
+      - name: Verify headless delivery and price deduplication
+        working-directory: flutter_app
+        run: flutter test test/market_notification_test.dart test/disease_notification_test.dart
