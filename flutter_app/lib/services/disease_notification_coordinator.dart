@@ -8,6 +8,8 @@ class DiseaseNotificationCoordinator {
   static const _baseline='disease_notification_baseline_v1',_notified='notified_disease_event_ids_v1',_evidence='disease_event_evidence_v1',_status='disease_incident_status_v2';
   static Future<int> process(DiseaseFeed feed)async{
     final prefs=await SharedPreferences.getInstance(),now=DateTime.now();
+    await prefs.reload();
+    if(feed.fromCache)return 0;
     final allRecent=feed.items.where((x)=>x.countryCode=='KR'&&x.isRecentAt(now)).toList();
     final recent=_latestIncidents(allRecent);
     // Keep every distinct official event for distance alerts and the first-sync
