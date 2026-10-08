@@ -14,7 +14,7 @@ PIG=re.compile(r'양돈|돼지|돈사|아프리카돼지열병|\bASF\b|\bPED\b|\
 OTHER_SPECIES=re.compile(r'한우|육우|젖소|낙농|양계|육계|산란계|오리|양봉|벌꿀|양잠|염소|말산업|승마|반려동물|반려견|반려묘|벼|쌀|과수|원예|수산|어업|음식점|식당')
 SHARED=re.compile(r'축산농가|축산농업인|가축\s*사육\s*농가|축산업|축산시설|축산환경|축산악취|축산분뇨|축산방역')
 FARM_SUPPORT=re.compile(r'시설|장비|사료|축사|분뇨|방역|퇴비|액비|악취|환경|저탄소|HACCP|무항생제|동물복지|재해|ICT|스마트|백신|예방접종|컨설팅|교육',re.I)
-EXCLUDED_PIG=re.compile(r'(?:양돈|돼지|돈사)\s*(?:농가|농장|업)?\s*(?:는|은|를)?\s*(?:제외|미지원|지원대상\s*아님)|제외\s*(?:대상)?\s*[:：]?\s*(?:양돈|돼지)')
+EXCLUDED_PIG=re.compile(r'(?:양돈|돼지|돈사)\s*(?:농가|농장|업)?\s*(?:는|은|를|을)?\s*(?:제외|미지원|지원대상\s*아님)|제외\s*(?:대상)?\s*[:：]?\s*(?:양돈|돼지)')
 def pig_related(title,target='',summary='',tags=''):
     text=' '.join((title,target,summary,tags))
     if EXCLUDED_PIG.search(text) or re.search(r'채용|입찰|낙찰',title):return False
@@ -26,7 +26,7 @@ def pig_related(title,target='',summary='',tags=''):
 
 def eligible_item(item):
     return pig_related(str(item.get('title','')),str(item.get('target','')),str(item.get('support','')),str(item.get('tags','')))
-SUPPORT=re.compile(r'지원|보조금|융자|인센티브|모집|신청|참여')
+SUPPORT=re.compile(r'지원|보조금|융자|인센티브|모집|신청|참여|사업|공모|대상자')
 SOURCES=[
  {'id':'mafra-notice','agency':'농림축산식품부','url':'https://www.mafra.go.kr/home/5108/subview.do','region':'전국','permissionBasis':'공식 공개 공지·공고의 제목·원문 링크 이용'},
 ]

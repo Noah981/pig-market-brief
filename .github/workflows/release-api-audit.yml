@@ -57,7 +57,7 @@ jobs:
       - name: All server regression cases
         id: regression
         continue-on-error: true
-        run: python -m unittest discover -s scripts -t . -p 'test_*.py'
+        run: python -m unittest discover -s scripts -p 'test_*.py'
       - name: Require every verification lane
         if: always()
         env:
