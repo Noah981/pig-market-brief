@@ -1,6 +1,9 @@
 import 'package:dondonhae/data/market_repository.dart';
 import 'package:dondonhae/services/market_notification_coordinator.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:dondonhae/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 MarketSnapshot quote(String date,int price,{bool cached=false})=>MarketSnapshot(
@@ -10,6 +13,27 @@ MarketSnapshot quote(String date,int price,{bool cached=false})=>MarketSnapshot(
   history:const [],fromCache:cached);
 
 void main(){
+  TestWidgetsFlutterBinding.ensureInitialized();
+  test('백그라운드 알림은 Activity 권한 요청 없이 초기화하고 표시한다',()async{
+    debugDefaultTargetPlatformOverride=TargetPlatform.android;
+    const channel=MethodChannel('dexterous.com/flutter/local_notifications');
+    final calls=<String>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel,(call)async{
+      calls.add(call.method);
+      if(call.method=='requestNotificationsPermission'||call.method=='requestPermissions'){
+        throw PlatformException(code:'activity_unavailable');
+      }
+      return true;
+    });
+    try{
+      await NotificationService.instance.newMarketPrice(quote('20261007',6100));
+      expect(calls,containsAllInOrder(['initialize','show']));
+      expect(calls, isNot(contains('getNotificationAppLaunchDetails')));
+    }finally{
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel,null);
+      debugDefaultTargetPlatformOverride=null;
+    }
+  });
   setUp(()=>SharedPreferences.setMockInitialValues({}));
   test('첫 조회·중복·오래된 응답·캐시는 알리지 않고 새 발표와 정정만 알린다',()async{
     final sent=<MarketSnapshot>[];
