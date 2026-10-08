@@ -16,7 +16,7 @@ void main(){
  });
  test('Live feed rejects unrelated livestock before display and cache',()async{
   SharedPreferences.setMockInitialValues({});
-  final repository=BenefitRepository(client:MockClient((_)async=>http.Response(raw,200)));
+  final repository=BenefitRepository(client:MockClient((_)async=>http.Response(raw,200,headers:{'content-type':'application/json; charset=utf-8'})));
   expect((await repository.refresh(notify:false)).items.map((x)=>x.id),['pig']);
   expect((await repository.cached()).items.map((x)=>x.id),['pig']);
  });
