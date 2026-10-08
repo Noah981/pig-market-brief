@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../lib/data/benefit_repository.dart';
+import 'package:dondonhae/data/benefit_repository.dart';
 void main(){
  TestWidgetsFlutterBinding.ensureInitialized();
  final raw=jsonEncode({'benefits':[

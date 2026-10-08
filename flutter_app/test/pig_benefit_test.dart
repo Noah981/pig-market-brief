@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/models/benefit_models.dart';
+import 'package:dondonhae/models/benefit_models.dart';
 BenefitNotice notice(String title,{String target='',String support=''})=>BenefitNotice(id:'x',title:title,region:'전국',agency:'공식기관',url:'https://www.mafra.go.kr/',target:target,support:support);
 void main(){
  test('Pig and shared livestock programmes remain eligible',(){
