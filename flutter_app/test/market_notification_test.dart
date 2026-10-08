@@ -2,6 +2,7 @@ import 'package:dondonhae/data/market_repository.dart';
 import 'package:dondonhae/services/market_notification_coordinator.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:dondonhae/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,7 @@ void main(){
   TestWidgetsFlutterBinding.ensureInitialized();
   test('백그라운드 알림은 Activity 권한 요청 없이 초기화하고 표시한다',()async{
     debugDefaultTargetPlatformOverride=TargetPlatform.android;
+    AndroidFlutterLocalNotificationsPlugin.registerWith();
     const channel=MethodChannel('dexterous.com/flutter/local_notifications');
     final calls=<String>[];
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel,(call)async{
