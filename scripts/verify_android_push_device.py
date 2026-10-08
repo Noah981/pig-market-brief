@@ -14,7 +14,7 @@ def wait_for(fn,seconds=180):
   if value:return value
   time.sleep(3)
  raise RuntimeError('Device verification timed out')
-adb('root'); adb('wait-for-device')
+root_result=adb('root'); print('ADB root:',root_result.strip()); adb('wait-for-device')
 apks=list(Path('qa-apk').rglob('app-release.apk'))
 assert len(apks)==1,'Expected the validated release APK'
 adb('install','-r',str(apks[0]))
@@ -29,7 +29,23 @@ def registration():
     if token:return token
  except (ET.ParseError,ValueError):pass
  return None
-token=wait_for(registration)
+try:
+ token=wait_for(registration,300)
+except RuntimeError:
+ print('Preference filenames:',adb('shell','ls',f'/data/data/{PKG}/shared_prefs',check=False).strip())
+ raw=adb('shell','cat',f'/data/data/{PKG}/shared_prefs/com.google.android.gms.appid.xml',check=False)
+ try: print('Registration preference keys:',[x.attrib.get('name') for x in ET.fromstring(raw)])
+ except ET.ParseError: print('Registration preference file unavailable')
+ raw=adb('shell','cat',f'/data/data/{PKG}/shared_prefs/FlutterSharedPreferences.xml',check=False)
+ try:
+  print('Push initialization state:',{x.attrib.get('name'):x.text or x.attrib.get('value') for x in ET.fromstring(raw) if x.attrib.get('name','').startswith('flutter.server_push_')})
+ except ET.ParseError:pass
+ logs=adb('logcat','-d','-s','FirebaseMessaging','Firebase-Installations','FirebaseApp','AndroidRuntime','flutter',check=False)
+ import re
+ logs=re.sub(r'[A-Za-z0-9_:\-]{100,}','[redacted]',logs)
+ print('Firebase diagnostics:',logs[-6000:])
+ with (OUT/'registration-failure.png').open('wb') as f:subprocess.run(['adb','exec-out','screencap','-p'],stdout=f,check=True)
+ raise
 print('::add-mask::'+token,flush=True)
 send=fcm_sender(); results=[]
 for kind,channel,screen_off in [('market','market_price',False),('disease','disease_nationwide_v2',True)]:
