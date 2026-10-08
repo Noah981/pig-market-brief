@@ -1,4 +1,4 @@
-import json, os, math, urllib.parse, urllib.request
+import json, os, math, time, subprocess, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,12 +33,20 @@ def fetch(name,nx,ny,key,date,t):
     normalized_key=urllib.parse.quote(urllib.parse.unquote(key), safe="")
     url=BASE+"?serviceKey="+normalized_key+"&"+params
     req=urllib.request.Request(url, headers={"User-Agent":"pig-market-brief/1.0"})
-    with urllib.request.urlopen(req,timeout=20) as r:
-        raw=r.read()
-    try:
-        data=json.loads(raw.decode("utf-8"))
-    except Exception:
-        raise RuntimeError("KMA non-JSON response: "+raw[:180].decode("utf-8","replace"))
+    data=None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req,timeout=20) as r:
+                data=json.loads(r.read().decode("utf-8"))
+            break
+        except Exception:
+            if attempt<2:time.sleep(2**attempt)
+    if data is None:
+        try:
+            response=subprocess.run(["curl","--ipv4","--fail","--silent","--location","--http1.1","--connect-timeout","10","--max-time","25",url],capture_output=True,timeout=30)
+            if response.returncode==0:data=json.loads(response.stdout.decode("utf-8"))
+        except (OSError,subprocess.TimeoutExpired,ValueError,UnicodeError):pass
+    if data is None:raise RuntimeError("KMA transport/JSON failed after bounded HTTPS retries")
     if str(data.get("response",{}).get("header",{}).get("resultCode"))!="00":raise ValueError("KMA response not successful")
     items=data["response"]["body"]["items"]["item"]
     today=datetime.now(KST).strftime("%Y%m%d")

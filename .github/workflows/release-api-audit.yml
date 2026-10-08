@@ -43,7 +43,7 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/fetch_weather.py
-          python -c "import json; d=json.load(open('docs/data/weather.json')); assert len(d['regions'])==17 and not d['errors']; print('All 17 official forecast grids verified')"
+          python -c "import json; d=json.load(open('docs/data/weather.json')); print('Forecast errors:',d['errors']); assert len(d['regions'])==17 and not d['errors']; print('All 17 official forecast grids verified')"
       - name: National and local pig-farming support sources
         id: benefits
         continue-on-error: true
