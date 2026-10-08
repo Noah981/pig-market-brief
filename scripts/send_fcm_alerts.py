@@ -28,7 +28,7 @@ def main():
     events,market=snapshot()
     current={'disease_ids':sorted(events),'market_date':str(market.get('date','')),'market_price':market.get('price')}
     if not STATE.exists():
-        STATE.write_text(json.dumps(current,ensure_ascii=False,indent=2)+'\\n')
+        STATE.write_text(json.dumps(current,ensure_ascii=False,indent=2)+'\n')
         print('Seeded push baseline without notifying historical events')
         return
     previous=json.loads(STATE.read_text())
@@ -44,7 +44,7 @@ def main():
         send(session,project,'dondonhae_disease_nationwide','전국 가축질병 신규 발생 · '+str(e.get('disease','질병')),str(e.get('region','전국'))+' · '+str(e.get('status','공식 발생')),event_id)
     if previous.get('market_date') is not None and (str(previous.get('market_date'))!=current['market_date'] or previous.get('market_price')!=current['market_price']):
         send(session,project,'dondonhae_market_updates','전국 돈가 갱신 · '+str(current['market_price'])+'원/kg','기준일 '+current['market_date'],current['market_date']+'-'+str(current['market_price']))
-    STATE.write_text(json.dumps(current,ensure_ascii=False,indent=2)+'\\n')
+    STATE.write_text(json.dumps(current,ensure_ascii=False,indent=2)+'\n')
     print('Sent',len(new_ids),'new disease alerts; market comparison complete')
 
 if __name__=='__main__':main()
