@@ -1,0 +1,78 @@
+name: Complete release API audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-api-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+      KAPE_API_KEY: ${{ secrets.KAPE_API_KEY || secrets.KAPE_SERVICE_KEY }}
+      KMA_API_KEY: ${{ secrets.KMA_API_KEY || secrets.KMA_SERVICE_KEY }}
+      MAFRA_API_KEY: ${{ secrets.MAFRA_API_KEY }}
+      BIZINFO_API_KEY: ${{ secrets.BIZINFO_API_KEY }}
+      DDH_FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.DDH_FCM_SERVICE_ACCOUNT_JSON }}
+      DDH_FIREBASE_PROJECT_ID: dondonhae-cd1d7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install openpyxl==3.1.5 xlrd==2.0.1 'google-auth[requests]'
+      - name: Authenticated ECOS, KAPE, KMA and complete KAHIS connectivity
+        id: official
+        continue-on-error: true
+        run: python scripts/validate_official_apis.py
+      - name: Independently verify nationwide official disease coverage
+        id: disease
+        continue-on-error: true
+        run: python scripts/fetch_disease_alerts.py --require-verified
+      - name: All six real market observations
+        id: market
+        continue-on-error: true
+        run: |
+          python scripts/fetch_fred_markets.py
+          python -c "import json; d=json.load(open('docs/data/platform.json')); assert len(d['markets'])==6 and all(x.get('status')=='LIVE' for x in d['markets']); print('All six official market observations verified')"
+      - name: Weather responses for all 17 provinces
+        id: weather
+        continue-on-error: true
+        run: |
+          python scripts/fetch_weather.py
+          python -c "import json; d=json.load(open('docs/data/weather.json')); assert len(d['regions'])==17 and not d['errors']; print('All 17 official forecast grids verified')"
+      - name: National and local pig-farming support sources
+        id: benefits
+        continue-on-error: true
+        run: |
+          python scripts/fetch_official_benefits.py
+          python -c "import json; d=json.load(open('docs/data/platform.json')); statuses=[x for x in d['sourceStatus'] if x['id'] in ['bizinfo','mafra-notice']]; assert len(statuses)==2 and all('연결 완료' in x['status'] for x in statuses); print('Official support sources connected')"
+      - name: Live FCM credential verification
+        id: fcm
+        continue-on-error: true
+        run: python scripts/send_official_push.py --validate-connection
+      - name: All server regression cases
+        id: regression
+        continue-on-error: true
+        run: python -m unittest discover -s scripts -t . -p 'test_*.py'
+      - name: Require every verification lane
+        if: always()
+        env:
+          AUDIT_OUTCOMES: ${{ toJson(steps) }}
+        run: |
+          python - <<'PY'
+          import os,json,pathlib
+          steps=json.loads(os.environ['AUDIT_OUTCOMES'])
+          checks={k:steps[k]['outcome'] for k in ['official','disease','market','weather','benefits','fcm','regression']}
+          pathlib.Path('api-audit.json').write_text(json.dumps(checks,indent=2))
+          print(json.dumps(checks,indent=2))
+          if any(v!='success' for v in checks.values()):raise SystemExit('Release verification incomplete; see failed lanes')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: complete-api-audit
+          path: api-audit.json

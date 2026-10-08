@@ -30,12 +30,16 @@ def get(name, url, *, json_response=False):
     # Retry the identical official HTTPS URL through an independent transport.
     # Never log the URL or curl stderr because they can contain authentication.
     try:
-        result = subprocess.run(["curl", "--fail", "--silent", "--show-error", "--location", "--http1.1", "--connect-timeout", "10", "--max-time", "25", "--user-agent", "dondonhae-ci/1.0", url], capture_output=True, timeout=30)
+        result = subprocess.run(["curl", "--ipv4", "--fail", "--silent", "--show-error", "--location", "--http1.1", "--connect-timeout", "10", "--max-time", "25", "--user-agent", "dondonhae-ci/1.0", url], capture_output=True, timeout=30)
         if result.returncode == 0 and result.stdout:
             return json.loads(result.stdout.decode("utf-8")) if json_response else result.stdout
     except (OSError, subprocess.TimeoutExpired, ValueError, UnicodeError):
         pass
-    raise RuntimeError(f"{name} connectivity/parse failed after retries: {type(last_error).__name__}") from None
+    reason=str(getattr(last_error,'reason',type(last_error).__name__))
+    reason=reason.replace(url,'[official endpoint]')
+    for label,value in os.environ.items():
+        if value and ('KEY' in label or 'SECRET' in label):reason=reason.replace(value,'[redacted]')
+    raise RuntimeError(f"{name} connectivity/parse failed after retries: {reason[:180]}") from None
 
 def key(name):
     value = os.environ.get(name, "").strip()
@@ -89,7 +93,7 @@ def main():
         candidate -= timedelta(days=1); hour = 23
     else:
         hour = hours[-1]
-    kma_query = urllib.parse.urlencode({"serviceKey": key("KMA_API_KEY"), "pageNo": 1, "numOfRows": 10, "dataType": "JSON", "base_date": candidate.strftime("%Y%m%d"), "base_time": f"{hour:02d}00", "nx": 89, "ny": 90})
+    kma_query = urllib.parse.urlencode({"serviceKey": urllib.parse.unquote(key("KMA_API_KEY")), "pageNo": 1, "numOfRows": 10, "dataType": "JSON", "base_date": candidate.strftime("%Y%m%d"), "base_time": f"{hour:02d}00", "nx": 89, "ny": 90})
     kma = get("KMA", "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?" + kma_query, json_response=True)
     if str(((kma.get("response") or {}).get("header") or {}).get("resultCode")) != "00":
         raise RuntimeError("KMA authentication/service error")

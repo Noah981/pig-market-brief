@@ -103,6 +103,7 @@ jobs:
       - name: Render 360, 390, 412 screenshots
         working-directory: flutter_app
         run: |
+          flutter test test/pig_benefit_test.dart test/benefit_repository_test.dart
           flutter test test/display_refresh_test.dart
           flutter test test/market_repository_test.dart
           flutter test test/commodity_repository_test.dart

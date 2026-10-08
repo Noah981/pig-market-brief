@@ -8,12 +8,15 @@ on:
       - .github/workflows/push-device-tests.yml
       - scripts/verify_android_push_device.py
   workflow_dispatch:
+  workflow_run:
+    workflows: ['Flutter UI build']
+    types: [completed]
 permissions:
   contents: read
   actions: read
 jobs:
   device:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'))
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -25,7 +28,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dondonhae-flutter-ui-validation
-          run-id: 37716537154
+          run-id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || '37716537154' }}
           github-token: ${{ github.token }}
           path: qa-apk
       - name: Enable emulator KVM
