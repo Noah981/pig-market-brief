@@ -90,6 +90,8 @@ jobs:
         run: |
           python -m unittest scripts.test_generated_data_merge scripts.test_disease_classifier scripts.test_disease_supplementary scripts.test_kahis_occurrences scripts.test_android_release_signing scripts.test_weather_data
           PYTHONPATH=scripts python -m unittest scripts/test_platform.py
+          python scripts/fetch_pig_price.py
+          cp docs/data/pig-price.json docs/data/pig-price-history.json flutter_app/assets/data/
           python scripts/fetch_disease_alerts.py
           python -c "import json; data=json.load(open('docs/data/disease-alerts.json')); assert data.get('coverageVerified') is True and data.get('asfDisclosureVerified') is True and data.get('fmdDisclosureVerified') is True and data.get('pedStatisticsVerified') is True, 'Official disease coverage not verified; release blocked'"
           cp docs/data/disease-alerts.json flutter_app/assets/data/disease-alerts.json
