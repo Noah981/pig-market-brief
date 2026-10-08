@@ -5,28 +5,28 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-08T19:02:11.612107+09:00",
+      "checkedAt": "2026-10-09T01:22:38.918649+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
-          "from": "2026-09-08",
-          "to": "2026-10-08",
+          "from": "2026-09-09",
+          "to": "2026-10-09",
           "farmCount": 0,
           "animalCount": 0,
           "regions": [],
           "months": []
         },
         "90": {
-          "from": "2026-07-10",
-          "to": "2026-10-08",
+          "from": "2026-07-11",
+          "to": "2026-10-09",
           "farmCount": 0,
           "animalCount": 0,
           "regions": [],
           "months": []
         },
         "180": {
-          "from": "2026-04-11",
-          "to": "2026-10-08",
+          "from": "2026-04-12",
+          "to": "2026-10-09",
           "farmCount": 13,
           "animalCount": 365,
           "regions": [
@@ -463,8 +463,8 @@
           ]
         },
         "365": {
-          "from": "2025-10-08",
-          "to": "2026-10-08",
+          "from": "2025-10-09",
+          "to": "2026-10-09",
           "farmCount": 56,
           "animalCount": 4198,
           "regions": [
@@ -1429,7 +1429,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-08T19:03:22.248462+09:00",
+  "updatedAt": "2026-10-09T01:23:57.923358+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
