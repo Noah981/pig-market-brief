@@ -3,7 +3,7 @@ import json, os, subprocess, time, uuid
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from send_official_push import fcm_sender
-PKG='com.example.dondonhae'
+PKG='kr.dondonhae.sbs3229'
 OUT=Path('qa-output'); OUT.mkdir(exist_ok=True)
 def adb(*args,check=True):
  return subprocess.run(['adb',*args],capture_output=True,check=check).stdout.decode(errors='replace')

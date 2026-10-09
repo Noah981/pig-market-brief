@@ -20,7 +20,7 @@ def configure(required=False):
     project=config['project_info']['project_id']
     expected=os.environ.get('DDH_FIREBASE_PROJECT_ID') or 'dondonhae-cd1d7'
     if project!=expected:raise ValueError('Firebase project mismatch')
-    clients=[c for c in config['client'] if c['client_info']['android_client_info']['package_name']=='com.example.dondonhae']
+    clients=[c for c in config['client'] if c['client_info']['android_client_info']['package_name']=='kr.dondonhae.sbs3229']
     if len(clients)!=1:raise ValueError('Firebase Android application must match the existing package')
     if not clients[0].get('api_key') or not clients[0]['client_info'].get('mobilesdk_app_id'):raise ValueError('Incomplete Firebase Android configuration')
     path=ROOT/'android/app/google-services.json';path.write_bytes(raw);path.chmod(0o600)

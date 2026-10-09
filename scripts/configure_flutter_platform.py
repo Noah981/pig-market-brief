@@ -27,6 +27,7 @@ manifest.write_text(text,encoding="utf-8")
 
 gradle=root/"android/app/build.gradle"
 gtext=gradle.read_text(encoding="utf-8")
+gtext=re.sub(r'applicationId\s+["\']([^"\']+)["\']', 'applicationId "kr.dondonhae.sbs3229"', gtext)
 if "coreLibraryDesugaringEnabled true" not in gtext:
     gtext=gtext.replace("android {", "android {\n    compileOptions {\n        coreLibraryDesugaringEnabled true\n        sourceCompatibility JavaVersion.VERSION_1_8\n        targetCompatibility JavaVersion.VERSION_1_8\n    }")
 if "desugar_jdk_libs" not in gtext:
