@@ -138,7 +138,7 @@ jobs:
         working-directory: flutter_app
         run: |
           AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -1)"
-          "$AAPT" dump badging build/app/outputs/flutter-apk/app-release.apk | grep "package: name=\x27kr.dondonhae.sbs3229\x27"
+          "$AAPT" dump badging build/app/outputs/flutter-apk/app-release.apk | grep -F "kr.dondonhae.sbs3229"
       - name: Verify release network permission
         working-directory: flutter_app
         run: |
