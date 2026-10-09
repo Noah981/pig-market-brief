@@ -21,7 +21,7 @@ adb('install','-r',str(apks[0]))
 if int(adb('shell','getprop','ro.build.version.sdk').strip())>=33:
  adb('shell','pm','grant',PKG,'android.permission.POST_NOTIFICATIONS')
 adb('shell','am','broadcast','-a','android.server.checkin.CHECKIN_NOW',check=False)
-adb('shell','am','start','-n',PKG+'/.MainActivity')
+adb('shell','am','start','-n',PKG+'/com.example.dondonhae.MainActivity')
 def registration():
  raw=adb('shell','cat',f'/data/data/{PKG}/shared_prefs/com.google.android.gms.appid.xml',check=False)
  try:
