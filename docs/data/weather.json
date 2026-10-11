@@ -1,18 +1,18 @@
 {
   "source": "기상청 단기예보 조회서비스",
-  "baseDate": "20261011",
-  "baseTime": "2300",
-  "updatedAt": "2026-10-12T00:33:06.247176+09:00",
+  "baseDate": "20261012",
+  "baseTime": "0200",
+  "updatedAt": "2026-10-12T05:09:20.825363+09:00",
   "regions": [
     {
-      "region": "인천광역시",
+      "region": "부산광역시",
       "forecastDate": "20261012",
-      "nx": 55,
-      "ny": 124,
-      "tempMin": 18.0,
-      "tempMax": 26.0,
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 19.0,
+      "tempMax": 27.0,
       "diurnalRange": 8.0,
-      "humidityMax": 90.0,
+      "humidityMax": 85.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -23,17 +23,6 @@
       "tempMin": 17.0,
       "tempMax": 26.0,
       "diurnalRange": 9.0,
-      "humidityMax": 85.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "부산광역시",
-      "forecastDate": "20261012",
-      "nx": 98,
-      "ny": 76,
-      "tempMin": 19.0,
-      "tempMax": 27.0,
-      "diurnalRange": 8.0,
       "humidityMax": 85.0,
       "rainProbabilityMax": 30.0
     },
@@ -49,10 +38,10 @@
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "울산광역시",
+      "region": "인천광역시",
       "forecastDate": "20261012",
-      "nx": 102,
-      "ny": 84,
+      "nx": 55,
+      "ny": 124,
       "tempMin": 18.0,
       "tempMax": 26.0,
       "diurnalRange": 8.0,
@@ -71,15 +60,15 @@
       "rainProbabilityMax": 60.0
     },
     {
-      "region": "대전광역시",
+      "region": "울산광역시",
       "forecastDate": "20261012",
-      "nx": 67,
-      "ny": 100,
-      "tempMin": 17.0,
-      "tempMax": 28.0,
-      "diurnalRange": 11.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 30.0
+      "nx": 102,
+      "ny": 84,
+      "tempMin": 18.0,
+      "tempMax": 26.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "세종특별자치시",
@@ -93,13 +82,13 @@
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "충청북도",
+      "region": "대전광역시",
       "forecastDate": "20261012",
-      "nx": 69,
-      "ny": 107,
+      "nx": 67,
+      "ny": 100,
       "tempMin": 17.0,
-      "tempMax": 27.0,
-      "diurnalRange": 10.0,
+      "tempMax": 28.0,
+      "diurnalRange": 11.0,
       "humidityMax": 95.0,
       "rainProbabilityMax": 30.0
     },
@@ -108,6 +97,17 @@
       "forecastDate": "20261012",
       "nx": 68,
       "ny": 100,
+      "tempMin": 17.0,
+      "tempMax": 27.0,
+      "diurnalRange": 10.0,
+      "humidityMax": 95.0,
+      "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "충청북도",
+      "forecastDate": "20261012",
+      "nx": 69,
+      "ny": 107,
       "tempMin": 17.0,
       "tempMax": 27.0,
       "diurnalRange": 10.0,
@@ -137,15 +137,15 @@
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "전라남도",
+      "region": "전북특별자치도",
       "forecastDate": "20261012",
-      "nx": 51,
-      "ny": 67,
-      "tempMin": 19.0,
-      "tempMax": 25.0,
-      "diurnalRange": 6.0,
-      "humidityMax": 95.0,
-      "rainProbabilityMax": 60.0
+      "nx": 63,
+      "ny": 89,
+      "tempMin": 17.0,
+      "tempMax": 28.0,
+      "diurnalRange": 11.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "경상남도",
@@ -156,17 +156,6 @@
       "tempMax": 28.0,
       "diurnalRange": 10.0,
       "humidityMax": 95.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "전북특별자치도",
-      "forecastDate": "20261012",
-      "nx": 63,
-      "ny": 89,
-      "tempMin": 17.0,
-      "tempMax": 28.0,
-      "diurnalRange": 11.0,
-      "humidityMax": 90.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -179,6 +168,17 @@
       "diurnalRange": 11.0,
       "humidityMax": 95.0,
       "rainProbabilityMax": 30.0
+    },
+    {
+      "region": "전라남도",
+      "forecastDate": "20261012",
+      "nx": 51,
+      "ny": 67,
+      "tempMin": 19.0,
+      "tempMax": 25.0,
+      "diurnalRange": 6.0,
+      "humidityMax": 95.0,
+      "rainProbabilityMax": 60.0
     },
     {
       "region": "제주특별자치도",
