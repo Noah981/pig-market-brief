@@ -3,7 +3,35 @@
   "scope": "제주 돼지도체 등급별 경락가격",
   "date": "20261014",
   "skinYn": "Y",
-  "rows": [],
-  "status": "error",
-  "error": "timed out"
+  "rows": [
+    {
+      "gradeCode": "1",
+      "gradeName": "1+"
+    },
+    {
+      "gradeCode": "2",
+      "gradeName": "1"
+    },
+    {
+      "gradeCode": "3",
+      "gradeName": "2"
+    },
+    {
+      "gradeCode": "E",
+      "gradeName": "등외"
+    },
+    {
+      "gradeCode": "ST",
+      "gradeName": "E제외"
+    },
+    {
+      "gradeCode": "SU",
+      "gradeName": "모돈"
+    },
+    {
+      "gradeCode": "T",
+      "gradeName": "평균"
+    }
+  ],
+  "status": "ok"
 }
