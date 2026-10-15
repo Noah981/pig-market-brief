@@ -1,9 +1,20 @@
 {
   "source": "기상청 단기예보 조회서비스",
   "baseDate": "20261016",
-  "baseTime": "0200",
-  "updatedAt": "2026-10-16T04:01:41.217333+09:00",
+  "baseTime": "0500",
+  "updatedAt": "2026-10-16T07:07:01.356677+09:00",
   "regions": [
+    {
+      "region": "부산광역시",
+      "forecastDate": "20261016",
+      "nx": 98,
+      "ny": 76,
+      "tempMin": 14.0,
+      "tempMax": 25.0,
+      "diurnalRange": 11.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 20.0
+    },
     {
       "region": "서울특별시",
       "forecastDate": "20261016",
@@ -12,29 +23,7 @@
       "tempMin": 14.0,
       "tempMax": 23.0,
       "diurnalRange": 9.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "부산광역시",
-      "forecastDate": "20261016",
-      "nx": 98,
-      "ny": 76,
-      "tempMin": 13.0,
-      "tempMax": 25.0,
-      "diurnalRange": 12.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 20.0
-    },
-    {
-      "region": "대구광역시",
-      "forecastDate": "20261016",
-      "nx": 89,
-      "ny": 90,
-      "tempMin": 10.0,
-      "tempMax": 25.0,
-      "diurnalRange": 15.0,
-      "humidityMax": 80.0,
+      "humidityMax": 95.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -56,18 +45,18 @@
       "tempMin": 10.0,
       "tempMax": 26.0,
       "diurnalRange": 16.0,
-      "humidityMax": 80.0,
+      "humidityMax": 85.0,
       "rainProbabilityMax": 20.0
     },
     {
-      "region": "세종특별자치시",
+      "region": "대전광역시",
       "forecastDate": "20261016",
-      "nx": 66,
-      "ny": 103,
-      "tempMin": 10.0,
-      "tempMax": 22.0,
-      "diurnalRange": 12.0,
-      "humidityMax": 90.0,
+      "nx": 67,
+      "ny": 100,
+      "tempMin": 9.0,
+      "tempMax": 24.0,
+      "diurnalRange": 15.0,
+      "humidityMax": 95.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -78,18 +67,18 @@
       "tempMin": 12.0,
       "tempMax": 25.0,
       "diurnalRange": 13.0,
-      "humidityMax": 75.0,
+      "humidityMax": 80.0,
       "rainProbabilityMax": 30.0
     },
     {
-      "region": "대전광역시",
+      "region": "세종특별자치시",
       "forecastDate": "20261016",
-      "nx": 67,
-      "ny": 100,
-      "tempMin": 9.0,
-      "tempMax": 23.0,
-      "diurnalRange": 14.0,
-      "humidityMax": 90.0,
+      "nx": 66,
+      "ny": 103,
+      "tempMin": 10.0,
+      "tempMax": 22.0,
+      "diurnalRange": 12.0,
+      "humidityMax": 95.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -98,21 +87,10 @@
       "nx": 60,
       "ny": 120,
       "tempMin": 13.0,
-      "tempMax": 24.0,
-      "diurnalRange": 11.0,
+      "tempMax": 23.0,
+      "diurnalRange": 10.0,
       "humidityMax": 90.0,
       "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "충청남도",
-      "forecastDate": "20261016",
-      "nx": 68,
-      "ny": 100,
-      "tempMin": 9.0,
-      "tempMax": 23.0,
-      "diurnalRange": 14.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 20.0
     },
     {
       "region": "강원특별자치도",
@@ -123,7 +101,7 @@
       "tempMax": 22.0,
       "diurnalRange": 10.0,
       "humidityMax": 90.0,
-      "rainProbabilityMax": 60.0
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "충청북도",
@@ -137,14 +115,25 @@
       "rainProbabilityMax": 20.0
     },
     {
+      "region": "충청남도",
+      "forecastDate": "20261016",
+      "nx": 68,
+      "ny": 100,
+      "tempMin": 9.0,
+      "tempMax": 24.0,
+      "diurnalRange": 15.0,
+      "humidityMax": 95.0,
+      "rainProbabilityMax": 20.0
+    },
+    {
       "region": "전북특별자치도",
       "forecastDate": "20261016",
       "nx": 63,
       "ny": 89,
-      "tempMin": 11.0,
+      "tempMin": 10.0,
       "tempMax": 25.0,
-      "diurnalRange": 14.0,
-      "humidityMax": 75.0,
+      "diurnalRange": 15.0,
+      "humidityMax": 80.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -155,7 +144,7 @@
       "tempMin": 11.0,
       "tempMax": 25.0,
       "diurnalRange": 14.0,
-      "humidityMax": 85.0,
+      "humidityMax": 80.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -177,7 +166,7 @@
       "tempMin": 11.0,
       "tempMax": 25.0,
       "diurnalRange": 14.0,
-      "humidityMax": 80.0,
+      "humidityMax": 85.0,
       "rainProbabilityMax": 30.0
     },
     {
@@ -186,10 +175,21 @@
       "nx": 52,
       "ny": 38,
       "tempMin": 17.0,
-      "tempMax": 25.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 65.0,
+      "tempMax": 24.0,
+      "diurnalRange": 7.0,
+      "humidityMax": 70.0,
       "rainProbabilityMax": 20.0
+    },
+    {
+      "region": "대구광역시",
+      "forecastDate": "20261016",
+      "nx": 89,
+      "ny": 90,
+      "tempMin": 11.0,
+      "tempMax": 24.0,
+      "diurnalRange": 13.0,
+      "humidityMax": 85.0,
+      "rainProbabilityMax": 30.0
     }
   ],
   "errors": []
