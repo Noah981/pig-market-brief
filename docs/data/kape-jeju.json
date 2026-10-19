@@ -3,7 +3,71 @@
   "scope": "제주 돼지도체 등급별 경락가격",
   "date": "20261019",
   "skinYn": "Y",
-  "rows": [],
-  "status": "error",
-  "error": "<urlopen error timed out>"
+  "rows": [
+    {
+      "gradeCode": "1",
+      "gradeName": "1+",
+      "totPrice": "7539",
+      "totCnt": "234",
+      "publicTotPrice": "7427",
+      "publicTotCnt": "221",
+      "blackTotPrice": "9439",
+      "blackTotCnt": "13"
+    },
+    {
+      "gradeCode": "2",
+      "gradeName": "1",
+      "totPrice": "7616",
+      "totCnt": "280",
+      "publicTotPrice": "7385",
+      "publicTotCnt": "249",
+      "blackTotPrice": "9475",
+      "blackTotCnt": "31"
+    },
+    {
+      "gradeCode": "3",
+      "gradeName": "2",
+      "totPrice": "7562",
+      "totCnt": "510",
+      "publicTotPrice": "7161",
+      "publicTotCnt": "412",
+      "blackTotPrice": "9295",
+      "blackTotCnt": "98"
+    },
+    {
+      "gradeCode": "E",
+      "gradeName": "등외",
+      "totPrice": "5610",
+      "totCnt": "44",
+      "publicTotPrice": "5351",
+      "publicTotCnt": "31",
+      "blackTotPrice": "6202",
+      "blackTotCnt": "13"
+    },
+    {
+      "gradeCode": "ST",
+      "gradeName": "E제외",
+      "totPrice": "7572",
+      "totCnt": "1024",
+      "publicTotPrice": "7297",
+      "publicTotCnt": "882",
+      "blackTotPrice": "9352",
+      "blackTotCnt": "142"
+    },
+    {
+      "gradeCode": "SU",
+      "gradeName": "모돈"
+    },
+    {
+      "gradeCode": "T",
+      "gradeName": "평균",
+      "totPrice": "7511",
+      "totCnt": "1068",
+      "publicTotPrice": "7248",
+      "publicTotCnt": "913",
+      "blackTotPrice": "9139",
+      "blackTotCnt": "155"
+    }
+  ],
+  "status": "ok"
 }
