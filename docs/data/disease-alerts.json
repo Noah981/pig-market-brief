@@ -5,12 +5,12 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-22T22:42:58.303407+09:00",
+      "checkedAt": "2026-10-23T00:38:20.550026+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
-          "from": "2026-09-22",
-          "to": "2026-10-22",
+          "from": "2026-09-23",
+          "to": "2026-10-23",
           "farmCount": 2,
           "animalCount": 53,
           "regions": [
@@ -273,8 +273,8 @@
           ]
         },
         "90": {
-          "from": "2026-07-24",
-          "to": "2026-10-22",
+          "from": "2026-07-25",
+          "to": "2026-10-23",
           "farmCount": 6,
           "animalCount": 63,
           "regions": [
@@ -624,8 +624,8 @@
           ]
         },
         "180": {
-          "from": "2026-04-25",
-          "to": "2026-10-22",
+          "from": "2026-04-26",
+          "to": "2026-10-23",
           "farmCount": 30,
           "animalCount": 1246,
           "regions": [
@@ -1323,8 +1323,8 @@
           ]
         },
         "365": {
-          "from": "2025-10-22",
-          "to": "2026-10-22",
+          "from": "2025-10-23",
+          "to": "2026-10-23",
           "farmCount": 104,
           "animalCount": 9350,
           "regions": [
@@ -2550,7 +2550,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-22T22:45:11.663243+09:00",
+  "updatedAt": "2026-10-23T00:40:01.701219+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-10|5",
@@ -2910,23 +2910,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|de6fb7e0c80c8a1f3833af2219e1f94e851a0366484b19d568069fb0f6005854",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-09-15",
-      "diagnosisDate": "2026-09-15",
-      "livestockType": "돼지-육성돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|b6a968764db41a7ae9b84c91612328f573f998a3f04adf66772fdad0d09c2caf",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2961,23 +2944,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|13e8fc31217f95a691650a0d0af3141beeb20a81b736a55be12357ef9fdbd872",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
-      "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
-      "occurrenceDate": "2026-09-04",
-      "diagnosisDate": "2026-09-04",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|c81f622924872477f30bbed1a1b70b9659fa86ad1e1b1ef223091875d7ed71ef",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2992,6 +2958,23 @@
       "occurrenceDate": "2026-09-04",
       "diagnosisDate": "2026-09-04",
       "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|13e8fc31217f95a691650a0d0af3141beeb20a81b736a55be12357ef9fdbd872",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-09-04",
+      "diagnosisDate": "2026-09-04",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3097,23 +3080,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ab59bfbcf1d20e935e5a80790069c0cbca17374c59ed3d59b6c68f030eec67f7",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 산청군 PRRS",
-      "region": "경상남도 산청군",
-      "province": "경상남도",
-      "cityCounty": "산청군",
-      "occurrenceDate": "2026-07-24",
-      "diagnosisDate": "2026-07-24",
-      "livestockType": "돼지-흑돼지",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|3c7f30ab7f813a71ecaf2d455ce70f1fc6262cac51aecc539e6a04a52dea33ee",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3128,6 +3094,23 @@
       "occurrenceDate": "2026-07-24",
       "diagnosisDate": "2026-07-24",
       "livestockType": "돼지-비육돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|ab59bfbcf1d20e935e5a80790069c0cbca17374c59ed3d59b6c68f030eec67f7",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상남도 산청군 PRRS",
+      "region": "경상남도 산청군",
+      "province": "경상남도",
+      "cityCounty": "산청군",
+      "occurrenceDate": "2026-07-24",
+      "diagnosisDate": "2026-07-24",
+      "livestockType": "돼지-흑돼지",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3318,23 +3301,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-26",
-      "diagnosisDate": "2026-05-26",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|cb0e05b217b3863b8ac3de431ea5ea9472fb91241893b59315e29ae4556bf740",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3349,6 +3315,23 @@
       "occurrenceDate": "2026-05-26",
       "diagnosisDate": "2026-05-26",
       "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|297e4f7e8a4f19decff5b2afd3808a329e71aa2689ebf52b539557422d2e9700",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상남도 사천시 PRRS",
+      "region": "경상남도 사천시",
+      "province": "경상남도",
+      "cityCounty": "사천시",
+      "occurrenceDate": "2026-05-26",
+      "diagnosisDate": "2026-05-26",
+      "livestockType": "돼지-비분류",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3369,20 +3352,20 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0e4920b1d877afae6be56d7b3f923783267cc3c5d08f20df031e16add8c6d0f2",
+      "id": "KAHIS|c64737e63ec1142c2bb11833e98ce21e6d2ad16958cc45d5de8711a875f033f7",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "경상남도 산청군 PRRS",
-      "region": "경상남도 산청군",
+      "summary": "경상남도 진주시 PRRS",
+      "region": "경상남도 진주시",
       "province": "경상남도",
-      "cityCounty": "산청군",
-      "occurrenceDate": "2026-05-20",
-      "diagnosisDate": "2026-05-20",
-      "livestockType": "돼지-삼원교잡",
+      "cityCounty": "진주시",
+      "occurrenceDate": "2026-05-21",
+      "diagnosisDate": "2026-05-21",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3403,20 +3386,20 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|e9df469ca1a67e6d4761c6aad2892f2fb3a7ee28d5a5be3d7c6b33cf65fb3d06",
+      "id": "KAHIS|0e4920b1d877afae6be56d7b3f923783267cc3c5d08f20df031e16add8c6d0f2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
-      "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
-      "occurrenceDate": "2026-05-19",
-      "diagnosisDate": "2026-05-19",
-      "livestockType": "돼지-일반",
+      "summary": "경상남도 산청군 PRRS",
+      "region": "경상남도 산청군",
+      "province": "경상남도",
+      "cityCounty": "산청군",
+      "occurrenceDate": "2026-05-20",
+      "diagnosisDate": "2026-05-20",
+      "livestockType": "돼지-삼원교잡",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3454,6 +3437,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "KAHIS|e9df469ca1a67e6d4761c6aad2892f2fb3a7ee28d5a5be3d7c6b33cf65fb3d06",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-05-19",
+      "diagnosisDate": "2026-05-19",
+      "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "KAHIS|1f3306d4bcd08912a40d2002740c1bc1672c8ac0db23310c3aefb5b6654cd284",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3468,23 +3468,6 @@
       "occurrenceDate": "2026-05-18",
       "diagnosisDate": "2026-05-18",
       "livestockType": "돼지-이유자돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|170ea37d9c766c5614fd633bd9400fe2f82694ed5ba53e30edb51bfb673d2ebe",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경기도 파주시 PRRS",
-      "region": "경기도 파주시",
-      "province": "경기도",
-      "cityCounty": "파주시",
-      "occurrenceDate": "2026-05-14",
-      "diagnosisDate": "2026-05-29",
-      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3505,19 +3488,19 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|31b8eacef08a56750d5ba9a3b9de04702a24f7af6f8e762bd2b38cfb7abebf51",
+      "id": "KAHIS|170ea37d9c766c5614fd633bd9400fe2f82694ed5ba53e30edb51bfb673d2ebe",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
-      "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
+      "summary": "경기도 파주시 PRRS",
+      "region": "경기도 파주시",
+      "province": "경기도",
+      "cityCounty": "파주시",
       "occurrenceDate": "2026-05-14",
-      "diagnosisDate": "2026-05-14",
+      "diagnosisDate": "2026-05-29",
       "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
@@ -3539,20 +3522,20 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c64040d91f1a8afaa66e44129c5385ad80eb9c6b864744cf21844b831e8fd46b",
+      "id": "KAHIS|31b8eacef08a56750d5ba9a3b9de04702a24f7af6f8e762bd2b38cfb7abebf51",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
       "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-08",
-      "diagnosisDate": "2026-05-08",
-      "livestockType": "돼지-삼원교잡",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-05-14",
+      "diagnosisDate": "2026-05-14",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3573,20 +3556,20 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4f00776e2e6482aa0608d5461db32b03a5fe84a300f59673d706d1e1b6d58592",
+      "id": "KAHIS|c64040d91f1a8afaa66e44129c5385ad80eb9c6b864744cf21844b831e8fd46b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
       "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
-      "occurrenceDate": "2026-04-30",
-      "diagnosisDate": "2026-04-30",
-      "livestockType": "돼지-일반",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-08",
+      "diagnosisDate": "2026-05-08",
+      "livestockType": "돼지-삼원교잡",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3604,6 +3587,23 @@
       "occurrenceDate": "2026-04-30",
       "diagnosisDate": "2026-04-30",
       "livestockType": "돼지-비분류",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|4f00776e2e6482aa0608d5461db32b03a5fe84a300f59673d706d1e1b6d58592",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-04-30",
+      "diagnosisDate": "2026-04-30",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3896,7 +3896,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|175bf58ac91411b171ca23c325f6ec68363389fc13db858ae86f52d79fc9d92e",
+      "id": "KAHIS|daabadecea6f1929e5c85b33ee965636d645af596311eaae555b6cfcef005d18",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3913,7 +3913,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|daabadecea6f1929e5c85b33ee965636d645af596311eaae555b6cfcef005d18",
+      "id": "KAHIS|175bf58ac91411b171ca23c325f6ec68363389fc13db858ae86f52d79fc9d92e",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4100,23 +4100,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c6eb26987ee70da675cc4647651b43acae4ce2e949dff9a884bf3d3215d2217a",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-01-27",
-      "diagnosisDate": "2026-01-27",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|cc3f7ce13fac7a83cfde5ed744e8bb770c9b79ddf299ab63e4de35f8d160e5bf",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -4131,6 +4114,23 @@
       "occurrenceDate": "2026-01-27",
       "diagnosisDate": "2026-01-27",
       "livestockType": "돼지-이유자돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|c6eb26987ee70da675cc4647651b43acae4ce2e949dff9a884bf3d3215d2217a",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-01-27",
+      "diagnosisDate": "2026-01-27",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -4304,23 +4304,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8dc2bda225330a24c68b510c70d0cb2344a659e8f17034cd59fe29a769037122",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
-      "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
-      "occurrenceDate": "2025-11-28",
-      "diagnosisDate": "2025-11-28",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|12fdd347e50a64b2882e0d2c029118efdad83cbc9c0ea39d9b9eb457d530278f",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -4335,6 +4318,23 @@
       "occurrenceDate": "2025-11-28",
       "diagnosisDate": "2025-11-28",
       "livestockType": "돼지-모돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|8dc2bda225330a24c68b510c70d0cb2344a659e8f17034cd59fe29a769037122",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2025-11-28",
+      "diagnosisDate": "2025-11-28",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -4508,7 +4508,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0c616b8a1a98f3ea2d5572902ad4588cdcfa3255008edc06f9f4e85cc6fcbb87",
+      "id": "KAHIS|7daad73fd1f30b4642c2f8f6128d81ac37d19ed65357fb30f0e206678df09d05",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4525,7 +4525,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|7daad73fd1f30b4642c2f8f6128d81ac37d19ed65357fb30f0e206678df09d05",
+      "id": "KAHIS|0c616b8a1a98f3ea2d5572902ad4588cdcfa3255008edc06f9f4e85cc6fcbb87",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
