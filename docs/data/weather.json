@@ -1,8 +1,8 @@
 {
   "source": "기상청 단기예보 조회서비스",
   "baseDate": "20261027",
-  "baseTime": "0500",
-  "updatedAt": "2026-10-27T07:34:48.098011+09:00",
+  "baseTime": "0800",
+  "updatedAt": "2026-10-27T10:58:21.830986+09:00",
   "regions": [
     {
       "region": "부산광역시",
@@ -12,7 +12,18 @@
       "tempMin": 11.0,
       "tempMax": 20.0,
       "diurnalRange": 9.0,
-      "humidityMax": 85.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "인천광역시",
+      "forecastDate": "20261027",
+      "nx": 55,
+      "ny": 124,
+      "tempMin": 7.0,
+      "tempMax": 15.0,
+      "diurnalRange": 8.0,
+      "humidityMax": 50.0,
       "rainProbabilityMax": 0.0
     },
     {
@@ -23,19 +34,8 @@
       "tempMin": 8.0,
       "tempMax": 17.0,
       "diurnalRange": 9.0,
-      "humidityMax": 90.0,
+      "humidityMax": 55.0,
       "rainProbabilityMax": 20.0
-    },
-    {
-      "region": "인천광역시",
-      "forecastDate": "20261027",
-      "nx": 55,
-      "ny": 124,
-      "tempMin": 7.0,
-      "tempMax": 15.0,
-      "diurnalRange": 8.0,
-      "humidityMax": 60.0,
-      "rainProbabilityMax": 0.0
     },
     {
       "region": "서울특별시",
@@ -45,18 +45,7 @@
       "tempMin": 7.0,
       "tempMax": 15.0,
       "diurnalRange": 8.0,
-      "humidityMax": 55.0,
-      "rainProbabilityMax": 0.0
-    },
-    {
-      "region": "울산광역시",
-      "forecastDate": "20261027",
-      "nx": 102,
-      "ny": 84,
-      "tempMin": 10.0,
-      "tempMax": 19.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 85.0,
+      "humidityMax": 50.0,
       "rainProbabilityMax": 0.0
     },
     {
@@ -67,8 +56,8 @@
       "tempMin": 7.0,
       "tempMax": 16.0,
       "diurnalRange": 9.0,
-      "humidityMax": 65.0,
-      "rainProbabilityMax": 30.0
+      "humidityMax": 55.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "대전광역시",
@@ -78,8 +67,8 @@
       "tempMin": 6.0,
       "tempMax": 16.0,
       "diurnalRange": 10.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0
+      "humidityMax": 55.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "광주광역시",
@@ -89,8 +78,19 @@
       "tempMin": 10.0,
       "tempMax": 18.0,
       "diurnalRange": 8.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "울산광역시",
+      "forecastDate": "20261027",
+      "nx": 102,
+      "ny": 84,
+      "tempMin": 10.0,
+      "tempMax": 19.0,
+      "diurnalRange": 9.0,
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "충청북도",
@@ -100,18 +100,7 @@
       "tempMin": 7.0,
       "tempMax": 16.0,
       "diurnalRange": 9.0,
-      "humidityMax": 70.0,
-      "rainProbabilityMax": 20.0
-    },
-    {
-      "region": "강원특별자치도",
-      "forecastDate": "20261027",
-      "nx": 73,
-      "ny": 134,
-      "tempMin": 5.0,
-      "tempMax": 15.0,
-      "diurnalRange": 10.0,
-      "humidityMax": 75.0,
+      "humidityMax": 55.0,
       "rainProbabilityMax": 0.0
     },
     {
@@ -122,8 +111,8 @@
       "tempMin": 7.0,
       "tempMax": 16.0,
       "diurnalRange": 9.0,
-      "humidityMax": 75.0,
-      "rainProbabilityMax": 30.0
+      "humidityMax": 55.0,
+      "rainProbabilityMax": 20.0
     },
     {
       "region": "경기도",
@@ -133,18 +122,29 @@
       "tempMin": 7.0,
       "tempMax": 15.0,
       "diurnalRange": 8.0,
-      "humidityMax": 60.0,
-      "rainProbabilityMax": 20.0
+      "humidityMax": 50.0,
+      "rainProbabilityMax": 0.0
     },
     {
-      "region": "전라남도",
+      "region": "강원특별자치도",
       "forecastDate": "20261027",
-      "nx": 51,
-      "ny": 67,
-      "tempMin": 11.0,
-      "tempMax": 17.0,
-      "diurnalRange": 6.0,
-      "humidityMax": 70.0,
+      "nx": 73,
+      "ny": 134,
+      "tempMin": 5.0,
+      "tempMax": 15.0,
+      "diurnalRange": 10.0,
+      "humidityMax": 50.0,
+      "rainProbabilityMax": 0.0
+    },
+    {
+      "region": "경상남도",
+      "forecastDate": "20261027",
+      "nx": 91,
+      "ny": 77,
+      "tempMin": 10.0,
+      "tempMax": 19.0,
+      "diurnalRange": 9.0,
+      "humidityMax": 60.0,
       "rainProbabilityMax": 20.0
     },
     {
@@ -155,8 +155,19 @@
       "tempMin": 8.0,
       "tempMax": 17.0,
       "diurnalRange": 9.0,
-      "humidityMax": 85.0,
+      "humidityMax": 55.0,
       "rainProbabilityMax": 20.0
+    },
+    {
+      "region": "전라남도",
+      "forecastDate": "20261027",
+      "nx": 51,
+      "ny": 67,
+      "tempMin": 11.0,
+      "tempMax": 17.0,
+      "diurnalRange": 6.0,
+      "humidityMax": 65.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "전북특별자치도",
@@ -166,19 +177,8 @@
       "tempMin": 9.0,
       "tempMax": 17.0,
       "diurnalRange": 8.0,
-      "humidityMax": 85.0,
-      "rainProbabilityMax": 30.0
-    },
-    {
-      "region": "경상남도",
-      "forecastDate": "20261027",
-      "nx": 91,
-      "ny": 77,
-      "tempMin": 10.0,
-      "tempMax": 19.0,
-      "diurnalRange": 9.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 20.0
+      "humidityMax": 60.0,
+      "rainProbabilityMax": 0.0
     },
     {
       "region": "제주특별자치도",
@@ -188,7 +188,7 @@
       "tempMin": 14.0,
       "tempMax": 18.0,
       "diurnalRange": 4.0,
-      "humidityMax": 80.0,
+      "humidityMax": 65.0,
       "rainProbabilityMax": 20.0
     }
   ],
