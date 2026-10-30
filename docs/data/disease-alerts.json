@@ -5,22 +5,14 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-10-30T09:53:42.263658+09:00",
+      "checkedAt": "2026-10-30T10:50:37.930470+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
           "from": "2026-09-30",
           "to": "2026-10-30",
-          "farmCount": 0,
-          "animalCount": 0,
-          "regions": [],
-          "months": []
-        },
-        "90": {
-          "from": "2026-08-01",
-          "to": "2026-10-30",
-          "farmCount": 8,
-          "animalCount": 77,
+          "farmCount": 3,
+          "animalCount": 64,
           "regions": [
             {
               "province": "서울특별시",
@@ -74,8 +66,8 @@
             },
             {
               "province": "충청남도",
-              "animalCount": 67,
-              "farmCount": 4
+              "animalCount": 64,
+              "farmCount": 3
             },
             {
               "province": "전북특별자치도",
@@ -99,185 +91,11 @@
             },
             {
               "province": "제주특별자치도",
-              "animalCount": 10,
-              "farmCount": 4
+              "animalCount": 0,
+              "farmCount": 0
             }
           ],
           "months": [
-            {
-              "month": "202608",
-              "animalCount": 3,
-              "farmCount": 1,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 3,
-                  "farmCount": 1
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                }
-              ]
-            },
-            {
-              "month": "202609",
-              "animalCount": 10,
-              "farmCount": 4,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 10,
-                  "farmCount": 4
-                }
-              ]
-            },
             {
               "month": "202610",
               "animalCount": 64,
@@ -367,11 +185,11 @@
             }
           ]
         },
-        "180": {
-          "from": "2026-05-03",
+        "90": {
+          "from": "2026-08-01",
           "to": "2026-10-30",
-          "farmCount": 29,
-          "animalCount": 1057,
+          "farmCount": 4,
+          "animalCount": 10,
           "regions": [
             {
               "province": "서울특별시",
@@ -410,8 +228,185 @@
             },
             {
               "province": "경기도",
-              "animalCount": 814,
-              "farmCount": 9
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "강원특별자치도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "충청북도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "충청남도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "전북특별자치도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "전라남도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "경상북도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "경상남도",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "제주특별자치도",
+              "animalCount": 10,
+              "farmCount": 4
+            }
+          ],
+          "months": [
+            {
+              "month": "202609",
+              "animalCount": 10,
+              "farmCount": 4,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 10,
+                  "farmCount": 4
+                }
+              ]
+            }
+          ]
+        },
+        "180": {
+          "from": "2026-05-03",
+          "to": "2026-10-30",
+          "farmCount": 13,
+          "animalCount": 70,
+          "regions": [
+            {
+              "province": "서울특별시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "부산광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "대구광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "인천광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "대전광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "울산광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "세종특별자치시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "경기도",
+              "animalCount": 0,
+              "farmCount": 0
             },
             {
               "province": "강원특별자치도",
@@ -425,8 +420,8 @@
             },
             {
               "province": "충청남도",
-              "animalCount": 173,
-              "farmCount": 6
+              "animalCount": 0,
+              "farmCount": 0
             },
             {
               "province": "전북특별자치도",
@@ -446,7 +441,7 @@
             {
               "province": "경상남도",
               "animalCount": 36,
-              "farmCount": 4
+              "farmCount": 3
             },
             {
               "province": "제주특별자치도",
@@ -455,6 +450,1053 @@
             }
           ],
           "months": [
+            {
+              "month": "202605",
+              "animalCount": 35,
+              "farmCount": 2,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 35,
+                  "farmCount": 2
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                }
+              ]
+            },
+            {
+              "month": "202606",
+              "animalCount": 23,
+              "farmCount": 6,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 5,
+                  "farmCount": 1
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 15,
+                  "farmCount": 2
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 1,
+                  "farmCount": 1
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 2,
+                  "farmCount": 2
+                }
+              ]
+            },
+            {
+              "month": "202607",
+              "animalCount": 2,
+              "farmCount": 1,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 2,
+                  "farmCount": 1
+                }
+              ]
+            },
+            {
+              "month": "202609",
+              "animalCount": 10,
+              "farmCount": 4,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 10,
+                  "farmCount": 4
+                }
+              ]
+            }
+          ]
+        },
+        "365": {
+          "from": "2025-10-30",
+          "to": "2026-10-30",
+          "farmCount": 106,
+          "animalCount": 9364,
+          "regions": [
+            {
+              "province": "서울특별시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "부산광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "대구광역시",
+              "animalCount": 6,
+              "farmCount": 2
+            },
+            {
+              "province": "인천광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "대전광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "울산광역시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "세종특별자치시",
+              "animalCount": 0,
+              "farmCount": 0
+            },
+            {
+              "province": "경기도",
+              "animalCount": 3842,
+              "farmCount": 16
+            },
+            {
+              "province": "강원특별자치도",
+              "animalCount": 1,
+              "farmCount": 1
+            },
+            {
+              "province": "충청북도",
+              "animalCount": 10,
+              "farmCount": 4
+            },
+            {
+              "province": "충청남도",
+              "animalCount": 1316,
+              "farmCount": 22
+            },
+            {
+              "province": "전북특별자치도",
+              "animalCount": 3491,
+              "farmCount": 17
+            },
+            {
+              "province": "전라남도",
+              "animalCount": 6,
+              "farmCount": 4
+            },
+            {
+              "province": "경상북도",
+              "animalCount": 133,
+              "farmCount": 7
+            },
+            {
+              "province": "경상남도",
+              "animalCount": 507,
+              "farmCount": 11
+            },
+            {
+              "province": "제주특별자치도",
+              "animalCount": 52,
+              "farmCount": 22
+            }
+          ],
+          "months": [
+            {
+              "month": "202510",
+              "animalCount": 9,
+              "farmCount": 1,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 9,
+                  "farmCount": 1
+                }
+              ]
+            },
+            {
+              "month": "202511",
+              "animalCount": 5,
+              "farmCount": 1,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 5,
+                  "farmCount": 1
+                }
+              ]
+            },
+            {
+              "month": "202512",
+              "animalCount": 578,
+              "farmCount": 10,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 1,
+                  "farmCount": 1
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 430,
+                  "farmCount": 4
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 140,
+                  "farmCount": 2
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 7,
+                  "farmCount": 3
+                }
+              ]
+            },
+            {
+              "month": "202601",
+              "animalCount": 305,
+              "farmCount": 13,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 209,
+                  "farmCount": 4
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 86,
+                  "farmCount": 5
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 1,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 4,
+                  "farmCount": 2
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 5,
+                  "farmCount": 1
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                }
+              ]
+            },
+            {
+              "month": "202602",
+              "animalCount": 5663,
+              "farmCount": 20,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 2,
+                  "farmCount": 1
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 3019,
+                  "farmCount": 4
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 3,
+                  "farmCount": 1
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 74,
+                  "farmCount": 4
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 2550,
+                  "farmCount": 4
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 2,
+                  "farmCount": 2
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 10,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 3,
+                  "farmCount": 3
+                }
+              ]
+            },
+            {
+              "month": "202603",
+              "animalCount": 1136,
+              "farmCount": 23,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 4,
+                  "farmCount": 1
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 7,
+                  "farmCount": 2
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 860,
+                  "farmCount": 8
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 125,
+                  "farmCount": 3
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 4,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 126,
+                  "farmCount": 3
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 10,
+                  "farmCount": 5
+                }
+              ]
+            },
+            {
+              "month": "202604",
+              "animalCount": 611,
+              "farmCount": 9,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 2,
+                  "farmCount": 1
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 2,
+                  "farmCount": 2
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 300,
+                  "farmCount": 1
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 3,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 100,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 200,
+                  "farmCount": 1
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 4,
+                  "farmCount": 2
+                }
+              ]
+            },
             {
               "month": "202605",
               "animalCount": 841,
@@ -978,1053 +2020,6 @@
               ]
             }
           ]
-        },
-        "365": {
-          "from": "2025-10-30",
-          "to": "2026-10-30",
-          "farmCount": 59,
-          "animalCount": 4205,
-          "regions": [
-            {
-              "province": "서울특별시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "부산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대구광역시",
-              "animalCount": 6,
-              "farmCount": 2
-            },
-            {
-              "province": "인천광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대전광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "울산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "세종특별자치시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경기도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "강원특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "충청북도",
-              "animalCount": 10,
-              "farmCount": 4
-            },
-            {
-              "province": "충청남도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "전북특별자치도",
-              "animalCount": 3491,
-              "farmCount": 17
-            },
-            {
-              "province": "전라남도",
-              "animalCount": 6,
-              "farmCount": 2
-            },
-            {
-              "province": "경상북도",
-              "animalCount": 133,
-              "farmCount": 7
-            },
-            {
-              "province": "경상남도",
-              "animalCount": 507,
-              "farmCount": 9
-            },
-            {
-              "province": "제주특별자치도",
-              "animalCount": 52,
-              "farmCount": 18
-            }
-          ],
-          "months": [
-            {
-              "month": "202510",
-              "animalCount": 9,
-              "farmCount": 1,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 9,
-                  "farmCount": 1
-                }
-              ]
-            },
-            {
-              "month": "202511",
-              "animalCount": 5,
-              "farmCount": 1,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 5,
-                  "farmCount": 1
-                }
-              ]
-            },
-            {
-              "month": "202512",
-              "animalCount": 577,
-              "farmCount": 5,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 430,
-                  "farmCount": 4
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 140,
-                  "farmCount": 1
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 7,
-                  "farmCount": 0
-                }
-              ]
-            },
-            {
-              "month": "202601",
-              "animalCount": 96,
-              "farmCount": 9,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 86,
-                  "farmCount": 5
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 1,
-                  "farmCount": 1
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 4,
-                  "farmCount": 2
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 5,
-                  "farmCount": 1
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                }
-              ]
-            },
-            {
-              "month": "202602",
-              "animalCount": 2570,
-              "farmCount": 10,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 2,
-                  "farmCount": 1
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 3,
-                  "farmCount": 1
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 2550,
-                  "farmCount": 4
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 2,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 10,
-                  "farmCount": 1
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 3,
-                  "farmCount": 3
-                }
-              ]
-            },
-            {
-              "month": "202603",
-              "animalCount": 269,
-              "farmCount": 13,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 4,
-                  "farmCount": 1
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 125,
-                  "farmCount": 3
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 4,
-                  "farmCount": 1
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 126,
-                  "farmCount": 3
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 10,
-                  "farmCount": 5
-                }
-              ]
-            },
-            {
-              "month": "202604",
-              "animalCount": 609,
-              "farmCount": 7,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 2,
-                  "farmCount": 2
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 300,
-                  "farmCount": 1
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 3,
-                  "farmCount": 1
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 100,
-                  "farmCount": 1
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 200,
-                  "farmCount": 1
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 4,
-                  "farmCount": 1
-                }
-              ]
-            },
-            {
-              "month": "202605",
-              "animalCount": 35,
-              "farmCount": 2,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 35,
-                  "farmCount": 2
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                }
-              ]
-            },
-            {
-              "month": "202606",
-              "animalCount": 23,
-              "farmCount": 6,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 5,
-                  "farmCount": 1
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 15,
-                  "farmCount": 2
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 1,
-                  "farmCount": 1
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 2,
-                  "farmCount": 2
-                }
-              ]
-            },
-            {
-              "month": "202607",
-              "animalCount": 2,
-              "farmCount": 1,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 2,
-                  "farmCount": 1
-                }
-              ]
-            },
-            {
-              "month": "202609",
-              "animalCount": 10,
-              "farmCount": 4,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 10,
-                  "farmCount": 4
-                }
-              ]
-            }
-          ]
         }
       }
     }
@@ -2033,7 +2028,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-10-30T09:56:12.511403+09:00",
+  "updatedAt": "2026-10-30T10:53:01.226124+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
@@ -2223,6 +2218,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "MAFRA-FMD-TABLE|2026-01|1",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "인천광역시 강화군 구제역 공식 발생",
+      "province": "인천광역시",
+      "cityCounty": "강화군",
+      "region": "인천광역시 강화군",
+      "occurrenceDate": "2026-01-30",
+      "announcementDate": "2026-02-28",
+      "livestockType": "한육우",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "MAFRA-FMD-TABLE|2026-02|2",
       "disease": "구제역",
       "countryCode": "KR",
@@ -2257,20 +2269,37 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "MAFRA-FMD-TABLE|2026-01|1",
-      "disease": "구제역",
+      "id": "KAHIS|2ac5246fb771951aa211a0cd4f189f26a52089436f510ab1a3e7b56f39629772",
+      "disease": "PRRS",
       "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "인천광역시 강화군 구제역 공식 발생",
-      "province": "인천광역시",
-      "cityCounty": "강화군",
-      "region": "인천광역시 강화군",
-      "occurrenceDate": "2026-01-30",
-      "announcementDate": "2026-02-28",
-      "livestockType": "한육우",
+      "summary": "경상남도 사천시 PRRS",
+      "region": "경상남도 사천시",
+      "province": "경상남도",
+      "cityCounty": "사천시",
+      "occurrenceDate": "2026-10-28",
+      "diagnosisDate": "2026-10-28",
+      "livestockType": "돼지-비분류",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|114b2f5c4853f1686a662ff33d97ad9b2d4bfb528e52786443e090bbfb1b3300",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상남도 진주시 PRRS",
+      "region": "경상남도 진주시",
+      "province": "경상남도",
+      "cityCounty": "진주시",
+      "occurrenceDate": "2026-10-20",
+      "diagnosisDate": "2026-10-20",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2287,6 +2316,23 @@
       "cityCounty": "강릉시",
       "occurrenceDate": "2026-10-16",
       "diagnosisDate": "2026-10-16",
+      "livestockType": "돼지-비육돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|159ece7d2e85da2bd3ff95fd5b1ac6fdb5dd6040b4e6965071d9ba79d2f989ca",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "대구광역시 군위군 PRRS",
+      "region": "대구광역시 군위군",
+      "province": "대구광역시",
+      "cityCounty": "군위군",
+      "occurrenceDate": "2026-10-15",
+      "diagnosisDate": "2026-10-15",
       "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
@@ -2308,6 +2354,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "KAHIS|ec310125152852faf8a655402df0813504fcc1e53cfdf275b270b2b9bbb8917f",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "강원특별자치도 강릉시 PRRS",
+      "region": "강원특별자치도 강릉시",
+      "province": "강원특별자치도",
+      "cityCounty": "강릉시",
+      "occurrenceDate": "2026-10-14",
+      "diagnosisDate": "2026-10-14",
+      "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "KAHIS|1c1009ee385e704afc4f530d7d3178145dc22dfd17ab7ca151dc2d2bd1e35845",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2322,23 +2385,6 @@
       "occurrenceDate": "2026-10-14",
       "diagnosisDate": "2026-10-14",
       "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|6a2ee6d425c0772da9bdf02c86e5bbddf9972ccaf82417d19018c51cf79d95ed",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2359,7 +2405,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a890e5a9f34a11b0ffe0fad215a32b13ab86f53eb758c8f6847232bcb8665ffb",
+      "id": "KAHIS|6a2ee6d425c0772da9bdf02c86e5bbddf9972ccaf82417d19018c51cf79d95ed",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2376,7 +2422,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|15df402fd23a6f4935ba390ca7d863846806893c4b0afc4e5abdc7e4cfca0fa6",
+      "id": "KAHIS|53b1f56bfef0b6d175a98e225292d24c2a83967e4f481f0e79e85c4f12044cd0",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2393,7 +2439,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a963bcd96343bd7821586248acac8fc47ccb83195e6fe21ebe4f9e6d4105bf5d",
+      "id": "KAHIS|c55cfaaebd856537ccc6f989986398eece3b377c34e5d421e6cbf158589c4d68",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2406,24 +2452,7 @@
       "cityCounty": "군위군",
       "occurrenceDate": "2026-10-12",
       "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|d0b9a489a729890869056d8766192140b008b29d6e786fdbcf3598dc277da0e2",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-일반",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2886,6 +2915,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-26",
+      "diagnosisDate": "2026-05-26",
+      "livestockType": "돼지-비육돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "KAHIS|cb0e05b217b3863b8ac3de431ea5ea9472fb91241893b59315e29ae4556bf740",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2917,40 +2963,6 @@
       "occurrenceDate": "2026-05-26",
       "diagnosisDate": "2026-05-26",
       "livestockType": "돼지-비분류",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-26",
-      "diagnosisDate": "2026-05-26",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|48964403594c0141ad57126be348b64e663e64c45f3ddb041a94aa8db17b8da9",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "강원특별자치도 횡성군 PRRS",
-      "region": "강원특별자치도 횡성군",
-      "province": "강원특별자치도",
-      "cityCounty": "횡성군",
-      "occurrenceDate": "2026-05-22",
-      "diagnosisDate": "2026-05-22",
-      "livestockType": "돼지-종돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3005,23 +3017,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d4f5a16039d98d16b8462e33d9b804ece131000d5e130fec43866a17ed81dec7",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-19",
-      "diagnosisDate": "2026-05-19",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|ff1a2d03f403962749ee830d827d5a4777a66786b0445b6b32277d3b57ec88cd",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3036,6 +3031,40 @@
       "occurrenceDate": "2026-05-19",
       "diagnosisDate": "2026-05-19",
       "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|e9df469ca1a67e6d4761c6aad2892f2fb3a7ee28d5a5be3d7c6b33cf65fb3d06",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-05-19",
+      "diagnosisDate": "2026-05-19",
+      "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|d4f5a16039d98d16b8462e33d9b804ece131000d5e130fec43866a17ed81dec7",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-19",
+      "diagnosisDate": "2026-05-19",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3685,23 +3714,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c6eb26987ee70da675cc4647651b43acae4ce2e949dff9a884bf3d3215d2217a",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-01-27",
-      "diagnosisDate": "2026-01-27",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|cc3f7ce13fac7a83cfde5ed744e8bb770c9b79ddf299ab63e4de35f8d160e5bf",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3716,6 +3728,23 @@
       "occurrenceDate": "2026-01-27",
       "diagnosisDate": "2026-01-27",
       "livestockType": "돼지-이유자돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|c6eb26987ee70da675cc4647651b43acae4ce2e949dff9a884bf3d3215d2217a",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-01-27",
+      "diagnosisDate": "2026-01-27",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
