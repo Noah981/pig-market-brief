@@ -5,185 +5,16 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-11-02T10:54:57.319111+09:00",
+      "checkedAt": "2026-11-02T18:06:32.933233+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
           "from": "2026-10-03",
           "to": "2026-11-02",
-          "farmCount": 4,
-          "animalCount": 160,
-          "regions": [
-            {
-              "province": "서울특별시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "부산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대구광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "인천광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "대전광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "울산광역시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "세종특별자치시",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경기도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "강원특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "충청북도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "충청남도",
-              "animalCount": 64,
-              "farmCount": 3
-            },
-            {
-              "province": "전북특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "전라남도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경상북도",
-              "animalCount": 0,
-              "farmCount": 0
-            },
-            {
-              "province": "경상남도",
-              "animalCount": 96,
-              "farmCount": 1
-            },
-            {
-              "province": "제주특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
-            }
-          ],
-          "months": [
-            {
-              "month": "202610",
-              "animalCount": 160,
-              "farmCount": 4,
-              "regions": [
-                {
-                  "province": "서울특별시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "부산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대구광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "인천광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "대전광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "울산광역시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "세종특별자치시",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "강원특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "충청남도",
-                  "animalCount": 64,
-                  "farmCount": 3
-                },
-                {
-                  "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상북도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                },
-                {
-                  "province": "경상남도",
-                  "animalCount": 96,
-                  "farmCount": 1
-                },
-                {
-                  "province": "제주특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
-                }
-              ]
-            }
-          ]
+          "farmCount": 0,
+          "animalCount": 0,
+          "regions": [],
+          "months": []
         },
         "90": {
           "from": "2026-08-04",
@@ -365,8 +196,8 @@
         "180": {
           "from": "2026-05-06",
           "to": "2026-11-02",
-          "farmCount": 13,
-          "animalCount": 70,
+          "farmCount": 32,
+          "animalCount": 1622,
           "regions": [
             {
               "province": "서울특별시",
@@ -405,8 +236,8 @@
             },
             {
               "province": "경기도",
-              "animalCount": 0,
-              "farmCount": 0
+              "animalCount": 814,
+              "farmCount": 9
             },
             {
               "province": "강원특별자치도",
@@ -420,18 +251,18 @@
             },
             {
               "province": "충청남도",
-              "animalCount": 0,
-              "farmCount": 0
+              "animalCount": 173,
+              "farmCount": 6
             },
             {
               "province": "전북특별자치도",
-              "animalCount": 0,
-              "farmCount": 0
+              "animalCount": 465,
+              "farmCount": 1
             },
             {
               "province": "전라남도",
-              "animalCount": 0,
-              "farmCount": 0
+              "animalCount": 4,
+              "farmCount": 1
             },
             {
               "province": "경상북도",
@@ -440,8 +271,8 @@
             },
             {
               "province": "경상남도",
-              "animalCount": 36,
-              "farmCount": 3
+              "animalCount": 132,
+              "farmCount": 5
             },
             {
               "province": "제주특별자치도",
@@ -452,8 +283,8 @@
           "months": [
             {
               "month": "202605",
-              "animalCount": 35,
-              "farmCount": 2,
+              "animalCount": 841,
+              "farmCount": 8,
               "regions": [
                 {
                   "province": "서울특별시",
@@ -492,8 +323,8 @@
                 },
                 {
                   "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 806,
+                  "farmCount": 5
                 },
                 {
                   "province": "강원특별자치도",
@@ -528,7 +359,7 @@
                 {
                   "province": "경상남도",
                   "animalCount": 35,
-                  "farmCount": 2
+                  "farmCount": 3
                 },
                 {
                   "province": "제주특별자치도",
@@ -539,8 +370,8 @@
             },
             {
               "month": "202606",
-              "animalCount": 23,
-              "farmCount": 6,
+              "animalCount": 128,
+              "farmCount": 10,
               "regions": [
                 {
                   "province": "서울특별시",
@@ -579,8 +410,8 @@
                 },
                 {
                   "province": "경기도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 5,
+                  "farmCount": 3
                 },
                 {
                   "province": "강원특별자치도",
@@ -594,8 +425,8 @@
                 },
                 {
                   "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 100,
+                  "farmCount": 1
                 },
                 {
                   "province": "전북특별자치도",
@@ -626,7 +457,94 @@
             },
             {
               "month": "202607",
-              "animalCount": 2,
+              "animalCount": 11,
+              "farmCount": 3,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 3,
+                  "farmCount": 1
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 6,
+                  "farmCount": 1
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 2,
+                  "farmCount": 1
+                }
+              ]
+            },
+            {
+              "month": "202608",
+              "animalCount": 3,
               "farmCount": 1,
               "regions": [
                 {
@@ -681,8 +599,8 @@
                 },
                 {
                   "province": "충청남도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 3,
+                  "farmCount": 1
                 },
                 {
                   "province": "전북특별자치도",
@@ -706,8 +624,8 @@
                 },
                 {
                   "province": "제주특별자치도",
-                  "animalCount": 2,
-                  "farmCount": 1
+                  "animalCount": 0,
+                  "farmCount": 0
                 }
               ]
             },
@@ -797,14 +715,101 @@
                   "farmCount": 4
                 }
               ]
+            },
+            {
+              "month": "202610",
+              "animalCount": 629,
+              "farmCount": 6,
+              "regions": [
+                {
+                  "province": "서울특별시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "부산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대구광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "인천광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "대전광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "울산광역시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "세종특별자치시",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경기도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "강원특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "충청남도",
+                  "animalCount": 64,
+                  "farmCount": 3
+                },
+                {
+                  "province": "전북특별자치도",
+                  "animalCount": 465,
+                  "farmCount": 1
+                },
+                {
+                  "province": "전라남도",
+                  "animalCount": 4,
+                  "farmCount": 1
+                },
+                {
+                  "province": "경상북도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                },
+                {
+                  "province": "경상남도",
+                  "animalCount": 96,
+                  "farmCount": 1
+                },
+                {
+                  "province": "제주특별자치도",
+                  "animalCount": 0,
+                  "farmCount": 0
+                }
+              ]
             }
           ]
         },
         "365": {
           "from": "2025-11-02",
           "to": "2026-11-02",
-          "farmCount": 106,
-          "animalCount": 9451,
+          "farmCount": 108,
+          "animalCount": 9920,
           "regions": [
             {
               "province": "서울특별시",
@@ -863,13 +868,13 @@
             },
             {
               "province": "전북특별자치도",
-              "animalCount": 3491,
-              "farmCount": 17
+              "animalCount": 3956,
+              "farmCount": 18
             },
             {
               "province": "전라남도",
-              "animalCount": 6,
-              "farmCount": 4
+              "animalCount": 10,
+              "farmCount": 5
             },
             {
               "province": "경상북도",
@@ -1847,8 +1852,8 @@
             },
             {
               "month": "202610",
-              "animalCount": 160,
-              "farmCount": 4,
+              "animalCount": 629,
+              "farmCount": 6,
               "regions": [
                 {
                   "province": "서울특별시",
@@ -1907,13 +1912,13 @@
                 },
                 {
                   "province": "전북특별자치도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 465,
+                  "farmCount": 1
                 },
                 {
                   "province": "전라남도",
-                  "animalCount": 0,
-                  "farmCount": 0
+                  "animalCount": 4,
+                  "farmCount": 1
                 },
                 {
                   "province": "경상북도",
@@ -1941,8 +1946,42 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-11-02T10:57:30.419468+09:00",
+  "updatedAt": "2026-11-02T18:08:49.734685+09:00",
   "items": [
+    {
+      "id": "MAFRA-FMD-TABLE|2026-10|5",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582105/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상북도 예천군 구제역 공식 발생",
+      "province": "경상북도",
+      "cityCounty": "예천군",
+      "region": "경상북도 예천군",
+      "occurrenceDate": "2026-10-03",
+      "announcementDate": "2026-10-30",
+      "livestockType": "소",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "MAFRA-FMD-TABLE|2026-10|6",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582105/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "인천광역시 강화군 구제역 공식 발생",
+      "province": "인천광역시",
+      "cityCounty": "강화군",
+      "region": "인천광역시 강화군",
+      "occurrenceDate": "2026-10-28",
+      "announcementDate": "2026-10-30",
+      "livestockType": "소",
+      "locationPrecision": "cityCounty"
+    },
     {
       "id": "MAFRA-FMD-TABLE|2026-09|1",
       "disease": "구제역",
@@ -2007,40 +2046,6 @@
       "cityCounty": "강화군",
       "region": "인천광역시 강화군",
       "occurrenceDate": "2026-09-19",
-      "announcementDate": "2026-10-30",
-      "livestockType": "소",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "MAFRA-FMD-TABLE|2026-10|5",
-      "disease": "구제역",
-      "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582105/artclView.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상북도 예천군 구제역 공식 발생",
-      "province": "경상북도",
-      "cityCounty": "예천군",
-      "region": "경상북도 예천군",
-      "occurrenceDate": "2026-10-03",
-      "announcementDate": "2026-10-30",
-      "livestockType": "소",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "MAFRA-FMD-TABLE|2026-10|6",
-      "disease": "구제역",
-      "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582105/artclView.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "인천광역시 강화군 구제역 공식 발생",
-      "province": "인천광역시",
-      "cityCounty": "강화군",
-      "region": "인천광역시 강화군",
-      "occurrenceDate": "2026-10-28",
       "announcementDate": "2026-10-30",
       "livestockType": "소",
       "locationPrecision": "cityCounty"
@@ -2148,6 +2153,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "MAFRA-FMD-TABLE|2026-01|1",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "인천광역시 강화군 구제역 공식 발생",
+      "province": "인천광역시",
+      "cityCounty": "강화군",
+      "region": "인천광역시 강화군",
+      "occurrenceDate": "2026-01-30",
+      "announcementDate": "2026-02-28",
+      "livestockType": "한육우",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "MAFRA-FMD-TABLE|2026-02|2",
       "disease": "구제역",
       "countryCode": "KR",
@@ -2182,20 +2204,20 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "MAFRA-FMD-TABLE|2026-01|1",
-      "disease": "구제역",
+      "id": "KAHIS|6cc88594aed5fa2e46a7af259d8adeeafaea2d6052958435a3d39949361f236b",
+      "disease": "PRRS",
       "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "인천광역시 강화군 구제역 공식 발생",
-      "province": "인천광역시",
-      "cityCounty": "강화군",
-      "region": "인천광역시 강화군",
-      "occurrenceDate": "2026-01-30",
-      "announcementDate": "2026-02-28",
-      "livestockType": "한육우",
+      "summary": "전남광주통합특별시 나주시 PRRS",
+      "region": "전남광주통합특별시 나주시",
+      "province": "전남광주통합특별시",
+      "cityCounty": "나주시",
+      "occurrenceDate": "2026-10-29",
+      "diagnosisDate": "2026-10-29",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2213,6 +2235,23 @@
       "occurrenceDate": "2026-10-28",
       "diagnosisDate": "2026-10-28",
       "livestockType": "돼지-비분류",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|9857b9abde5792c60f3ef358768610ad2360ee8e992ac446727ef379ba6d52cf",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "전남광주통합특별시 진도군 PRRS",
+      "region": "전남광주통합특별시 진도군",
+      "province": "전남광주통합특별시",
+      "cityCounty": "진도군",
+      "occurrenceDate": "2026-10-26",
+      "diagnosisDate": "2026-10-26",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2335,40 +2374,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4e2caebd6743e7481b895cec676c436e5761d75d5560f88546d42f2ebbb64a75",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-자돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|15df402fd23a6f4935ba390ca7d863846806893c4b0afc4e5abdc7e4cfca0fa6",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|a963bcd96343bd7821586248acac8fc47ccb83195e6fe21ebe4f9e6d4105bf5d",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2386,7 +2391,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6a2ee6d425c0772da9bdf02c86e5bbddf9972ccaf82417d19018c51cf79d95ed",
+      "id": "KAHIS|53b1f56bfef0b6d175a98e225292d24c2a83967e4f481f0e79e85c4f12044cd0",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2399,7 +2404,7 @@
       "cityCounty": "군위군",
       "occurrenceDate": "2026-10-12",
       "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-비육돈",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2437,20 +2442,54 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|53b1f56bfef0b6d175a98e225292d24c2a83967e4f481f0e79e85c4f12044cd0",
+      "id": "KAHIS|8f6a87322db11e4b9befe32d08e0b3528bea63325a0952e0a8ab092d32e6ba8f",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
       "evidenceLevel": "OFFICIAL",
       "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
+      "summary": "전라남도 영암군 PRRS",
+      "region": "전라남도 영암군",
+      "province": "전라남도",
+      "cityCounty": "영암군",
+      "occurrenceDate": "2026-10-01",
+      "diagnosisDate": "2026-10-01",
+      "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|39df25c1e594355e5db3181ec294855e1e35a32e047272631a679c5146fa136d",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "전남광주통합특별시 나주시 PRRS",
+      "region": "전남광주통합특별시 나주시",
+      "province": "전남광주통합특별시",
+      "cityCounty": "나주시",
+      "occurrenceDate": "2026-10-01",
+      "diagnosisDate": "2026-10-01",
       "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|ce35797980b64745bacb2421a18d772548579df32134b01022cd2ac902488699",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "전라남도 해남군 PRRS",
+      "region": "전라남도 해남군",
+      "province": "전라남도",
+      "cityCounty": "해남군",
+      "occurrenceDate": "2026-10-01",
+      "diagnosisDate": "2026-10-01",
+      "livestockType": "돼지-모돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2811,23 +2850,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|19d23e29fb7b25d88a43299076bfa693c803b6968f38b4ab0c99e590ba2dfe39",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-06-23",
-      "diagnosisDate": "2026-06-23",
-      "livestockType": "돼지-일괄",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|82d84d5e4fa7f6cdfc284875ccbbfb2c71bf885a225827ccfc080abde9161e9a",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2842,6 +2864,23 @@
       "occurrenceDate": "2026-06-23",
       "diagnosisDate": "2026-06-23",
       "livestockType": "돼지-삼원교잡",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|19d23e29fb7b25d88a43299076bfa693c803b6968f38b4ab0c99e590ba2dfe39",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-06-23",
+      "diagnosisDate": "2026-06-23",
+      "livestockType": "돼지-일괄",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2913,6 +2952,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-26",
+      "diagnosisDate": "2026-05-26",
+      "livestockType": "돼지-비육돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "KAHIS|cb0e05b217b3863b8ac3de431ea5ea9472fb91241893b59315e29ae4556bf740",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2944,40 +3000,6 @@
       "occurrenceDate": "2026-05-26",
       "diagnosisDate": "2026-05-26",
       "livestockType": "돼지-비분류",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-26",
-      "diagnosisDate": "2026-05-26",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|48964403594c0141ad57126be348b64e663e64c45f3ddb041a94aa8db17b8da9",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "강원특별자치도 횡성군 PRRS",
-      "region": "강원특별자치도 횡성군",
-      "province": "강원특별자치도",
-      "cityCounty": "횡성군",
-      "occurrenceDate": "2026-05-22",
-      "diagnosisDate": "2026-05-22",
-      "livestockType": "돼지-종돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3032,23 +3054,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d4f5a16039d98d16b8462e33d9b804ece131000d5e130fec43866a17ed81dec7",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-19",
-      "diagnosisDate": "2026-05-19",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|ff1a2d03f403962749ee830d827d5a4777a66786b0445b6b32277d3b57ec88cd",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3063,6 +3068,40 @@
       "occurrenceDate": "2026-05-19",
       "diagnosisDate": "2026-05-19",
       "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|e9df469ca1a67e6d4761c6aad2892f2fb3a7ee28d5a5be3d7c6b33cf65fb3d06",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-05-19",
+      "diagnosisDate": "2026-05-19",
+      "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|d4f5a16039d98d16b8462e33d9b804ece131000d5e130fec43866a17ed81dec7",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-19",
+      "diagnosisDate": "2026-05-19",
+      "livestockType": "돼지-일반",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3168,40 +3207,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c64040d91f1a8afaa66e44129c5385ad80eb9c6b864744cf21844b831e8fd46b",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-05-08",
-      "diagnosisDate": "2026-05-08",
-      "livestockType": "돼지-삼원교잡",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|8f5a7603ac8b3381064f9fc8b2f628db97a85e647f40457b6690d71e8500fede",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-04-30",
-      "diagnosisDate": "2026-04-30",
-      "livestockType": "돼지-비분류",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|4f00776e2e6482aa0608d5461db32b03a5fe84a300f59673d706d1e1b6d58592",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3270,23 +3275,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|bb2c75d93a9337ee18f6309e8d07be34dc8fa2c444b329c22e52101d63879642",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-04-15",
-      "diagnosisDate": "2026-04-15",
-      "livestockType": "돼지-삼원교잡",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|f4add5f556a57dbda706aff51874bd93061ab69ae530892d29836b9c5a0f3e1b",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3298,6 +3286,23 @@
       "region": "제주특별자치도 서귀포시",
       "province": "제주특별자치도",
       "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-04-15",
+      "diagnosisDate": "2026-04-15",
+      "livestockType": "돼지-삼원교잡",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|bb2c75d93a9337ee18f6309e8d07be34dc8fa2c444b329c22e52101d63879642",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
       "occurrenceDate": "2026-04-15",
       "diagnosisDate": "2026-04-15",
       "livestockType": "돼지-삼원교잡",
