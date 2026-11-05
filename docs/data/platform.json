@@ -257,7 +257,7 @@
       "updatedAt": "2026-11-05T20:35:05.582174+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "제한적",
         "summary": "원/달러 환율은 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1754,7 +1754,7 @@
       "updatedAt": "2026-11-05T20:35:04.989700+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "보통",
         "summary": "국제유가는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1767,30 +1767,30 @@
             "direction": "down"
           },
           {
+            "title": "Refineries have shifted production away from gasoline to middle distillates",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-11-05 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-11-05"
+          },
+          {
             "title": "Mixed outlook for energy expenditures this winter",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA)의 2026-10-07 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
             "source": "미국 에너지정보청(EIA)",
             "sourceDate": "2026-10-07"
-          },
-          {
-            "title": "Crude oil prices and refinery margins generally increased throughout the third quarter",
-            "status": "공식 발표",
-            "detail": "미국 에너지정보청(EIA)의 2026-10-05 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
-            "source": "미국 에너지정보청(EIA)",
-            "sourceDate": "2026-10-05"
           }
         ],
         "sources": [
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Mixed outlook for energy expenditures this winter",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68264"
+            "label": "Refineries have shifted production away from gasoline to middle distillates",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68424"
           },
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Crude oil prices and refinery margins generally increased throughout the third quarter",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68245"
+            "label": "Mixed outlook for energy expenditures this winter",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68264"
           }
         ]
       }
@@ -1956,7 +1956,7 @@
       "updatedAt": "2026-11-05T20:35:05.385891+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "제한적",
         "summary": "옥수수는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2147,7 +2147,7 @@
       "updatedAt": "2026-11-05T20:35:05.389166+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "제한적",
         "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2338,7 +2338,7 @@
       "updatedAt": "2026-11-05T20:35:05.392420+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "제한적",
         "summary": "대두는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2529,7 +2529,7 @@
       "updatedAt": "2026-11-05T20:35:05.395861+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-05T20:35:05.871873+09:00",
+        "updatedAt": "2026-11-06T03:39:51.440415+09:00",
         "confidence": "제한적",
         "summary": "소맥는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2571,7 +2571,7 @@
       "support": "2026년 가축분뇨 수집·운반 수수료 지원사업을 다음과 같이 시행하오니 가축분뇨 수집ㆍ운반 수수료 지원을 희망하는 축산농가에서는 신청하여 주시기 바랍니다. ☞ 김해시 관내 가축분뇨 배출시설 설치허가(신고)를 득한 돈사 면적 1,000㎡ 또는 우사 면적 900㎡ 이하인 농가 ☞ 가축분뇨 배출시설 규모별 차등 지원 ※ 자세한 지원내용 공고문 참조",
       "sourceId": "bizinfo",
       "publishedAt": "2025-12-24",
-      "collectedAt": "2026-11-05T19:42:21.116911+09:00",
+      "collectedAt": "2026-11-06T03:39:44.227171+09:00",
       "startDate": "2025-12-23",
       "deadline": "2026-12-31",
       "applicationPeriod": "2025-12-23 ~ 2026-12-31"
@@ -2587,20 +2587,20 @@
       "applicationPeriod": "관할 시·군·구 접수 일정 확인",
       "noticeKind": "guideline",
       "sourceId": "mafra-livestock-guideline",
-      "collectedAt": "2026-11-05T19:42:22.774195+09:00"
+      "collectedAt": "2026-11-06T03:39:46.089178+09:00"
     }
   ],
-  "checkedAt": "2026-11-05T20:35:05.582525+09:00",
+  "checkedAt": "2026-11-06T03:39:33.174980+09:00",
   "sourceStatus": [
-    {
-      "id": "regional-benefits",
-      "agency": "지역 공식 공고",
-      "status": "연결 검증 대기"
-    },
     {
       "id": "official-market-upstreams",
       "agency": "한국은행·세계은행·EIA 공식 시황",
       "status": "연결 완료"
+    },
+    {
+      "id": "regional-benefits",
+      "agency": "지역 공식 공고",
+      "status": "연결 검증 대기"
     },
     {
       "id": "bizinfo",
@@ -2621,5 +2621,5 @@
       "permissionBasis": "공식 공개 공지·공고의 제목·원문 링크 이용"
     }
   ],
-  "benefitsCheckedAt": "2026-11-05T19:42:24.975807+09:00"
+  "benefitsCheckedAt": "2026-11-06T03:39:50.900017+09:00"
 }
