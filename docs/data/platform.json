@@ -254,10 +254,10 @@
           "value": 1342.0
         }
       ],
-      "updatedAt": "2026-11-06T15:51:48.058741+09:00",
+      "updatedAt": "2026-11-06T23:53:07.632975+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "제한적",
         "summary": "원/달러 환율은 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1751,10 +1751,10 @@
           "value": 99.64
         }
       ],
-      "updatedAt": "2026-11-06T15:51:47.264134+09:00",
+      "updatedAt": "2026-11-06T23:53:07.002177+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "보통",
         "summary": "국제유가는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1767,30 +1767,30 @@
             "direction": "down"
           },
           {
+            "title": "U.S. crude oil imports from Venezuela in July were highest since 2017",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-11-06 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-11-06"
+          },
+          {
             "title": "Refineries have shifted production away from gasoline to middle distillates",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA)의 2026-11-05 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
             "source": "미국 에너지정보청(EIA)",
             "sourceDate": "2026-11-05"
-          },
-          {
-            "title": "Mixed outlook for energy expenditures this winter",
-            "status": "공식 발표",
-            "detail": "미국 에너지정보청(EIA)의 2026-10-07 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
-            "source": "미국 에너지정보청(EIA)",
-            "sourceDate": "2026-10-07"
           }
         ],
         "sources": [
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Refineries have shifted production away from gasoline to middle distillates",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68424"
+            "label": "U.S. crude oil imports from Venezuela in July were highest since 2017",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68425"
           },
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Mixed outlook for energy expenditures this winter",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68264"
+            "label": "Refineries have shifted production away from gasoline to middle distillates",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68424"
           }
         ]
       }
@@ -1953,10 +1953,10 @@
           "value": 226.5
         }
       ],
-      "updatedAt": "2026-11-06T15:51:47.490345+09:00",
+      "updatedAt": "2026-11-06T23:53:07.337319+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "제한적",
         "summary": "옥수수는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2144,10 +2144,10 @@
           "value": 453.0
         }
       ],
-      "updatedAt": "2026-11-06T15:51:47.492579+09:00",
+      "updatedAt": "2026-11-06T23:53:07.340534+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "제한적",
         "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2335,10 +2335,10 @@
           "value": 515.0
         }
       ],
-      "updatedAt": "2026-11-06T15:51:47.494807+09:00",
+      "updatedAt": "2026-11-06T23:53:07.343732+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "제한적",
         "summary": "대두는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2526,10 +2526,10 @@
           "value": 317.0
         }
       ],
-      "updatedAt": "2026-11-06T15:51:47.497222+09:00",
+      "updatedAt": "2026-11-06T23:53:07.347165+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-06T15:51:48.357811+09:00",
+        "updatedAt": "2026-11-06T23:53:07.957944+09:00",
         "confidence": "제한적",
         "summary": "소맥는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2590,7 +2590,7 @@
       "collectedAt": "2026-11-06T15:21:26.932080+09:00"
     }
   ],
-  "checkedAt": "2026-11-06T15:51:48.059147+09:00",
+  "checkedAt": "2026-11-06T23:53:07.633445+09:00",
   "sourceStatus": [
     {
       "id": "regional-benefits",
