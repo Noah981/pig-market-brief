@@ -1,17 +1,45 @@
 {
-  "updatedAt": "2026-11-08T11:17:30.109847+09:00",
-  "generatedAt": "2026-11-08T11:18:02.310791+09:00",
+  "updatedAt": "2026-11-08T19:08:06.950065+09:00",
+  "generatedAt": "2026-11-08T19:08:37.028706+09:00",
   "scope": "대한민국 전역 · 제주 포함",
   "weatherSource": "기상청 단기예보 조회서비스",
   "regions": [
+    {
+      "region": "인천광역시",
+      "forecastDate": "20261108",
+      "nx": 55,
+      "ny": 124,
+      "tempMin": 6.0,
+      "tempMax": 7.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 95.0,
+      "rainProbabilityMax": 60.0,
+      "riskFactors": [
+        "고습",
+        "강수 가능성"
+      ],
+      "farmChecks": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검",
+        "우수 유입·배수로 확인",
+        "사료빈·사료 이송라인 누수 점검",
+        "출입구 소독시설과 차량 동선 확인"
+      ],
+      "top3": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ]
+    },
     {
       "region": "대구광역시",
       "forecastDate": "20261108",
       "nx": 89,
       "ny": 90,
       "tempMin": 8.0,
-      "tempMax": 12.0,
-      "diurnalRange": 4.0,
+      "tempMax": 11.0,
+      "diurnalRange": 3.0,
       "humidityMax": 85.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [
@@ -47,34 +75,6 @@
       ]
     },
     {
-      "region": "인천광역시",
-      "forecastDate": "20261108",
-      "nx": 55,
-      "ny": 124,
-      "tempMin": 6.0,
-      "tempMax": 8.0,
-      "diurnalRange": 2.0,
-      "humidityMax": 90.0,
-      "rainProbabilityMax": 60.0,
-      "riskFactors": [
-        "고습",
-        "강수 가능성"
-      ],
-      "farmChecks": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검",
-        "우수 유입·배수로 확인",
-        "사료빈·사료 이송라인 누수 점검",
-        "출입구 소독시설과 차량 동선 확인"
-      ],
-      "top3": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ]
-    },
-    {
       "region": "서울특별시",
       "forecastDate": "20261108",
       "nx": 60,
@@ -82,7 +82,7 @@
       "tempMin": 6.0,
       "tempMax": 7.0,
       "diurnalRange": 1.0,
-      "humidityMax": 90.0,
+      "humidityMax": 95.0,
       "rainProbabilityMax": 60.0,
       "riskFactors": [
         "고습",
@@ -103,13 +103,13 @@
       ]
     },
     {
-      "region": "세종특별자치시",
+      "region": "대전광역시",
       "forecastDate": "20261108",
-      "nx": 66,
-      "ny": 103,
+      "nx": 67,
+      "ny": 100,
       "tempMin": 7.0,
-      "tempMax": 10.0,
-      "diurnalRange": 3.0,
+      "tempMax": 9.0,
+      "diurnalRange": 2.0,
       "humidityMax": 80.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [
@@ -132,8 +132,8 @@
       "nx": 102,
       "ny": 84,
       "tempMin": 12.0,
-      "tempMax": 15.0,
-      "diurnalRange": 3.0,
+      "tempMax": 13.0,
+      "diurnalRange": 1.0,
       "humidityMax": 75.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [],
@@ -142,30 +142,6 @@
         "급이기·급수기 청결 확인",
         "환기 상태 확인",
         "돈군 건강상태 관찰"
-      ]
-    },
-    {
-      "region": "대전광역시",
-      "forecastDate": "20261108",
-      "nx": 67,
-      "ny": 100,
-      "tempMin": 7.0,
-      "tempMax": 10.0,
-      "diurnalRange": 3.0,
-      "humidityMax": 80.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "고습"
-      ],
-      "farmChecks": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ],
-      "top3": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
       ]
     },
     {
@@ -187,66 +163,14 @@
       ]
     },
     {
-      "region": "충청남도",
+      "region": "세종특별자치시",
       "forecastDate": "20261108",
-      "nx": 68,
-      "ny": 100,
-      "tempMin": 7.0,
-      "tempMax": 10.0,
-      "diurnalRange": 3.0,
-      "humidityMax": 80.0,
-      "rainProbabilityMax": 30.0,
-      "riskFactors": [
-        "고습"
-      ],
-      "farmChecks": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ],
-      "top3": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ]
-    },
-    {
-      "region": "경기도",
-      "forecastDate": "20261108",
-      "nx": 60,
-      "ny": 120,
+      "nx": 66,
+      "ny": 103,
       "tempMin": 6.0,
-      "tempMax": 9.0,
-      "diurnalRange": 3.0,
+      "tempMax": 8.0,
+      "diurnalRange": 2.0,
       "humidityMax": 85.0,
-      "rainProbabilityMax": 60.0,
-      "riskFactors": [
-        "고습",
-        "강수 가능성"
-      ],
-      "farmChecks": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검",
-        "우수 유입·배수로 확인",
-        "사료빈·사료 이송라인 누수 점검",
-        "출입구 소독시설과 차량 동선 확인"
-      ],
-      "top3": [
-        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
-        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
-        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
-      ]
-    },
-    {
-      "region": "충청북도",
-      "forecastDate": "20261108",
-      "nx": 69,
-      "ny": 107,
-      "tempMin": 7.0,
-      "tempMax": 11.0,
-      "diurnalRange": 4.0,
-      "humidityMax": 80.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [
         "고습"
@@ -267,6 +191,34 @@
       "forecastDate": "20261108",
       "nx": 73,
       "ny": 134,
+      "tempMin": 5.0,
+      "tempMax": 6.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 90.0,
+      "rainProbabilityMax": 60.0,
+      "riskFactors": [
+        "고습",
+        "강수 가능성"
+      ],
+      "farmChecks": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검",
+        "우수 유입·배수로 확인",
+        "사료빈·사료 이송라인 누수 점검",
+        "출입구 소독시설과 차량 동선 확인"
+      ],
+      "top3": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ]
+    },
+    {
+      "region": "경기도",
+      "forecastDate": "20261108",
+      "nx": 60,
+      "ny": 120,
       "tempMin": 6.0,
       "tempMax": 7.0,
       "diurnalRange": 1.0,
@@ -291,21 +243,51 @@
       ]
     },
     {
-      "region": "전라남도",
+      "region": "충청남도",
       "forecastDate": "20261108",
-      "nx": 51,
-      "ny": 67,
-      "tempMin": 11.0,
-      "tempMax": 13.0,
+      "nx": 68,
+      "ny": 100,
+      "tempMin": 7.0,
+      "tempMax": 9.0,
       "diurnalRange": 2.0,
-      "humidityMax": 75.0,
+      "humidityMax": 80.0,
       "rainProbabilityMax": 30.0,
-      "riskFactors": [],
-      "farmChecks": [],
+      "riskFactors": [
+        "고습"
+      ],
+      "farmChecks": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ],
       "top3": [
-        "급이기·급수기 청결 확인",
-        "환기 상태 확인",
-        "돈군 건강상태 관찰"
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ]
+    },
+    {
+      "region": "충청북도",
+      "forecastDate": "20261108",
+      "nx": 69,
+      "ny": 107,
+      "tempMin": 7.0,
+      "tempMax": 9.0,
+      "diurnalRange": 2.0,
+      "humidityMax": 85.0,
+      "rainProbabilityMax": 30.0,
+      "riskFactors": [
+        "고습"
+      ],
+      "farmChecks": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
+      ],
+      "top3": [
+        "바닥이 젖거나 결로가 보이면 누수·급수기와 최소환기를 순서대로 확인",
+        "사료 냄새·응결이 있으면 급이기와 빈 내부의 변질·곰팡이를 확인하고 오염 사료는 급여 중단",
+        "고습과 가스 냄새가 같이 나면 최소환기량과 팬 작동 상태를 우선 점검"
       ]
     },
     {
@@ -314,9 +296,9 @@
       "nx": 63,
       "ny": 89,
       "tempMin": 9.0,
-      "tempMax": 12.0,
-      "diurnalRange": 3.0,
-      "humidityMax": 70.0,
+      "tempMax": 10.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [],
       "farmChecks": [],
@@ -332,8 +314,8 @@
       "nx": 89,
       "ny": 91,
       "tempMin": 9.0,
-      "tempMax": 13.0,
-      "diurnalRange": 4.0,
+      "tempMax": 11.0,
+      "diurnalRange": 2.0,
       "humidityMax": 85.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [
@@ -355,8 +337,8 @@
       "forecastDate": "20261108",
       "nx": 91,
       "ny": 77,
-      "tempMin": 11.0,
-      "tempMax": 13.0,
+      "tempMin": 10.0,
+      "tempMax": 12.0,
       "diurnalRange": 2.0,
       "humidityMax": 80.0,
       "rainProbabilityMax": 30.0,
@@ -375,14 +357,32 @@
       ]
     },
     {
+      "region": "전라남도",
+      "forecastDate": "20261108",
+      "nx": 51,
+      "ny": 67,
+      "tempMin": 11.0,
+      "tempMax": 12.0,
+      "diurnalRange": 1.0,
+      "humidityMax": 75.0,
+      "rainProbabilityMax": 30.0,
+      "riskFactors": [],
+      "farmChecks": [],
+      "top3": [
+        "급이기·급수기 청결 확인",
+        "환기 상태 확인",
+        "돈군 건강상태 관찰"
+      ]
+    },
+    {
       "region": "제주특별자치도",
       "forecastDate": "20261108",
       "nx": 52,
       "ny": 38,
-      "tempMin": 16.0,
-      "tempMax": 18.0,
-      "diurnalRange": 2.0,
-      "humidityMax": 75.0,
+      "tempMin": 17.0,
+      "tempMax": 17.0,
+      "diurnalRange": 0.0,
+      "humidityMax": 70.0,
       "rainProbabilityMax": 30.0,
       "riskFactors": [],
       "farmChecks": [],
