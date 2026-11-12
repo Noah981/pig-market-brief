@@ -14,10 +14,6 @@
       "url": "https://ecos.bok.or.kr/",
       "history": [
         {
-          "date": "2026-08-14",
-          "value": 1414.9
-        },
-        {
           "date": "2026-08-18",
           "value": 1415.2
         },
@@ -254,10 +250,10 @@
           "value": 1336.7
         }
       ],
-      "updatedAt": "2026-11-12T16:46:49.009963+09:00",
+      "updatedAt": "2026-11-13T01:19:40.476860+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "제한적",
         "summary": "원/달러 환율은 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1751,10 +1747,10 @@
           "value": 99.64
         }
       ],
-      "updatedAt": "2026-11-12T16:46:48.451548+09:00",
+      "updatedAt": "2026-11-13T01:19:39.706155+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "보통",
         "summary": "국제유가는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1767,30 +1763,30 @@
             "direction": "down"
           },
           {
+            "title": "EIA forecasts Alaskan crude oil production to grow 13% in 2027",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-11-12 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-11-12"
+          },
+          {
             "title": "U.S. crude oil imports from Venezuela in July were highest since 2017",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA)의 2026-11-06 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
             "source": "미국 에너지정보청(EIA)",
             "sourceDate": "2026-11-06"
-          },
-          {
-            "title": "Refineries have shifted production away from gasoline to middle distillates",
-            "status": "공식 발표",
-            "detail": "미국 에너지정보청(EIA)의 2026-11-05 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
-            "source": "미국 에너지정보청(EIA)",
-            "sourceDate": "2026-11-05"
           }
         ],
         "sources": [
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "U.S. crude oil imports from Venezuela in July were highest since 2017",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68425"
+            "label": "EIA forecasts Alaskan crude oil production to grow 13% in 2027",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68444"
           },
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "Refineries have shifted production away from gasoline to middle distillates",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68424"
+            "label": "U.S. crude oil imports from Venezuela in July were highest since 2017",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68425"
           }
         ]
       }
@@ -1953,10 +1949,10 @@
           "value": 226.5
         }
       ],
-      "updatedAt": "2026-11-12T16:46:48.800196+09:00",
+      "updatedAt": "2026-11-13T01:19:40.131304+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "제한적",
         "summary": "옥수수는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2144,10 +2140,10 @@
           "value": 453.0
         }
       ],
-      "updatedAt": "2026-11-12T16:46:48.803264+09:00",
+      "updatedAt": "2026-11-13T01:19:40.134717+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "제한적",
         "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2335,10 +2331,10 @@
           "value": 515.0
         }
       ],
-      "updatedAt": "2026-11-12T16:46:48.806282+09:00",
+      "updatedAt": "2026-11-13T01:19:40.138055+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "제한적",
         "summary": "대두는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2526,10 +2522,10 @@
           "value": 317.0
         }
       ],
-      "updatedAt": "2026-11-12T16:46:48.809588+09:00",
+      "updatedAt": "2026-11-13T01:19:40.141484+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-12T19:52:59.084574+09:00",
+        "updatedAt": "2026-11-13T01:19:40.759486+09:00",
         "confidence": "제한적",
         "summary": "소맥는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2605,17 +2601,17 @@
       "collectedAt": "2026-11-12T19:52:54.604211+09:00"
     }
   ],
-  "checkedAt": "2026-11-12T19:52:42.722588+09:00",
+  "checkedAt": "2026-11-13T01:19:40.477230+09:00",
   "sourceStatus": [
-    {
-      "id": "official-market-upstreams",
-      "agency": "한국은행·세계은행·EIA 공식 시황",
-      "status": "연결 완료"
-    },
     {
       "id": "regional-benefits",
       "agency": "지역 공식 공고",
       "status": "연결 검증 대기"
+    },
+    {
+      "id": "official-market-upstreams",
+      "agency": "한국은행·세계은행·EIA 공식 시황",
+      "status": "연결 완료"
     },
     {
       "id": "bizinfo",
