@@ -1,58 +1,28 @@
 {
   "source": "축산물품질평가원",
   "scope": "제주 돼지도체 등급별 경락가격",
-  "date": "20261117",
+  "date": "20261118",
   "skinYn": "Y",
   "rows": [
     {
       "gradeCode": "1",
-      "gradeName": "1+",
-      "totPrice": "6457",
-      "totCnt": "244",
-      "publicTotPrice": "6391",
-      "publicTotCnt": "230",
-      "blackTotPrice": "7550",
-      "blackTotCnt": "14"
+      "gradeName": "1+"
     },
     {
       "gradeCode": "2",
-      "gradeName": "1",
-      "totPrice": "6460",
-      "totCnt": "263",
-      "publicTotPrice": "6360",
-      "publicTotCnt": "237",
-      "blackTotPrice": "7415",
-      "blackTotCnt": "26"
+      "gradeName": "1"
     },
     {
       "gradeCode": "3",
-      "gradeName": "2",
-      "totPrice": "6544",
-      "totCnt": "534",
-      "publicTotPrice": "6205",
-      "publicTotCnt": "352",
-      "blackTotPrice": "7222",
-      "blackTotCnt": "182"
+      "gradeName": "2"
     },
     {
       "gradeCode": "E",
-      "gradeName": "등외",
-      "totPrice": "5256",
-      "totCnt": "28",
-      "publicTotPrice": "5102",
-      "publicTotCnt": "21",
-      "blackTotPrice": "5710",
-      "blackTotCnt": "7"
+      "gradeName": "등외"
     },
     {
       "gradeCode": "ST",
-      "gradeName": "E제외",
-      "totPrice": "6500",
-      "totCnt": "1041",
-      "publicTotPrice": "6307",
-      "publicTotCnt": "819",
-      "blackTotPrice": "7270",
-      "blackTotCnt": "222"
+      "gradeName": "E제외"
     },
     {
       "gradeCode": "SU",
@@ -60,13 +30,7 @@
     },
     {
       "gradeCode": "T",
-      "gradeName": "평균",
-      "totPrice": "6473",
-      "totCnt": "1069",
-      "publicTotPrice": "6282",
-      "publicTotCnt": "840",
-      "blackTotPrice": "7227",
-      "blackTotCnt": "229"
+      "gradeName": "평균"
     }
   ],
   "status": "ok"
