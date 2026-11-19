@@ -261,7 +261,7 @@
       "updatedAt": "2026-11-19T22:49:41.611306+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "제한적",
         "summary": "원/달러 환율은 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1758,7 +1758,7 @@
       "updatedAt": "2026-11-19T22:49:40.364313+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "보통",
         "summary": "국제유가는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -1771,30 +1771,30 @@
             "direction": "down"
           },
           {
+            "title": "Oil flows through Middle East chokepoints increased in the third quarter",
+            "status": "공식 발표",
+            "detail": "미국 에너지정보청(EIA)의 2026-11-19 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
+            "source": "미국 에너지정보청(EIA)",
+            "sourceDate": "2026-11-19"
+          },
+          {
             "title": "How does EIA account for small differences between energy supply and demand data?",
             "status": "공식 발표",
             "detail": "미국 에너지정보청(EIA)의 2026-11-17 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
             "source": "미국 에너지정보청(EIA)",
             "sourceDate": "2026-11-17"
-          },
-          {
-            "title": "EIA forecasts Alaskan crude oil production to grow 13% in 2027",
-            "status": "공식 발표",
-            "detail": "미국 에너지정보청(EIA)의 2026-11-12 발표입니다. 제목만으로 가격 변동 원인을 확정하지 않습니다.",
-            "source": "미국 에너지정보청(EIA)",
-            "sourceDate": "2026-11-12"
           }
         ],
         "sources": [
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "How does EIA account for small differences between energy supply and demand data?",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68464"
+            "label": "Oil flows through Middle East chokepoints increased in the third quarter",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id="
           },
           {
             "name": "미국 에너지정보청(EIA)",
-            "label": "EIA forecasts Alaskan crude oil production to grow 13% in 2027",
-            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68444"
+            "label": "How does EIA account for small differences between energy supply and demand data?",
+            "url": "https://www.eia.gov/todayinenergy/detail.php?id=68464"
           }
         ]
       }
@@ -1960,7 +1960,7 @@
       "updatedAt": "2026-11-19T22:49:40.608617+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "제한적",
         "summary": "옥수수는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2151,7 +2151,7 @@
       "updatedAt": "2026-11-19T22:49:40.610632+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "제한적",
         "summary": "대두박는 직전 발표 대비 상승했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2342,7 +2342,7 @@
       "updatedAt": "2026-11-19T22:49:40.612618+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "제한적",
         "summary": "대두는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2533,7 +2533,7 @@
       "updatedAt": "2026-11-19T22:49:40.614784+09:00",
       "status": "LIVE",
       "analysis": {
-        "updatedAt": "2026-11-19T22:49:41.776382+09:00",
+        "updatedAt": "2026-11-20T06:21:40.803972+09:00",
         "confidence": "제한적",
         "summary": "소맥는 직전 발표 대비 하락했습니다. 자동 분석은 가격 추세, 환율·유가의 연관 신호와 공식기관 발표를 교차 확인하며 직접 인과관계가 확인되지 않으면 추정으로 표시합니다.",
         "factors": [
@@ -2575,7 +2575,7 @@
       "support": "축산농가 악취 해결을 위해 추진하는「2026년 축산악취 컨설팅 기반 농가별 맞춤형 지원사업」대상자를 아래와 같이 추가 모집 공고합니다. ☞ (1순위) 22~25년 축산농가 악취저감 컨설팅 지원사업 참여 농가 (2순위) 축산환경 컨설턴트 3급 이상 자격증 소지자에게 컨설팅 받은 농가 및 축분비료공장 ☞ 컨설팅 결과보고서를 근거로, 개선이 필요한 항목에 대해 악취저감 맞춤형 시설 지원 - 개소당 250백만원 지원한도 내 지원",
       "sourceId": "bizinfo",
       "publishedAt": "2026-11-12",
-      "collectedAt": "2026-11-19T21:48:40.370472+09:00",
+      "collectedAt": "2026-11-20T06:21:36.215711+09:00",
       "startDate": "2026-11-09",
       "deadline": "2026-11-20",
       "applicationPeriod": "2026-11-09 ~ 2026-11-20"
@@ -2590,7 +2590,7 @@
       "support": "2026년 가축분뇨 수집·운반 수수료 지원사업을 다음과 같이 시행하오니 가축분뇨 수집ㆍ운반 수수료 지원을 희망하는 축산농가에서는 신청하여 주시기 바랍니다. ☞ 김해시 관내 가축분뇨 배출시설 설치허가(신고)를 득한 돈사 면적 1,000㎡ 또는 우사 면적 900㎡ 이하인 농가 ☞ 가축분뇨 배출시설 규모별 차등 지원 ※ 자세한 지원내용 공고문 참조",
       "sourceId": "bizinfo",
       "publishedAt": "2025-12-24",
-      "collectedAt": "2026-11-19T21:48:40.483979+09:00",
+      "collectedAt": "2026-11-20T06:21:36.302036+09:00",
       "startDate": "2025-12-23",
       "deadline": "2026-12-31",
       "applicationPeriod": "2025-12-23 ~ 2026-12-31"
@@ -2606,20 +2606,20 @@
       "applicationPeriod": "관할 시·군·구 접수 일정 확인",
       "noticeKind": "guideline",
       "sourceId": "mafra-livestock-guideline",
-      "collectedAt": "2026-11-19T21:48:42.291718+09:00"
+      "collectedAt": "2026-11-20T06:21:37.981875+09:00"
     }
   ],
-  "checkedAt": "2026-11-19T22:49:41.611692+09:00",
+  "checkedAt": "2026-11-20T06:21:25.170127+09:00",
   "sourceStatus": [
-    {
-      "id": "regional-benefits",
-      "agency": "지역 공식 공고",
-      "status": "연결 검증 대기"
-    },
     {
       "id": "official-market-upstreams",
       "agency": "한국은행·세계은행·EIA 공식 시황",
       "status": "연결 완료"
+    },
+    {
+      "id": "regional-benefits",
+      "agency": "지역 공식 공고",
+      "status": "연결 검증 대기"
     },
     {
       "id": "bizinfo",
@@ -2640,5 +2640,5 @@
       "permissionBasis": "공식 공개 공지·공고의 제목·원문 링크 이용"
     }
   ],
-  "benefitsCheckedAt": "2026-11-19T21:48:44.657208+09:00"
+  "benefitsCheckedAt": "2026-11-20T06:21:40.452823+09:00"
 }
