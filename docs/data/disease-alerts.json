@@ -5,7 +5,7 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-11-19T17:41:26.214837+09:00",
+      "checkedAt": "2026-11-19T21:48:57.033551+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
@@ -2550,25 +2550,8 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-11-19T17:44:20.486060+09:00",
+  "updatedAt": "2026-11-19T21:51:37.782506+09:00",
   "items": [
-    {
-      "id": "MAFRA-FMD-TABLE|2026-11|7",
-      "disease": "구제역",
-      "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582296/artclView.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상북도 예천군 구제역 공식 발생",
-      "province": "경상북도",
-      "cityCounty": "예천군",
-      "region": "경상북도 예천군",
-      "occurrenceDate": "2026-11-12",
-      "announcementDate": "2026-11-17",
-      "livestockType": "소",
-      "locationPrecision": "cityCounty"
-    },
     {
       "id": "MAFRA-FMD-TABLE|2026-10|5",
       "disease": "구제역",
@@ -2667,6 +2650,23 @@
       "cityCounty": "강화군",
       "region": "인천광역시 강화군",
       "occurrenceDate": "2026-09-19",
+      "announcementDate": "2026-11-17",
+      "livestockType": "소",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "MAFRA-FMD-TABLE|2026-11|7",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/582296/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상북도 예천군 구제역 공식 발생",
+      "province": "경상북도",
+      "cityCounty": "예천군",
+      "region": "경상북도 예천군",
+      "occurrenceDate": "2026-11-12",
       "announcementDate": "2026-11-17",
       "livestockType": "소",
       "locationPrecision": "cityCounty"
@@ -2774,23 +2774,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "MAFRA-FMD-TABLE|2026-01|1",
-      "disease": "구제역",
-      "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "인천광역시 강화군 구제역 공식 발생",
-      "province": "인천광역시",
-      "cityCounty": "강화군",
-      "region": "인천광역시 강화군",
-      "occurrenceDate": "2026-01-30",
-      "announcementDate": "2026-02-28",
-      "livestockType": "한육우",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "MAFRA-FMD-TABLE|2026-02|2",
       "disease": "구제역",
       "countryCode": "KR",
@@ -2825,7 +2808,24 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6cc88594aed5fa2e46a7af259d8adeeafaea2d6052958435a3d39949361f236b",
+      "id": "MAFRA-FMD-TABLE|2026-01|1",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "인천광역시 강화군 구제역 공식 발생",
+      "province": "인천광역시",
+      "cityCounty": "강화군",
+      "region": "인천광역시 강화군",
+      "occurrenceDate": "2026-01-30",
+      "announcementDate": "2026-02-28",
+      "livestockType": "한육우",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|942fbe619c5ae6e737883ceb6d5c0d5dccc5dc6161370f59f2bb12ed41763ec0",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2842,7 +2842,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|954bffb97c4f0488a5882a6f8d1ca974d99d482cae747cb99e93903b0589efbd",
+      "id": "KAHIS|b4518e1f249634707bc5d018d06b45d508055ef2816c254f5b0f10b91b2ed838",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2859,7 +2859,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|2ac5246fb771951aa211a0cd4f189f26a52089436f510ab1a3e7b56f39629772",
+      "id": "KAHIS|00940052aea3f93655191cebf2e1d6d56cb59fecbc8d779b32caf4096ee155d3",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2876,7 +2876,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|cf5dc70fffc84a4a646cb53b50ffd74dfddeac6961048ce7af8382470ace6e98",
+      "id": "KAHIS|c36a01d28176ffb55a5fb7d655b1fb8fa2d8bc4e2f0f7c43fd6f89729c4f1f74",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2893,7 +2893,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|9857b9abde5792c60f3ef358768610ad2360ee8e992ac446727ef379ba6d52cf",
+      "id": "KAHIS|a60e3d3a8bfa6d9fbbf7af7d47fdc5efd0868207b94fd742a626d9141889688b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2910,24 +2910,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d0b1241a419700f5f5629cc77b48c4577f00fafd835d9fa58d5cdfa4f2d1397c",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-모돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|425c9af57ba94e92d9c6128ac63470746574abb2525cbb476569ac561eadee88",
+      "id": "KAHIS|c13513fd67501b00673498256eded58058a0920c87063ed0d0a0e74d71d0d7a1",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -2944,109 +2927,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|7611e7e57e892f92aa6321576c5c60e1f9c6a204bb77409536231c414ee78a8d",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-모돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|62bc7e4776a43937bd2e12958757b52be63c46b4b09f4448da86b400086704c9",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|01b3788aad62994be957532b0968428bfad14a149226c315240b5e82be8d1354",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|9b3c03ab5b8643b119db195659ecb14d9ea590294846a36f18f943e35bf55e32",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|450089a722b4a18e4e8db3a4cf4203cd5a81aa1a7c55c6162cb57564e73e8fe3",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-23",
-      "diagnosisDate": "2026-10-23",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|9c20f3a0f2afd188bf92cbccfd99056264fb8fca5929ae1ee85bf38a138b4b6b",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "경상남도 고성군 PRRS",
-      "region": "경상남도 고성군",
-      "province": "경상남도",
-      "cityCounty": "고성군",
-      "occurrenceDate": "2026-10-22",
-      "diagnosisDate": "2026-10-22",
-      "livestockType": "돼지-일반",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|5d2442d4de4351896394005b7c89dde1dd9bfc90630a82abf1f1a3a46d62a24c",
+      "id": "KAHIS|288862e63aa98c0193c1e2cdd2493678b50d9ece8d4f9cabae2870b7f2561ab2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3063,7 +2944,24 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|eb1a58a1a978479a79476e372fb26781f60d3adfdb099536aa83a24f57d7bda9",
+      "id": "KAHIS|0de73b9a43f0b6c1b27c4e5717551bcbe02f8c8b40e162766e997a3b8469d49a",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상남도 고성군 PRRS",
+      "region": "경상남도 고성군",
+      "province": "경상남도",
+      "cityCounty": "고성군",
+      "occurrenceDate": "2026-10-22",
+      "diagnosisDate": "2026-10-22",
+      "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|6e23a65f0418e40e57b1523a43bcbd0a5286339dc3a2a165ce1ba591b120a8fa",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3080,7 +2978,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|114b2f5c4853f1686a662ff33d97ad9b2d4bfb528e52786443e090bbfb1b3300",
+      "id": "KAHIS|c172e2fcfff5c08f72bc432c9a97e732f7d5b8221d911f0b4f20bdc6b55074b1",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3097,7 +2995,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|92a119cb62c708a8768e25f13aaa9cdb571f53212550355f3b8ba406d535212f",
+      "id": "KAHIS|d723db518b41fb720c8640e7ed64f7fe1c83861fba76e23dcb86a6f5534ca812",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3114,7 +3012,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|00cc857c9e0eb0bc76f338ea822092d9f70192f359c279002b438dbfcdac1ce7",
+      "id": "KAHIS|2fa22079562fc4fb7f124c14378f0538838ce10940f9ad59cdb4d8f2fd3908c7",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3131,7 +3029,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|159ece7d2e85da2bd3ff95fd5b1ac6fdb5dd6040b4e6965071d9ba79d2f989ca",
+      "id": "KAHIS|b6bb55fb4477ccf767a1e8726451246f651b8e8c66a02448aec055299be6d563",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3148,7 +3046,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f913b96b959f433b0bfa33d749da682ae4809d24c43bb60aadb6b649a9c9b83a",
+      "id": "KAHIS|1661fbac4203434bbf39b79b46659a098b4d5de4582f019cef53ba278c8c29d7",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3165,7 +3063,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0bfc9e6a3fe581db7ea9d5cf4906e6c99237179afa6677df98d1059196b69ef7",
+      "id": "KAHIS|85e48a6f0cac8a2e76202b2b5dc0ceb20ff2758795d681071fdbe29899587a42",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3182,7 +3080,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3564371e89bf9ec81d451f54a3bf800958d6e75d482892ee94d44ddd0c2d75cf",
+      "id": "KAHIS|842c3b89e2166db2862c4b756a54856a211eee143336fcbcf29a10cd642a598a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3199,7 +3097,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|15df402fd23a6f4935ba390ca7d863846806893c4b0afc4e5abdc7e4cfca0fa6",
+      "id": "KAHIS|f3d06a9d400add0d725df01f937964faa070fcc54bea9238e4d41e445fd716cc",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3216,7 +3114,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a963bcd96343bd7821586248acac8fc47ccb83195e6fe21ebe4f9e6d4105bf5d",
+      "id": "KAHIS|779fc44e3304e51f91b9c9e902b9a4cf179b36ea1d98d6da985ff7a44103fb18",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3233,7 +3131,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a890e5a9f34a11b0ffe0fad215a32b13ab86f53eb758c8f6847232bcb8665ffb",
+      "id": "KAHIS|0e4e9bb6905748218bd23d188651f85563bae20e5a6af4b673c09fea2bf281c5",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3250,7 +3148,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4e2caebd6743e7481b895cec676c436e5761d75d5560f88546d42f2ebbb64a75",
+      "id": "KAHIS|8a937b7c04a0233f00e151a8bbf4d8fb81fa4e3bf76cae40ff493964ffd543a6",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3267,7 +3165,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6a2ee6d425c0772da9bdf02c86e5bbddf9972ccaf82417d19018c51cf79d95ed",
+      "id": "KAHIS|8bd1af03a43433f9a714d2ffac0c999dd15d3f7f03f0d0c2b304b255333de87d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3284,7 +3182,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|53b1f56bfef0b6d175a98e225292d24c2a83967e4f481f0e79e85c4f12044cd0",
+      "id": "KAHIS|565242d072def0ee11f29c11c346e68be3a227c418ac7610af056cfb9c106757",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3301,7 +3199,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c55cfaaebd856537ccc6f989986398eece3b377c34e5d421e6cbf158589c4d68",
+      "id": "KAHIS|1aec2b4cf0f8685c5f28682f20422e3f5b632a31c4a247036afbaaf5aab15434",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3318,7 +3216,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|acc9ba161588cbd5d70fbf200847d8053304d2e7f00a0dfbebfca06aa0d29836",
+      "id": "KAHIS|54deeb4785033d1ef9289957555568c99e3c49cfeb2d72c3d864579c9764ce78",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3335,7 +3233,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d34ce444a8dc70879749345560034f8c9cc4352ed8c41dbd133e4adc71d53c3a",
+      "id": "KAHIS|e29a660ad10e25f7e4782a383f286574105d427dfd9e48d8576d0a0328ffd052",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3352,7 +3250,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|1adf7c98a079a19c8a7a435d2ce03a8f7ee95d25e356a0d1bd8fba2f426f8426",
+      "id": "KAHIS|180745f180d3e8b6ab2b0c0dc0642445807f5a56d1a52415134e36679d0518d2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3369,7 +3267,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f51bbc7d882b3f369cba123f4a0cfbe90cd77dfabeda9f500a390fa30a896710",
+      "id": "KAHIS|09c0c64dde21fb44cb13d3886289d178fc41018f2964f74ddbf4bfde176afc80",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3386,7 +3284,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a3ec2e34252bc6d329168e2287f98c5ba2603ef79819fb4dc2ff54cf65669903",
+      "id": "KAHIS|055dcbfaf7f6cdbef469a5bf6bcdd37a56186369cc579372e032fc71ceab0595",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3403,7 +3301,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|39df25c1e594355e5db3181ec294855e1e35a32e047272631a679c5146fa136d",
+      "id": "KAHIS|fc3232c4d0818defaf2bbf5877868e56fbae9e2dae6f2e10e12f5d75fdd1264c",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3420,7 +3318,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8f6a87322db11e4b9befe32d08e0b3528bea63325a0952e0a8ab092d32e6ba8f",
+      "id": "KAHIS|6bf747b5bffc90a09a265f797c3d65ab04c74fdbd56db07c21a243820edc1dc7",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3437,7 +3335,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ce35797980b64745bacb2421a18d772548579df32134b01022cd2ac902488699",
+      "id": "KAHIS|31659ded4e6821b8ebc73bf4230595c372eef78b46a927745295b1cfe01b17eb",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3454,7 +3352,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|eb17b5d87d0dca041054cce05dd0e06afb8abcb77a40e458a37a6ed7fb5cedf9",
+      "id": "KAHIS|a137bb87b2122b0a72bfe54c7650e52ee2c3e742e49586e9fedb5d7a5fa6b75f",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3471,7 +3369,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|b91fe16a1945a15cbe4dab7fd10e0e925c162d2f727bf387b0ac655f9518669b",
+      "id": "KAHIS|007560413194ef91e0602767d1ac7f447966703bbe639cffee62138945862e98",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3488,24 +3386,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|e7dacb01f7637f73917739da8e58209a22919fca7368bf3504bdd081453ba0fd",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 제주시 PRRS",
-      "region": "제주특별자치도 제주시",
-      "province": "제주특별자치도",
-      "cityCounty": "제주시",
-      "occurrenceDate": "2026-09-17",
-      "diagnosisDate": "2026-09-17",
-      "livestockType": "돼지-비분류",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|b6a968764db41a7ae9b84c91612328f573f998a3f04adf66772fdad0d09c2caf",
+      "id": "KAHIS|3c0019c1c9f8c68a229da62ddd757aee14fdc07b69c9815fc81d8e7526cc790d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3522,7 +3403,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|de6fb7e0c80c8a1f3833af2219e1f94e851a0366484b19d568069fb0f6005854",
+      "id": "KAHIS|624b8e1da77366a660e9cdfb8db0c15c02fd3739239759418f9a1313deedae93",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3539,7 +3420,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4d9fe81e5acab9c749d27c85f13ed49177381f1cc492727934a7ed1437af5354",
+      "id": "KAHIS|385710a50c3d894943f925e076df28ab3d88caf62794407636c1887c112ce471",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3556,7 +3437,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|15345a7c048287b46af8a44dc15a63953ec7000fef96d7977a27686c00842fad",
+      "id": "KAHIS|95a1ea20d1a2f0b2ebb680ef7dc04ac95d79ae04f727b747e5d6b828db26087e",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3573,7 +3454,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c81f622924872477f30bbed1a1b70b9659fa86ad1e1b1ef223091875d7ed71ef",
+      "id": "KAHIS|0b0b4634a30b32af089e19ab04fd9883465378737b1f1621e242dbe7cbef5b97",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3590,7 +3471,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|13e8fc31217f95a691650a0d0af3141beeb20a81b736a55be12357ef9fdbd872",
+      "id": "KAHIS|d9d610b4f96b378b34ff844efee05b1ecc6806fe0bf43e6f718114ce8955a243",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3607,7 +3488,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c70a087f8b2049251fe54a5f3f1210fde6461a7974b9c7f44f80aebeeaff4fbc",
+      "id": "KAHIS|cb211cf21e712ee4aa4db2f348f160fb7a3bddcf8a745de4150b47418d50f39b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3624,7 +3505,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|7199e7f2b6d7918d4fead6aa68f8c49438cc03a824883128f507b8a7a40d67b2",
+      "id": "KAHIS|90af14fa10d23e58fa898a30c6ab998da933e23986642c31c70bc14abf7b7372",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3641,7 +3522,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d7e02bc36fe372dc4bbbc8a0f6c3f3e7c470cc1eea5d78a544ebd7c130f89085",
+      "id": "KAHIS|d51cf18e20a9e94d6b245de7df8f883532ee5b543b16eeb814a118465862490b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3658,7 +3539,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|efa180c2d14ed4a511b90f49c3e4e27a91f8e65cbb57c1ff657efe9a9c033734",
+      "id": "KAHIS|c5ffc7a1b2fc65aaffe79976ee1e805f277afc2f3ef24398931600c17b893588",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3675,7 +3556,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|49eb9dab6f4fc10ecec81c1426224a0e05eb50cabb3279d2ac967b8bf14a8869",
+      "id": "KAHIS|73abcb5dd3370184622008fbeaf490f7ffbb185bd5e35b29576a9874e544e7a7",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3692,7 +3573,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|b3941395ab179ebe08bd9b1cc49aa61cdcafa342ccd71eb462e8486dcea9ce51",
+      "id": "KAHIS|08070dff417895b30604eff8474d55f94ba36712b0749876576b868ebf8972c1",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3709,7 +3590,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ab59bfbcf1d20e935e5a80790069c0cbca17374c59ed3d59b6c68f030eec67f7",
+      "id": "KAHIS|3567fe5ea0da78ec28a9337a36090476175b4dd876695934c48615e0b25a81d1",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3726,7 +3607,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3c7f30ab7f813a71ecaf2d455ce70f1fc6262cac51aecc539e6a04a52dea33ee",
+      "id": "KAHIS|37f73024602cc8183e394d6059f3b63959432c03daacd362996b97b3db4cf941",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3743,7 +3624,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|a2a5cbb68dc32430455340493c96877bc81656b774bdc25ba4783e8dae507f7d",
+      "id": "KAHIS|bcca43660ec25d463c79c9e3201f3bb6657b619f15ec86a213ce3b66d1fc7cbe",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3760,7 +3641,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8adda132559bef4e8d60bd2efe59fa72bfe5d356a9607f9856b5fa9037f0ba01",
+      "id": "KAHIS|f3699b824abf258c0ae687faa1ebf8298185ccd9e3ace3c04ade8c931ba35b63",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3777,7 +3658,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f1e017d5002c11e19587a13360bbf7c687d6191d10866fa2ea188a257cfdadd4",
+      "id": "KAHIS|2029e88180f5121d7840bb351efd2f0743e82d080bd803dd516e314a71652e97",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3794,7 +3675,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f607c37a9d5505aed52d9ef6c4d0d1287619a85f20eb5b16749ec6bc1b91a94d",
+      "id": "KAHIS|a44d2c924fc109bfd6fabe43c731a1829507eb9e3dfaa42705cdc58afe2dfcc9",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3811,7 +3692,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3b05cd9e69eadb8bd52df0fb8f617ffa6ea6f88cb6a3de863c0ca26e821b638a",
+      "id": "KAHIS|2590f233c7586fc09f6ab520fdcd27aaef073c6988238394654d00bd5fbf9e59",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3828,7 +3709,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|19d23e29fb7b25d88a43299076bfa693c803b6968f38b4ab0c99e590ba2dfe39",
+      "id": "KAHIS|fedc60261d4e09ec9f698bf811a0be62210b3125c680cdcabfcad1972851b59a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3845,7 +3726,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|82d84d5e4fa7f6cdfc284875ccbbfb2c71bf885a225827ccfc080abde9161e9a",
+      "id": "KAHIS|7037426f4ffdd3aae06c37b4315558e500ddcec3360e2f6432a307f40e68a37a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3862,7 +3743,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|2d7908e478792853671516239ad0ef3809de866bf7b374a3654c37ff46472976",
+      "id": "KAHIS|c48d00459ca5d6abdd9df99f022610cffb00ef3867902e3b7646fbfa97215aff",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3879,7 +3760,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|661e1c7122ea8baea7469179eb35c420b8e0a019c13c5f42b8b23c0d606e884d",
+      "id": "KAHIS|14325b98c52e0903cfe217aa71c6aa23fa1a42a23fc49d95868b667196514e35",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3896,7 +3777,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6b85fc7012de8977dcb326e411023ac031e1875f849964ade38805581dc347af",
+      "id": "KAHIS|9a4356b9381a3c15da140839cff1214f376bde5e37a6bcf73ea53ba8a3c9153b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3913,7 +3794,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0c67fa91bd2170ac9dec213e5ce0c5a104887d8566fe863778b1b0897c1ca73c",
+      "id": "KAHIS|5b9db684a6825d9425e351e015fbe9ea29ee509a68cd4f74670f142da6ea269f",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3930,7 +3811,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|43e2eb0434cd5c6776dab4bb88f01cc90169137ba8cad5609f51c4c4e9b02e5d",
+      "id": "KAHIS|fdbea34619539a87523b53c7f5d1328f21770661a8490ed2d4bceed3d3babbb5",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3947,7 +3828,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|cb0e05b217b3863b8ac3de431ea5ea9472fb91241893b59315e29ae4556bf740",
+      "id": "KAHIS|af45578fc4c24129fbe2e27c607aa074a96bfedfa6f46fb857d6fd4f4327f515",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3964,7 +3845,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|94f6f936cf1c23e21b9656b588ed38c4c3051fcc5d49f7ae68462e881d3ac3f4",
+      "id": "KAHIS|4f07adc828266fb83cced8547eeb48d694f5f55811dd1d32f983599e0d0d635a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3981,7 +3862,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|297e4f7e8a4f19decff5b2afd3808a329e71aa2689ebf52b539557422d2e9700",
+      "id": "KAHIS|02b8b284ec28304db9f917cc117993d44173fb66b93be6152d655a5b556dcc71",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -3998,7 +3879,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|48964403594c0141ad57126be348b64e663e64c45f3ddb041a94aa8db17b8da9",
+      "id": "KAHIS|2644c82178067ef7f4b93c45a485e983cfb49c05ff35e40cef80fb8a2e407cd3",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4015,7 +3896,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c64737e63ec1142c2bb11833e98ce21e6d2ad16958cc45d5de8711a875f033f7",
+      "id": "KAHIS|53d3d024e048227b219be96b884735fdb603d1442e226dcbcdd3e00cef653896",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4032,7 +3913,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ac5687f8956b98b93c7dc90ea3d251578cd9db0254b5835b0ff8ae02f712592b",
+      "id": "KAHIS|9c5e8179401e66a0d6f78fb9d064948272004585c1c283d903f1a6fd972f53e2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4049,7 +3930,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0e4920b1d877afae6be56d7b3f923783267cc3c5d08f20df031e16add8c6d0f2",
+      "id": "KAHIS|f9a5d12a898d111d4e406e561fe7e7bbe93ae959dee8e5915dfac95d1a0af5de",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4066,7 +3947,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ff1a2d03f403962749ee830d827d5a4777a66786b0445b6b32277d3b57ec88cd",
+      "id": "KAHIS|788a368f708d74b5edbbe5689bbbaf149eb5481089f44de15c080c7c3c565c12",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4083,7 +3964,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|e9df469ca1a67e6d4761c6aad2892f2fb3a7ee28d5a5be3d7c6b33cf65fb3d06",
+      "id": "KAHIS|89cbac4322c293578ddfafcdcb8f2c81f106f90633834b319493f181f3f7a51e",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4100,7 +3981,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d4f5a16039d98d16b8462e33d9b804ece131000d5e130fec43866a17ed81dec7",
+      "id": "KAHIS|4eda493bb1d19259fec1c71517142345d0f4c42bf6ad2b472a10118b3279db72",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4117,7 +3998,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|1f3306d4bcd08912a40d2002740c1bc1672c8ac0db23310c3aefb5b6654cd284",
+      "id": "KAHIS|3d9b21669d7d1073d4e7da5bc2b18f99255916fa267aa901cdf3445c1873c187",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4134,7 +4015,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|170ea37d9c766c5614fd633bd9400fe2f82694ed5ba53e30edb51bfb673d2ebe",
+      "id": "KAHIS|952fb205912763d33990445a0f9013650a12f5b456b45caebc870140f61129c4",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4151,7 +4032,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6abeec9f2904609eaa79436fa76ab7911311c8054426f8c0db179d8e5b2de032",
+      "id": "KAHIS|911456191c05969fe44d0d56cadb49308bf9308b80eea00f87835d81234cd221",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4168,24 +4049,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|084aa8c65d4e84301c65d3912c20dea8cd8ffe6b2b2a99642907bdef47a64c8e",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "제주특별자치도 서귀포시 PRRS",
-      "region": "제주특별자치도 서귀포시",
-      "province": "제주특별자치도",
-      "cityCounty": "서귀포시",
-      "occurrenceDate": "2026-05-14",
-      "diagnosisDate": "2026-05-14",
-      "livestockType": "돼지-종돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
-      "id": "KAHIS|31b8eacef08a56750d5ba9a3b9de04702a24f7af6f8e762bd2b38cfb7abebf51",
+      "id": "KAHIS|d1bf6a3acbbaea9025af8b1abf68d35d65a750c7d5c243c5e02f5437878cb64a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4202,7 +4066,41 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|bd2d4cba1a8258a116876ce41713d070fe20ba49f0aec945febd862a087f3214",
+      "id": "KAHIS|9d446b49b30992b25504282b36334033825dd611374614caef3136d32d6390e0",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 서귀포시 PRRS",
+      "region": "제주특별자치도 서귀포시",
+      "province": "제주특별자치도",
+      "cityCounty": "서귀포시",
+      "occurrenceDate": "2026-05-14",
+      "diagnosisDate": "2026-05-14",
+      "livestockType": "돼지-종돈",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|f29c2683f5f116b34745198327a4abc37765e0ec5679f05d552fe1cfe5d4003b",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-08",
+      "diagnosisDate": "2026-05-08",
+      "livestockType": "돼지-삼원교잡",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|b1ebc3216e9db8e968a1361686751b9ac0e53064ac33f57e7a45811b9c6748df",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4219,7 +4117,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4f00776e2e6482aa0608d5461db32b03a5fe84a300f59673d706d1e1b6d58592",
+      "id": "KAHIS|762e5334605af54d5111f388456cd943101e17da7b3fe61ab2e6d6dab70610ac",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4236,7 +4134,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8f5a7603ac8b3381064f9fc8b2f628db97a85e647f40457b6690d71e8500fede",
+      "id": "KAHIS|c17fa6dc7d55120d650c49d4da181b254d5c35621642f0ab5d455092463fe41b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4253,7 +4151,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|554bbd88fb105faf69b660d3ee56f878229c824e66c11b3617a633f77b322599",
+      "id": "KAHIS|33871cd82f620aa21fe8b90ba4463b99d7ee8497f5dbbb000bc4b7a754d7923b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4270,7 +4168,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|0d467fc5c8c7c0a0f4ffe24b9f89fb040cf64020acfea61be78f31e600a803b0",
+      "id": "KAHIS|51eca46ae7bbf77f9c364d2b7df42f20308f44462edd1a592635da3d2aa40671",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4287,7 +4185,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ae80e39d3b136222f3e6ad611ddecc9cbb84fa68e4c8670d08f726165efdb2a6",
+      "id": "KAHIS|b4b9519d6abf8092881b5bd176b4ba4d85ebb148927a04dbb6644e7232c240e9",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4304,7 +4202,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f3bc2d37a4087e2224082209dbc5de66465e9028b5e13a2af41d348a92e65eb7",
+      "id": "KAHIS|94b5e0954804ce486d24ad7788e876360d912cd98b788baf21bf14773b5dd25a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4321,7 +4219,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f4add5f556a57dbda706aff51874bd93061ab69ae530892d29836b9c5a0f3e1b",
+      "id": "KAHIS|e4d7f36a9df798a21c99b82128d3478a4d2f46e6f3582e9898c6db5d9e25d252",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4338,7 +4236,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|bb2c75d93a9337ee18f6309e8d07be34dc8fa2c444b329c22e52101d63879642",
+      "id": "KAHIS|8f26bc13e9f6c73bf3811fa147ca01169503b0f2a8a9ffefe9d72b85129b476b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4355,7 +4253,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|5db1a0329a3709a5e28b79465131f866f15d7ff2666081dc9019ff54b5de8325",
+      "id": "KAHIS|08eceeddc55efc71207f46817543071a128e5909e735cca0c585d6c8ec94cd09",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4372,7 +4270,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|95da33b805ab87d73249ad0151430968dbf1e85c37f1a89f04e71358000e10e8",
+      "id": "KAHIS|6f5612220d9aaabfd96cde83fc731b44ab5fe183a59efffe81557695c484e47d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4389,7 +4287,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c16016344e82afe9e633498a6ddbf8942572abe495a54c5e1e7417daf38c909b",
+      "id": "KAHIS|86be2475b42e9e1c9371e7a2e76d68a4368fc2b8a8fc3f4482a788a0c269583b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4406,7 +4304,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|d397ffac43266ce0eb174d43dfebc94090f18dc716f7e46f0cbc25819dc92d0f",
+      "id": "KAHIS|aa25423ca8e2968f55f459f24fe18d0eef585af20b409ca2a5a92381df00c776",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4423,7 +4321,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f7c41a8aff42f7260d943c98f94c01dc3b1d23189e54a29dd2a2b18ff77b0cf9",
+      "id": "KAHIS|8b196da84184fdf19610caeb561e548533751f44502daec4af267c6c1d1f60ec",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4440,7 +4338,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3c16ab7bcc17db9089b314d8e718e472ef3af828b6d638e873c24696c885be85",
+      "id": "KAHIS|efec087f1117a4f14a72486a5a2696c612958b6e015b2e948fc6fa1ace48bd4d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4457,7 +4355,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|66a46d41cd404d17ac76a4d472ca5041153ef733cf9192084ffdf6a0fab0dc6d",
+      "id": "KAHIS|b672a023348242214c586438c5ab234f84cb93fc102d8f7a72fb1f7cb2180f20",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4474,7 +4372,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c4a86bdcb1e7f27d9c8dacaf02e483053408bf987f99ebc903a8c93d28a109d6",
+      "id": "KAHIS|1a66f65f99bb7a646c404bd00e4c6baa8df3bbcaa85b25982b493df65c18ee56",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4491,7 +4389,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8c10e2ef80fff2905531ed20cfe1177c119da150bff9ad46cbf12f9497e6fb9c",
+      "id": "KAHIS|d74bc01dcfa884427891b13e49b3231f2ed3391d5015e01ea98ef00916c0860e",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4508,7 +4406,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|7b8f6543a986651dffb35c719f435254cf77eb8af1e6e55052c2bd67e48cbe7d",
+      "id": "KAHIS|f72d70315a5d147fcffd070311e28241584dc97c320364a63102088e9ca84c19",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4525,7 +4423,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|2c499b69e7ad7f7cb258bb07d883bad09b61f9f24d1071a414a4583bef846023",
+      "id": "KAHIS|9205d8b16b26585b4391cf759dd6e1a9f19172da0ae32a94e91d6adbed2ca89d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4542,7 +4440,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3532bd826120c97fd8e1163bc2d6b85dfaa2a3977f090d19f95edee849335774",
+      "id": "KAHIS|9a6dbe8b1cdbc987549e308078b7e8c3c2f90b10ae25a5dd2f08098e6819dc5c",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4559,7 +4457,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|175bf58ac91411b171ca23c325f6ec68363389fc13db858ae86f52d79fc9d92e",
+      "id": "KAHIS|f378f4b2080a2d0a7763381043c912d7071c484975f8142c3311849eaa7f16ed",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4576,7 +4474,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|daabadecea6f1929e5c85b33ee965636d645af596311eaae555b6cfcef005d18",
+      "id": "KAHIS|103e6b721d6f486f9e50aeb218a09b216f93e788634eb0f498590b08a427f59a",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4593,7 +4491,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ec76affa5c4415739d52537df3f5b43aae9bfc3c1d8ccb5a4b519e57050bd49c",
+      "id": "KAHIS|d92da478f9973912bc3cb90b8358e40fa7b9935017b99ecd9abcefdbd629af43",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4610,7 +4508,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c22806abd49975fbfceaa0bf78a62673512aa74375b557144ea28c5ceafe6baf",
+      "id": "KAHIS|db4778563d73a3e4e76a607b79472b341eee7201f56dfff05d471709acd19a85",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4627,7 +4525,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|e5faceacb3ff65c29a023f8ea8a1a28ac9e02c0e740c0f08991f98f586f573fb",
+      "id": "KAHIS|d46fd23ef47a2b9546867454cfeab9da9b59ba5a72e3fda4ddf7f48ed431d4ff",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4644,7 +4542,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|1bbac5bdd5cc0b85cfafdb316af6d0f139d8e3f310e38d1a2a6ce0471052f45f",
+      "id": "KAHIS|5b12f054d509ec1fcb93809c383589264a7fcfdaa847954e6978f5276043af2d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4661,7 +4559,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f291157ee0946a5ddbdaa8dc04273efb6d13116196caf35f4414b328a8f6b7f4",
+      "id": "KAHIS|5f56e226aac5c3586652a3a5801841a1b401505827e7d9f8281879fbf65affeb",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4678,7 +4576,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3e1182baf7029124c8c5438169b20d370fe2da81dd4c48390f70fd13e4f9235b",
+      "id": "KAHIS|b2eb3e5fe33c9507deb159342c4c744af20132bd8a5817ea86599e2496e49427",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4695,7 +4593,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|23359ae02b366ecd96df8194b0eb32dbda7fcd451dacd9bce56763aded4a184f",
+      "id": "KAHIS|2711b3ccbc368b857d92fcdb537d67f108b9040855ae6e0ab96806f8180eba13",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4712,7 +4610,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|e747614a81f393a87d416c7e4888003c53c1049fcbbb93810035ce2f1ec3ce0b",
+      "id": "KAHIS|11b95719f7b6d411afcebbdfed7bd8a08c201420296994077f77f1344dbb166d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4729,7 +4627,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6e020e449bb7da77d4e8e2dcca829455c01bb936496f563abc1df40e68660293",
+      "id": "KAHIS|c3016cd961eff24f1b3e96e0587d8bb4d33282d852f51b124e076312c71fee3e",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4746,7 +4644,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|20a128aee513678d9a8728a12a1dc1de4e9f6f326aa76389203504c7d10b4324",
+      "id": "KAHIS|f0e9d407c9e7ff36ca08fc0f2ba538e93f5da33210e209a423f27889f88d5712",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4763,7 +4661,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|17a21994b53ef84f2635c0b4554ccbd3cba914a36522cee427139c87768ebde8",
+      "id": "KAHIS|ef52527c0fdb42473ed195f264e7a3f4ba8ec6de366cd2a88b21a0f0da5afad5",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4780,7 +4678,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|f0b273f6ba101d20637f8103de9fe0b9fc0ec854f75f139c08291223ee87843a",
+      "id": "KAHIS|c834b0613732cd0b837f7ea4e76ec13a9ad7ce652fd1f381b16a52430005b09f",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4797,7 +4695,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c8d30494ed971aa8a53372d133f88bd8153524f2b5a905d94dbcef425d970a16",
+      "id": "KAHIS|24f52c21c3e5dbee6903385dd5a3a6fe31861f87b44f4fd26849e90a283a2fc9",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4814,7 +4712,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|50fcd58618622168146fc1a2a36fde7d770da0979481afc0679431507d6007f9",
+      "id": "KAHIS|c513d0ba0654b252c89093ac980cae76f0243a955054dd3fd76235f43a95d60b",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4831,7 +4729,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|cc3f7ce13fac7a83cfde5ed744e8bb770c9b79ddf299ab63e4de35f8d160e5bf",
+      "id": "KAHIS|2cc17a7eeb66fc4d8905ff2cacb7de578d5e20af8ddc4d0bd74e2b80e24955c2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4848,7 +4746,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|c6eb26987ee70da675cc4647651b43acae4ce2e949dff9a884bf3d3215d2217a",
+      "id": "KAHIS|0d09c6cf1066b48a0ef722dff67dcc4340776f8207542273bb32631c021d7d20",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4865,7 +4763,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|3acd4a3e9399ab9dc995bedd79a525d1eac1652ec314d40f04a52ae1e74e774e",
+      "id": "KAHIS|50284ca1fdf7193ec4924660ee236787e1ff5f165b34fac450ae7c190ace6952",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4882,7 +4780,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|42f44751d5a90abc443c3baac4fa51131d7fa56594ee53da230afb1cb63a960d",
+      "id": "KAHIS|9505733ce28d1f0f3117edd9f715a9c373ffc9e4c37dca16478b1ab2cfd81b3d",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4899,7 +4797,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|046b57f3eef93c649e26ec72564bb29993345e0fa4e53cc31bf9f78ac1da0007",
+      "id": "KAHIS|fc266f2e51aa72f65361536f855441c34fed01b8d7b4541da4217078b23401d6",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4916,7 +4814,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|64e5ef891b41f4850e1fdff9af72220a381b3dededd6fccf1c8903b00af6d739",
+      "id": "KAHIS|436b24094e01cdb5e704caf8716ec1ae98d1dfd953da171a0698503665d51d16",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4933,7 +4831,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|73c2e4df7ffee625a4aa25d4b08c4abcf506f76400bdd907bae1cbafbfda1229",
+      "id": "KAHIS|0cf843c8b5fbd7bda564edb6a1432177cf6376f094fac9fe38adabf764e2f3cd",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4950,7 +4848,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|6e53294673e7e1a5216e4c6e0c1f3691049fb90f3e460f8c0ad1fde2f5459217",
+      "id": "KAHIS|a82a070532ca31e72a888d1a9c7aaeba3f0717e0f33c79913c09f1a142655555",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4967,7 +4865,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|43b716a984c6b8f4f3369cdef61ab22e9460480f5d286f7f6ecd81b1e19958ba",
+      "id": "KAHIS|94488b97525da96bba93f1bb28c08cdfcf1f02554333065822b86d4c5aaec1b2",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -4984,7 +4882,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|75e18f2517e499bcb2f2ceecf8196f21de779131a83799dcce79839c9816ea09",
+      "id": "KAHIS|789b8d60351d35bb8476f59465902cb288c1ec9161711bc8ac29b4423cf20753",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5001,7 +4899,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|ce2cf8767dcc4ead9b5d9ec21ee5d031efe29bcc4d395149e68fce76541a5e08",
+      "id": "KAHIS|f0cf72c6fff693b43ad0e3ea80aa52b217664c6135424750a3776272e85fad9f",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5018,7 +4916,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|4b8fcac4322ccf69ad4321a4e84dc490421ab310b9fff42b71195f276dec66f9",
+      "id": "KAHIS|83ca97533a6ae8512ab8193754f4ebdc2c04f14f92dc2db824b0c16b56a451a3",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5035,7 +4933,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|12fdd347e50a64b2882e0d2c029118efdad83cbc9c0ea39d9b9eb457d530278f",
+      "id": "KAHIS|c7a82a50a246a6732ac4e26ba3b21067e73743ec081880616ee096397e74dc33",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5052,7 +4950,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|8dc2bda225330a24c68b510c70d0cb2344a659e8f17034cd59fe29a769037122",
+      "id": "KAHIS|d7d0752e5501fcad2accbc8c98bc098bd902c3e9f8fe281b02ff4177c1c65062",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5069,7 +4967,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|5f1130d99286eb0daae0f6ae495fae98bd870ca80416716bce63026eb1c41be2",
+      "id": "KAHIS|6646ea2b7f910381df62fac8c84766e1a9de7b47a276bb568c36ba1825c14c21",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
@@ -5086,7 +4984,7 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|1d6063fa849c0ac4ad76c90cd545d3a80330516a5e95bd484aa3c20fb3cb6d3f",
+      "id": "KAHIS|ba82506ca6f40730f3d4df2bbcac3920227fdcb61350791202e3fd15b7b464d3",
       "disease": "PRRS",
       "countryCode": "KR",
       "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
