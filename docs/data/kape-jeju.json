@@ -6,23 +6,53 @@
   "rows": [
     {
       "gradeCode": "1",
-      "gradeName": "1+"
+      "gradeName": "1+",
+      "totPrice": "6221",
+      "totCnt": "246",
+      "publicTotPrice": "6164",
+      "publicTotCnt": "230",
+      "blackTotPrice": "7051",
+      "blackTotCnt": "16"
     },
     {
       "gradeCode": "2",
-      "gradeName": "1"
+      "gradeName": "1",
+      "totPrice": "6298",
+      "totCnt": "343",
+      "publicTotPrice": "6136",
+      "publicTotCnt": "272",
+      "blackTotPrice": "6935",
+      "blackTotCnt": "71"
     },
     {
       "gradeCode": "3",
-      "gradeName": "2"
+      "gradeName": "2",
+      "totPrice": "6265",
+      "totCnt": "535",
+      "publicTotPrice": "5999",
+      "publicTotCnt": "349",
+      "blackTotPrice": "6777",
+      "blackTotCnt": "186"
     },
     {
       "gradeCode": "E",
-      "gradeName": "등외"
+      "gradeName": "등외",
+      "totPrice": "3765",
+      "totCnt": "22",
+      "publicTotPrice": "3450",
+      "publicTotCnt": "19",
+      "blackTotPrice": "5664",
+      "blackTotCnt": "3"
     },
     {
       "gradeCode": "ST",
-      "gradeName": "E제외"
+      "gradeName": "E제외",
+      "totPrice": "6265",
+      "totCnt": "1124",
+      "publicTotPrice": "6091",
+      "publicTotCnt": "851",
+      "blackTotPrice": "6838",
+      "blackTotCnt": "273"
     },
     {
       "gradeCode": "SU",
@@ -30,7 +60,13 @@
     },
     {
       "gradeCode": "T",
-      "gradeName": "평균"
+      "gradeName": "평균",
+      "totPrice": "6226",
+      "totCnt": "1146",
+      "publicTotPrice": "6044",
+      "publicTotCnt": "870",
+      "blackTotPrice": "6827",
+      "blackTotCnt": "276"
     }
   ],
   "status": "ok"
