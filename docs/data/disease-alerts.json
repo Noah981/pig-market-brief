@@ -5,7 +5,7 @@
     "ped": {
       "source": "KAHIS 법정가축전염병 발생통계",
       "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrnc.do",
-      "checkedAt": "2026-11-26T13:54:27.880346+09:00",
+      "checkedAt": "2026-11-26T17:33:32.801181+09:00",
       "basis": "발생일 기준 시도별 집계 · 농장별 위치 미공개",
       "periods": {
         "30": {
@@ -2376,7 +2376,7 @@
   "coverageVerified": true,
   "asfDisclosureVerified": true,
   "coverageScope": "KAHIS 공개 발생 목록 최근 366일 전체 페이지 조회(ASF·구제역·PRRS, 구제역 우제류 포함) + 올해·전년 ASF 및 구제역 공표자료 대조; PED KAHIS 시도별 통계; 해외 WOAH 아프리카 통보 (세계 전체 집계 아님)",
-  "updatedAt": "2026-11-26T13:57:22.303411+09:00",
+  "updatedAt": "2026-11-26T17:37:01.493734+09:00",
   "items": [
     {
       "id": "MAFRA-FMD-TABLE|2026-11|7",
@@ -2600,23 +2600,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "MAFRA-FMD-TABLE|2026-01|1",
-      "disease": "구제역",
-      "countryCode": "KR",
-      "source": "농림축산식품부 구제역 발생현황 정보공개",
-      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "인천광역시 강화군 구제역 공식 발생",
-      "province": "인천광역시",
-      "cityCounty": "강화군",
-      "region": "인천광역시 강화군",
-      "occurrenceDate": "2026-01-30",
-      "announcementDate": "2026-02-28",
-      "livestockType": "한육우",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "MAFRA-FMD-TABLE|2026-02|2",
       "disease": "구제역",
       "countryCode": "KR",
@@ -2648,6 +2631,23 @@
       "occurrenceDate": "2026-02-28",
       "announcementDate": "2026-02-28",
       "livestockType": "한우",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "MAFRA-FMD-TABLE|2026-01|1",
+      "disease": "구제역",
+      "countryCode": "KR",
+      "source": "농림축산식품부 구제역 발생현황 정보공개",
+      "sourceUrl": "https://www.mafra.go.kr/bbs/FMD-AI2/389/577155/artclView.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "인천광역시 강화군 구제역 공식 발생",
+      "province": "인천광역시",
+      "cityCounty": "강화군",
+      "region": "인천광역시 강화군",
+      "occurrenceDate": "2026-01-30",
+      "announcementDate": "2026-02-28",
+      "livestockType": "한육우",
       "locationPrecision": "cityCounty"
     },
     {
@@ -2838,6 +2838,23 @@
       "locationPrecision": "cityCounty"
     },
     {
+      "id": "KAHIS|0de73b9a43f0b6c1b27c4e5717551bcbe02f8c8b40e162766e997a3b8469d49a",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "경상남도 고성군 PRRS",
+      "region": "경상남도 고성군",
+      "province": "경상남도",
+      "cityCounty": "고성군",
+      "occurrenceDate": "2026-10-22",
+      "diagnosisDate": "2026-10-22",
+      "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
       "id": "KAHIS|288862e63aa98c0193c1e2cdd2493678b50d9ece8d4f9cabae2870b7f2561ab2",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -2974,23 +2991,6 @@
       "locationPrecision": "cityCounty"
     },
     {
-      "id": "KAHIS|1aec2b4cf0f8685c5f28682f20422e3f5b632a31c4a247036afbaaf5aab15434",
-      "disease": "PRRS",
-      "countryCode": "KR",
-      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
-      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
-      "evidenceLevel": "OFFICIAL",
-      "status": "공식 발생",
-      "summary": "대구광역시 군위군 PRRS",
-      "region": "대구광역시 군위군",
-      "province": "대구광역시",
-      "cityCounty": "군위군",
-      "occurrenceDate": "2026-10-12",
-      "diagnosisDate": "2026-10-12",
-      "livestockType": "돼지-비육돈",
-      "locationPrecision": "cityCounty"
-    },
-    {
       "id": "KAHIS|f3d06a9d400add0d725df01f937964faa070fcc54bea9238e4d41e445fd716cc",
       "disease": "PRRS",
       "countryCode": "KR",
@@ -3090,6 +3090,23 @@
       "occurrenceDate": "2026-10-12",
       "diagnosisDate": "2026-10-12",
       "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|1aec2b4cf0f8685c5f28682f20422e3f5b632a31c4a247036afbaaf5aab15434",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "대구광역시 군위군 PRRS",
+      "region": "대구광역시 군위군",
+      "province": "대구광역시",
+      "cityCounty": "군위군",
+      "occurrenceDate": "2026-10-12",
+      "diagnosisDate": "2026-10-12",
+      "livestockType": "돼지-비육돈",
       "locationPrecision": "cityCounty"
     },
     {
@@ -3974,6 +3991,23 @@
       "occurrenceDate": "2026-05-14",
       "diagnosisDate": "2026-05-14",
       "livestockType": "돼지-일반",
+      "locationPrecision": "cityCounty"
+    },
+    {
+      "id": "KAHIS|f29c2683f5f116b34745198327a4abc37765e0ec5679f05d552fe1cfe5d4003b",
+      "disease": "PRRS",
+      "countryCode": "KR",
+      "source": "농림축산검역본부 KAHIS 가축전염병 발생현황",
+      "sourceUrl": "https://home.kahis.go.kr/home/lkntscrinfo/selectLkntsOccrrncList.do",
+      "evidenceLevel": "OFFICIAL",
+      "status": "공식 발생",
+      "summary": "제주특별자치도 제주시 PRRS",
+      "region": "제주특별자치도 제주시",
+      "province": "제주특별자치도",
+      "cityCounty": "제주시",
+      "occurrenceDate": "2026-05-08",
+      "diagnosisDate": "2026-05-08",
+      "livestockType": "돼지-삼원교잡",
       "locationPrecision": "cityCounty"
     },
     {
